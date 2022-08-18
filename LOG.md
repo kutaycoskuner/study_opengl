@@ -28,4 +28,5 @@
 - push
 
 # LOG
-- 19-Aug-2022 0.10      Project folder created
+- 19-Aug-2022 0.11      add: Visual Studio Project Files and gitignore expansion
+- 19-Aug-2022 0.10      Project git folder created
