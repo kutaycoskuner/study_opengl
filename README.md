@@ -1,9 +1,9 @@
 # Study-LearnOpenGL-cpp
 Study project for learning OpenGL
 
-| Project Started | Last Update |
-| :-------------- | :---------- |
-| 19-Aug-2022     | 19-Aug-2022 |
+| Project Started | Last Update | Version |
+| :-------------- | :---------- | :-----: | 
+| 19-Aug-2022     | 23-Aug-2022 | 0.14    |
 
 # Table of Contents
 1. [Description](#description)
