@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 23-Aug-2022 | 0.14    |
+| 19-Aug-2022     | 04-Sep-2022 | 0.17    |
 
 # Table of Contents
 1. [Description](#description)
@@ -22,7 +22,24 @@ Study project for learning OpenGL
 # Feature List
 
 # Display
+![0.17 Hello triangle](display/hello_triangle.png)
+```
+0.17 Hello triangle
+```  
+
+![0.17 Two triangle polygon mode ](display/2triangle_polygon.png)
+```
+0.17 Two triangle polygon mode
+```  
 
 # References
-
-
+- Learning
+    - learnopengl.com
+- Dependencies
+    - Libraries
+        - GLFW | GLFW is a lightweight utility library for use with OpenGL. [Download](https://www.glfw.org/download.html)
+        - GLAD | OpenGL hardware adjustment library. [Download](https://glad.dav1d.de/)
+    - Environment Setup 
+        - Visual Studio
+        - Visual Studio Code
+        - CMake
