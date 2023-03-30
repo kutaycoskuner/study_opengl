@@ -5,12 +5,6 @@
 - [logging actions](#logging-actions)
 - [log](#log)
 
-# Todo
-- 24-Aug-2022 utility yi ayir
-- 04-Sep-2022 draw 2 triangles next to each other 
-- 04-Sep-2022 create same 2 triangles using two different VAO and VBO 
-- 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diffent shader
-
 
 # Nomenclature
 - 1.1
@@ -75,7 +69,25 @@
 - change time log
 - push
 
+
+# Todo
+- 24-Aug-2022 utility yi ayir
+- [x] 30-Mar-2023 04-Sep-2022 draw 2 triangles next to each other 
+- [x] 30-Mar-2023 04-Sep-2022 create same 2 triangles using two different VAO and VBO 
+- [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diffent shader
+
+
+
+
 # LOG
+- [0.18] add: Hello triangle exercises
+    - 30-Mar-2023   hello triangle exercices
+        - exercise 1: draw 2 triangle
+        - exercise 2: draw 2 triangle with different voa and vbos
+        - exercise 3: use different fragment shaders for each triangle
+    - 29-Mar-2023   repeat previous
+
+- [old]
 - 04-Sep-2022 0.17      add: Hello triangle
 - 24-Aug-2022 0.16!     wip: Hello triangle
 - 23-Aug-2022 0.15!     org: Nomenclature, Comment Discipline, Logging Actions
