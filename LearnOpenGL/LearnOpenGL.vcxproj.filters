@@ -13,24 +13,47 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{e880eb65-0a78-40f5-9240-cc9cae7c9b23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hello_world.cpp">
+    <ClCompile Include="source\hello_world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\learnOpenGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basic.h">
+    <ClInclude Include="headers\basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGL.h">
+    <ClInclude Include="headers\openGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\fragShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\vrtxShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

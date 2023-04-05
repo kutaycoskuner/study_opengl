@@ -77,9 +77,17 @@
 - [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diffent shader
 
 
-
-
 # LOG
+- [0.19] arch: File organization prototype
+    - 05-Apr-2023   arch: configuration file separation
+        - folders added: config (.xml, .json, .yaml, .ini) data (textures, points, lines, .obj)
+    - 04-Apr-2023   learn: 3rd party library ekleme
+    - 04-Apr-2023   arch: test function, testi yaz statik test degiskeni ekle, shaderlari dosyadan oku 
+    - 31-Mar-2023   arch: separating main function 
+    - 30-Mar-2023   arch: categorizing files
+        - folders: shaders (.glsl), headers (.h), source (.cpp), libs (glad)
+    - starting shaders
+
 - [0.18] add: Hello triangle exercises
     - 30-Mar-2023   hello triangle exercices
         - exercise 1: draw 2 triangle

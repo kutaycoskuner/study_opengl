@@ -1,54 +1,25 @@
+
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
-#include <iostream>     // cout / cin icin lazim
-#include "basic.h"      // kendi test header dosyam
+#include "../headers/basic.h"      // kendi test header dosyam
+#include "../headers/utilities.h"      // kendi test header dosyam
 #include <glad/glad.h>  // opengl hardware adaptor !glfw den once
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
+#include <iostream>     // cout / cin icin lazim
+#include <string>
+#include<unordered_map>
 
 // ------------------------------------------------------------------------------------------------
 // ==== Function Declerations
 // ------------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-float scaleByteToZeroOne(unsigned int byte);
-
-// ------------------------------------------------------------------------------------------------
-// ==== Settings
-// ------------------------------------------------------------------------------------------------
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-const char* WNDW_NAME = "Potatoland";
-
-
-// ------------------------------------------------------------------------------------------------
-// ==== Shaders
-// ------------------------------------------------------------------------------------------------
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-
-const char* fragmentShaderSource1 = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"    FragColor = vec4(0.02f, 0.7f, 0.72f, 1.0f);\n"
-"}\0";
-
-const char* fragmentShaderSource2 = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(0.85f, 0.09f, 0.56f, 1.0f);\n"
-"}\n\0";
-
 
 // ------------------------------------------------------------------------------------------------
 // ==== Data
 // ------------------------------------------------------------------------------------------------
+
 //float vertices[] = {
 //    -0.5f, -0.5f, 0.0f,     // left
 //     0.5f, -0.5f, 0.0f,     // right
@@ -107,10 +78,43 @@ unsigned int indices[] = {
 };
 
 // ------------------------------------------------------------------------------------------------
-// ==== Main
+// ==== Shaders
 // ------------------------------------------------------------------------------------------------
-int main()
+
+const char* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+
+const char* fragmentShaderSource1 = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"    FragColor = vec4(0.02f, 0.7f, 0.72f, 1.0f);\n"
+"}\0";
+
+const char* fragmentShaderSource2 = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(0.85f, 0.09f, 0.56f, 1.0f);\n"
+"}\n\0";
+
+// ------------------------------------------------------------------------------------------------
+// ----- Functions Definitions
+// ------------------------------------------------------------------------------------------------
+
+int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config)
 {
+	// ------------------------------------------------------------------------------------------------
+	// ==== Settings
+	// ------------------------------------------------------------------------------------------------
+	const unsigned int SCR_WIDTH = std::stoul(config["scr"]["width"]);
+	const unsigned int SCR_HEIGHT = std::stoul(config["scr"]["height"]);
+	const char* WNDW_NAME = config["scr"]["wndw_name"].c_str();
+
 	// :: glfw init
 	// --------------------------
 	glfwInit();
@@ -321,7 +325,7 @@ int main()
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	
+
 	//glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &VBO);
 	//glDeleteBuffers(1, &EBO);
@@ -339,9 +343,6 @@ int main()
 	return 0;
 }
 
-// ------------------------------------------------
-// ==== Function Definitions
-// ------------------------------------------------
 // glfw: resize adjustment callback function
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -354,5 +355,3 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
-// utility functions
-// --------------------------

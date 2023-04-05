@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 04-Sep-2022 | 0.17    |
+| 19-Aug-2022     | 05-Apr-2023 | 0.19    |
 
 # Table of Contents
 1. [Description](#description)

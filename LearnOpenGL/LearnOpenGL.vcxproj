@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>D:\ProgrammingLibrary\cpp\glfw-3.3.8\build\src\Debug;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\ProgrammingLibrary\cpp\glad-0.136\include;D:\ProgrammingLibrary\cpp\glfw-3.3.8\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\ProgrammingLibrary\cpp\glad-0.136\include;C:\Users\kutay\OneDrive\Documents\GitHub\Study-LearnOpenGL-cpp\LearnOpenGL\headers;D:\ProgrammingLibrary\cpp\glfw-3.3.8\include;C:\Users\kutay\OneDrive\Documents\GitHub\Study-LearnOpenGL-cpp\LearnOpenGL\libs\rapidjson\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;yaml-cppd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(PROJECTDIR)libs\yaml-cpp\_bin\Debug</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,12 +134,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
-    <ClCompile Include="hello_world.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\learnOpenGL.cpp" />
+    <ClCompile Include="source\test.cpp" />
+    <ClCompile Include="source\utilities.cpp" />
+    <None Include="shaders\fragShader.glsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="shaders\vrtxShader.glsl">
+      <FileType>Document</FileType>
+    </None>
+    <ClCompile Include="source\hello_world.cpp" />
+    <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basic.h" />
-    <ClInclude Include="OpenGL.h" />
+    <ClInclude Include="headers\basic.h" />
+    <ClInclude Include="headers\openGL.h" />
+    <ClInclude Include="headers\utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,6 +18,22 @@
     - https://google.github.io/styleguide/cppguide.html
 
 # Structure
+- project
+    + headers               : include files function declerations
+    + libraries             : outer code
+    + shaders               : shader files
+    + source                : everything that I wrote
+        - utilities
+        - main
+        - test
+        - entry
+    + settings              : degiskenlerin tutuldugu yer
+    + data                  : cizim icin kullanilan verinin geldigi yer
+
+# Formats
+- settings: .ini, .yaml, .xml, .json
+- scene material: 
+- model: .obj
 
 # Dependencies
 - GLAD                  | OpenGL versiyonunu hardware e gore ayarlayan kutuphane
@@ -32,20 +48,21 @@
 
 - Visual Studio
     - Create new project choose c++ Empty project
+    - glsl linker
 
 # Abbreviations
 - NDC
     - Normalized device coordinates: coordinates scaled between -1,1 range
 
 - VBO
-    - Vertex buffer objects: store large number of vertices in the GPU s memory.    | 
-    - vbo datanin kendisi
+    - Vertex buffer objects: store large number of vertices in the GPU s memory.    | vertex buffer
+    - vbo datanin kendisi   
 
-- VAO 
+- VAO                                                                               | input layout
     - Vertex array object, just like a vertex buffer objct and any subsequent vertex attribute calls from that point on will be stored inside vao
     - vertex bufferi nasil interpret ettigin
 
-- EBO
+- EBO                                                                               | index buffer
     - element buffer object. Indicating overlapping vertices, to avoid redundant work.
     - vertex bufferi hangi sirayala okudugu
 
@@ -54,12 +71,40 @@
 
 
 # Notes
+- git sub module
+    - baska bir repoyu nasil sub module olarak kullanirim
+
+- 3rd party kutuphane
+    1. kutuphane source u indir
+    2. cmake ile build i yarat
+    3. vs uzerinde acip debug/release buildleri yap
+    4. 1. sub module
+        - 
+    4. 2. statik kirli yol
+        1. project properties > linker > general > add additional library directories
+        2. project properties > linker > input   > add additional library file name
+        3. project properties > vc++ directories > add library include folder | convention
+
+- glsl shaders
+    - c like language
+    - always begin with veresion declaration
+    - types: int, float, double, uint, bool
+    - vectors:
+        - vecn: default vector of n floats
+        - bvecn: vector of n booleans
+        - ivecn: vector of n integers
+        - uvecn: vector of n unsigned integers
+        - dvecn: vector of n double components
+
+
 - opengl
     - A fragment in OpenGL is all the data required for OpenGL to render a single pixel.
 
 - cpp
     - &: adress
     - array pointer decay
+    - compile time / run time constant | constexpr
+    - static kullandigin yere gore anlami degisiyor | variable qualifier -> o dosyaya ozel scope management
 
 - state machine
     - a collection of variables that deefine how opengl should currently operate
@@ -95,6 +140,15 @@
 
 
 # How to
+- <naming conventions>
+    - class
+    - file names
+    - variables: variable
+        - bools: b_isVariable
+    - function names
+    - config file
+        - ex: test_name
+
 - <visual studio: linking library>
     - right click on project name on solution explorer > properties
     - configuration > vc++ directories > 

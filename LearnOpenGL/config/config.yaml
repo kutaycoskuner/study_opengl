@@ -1,0 +1,8 @@
+---
+test:
+  is_testing: false
+
+scr:
+  wndw_name: Learn OpenGL
+  width: 800
+  height: 600
