@@ -11,6 +11,9 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Functions
 // ------------------------------------------------------------------------------------------------
+
+// string manipulation
+// ------------------------------
 void trim(std::string& str) {
 	// find the first non-whitespace character
 	size_t first = str.find_first_not_of(" \n\r\f\v");
@@ -28,6 +31,18 @@ void trim(std::string& str) {
 	str = str.substr(first, last - first + 1);
 }
 
+std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
+	std::vector<std::string> substrings;
+	size_t start = 0;
+	size_t end = 0;
+
+	while ((end = str.find(delimiter, start)) != std::string::npos) {
+		substrings.push_back(str.substr(start, end - start));
+		start = end + delimiter.length();
+	}
+	substrings.push_back(str.substr(start));
+	return substrings;
+}
 
 int countLeadingSpaces(const std::string& str) {
 	int count = 0;
@@ -42,21 +57,8 @@ int countLeadingSpaces(const std::string& str) {
 	return count/2;
 }
 
-
-std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
-	std::vector<std::string> substrings;
-	size_t start = 0;
-	size_t end = 0;
-
-	while ((end = str.find(delimiter, start)) != std::string::npos) {
-		substrings.push_back(str.substr(start, end - start));
-		start = end + delimiter.length();
-	}
-	substrings.push_back(str.substr(start));
-	return substrings;
-}
-
-
+// read and deserialize file
+// ------------------------------
 std::string readFileContents(const std::string& path)
 {
 	// Open the file at the given path
@@ -94,7 +96,6 @@ std::vector<std::string> parseFileToRowArray(const std::string& path)
 	rows.push_back(str);
 	return rows;
 }
-
 
 std::unordered_map<std::string, std::unordered_map<std::string, std::string>> parseSimple(const std::string& path) {
 

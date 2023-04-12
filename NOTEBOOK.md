@@ -19,16 +19,16 @@
 
 # Structure
 - project
+    + config                : degiskenlerin tutuldugu yer
+    + data                  : cizim icin kullanilan verinin geldigi yer
     + headers               : include files function declerations
-    + libraries             : outer code
+    + libs                  : outer code
     + shaders               : shader files
-    + source                : everything that I wrote
+    + source                : every logic and data that I wrote
         - utilities
         - main
         - test
         - entry
-    + settings              : degiskenlerin tutuldugu yer
-    + data                  : cizim icin kullanilan verinin geldigi yer
 
 # Formats
 - settings: .ini, .yaml, .xml, .json
@@ -70,7 +70,23 @@
     - OpenGL shading language
 
 
-# Notes
+# Blackboard
+- magic number
+    - guzel degisken isimlendirmesi ile saglamak lazim
+
+- self naming dictionary
+    - vrtx: vertex
+    - frag: fragment
+    - col: color
+
+- concepts
+    - big five ctors
+    - const correctness
+    - serialization
+        - serialization is the process of converting an object or data structure into a format that can be easily transmitted or stored.
+    - deserialization
+
+
 - git sub module
     - baska bir repoyu nasil sub module olarak kullanirim
 
@@ -79,7 +95,6 @@
     2. cmake ile build i yarat
     3. vs uzerinde acip debug/release buildleri yap
     4. 1. sub module
-        - 
     4. 2. statik kirli yol
         1. project properties > linker > general > add additional library directories
         2. project properties > linker > input   > add additional library file name
@@ -101,6 +116,7 @@
     - A fragment in OpenGL is all the data required for OpenGL to render a single pixel.
 
 - cpp
+    - constexpr
     - &: adress
     - array pointer decay
     - compile time / run time constant | constexpr
@@ -127,6 +143,13 @@
     - size of 4
     - x y z defines dimensions; w describes depth in perspective division
 
+- data formats
+    - yaml
+    - csv
+    - json
+    - xml
+    - protocol buffers
+    - messagepack
 
 # Documentation
 - created project
@@ -141,13 +164,36 @@
 
 # How to
 - <naming conventions>
-    - class
+    - Rules
+        1. Favor 3-4 char names if readable
+            - vertex    : vrtx
+            - fragment  : frag
+            - color     : col
+            - lahmacun  : lah
+    - class, struct
+        - MyClass
     - file names
+        - folder names
+            - all_small_characters
+        - file naming keys
+            - s: self           (self files main work files)
+            - b: blueprint      (structs / classes)
+            - d: data           (models, scenes, vertices, materials input in gerneral)
+            - m: mapping        (how to associate data / mappings ex. shader with file names)
+            - t: testing        (test files)
+            - c: core           (main file)
+            - u: utililities    (self written library functions, parsers / calculators etc.)
     - variables: variable
+        - global: g_variable
         - bools: b_isVariable
     - function names
+        - rules
+            - starts with a verb
+            - clearly describes what function does
+            - only one task
+        - doSomeStuff()
     - config file
-        - ex: test_name
+        - ex: test_name         (configuration files default settings for program to start)
 
 - <visual studio: linking library>
     - right click on project name on solution explorer > properties

@@ -71,14 +71,30 @@
 
 
 # Todo
-- 24-Aug-2022 utility yi ayir
+- [x] 05-Apr-202324-Aug-2022 utility yi ayir
 - [x] 30-Mar-2023 04-Sep-2022 draw 2 triangles next to each other 
 - [x] 30-Mar-2023 04-Sep-2022 create same 2 triangles using two different VAO and VBO 
-- [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diffent shader
+- [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diff shad.
+- [x] 07-Apr-2023 05-Apr-2023 arch: datayi ayir
+- 05-Apr-2023 fix: split fonksiyonunu duzelt
+- 07-Apr-2023 add: data class icine alan refacting
 
 
-# LOG
-- [0.19] arch: File organization prototype
+# Log
+- [0.21]
+    - todo shader bolumunu bitir
+    - todo datayi class icerisinde topla
+    - todo aktif data objelerini learnopengl icerisinde degistirme registration icin bir map olustur
+
+- [0.20] arch: Shader, data decoupling
+    - 12-Apr-2023   arch: Shader compile, linker, delete functions
+    - 11-Apr-2023   name: rename shadersource names
+    - 11-Apr-2023   arch: load shader fonksiyonunu ayir
+    - 07-Apr-2023   arch: shader read separation
+    - 07-Apr-2023   arch: data separation
+    - 06-Apr-2023   study: study on data formats
+
+- [0.19] arch: Organization prototype
     - 05-Apr-2023   arch: configuration file separation
         - folders added: config (.xml, .json, .yaml, .ini) data (textures, points, lines, .obj)
     - 04-Apr-2023   learn: 3rd party library ekleme

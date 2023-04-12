@@ -2,110 +2,26 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
-#include "../headers/basic.h"      // kendi test header dosyam
-#include "../headers/utilities.h"      // kendi test header dosyam
-#include <glad/glad.h>  // opengl hardware adaptor !glfw den once
+#include "../headers/test/basic.h"      // kendi test header dosyam
+#include "../headers/utilities/utilities.h"      // kendi test header dosyam
+#include "../headers/data/data.h"    
+#include "../headers/blueprint/shader.h"     
+#include "../headers/mappings/shaders.h"     
+#include "../headers/core/openGL.h"     
+
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
+#include <glad/glad.h>  // opengl hardware adaptor !glfw den once
 #include <iostream>     // cout / cin icin lazim
 #include <string>
 #include<unordered_map>
 
-// ------------------------------------------------------------------------------------------------
-// ==== Function Declerations
-// ------------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+using uint = unsigned int;
 
-// ------------------------------------------------------------------------------------------------
-// ==== Data
-// ------------------------------------------------------------------------------------------------
-
-//float vertices[] = {
-//    -0.5f, -0.5f, 0.0f,     // left
-//     0.5f, -0.5f, 0.0f,     // right
-//     0.0f,  0.5f, 0.0f      // top
-//};
-
-float vertices[] = {
-	// first triangle
-	-0.9f, -0.5f, 0.0f,  // left 
-	-0.0f, -0.5f, 0.0f,  // right
-	-0.45f, 0.5f, 0.0f,  // top 
-	// second triangle
-	 0.0f, -0.5f, 0.0f,  // left
-	 0.9f, -0.5f, 0.0f,  // right
-	 0.45f, 0.5f, 0.0f   // top 
-};
-
-float triangle1[] = {
-	// first triangle
-	-0.9f, -0.5f, 0.0f,  // left 
-	-0.0f, -0.5f, 0.0f,  // right
-	-0.45f, 0.5f, 0.0f,  // top  
-};
-
-
-float triangle2[] = {
-	// second triangle
-  0.0f, -0.5f, 0.0f,  // left
-  0.9f, -0.5f, 0.0f,  // right
-  0.45f, 0.5f, 0.0f   // top  
-};
-
-float vertices_2tri[] = {
-	// first triangle
-	 0.5f,  0.5f, 0.0f,  // top right
-	 0.5f, -0.5f, 0.0f,  // bottom right
-	-0.5f,  0.5f, 0.0f,  // top left 
-	// second triangle
-	 0.5f, -0.5f, 0.0f,  // bottom right
-	-0.5f, -0.5f, 0.0f,  // bottom left
-	-0.5f,  0.5f, 0.0f   // top left
-};
-
-float vertices_reduced[] = {
-	// first triangle
-	0.5f,  0.5f, 0.0f,   // top right
-	0.5f, -0.5f, 0.0f,   // bottom right
-	-0.5f, -0.5f, 0.0f,  // bottom left
-	-0.5f,  0.5f, 0.0f   // top left
-};
-
-// to speciicy overlapping vertices | used with Element Buffer object
-unsigned int indices[] = {
-	0, 1, 3,    // first triangle
-	1, 2, 3     // second triangle
-};
-
-// ------------------------------------------------------------------------------------------------
-// ==== Shaders
-// ------------------------------------------------------------------------------------------------
-
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-
-const char* fragmentShaderSource1 = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"    FragColor = vec4(0.02f, 0.7f, 0.72f, 1.0f);\n"
-"}\0";
-
-const char* fragmentShaderSource2 = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(0.85f, 0.09f, 0.56f, 1.0f);\n"
-"}\n\0";
+constexpr unsigned int ERROR_BUFFER_SIZE = 512;
 
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-
 int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config)
 {
 	// ------------------------------------------------------------------------------------------------
@@ -114,6 +30,13 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	const unsigned int SCR_WIDTH = std::stoul(config["scr"]["width"]);
 	const unsigned int SCR_HEIGHT = std::stoul(config["scr"]["height"]);
 	const char* WNDW_NAME = config["scr"]["wndw_name"].c_str();
+
+	// :: load shaders
+	// --------------------------
+	std::unordered_map<std::string, ShaderData> shaders = loadShaders();
+	const char* vrtxShaderSrc = shaders.at("vrtxShader").content.c_str();
+	const char* fragShaderSrc1 = shaders.at("fragShader_1").content.c_str();
+	const char* fragShaderSrc2 = shaders.at("fragShader_2").content.c_str();
 
 	// :: glfw init
 	// --------------------------
@@ -154,69 +77,18 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		return -1;
 	}
 
-	// vertex shader
+	unsigned int vrtxShader = compileShader(vrtxShaderSrc, GL_VERTEX_SHADER);
+	unsigned int fragShader = compileShader(fragShaderSrc1, GL_FRAGMENT_SHADER);
+
+	unsigned int fragShaderBlue = compileShader(fragShaderSrc1, GL_FRAGMENT_SHADER);
+	unsigned int fragShaderViol = compileShader(fragShaderSrc2, GL_FRAGMENT_SHADER);
+
 	// --------------------------
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-	// control shader
-	int  success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
+	unsigned int shaderProgram = linkShaderProgram({ vrtxShader, fragShader });
+	unsigned int shaderProgramBlue = linkShaderProgram({ vrtxShader, fragShaderBlue });
+	unsigned int shaderProgramViol = linkShaderProgram({ fragShaderViol, vrtxShader });
 
-	// fragment shader
-	// --------------------------
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource1, NULL);
-	glCompileShader(fragmentShader);
-	// control fragment shader
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	// color frag shader
-	// --------------------------
-	unsigned int fragmentShaderBlue = glCreateShader(GL_FRAGMENT_SHADER);
-	unsigned int fragmentShaderViolet = glCreateShader(GL_FRAGMENT_SHADER);
-	unsigned int shaderProgramBlue = glCreateProgram();
-	unsigned int shaderProgramViolet = glCreateProgram();
-	glShaderSource(fragmentShaderBlue, 1, &fragmentShaderSource1, NULL);
-	glCompileShader(fragmentShaderBlue);
-	glShaderSource(fragmentShaderViolet, 1, &fragmentShaderSource2, NULL);
-	glCompileShader(fragmentShaderViolet);
-
-	glAttachShader(shaderProgramBlue, vertexShader);
-	glAttachShader(shaderProgramBlue, fragmentShaderBlue);
-	glLinkProgram(shaderProgramBlue);
-	glAttachShader(shaderProgramViolet, vertexShader);
-	glAttachShader(shaderProgramViolet, fragmentShaderViolet);
-	glLinkProgram(shaderProgramViolet);
-
-
-	// shader program
-	// --------------------------
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	// control shader program
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
-	}
-	// delete shaders after linking | shader objelerine linkten sonra ihtiyac kalmiyor.
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	deleteCompiledShaders({ vrtxShader, fragShader, fragShaderBlue, fragShaderViol });
 
 	// create vertex array object and vertex buffer object
 	// --------------------------
@@ -314,7 +186,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		glBindVertexArray(VAOs[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		// then we draw the second triangle using the data from the second VAO
-		glUseProgram(shaderProgramViolet);
+		glUseProgram(shaderProgramViol);
 		glBindVertexArray(VAOs[1]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -325,7 +197,6 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-
 	//glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &VBO);
 	//glDeleteBuffers(1, &EBO);
@@ -341,6 +212,64 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// --------------------------
 	glfwTerminate();
 	return 0;
+}
+
+
+unsigned int compileShader(const char* src, int glShaderStage)
+{
+	unsigned int shader_id = glCreateShader(glShaderStage);
+	unsigned int shaderProgram = glCreateProgram();
+	glShaderSource(shader_id, 1, &src, NULL);
+	glCompileShader(shader_id);
+	int success;
+	char infoLog[ERROR_BUFFER_SIZE];
+	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(shader_id, ERROR_BUFFER_SIZE, NULL, infoLog);
+		std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	return shader_id;
+}
+
+unsigned int linkShaderProgram(const std::vector<unsigned int>& shader_ids)
+{
+	int success;
+	char infoLog[ERROR_BUFFER_SIZE];
+	unsigned int shaderProgram_id = glCreateProgram();
+	// for
+	for (unsigned int shader_id : shader_ids)
+	{
+		glAttachShader(shaderProgram_id, shader_id);
+	}
+	glLinkProgram(shaderProgram_id);
+	// control shader program
+	glGetProgramiv(shaderProgram_id, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(shaderProgram_id, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+	}
+	return shaderProgram_id;
+}
+
+void deleteCompiledShaders(const std::vector<unsigned int>& shader_ids)
+{
+	for (unsigned int shader_id : shader_ids)
+	{
+		glDeleteShader(shader_id);
+	}
+}
+
+std::unordered_map<std::string, ShaderData> loadShaders()
+{
+	std::unordered_map<std::string, ShaderData> shaders;
+	for (auto it = shader_mapping.begin(); it != shader_mapping.end(); ++it) {
+		const std::string& name = it->first;
+		const std::string& path = it->second;
+
+		shaders.emplace(name, ShaderData(name, path, readFileContents(path)));
+	}
+	return shaders;
 }
 
 // glfw: resize adjustment callback function

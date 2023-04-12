@@ -21,7 +21,7 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\hello_world.cpp">
+    <ClCompile Include="source\t_hello_world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
@@ -33,18 +33,33 @@
     <ClCompile Include="source\learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test.cpp">
+    <ClCompile Include="source\t_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\d_objToDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\m_shaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="headers\blueprint\shader.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\basic.h">
+    <ClInclude Include="headers\test\basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\openGL.h">
+    <ClInclude Include="headers\core\openGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\utilities.h">
+    <ClInclude Include="headers\utilities\utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\data\data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mappings\shaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -54,6 +69,12 @@
     </None>
     <None Include="shaders\vrtxShader.glsl">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\fragShader_2.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\fragShader_1.glsl">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>
