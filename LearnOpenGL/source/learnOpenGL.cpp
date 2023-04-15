@@ -1,3 +1,12 @@
+// ------------------------------------------------------------------------------------------------
+// ----- Libraries
+// ------------------------------------------------------------------------------------------------
+/*
+Version 0.21
+https://learnopengl.com/Getting-started/Shaders
+Shaders has ended.
+
+*/
 
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
@@ -35,8 +44,11 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// --------------------------
 	std::unordered_map<std::string, ShaderData> shaders = loadShaders();
 	const char* vrtxShaderSrc = shaders.at("vrtxShader").content.c_str();
+	const char* fragShaderSrc = shaders.at("fragShader").content.c_str();
 	const char* fragShaderSrc1 = shaders.at("fragShader_1").content.c_str();
 	const char* fragShaderSrc2 = shaders.at("fragShader_2").content.c_str();
+
+
 
 	// :: glfw init
 	// --------------------------
@@ -78,7 +90,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	}
 
 	unsigned int vrtxShader = compileShader(vrtxShaderSrc, GL_VERTEX_SHADER);
-	unsigned int fragShader = compileShader(fragShaderSrc1, GL_FRAGMENT_SHADER);
+	unsigned int fragShader = compileShader(fragShaderSrc, GL_FRAGMENT_SHADER);
 
 	unsigned int fragShaderBlue = compileShader(fragShaderSrc1, GL_FRAGMENT_SHADER);
 	unsigned int fragShaderViol = compileShader(fragShaderSrc2, GL_FRAGMENT_SHADER);
@@ -92,31 +104,32 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// create vertex array object and vertex buffer object
 	// --------------------------
+	const unsigned int bufferSize = 1;
 	unsigned int VBO, VAO, EBO;
-	unsigned int VBOs[2], VAOs[2];
-	//glGenVertexArrays(1, &VAO);
-	glGenVertexArrays(2, VAOs);
-	// :: memory alani olusturuyor
-	//glGenBuffers(1, &VBO);
-	glGenBuffers(2, VBOs);
-	// binding vetex array object
-	//glBindVertexArray(VAO);
+	unsigned int VBOs[bufferSize], VAOs[bufferSize];
+	glGenVertexArrays(bufferSize, VAOs);
+	glGenBuffers(bufferSize, VBOs); // :: memory alani olusturuyor
+	//glGenBuffers(bufferSize, &EBO); // :: ebo icin memory
+
+
+	// binding buffers
 	glBindVertexArray(VAOs[0]);
-	// :: ebo icin memory
-	glGenBuffers(1, &EBO);
-
-	// :: bind etme baglama
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
-	// :: buffer a vertex verisini aktar | bu memory adresinden bu kadar byte kopyala, verinin kendisi
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_reduced), vertices_reduced, GL_STATIC_DRAW);
+
 
 	// :: exercise 1
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle1), triangle1, GL_STATIC_DRAW);
 	// --------------------------
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 
 
 	// linking vertex attributes
@@ -127,8 +140,6 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// 4. parameter specifies if you want to data to be normalized
 	// 5. known as stride space between consequtive vertex attributes
 	// 6. void this is the offset where the position data begins in the buffer
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -137,19 +148,18 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
-	// second triangle setup
+	// triangle setup
 // ---------------------
-	glBindVertexArray(VAOs[1]);	// note that we bind to a different VAO now
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);	// and a different VBO
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle2), triangle2, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // because the vertex data is tightly packed we can also specify 0 as the vertex attribute's stride to let OpenGL figure it out
-	glEnableVertexAttribArray(0);
-	glBindVertexArray(0);
-	// glBindVertexArray(0); // not really necessary as well, but beware of calls that could affect VAOs while this one is bound (like binding element buffer objects, or enabling/disabling vertex attributes)
+	//assignBuffer(vertices, sizeof(vertices), VAOs[0], VBOs[0]);
+	//assignBuffer(triangle1, sizeof(triangle1), VAOs[1], VBOs[1]);
+	//assignBuffer(triangle2, sizeof(triangle2), VAOs[2], VBOs[2]);
 
-	// uncomment this call to draw in wireframe polygons.
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
+	// draw wireframe or not
+	if (config["settings"]["is_wireframeMode"] == "true") // todo: deserialize config
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 
 	// draw the object
 	// --------------------------
@@ -160,37 +170,48 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
-		// ------
+		// ------------------------------
 		processInput(window);
 
-		// rendering commands
-		// ------
-		// #202020: 32,32,32
-		// #090909: 9, 9, 9
-		// #121212: 18, 18, 18
+		// render clear screen
+		// ------------------------------
 		glClearColor(scaleByteToZeroOne(18), scaleByteToZeroOne(18), scaleByteToZeroOne(18), 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw the object
-		// ------
+		// ------------------------------
 		glUseProgram(shaderProgram);
-		glUseProgram(shaderProgramBlue);
 		//glBindVertexArray(VAO);
 		// GL_POINTS, GL_TRIANGLES, GL_LINE_STRIP
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glDrawArrays(GL_TRIANGLES, 0, 6); // exercise 1 de 6 nokta oldugu icin
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		// :: exercise 2
-		// draw first triangle using the data from the first VAO
+		// update the uniform color
+		// ------------------------------
+		float timeValue = glfwGetTime();
+		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+		glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
+		
+		// :: draw triangle
 		glBindVertexArray(VAOs[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		// then we draw the second triangle using the data from the second VAO
-		glUseProgram(shaderProgramViol);
-		glBindVertexArray(VAOs[1]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+
+		// :: exercise 2
+		// draw first triangle using the data from the first VAO
+		//glUseProgram(shaderProgramBlue);
+
+
+		// :: exercise 3
+		//drawObjToScr(shaderProgram, VAOs[0]);
+		//drawObjToScr(shaderProgramViol, VAOs[1]);
+		// then we draw the second triangle using the data from the second VAO
+		
+		
 		// check and call events and swap the buffers
+		// ------------------------------
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -204,81 +225,38 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(2, VAOs);
-	glDeleteBuffers(2, VBOs);
+	glDeleteVertexArrays(bufferSize, VAOs);
+	glDeleteBuffers(bufferSize, VBOs);
 	glDeleteProgram(shaderProgram);
 
 	// glfw: purge allocated memory
-	// --------------------------
+	// ------------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
 }
 
-
-unsigned int compileShader(const char* src, int glShaderStage)
+void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {
-	unsigned int shader_id = glCreateShader(glShaderStage);
-	unsigned int shaderProgram = glCreateProgram();
-	glShaderSource(shader_id, 1, &src, NULL);
-	glCompileShader(shader_id);
-	int success;
-	char infoLog[ERROR_BUFFER_SIZE];
-	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(shader_id, ERROR_BUFFER_SIZE, NULL, infoLog);
-		std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-	return shader_id;
+	glBindVertexArray(inptLayout);	// VAO note that we bind to a different VAO now
+	glBindBuffer(GL_ARRAY_BUFFER, vrtxBuffer);	// and a different VBO
+	glBufferData(GL_ARRAY_BUFFER, sizeofObjToDraw, objToDraw, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // because the vertex data is tightly packed we can also specify 0 as the vertex attribute's stride to let OpenGL figure it out
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
 }
 
-unsigned int linkShaderProgram(const std::vector<unsigned int>& shader_ids)
+void drawObjToScr(const unsigned int& shader, const unsigned int& vao)
 {
-	int success;
-	char infoLog[ERROR_BUFFER_SIZE];
-	unsigned int shaderProgram_id = glCreateProgram();
-	// for
-	for (unsigned int shader_id : shader_ids)
-	{
-		glAttachShader(shaderProgram_id, shader_id);
-	}
-	glLinkProgram(shaderProgram_id);
-	// control shader program
-	glGetProgramiv(shaderProgram_id, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram_id, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
-	}
-	return shaderProgram_id;
+	glUseProgram(shader);
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void deleteCompiledShaders(const std::vector<unsigned int>& shader_ids)
-{
-	for (unsigned int shader_id : shader_ids)
-	{
-		glDeleteShader(shader_id);
-	}
-}
-
-std::unordered_map<std::string, ShaderData> loadShaders()
-{
-	std::unordered_map<std::string, ShaderData> shaders;
-	for (auto it = shader_mapping.begin(); it != shader_mapping.end(); ++it) {
-		const std::string& name = it->first;
-		const std::string& path = it->second;
-
-		shaders.emplace(name, ShaderData(name, path, readFileContents(path)));
-	}
-	return shaders;
-}
-
-// glfw: resize adjustment callback function
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
-// process all input
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

@@ -78,13 +78,20 @@
 - [x] 07-Apr-2023 05-Apr-2023 arch: datayi ayir
 - 05-Apr-2023 fix: split fonksiyonunu duzelt
 - 07-Apr-2023 add: data class icine alan refacting
+- 12-Apr-2023 add: deserialize config or config struct
 
 
 # Log
-- [0.21]
-    - todo shader bolumunu bitir
+- [0.22]
     - todo datayi class icerisinde topla
     - todo aktif data objelerini learnopengl icerisinde degistirme registration icin bir map olustur
+
+- [0.21] arch: Shader utilities
+    - 16-Apr-2023   arch: shader utilities functions are separated
+    - 16-Apr-2023   add: learnopengl shader class (not in use)
+    - 14-Apr-2023   learn: color triangle
+    - 14-Apr-2023   learn: altering colors through uniforms
+    - 12-Apr-2023   arch: assignBuffer, drawObjToScr
 
 - [0.20] arch: Shader, data decoupling
     - 12-Apr-2023   arch: Shader compile, linker, delete functions

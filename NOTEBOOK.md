@@ -17,6 +17,9 @@
 - google ccp style guide
     - https://google.github.io/styleguide/cppguide.html
 
+- google filament
+    - https://github.com/google
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -71,6 +74,17 @@
 
 
 # Blackboard
+- framedebugging
+    - renderdoc
+    - tools > settings > dark mode
+    - 
+
+- colors
+    - black bg
+        - #202020
+        - #090909
+        - #121212
+
 - magic number
     - guzel degisken isimlendirmesi ile saglamak lazim
 
@@ -118,7 +132,7 @@
 - cpp
     - constexpr
     - &: adress
-    - array pointer decay
+    - array pointer decay | array in boyu ve kendisini ayri ayri ver
     - compile time / run time constant | constexpr
     - static kullandigin yere gore anlami degisiyor | variable qualifier -> o dosyaya ozel scope management
 
@@ -180,9 +194,9 @@
             - b: blueprint      (structs / classes)
             - d: data           (models, scenes, vertices, materials input in gerneral)
             - m: mapping        (how to associate data / mappings ex. shader with file names)
-            - t: testing        (test files)
             - c: core           (main file)
             - u: utililities    (self written library functions, parsers / calculators etc.)
+            - x: testing        (test files)
     - variables: variable
         - global: g_variable
         - bools: b_isVariable

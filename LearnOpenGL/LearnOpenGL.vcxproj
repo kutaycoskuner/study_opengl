@@ -135,24 +135,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
+    <ClCompile Include="data\dt_Colors.cpp" />
     <ClCompile Include="data\d_objToDraw.cpp" />
     <ClCompile Include="data\m_shaders.cpp" />
+    <None Include="shaders\fragShader.glsl" />
+    <None Include="shaders\v1.1_vrtxShader.glsl">
+      <FileType>Document</FileType>
+    </None>
+    <ClCompile Include="source\util_shaders.cpp" />
+    <None Include="shaders\v1.1_fragShader.glsl" />
     <None Include="shaders\fragShader_1.glsl">
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="source\learnOpenGL.cpp" />
     <ClCompile Include="headers\blueprint\shader.h" />
-    <ClCompile Include="source\t_test.cpp" />
+    <ClCompile Include="source\x_test.cpp" />
     <ClCompile Include="source\utilities.cpp" />
-    <None Include="shaders\fragShader.glsl">
+    <None Include="shaders\v1.0_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
     <None Include="shaders\fragShader_2.glsl" />
-    <None Include="shaders\vrtxShader.glsl">
+    <None Include="shaders\v1.0_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="source\t_hello_world.cpp" />
+    <ClCompile Include="source\x_hello_world.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <None Include="shaders\vrtxShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h" />

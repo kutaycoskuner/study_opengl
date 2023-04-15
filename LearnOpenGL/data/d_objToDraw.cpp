@@ -7,13 +7,13 @@
 // ----- Dat0a
 // ------------------------------------------------------------------------------------------------
 
-//float vertices[] = {
-//    -0.5f, -0.5f, 0.0f,     // left
-//     0.5f, -0.5f, 0.0f,     // right
-//     0.0f,  0.5f, 0.0f      // top
-//};
+float vertices_v10[] = {
+    -0.5f, -0.5f, 0.0f,     // left
+     0.5f, -0.5f, 0.0f,     // right
+     0.0f,  0.5f, 0.0f      // top
+};
 
-float vertices[] = {
+float vertices_v11[] = {
 	// first triangle
 	-0.9f, -0.5f, 0.0f,  // left 
 	-0.0f, -0.5f, 0.0f,  // right
@@ -23,6 +23,14 @@ float vertices[] = {
 	 0.9f, -0.5f, 0.0f,  // right
 	 0.45f, 0.5f, 0.0f   // top 
 };
+
+float vertices[] = {
+	// positions           // colors
+	-0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom left
+	 0.0f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // top 
+	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // bottom right
+};
+
 
 float triangle1[] = {
 	// first triangle

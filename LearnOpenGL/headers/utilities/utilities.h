@@ -10,4 +10,6 @@ std::vector<std::string> parseFileToRowArray(const std::string& path);
 std::unordered_map<std::string, std::unordered_map<std::string, std::string>> parseSimple(const std::string& path);
 
 // scale
-inline float scaleByteToZeroOne(unsigned int byte) { return (float(byte) / 255.0f); }
+float scaleByteToZeroOne(unsigned int byte);
+std::vector<float> scaleByteToZeroOneVec3(const unsigned int x, const unsigned int y, const unsigned int z);
+std::vector<float> scaleByteToZeroOneVec3(const float x, const float y, const float z);

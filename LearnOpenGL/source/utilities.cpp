@@ -12,6 +12,23 @@
 // ----- Functions
 // ------------------------------------------------------------------------------------------------
 
+// scaler
+// ------------------------------
+float scaleByteToZeroOne(unsigned int byte) 
+{ 
+	return (float(byte) / 255.0f); 
+}
+
+std::vector<float> scaleByteToZeroOneVec3(const unsigned int x, const unsigned int y, const unsigned int z)
+{
+	return { scaleByteToZeroOne(x), scaleByteToZeroOne(y), scaleByteToZeroOne(z) };
+}
+
+std::vector<float> scaleByteToZeroOneVec3(const float x, const float y, const float z)
+{
+	return { scaleByteToZeroOne(x), scaleByteToZeroOne(y), scaleByteToZeroOne(z) };
+}
+
 // string manipulation
 // ------------------------------
 void trim(std::string& str) {

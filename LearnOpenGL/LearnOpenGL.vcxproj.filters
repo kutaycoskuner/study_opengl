@@ -21,7 +21,7 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\t_hello_world.cpp">
+    <ClCompile Include="source\x_hello_world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
@@ -33,7 +33,7 @@
     <ClCompile Include="source\learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\t_test.cpp">
+    <ClCompile Include="source\x_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data\d_objToDraw.cpp">
@@ -43,6 +43,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="headers\blueprint\shader.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util_shaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\dt_Colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,10 +70,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragShader.glsl">
+    <None Include="shaders\v1.0_fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\vrtxShader.glsl">
+    <None Include="shaders\v1.0_vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\fragShader_2.glsl">
@@ -75,6 +81,18 @@
     </None>
     <None Include="shaders\fragShader_1.glsl">
       <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\v1.1_fragShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\v1.1_vrtxShader.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\vrtxShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\fragShader.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

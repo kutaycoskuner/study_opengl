@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 12-Apr-2023 | 0.20    |
+| 19-Aug-2022     | 16-Apr-2023 | 0.21    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,20 +23,21 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
-![0.17 Hello triangle](display/hello_triangle.png)
-```
-0.17 Hello triangle
-```  
-
-![0.17 Two triangle polygon mode ](display/2triangle_polygon.png)
-```
-0.17 Two triangle polygon mode
-```  
-
 ![0.19 Two triangle with different shaders](display/double_triangle_with_different_shaders_2023-03-30.png)
 ```
 0.19 Two triangle with different shaders
 ```  
+
+![0.21 Time based color shift](display/0.21_time-based-color-shifting-through-uniforms_2023-04-14.gif)
+```
+0.21 Time based color shift
+```  
+
+![0.21 Pixel color interpolation](display/0.21_pixel-color-calculation-2_2023-04-14.png)
+```
+0.21 Pixel color interpolation
+```  
+
 
 # References
 - Learning
@@ -48,4 +49,5 @@ This is a study repository for learning graphics programming through OpenGL.
     - Environment Setup 
         - Visual Studio (Main IDE)
         - Visual Studio Code
+        - RenderDoc (Frame Debugging)
         - CMake

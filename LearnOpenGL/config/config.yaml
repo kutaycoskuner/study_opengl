@@ -7,6 +7,9 @@ scr:
   width: 800
   height: 600
 
+settings:
+  is_wireframeMode: true
+
 # colors
   # bg
   # bg-alter
