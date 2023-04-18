@@ -74,6 +74,10 @@
 
 
 # Blackboard
+- Notes
+    - texture coordinates range from 0 to 1 in the x and y axis. Retrievving the texture color using texture coordinates is called sampling.
+    - learn blob, cache: zaman kazanmak icin kullandigin memory bolgesi
+
 - framedebugging
     - renderdoc
     - tools > settings > dark mode
@@ -189,6 +193,9 @@
     - file names
         - folder names
             - all_small_characters
+            - split with _ whitespace
+            - well known names shorted to 3-4 characters: libraries -> libs
+            - 
         - file naming keys
             - s: self           (self files main work files)
             - b: blueprint      (structs / classes)

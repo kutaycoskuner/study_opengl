@@ -16,7 +16,7 @@
 // ----- Blueprints
 // ------------------------------------------------------------------------------------------------
 
-struct ShaderData
+struct ShaderCompileDesc
 {
 	// variables
 	// -----------------------------------
@@ -27,14 +27,14 @@ struct ShaderData
 	// constructors
 	// -----------------------------------	
 	// Default constructor
-	ShaderData() : name(""), path(""), content("") {}
+	ShaderCompileDesc() : name(""), path(""), content("") {}
 
 	// Parameter constructor
-	ShaderData(const std::string& name, const std::string& path, const std::string& content) 
+	ShaderCompileDesc(const std::string& name, const std::string& path, const std::string& content) 
 		: name(name), path(path), content(content) {}
 
 	// Copy constructor
-	ShaderData(const ShaderData& other) : name(other.name), path(other.path), content(other.content) {}
+	ShaderCompileDesc(const ShaderCompileDesc& other) : name(other.name), path(other.path), content(other.content) {}
 
 	// todo move constructor
 

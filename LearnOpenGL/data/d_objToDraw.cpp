@@ -6,6 +6,12 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Dat0a
 // ------------------------------------------------------------------------------------------------
+float ObjToDraw::vertices[] = {
+	// positions           // colors
+	 0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // top 
+	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // bottom right
+};
 
 float vertices_v10[] = {
     -0.5f, -0.5f, 0.0f,     // left
@@ -26,9 +32,15 @@ float vertices_v11[] = {
 
 float vertices[] = {
 	// positions           // colors
-	-0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom left
-	 0.0f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // top 
+	 0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // top 
+	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
 	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // bottom right
+};
+
+float texCoords[] = {
+    0.0f, 0.0f,  // lower-left corner  
+    1.0f, 0.0f,  // lower-right corner
+    0.5f, 1.0f   // top-center corner
 };
 
 
@@ -71,3 +83,5 @@ unsigned int indices[] = {
 	0, 1, 3,    // first triangle
 	1, 2, 3     // second triangle
 };
+
+

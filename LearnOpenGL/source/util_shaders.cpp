@@ -68,14 +68,14 @@ void deleteCompiledShaders(const std::vector<unsigned int>& shader_ids)
 	}
 }
 
-std::unordered_map<std::string, ShaderData> loadShaders() // todo: path as parameter to avoid include
+std::unordered_map<std::string, ShaderCompileDesc> loadShaders() // todo: path as parameter to avoid include
 {
-	std::unordered_map<std::string, ShaderData> shaders;
+	std::unordered_map<std::string, ShaderCompileDesc> shaders;
 	for (auto it = shader_mapping.begin(); it != shader_mapping.end(); ++it) {
 		const std::string& name = it->first;
 		const std::string& path = it->second;
 
-		shaders.emplace(name, ShaderData(name, path, readFileContents(path)));
+		shaders.emplace(name, ShaderCompileDesc(name, path, readFileContents(path)));
 	}
 	return shaders;
 }

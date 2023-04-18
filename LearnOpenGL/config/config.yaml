@@ -8,7 +8,7 @@ scr:
   height: 600
 
 settings:
-  is_wireframeMode: true
+  is_wireframeMode: false
 
 # colors
   # bg

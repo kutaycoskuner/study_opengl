@@ -13,20 +13,21 @@
 int main()
 {
 	// configurations
+	// --------------------------
 	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> config = parseSimple("config/config.yaml");
 	
-	constexpr bool b_Test = true;
-
-	// :: glfw init
+	// :: test or run?
 	// --------------------------
 	if (config["test"]["is_testing"] == "true")
 	{
 		test();
-		return 0;
+	}
+	else
+	{
+		learnOpenGL(config);
 	}
 	
-	// :: learning open gl
+	// :: return
 	// --------------------------
-	learnOpenGL(config);
 	return 0;
 }

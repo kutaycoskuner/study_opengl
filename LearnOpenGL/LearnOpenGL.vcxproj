@@ -135,13 +135,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
-    <ClCompile Include="data\dt_Colors.cpp" />
-    <ClCompile Include="data\d_objToDraw.cpp" />
+    <ClCompile Include="data\obj\dt_Colors.cpp" />
+    <ClCompile Include="data\obj\d_objToDraw.cpp" />
     <ClCompile Include="data\m_shaders.cpp" />
     <None Include="shaders\fragShader.glsl" />
     <None Include="shaders\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
+    <ClCompile Include="source\old\0.21_learnOpenGL.cpp" />
     <ClCompile Include="source\util_shaders.cpp" />
     <None Include="shaders\v1.1_fragShader.glsl" />
     <None Include="shaders\fragShader_1.glsl">

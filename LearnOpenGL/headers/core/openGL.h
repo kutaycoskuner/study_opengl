@@ -7,9 +7,9 @@
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 
 
-struct ShaderData;
+struct ShaderCompileDesc;
 
-std::unordered_map<std::string, ShaderData> loadShaders();
+std::unordered_map<std::string, ShaderCompileDesc> loadShaders();
 
 unsigned int compileShader(const char* src, int glShaderStage);
 unsigned int linkShaderProgram(const std::vector<unsigned int>& shader_ids);

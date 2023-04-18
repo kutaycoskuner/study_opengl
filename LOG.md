@@ -82,9 +82,12 @@
 
 
 # Log
-- [0.22]
-    - todo datayi class icerisinde topla
+- [0.23]
     - todo aktif data objelerini learnopengl icerisinde degistirme registration icin bir map olustur
+
+- [0.221] arch: Refactor ObjToDraw as class static
+    - 18-Apr-2023   arch: refactor data obj as static class obj 
+    - 16-Apr-2023   arch: main remove duplicate return
 
 - [0.21] arch: Shader utilities
     - 16-Apr-2023   arch: shader utilities functions are separated

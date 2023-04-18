@@ -42,7 +42,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// :: load shaders
 	// --------------------------
-	std::unordered_map<std::string, ShaderData> shaders = loadShaders();
+	std::unordered_map<std::string, ShaderCompileDesc> shaders = loadShaders();
 	const char* vrtxShaderSrc = shaders.at("vrtxShader").content.c_str();
 	const char* fragShaderSrc = shaders.at("fragShader").content.c_str();
 	const char* fragShaderSrc1 = shaders.at("fragShader_1").content.c_str();
@@ -112,10 +112,12 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	//glGenBuffers(bufferSize, &EBO); // :: ebo icin memory
 
 
+
+
 	// binding buffers
 	glBindVertexArray(VAOs[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::vertices), ObjToDraw::vertices, GL_STATIC_DRAW);
 	// position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
