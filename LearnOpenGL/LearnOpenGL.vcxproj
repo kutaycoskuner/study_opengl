@@ -143,6 +143,7 @@
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="source\old\0.21_learnOpenGL.cpp" />
+    <ClCompile Include="source\old\0.221_learnOpenGL.cpp" />
     <ClCompile Include="source\util_shaders.cpp" />
     <None Include="shaders\v1.1_fragShader.glsl" />
     <None Include="shaders\fragShader_1.glsl">
@@ -161,6 +162,8 @@
     </None>
     <ClCompile Include="source\x_hello_world.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <None Include="shaders\v1.2_fragShader.glsl" />
+    <None Include="shaders\v1.2_vrtxShader.glsl" />
     <None Include="shaders\vrtxShader.glsl" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +172,7 @@
     <ClInclude Include="headers\core\openGL.h" />
     <ClInclude Include="headers\mappings\shaders.h" />
     <ClInclude Include="headers\utilities\utilities.h" />
+    <ClInclude Include="libs\stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

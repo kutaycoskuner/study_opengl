@@ -20,6 +20,8 @@
 - google filament
     - https://github.com/google
 
+- styling guide
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -77,6 +79,8 @@
 - Notes
     - texture coordinates range from 0 to 1 in the x and y axis. Retrievving the texture color using texture coordinates is called sampling.
     - learn blob, cache: zaman kazanmak icin kullandigin memory bolgesi
+    - pointer and -> dereferencing
+    - c style api | c like 
 
 - framedebugging
     - renderdoc
@@ -182,20 +186,22 @@
 
 # How to
 - <naming conventions>
-    - Rules
+    - General Rules
         1. Favor 3-4 char names if readable
             - vertex    : vrtx
             - fragment  : frag
             - color     : col
             - lahmacun  : lah
     - class, struct
-        - MyClass
+        - rules
+            - always starts with a capital
+        - ex. MyClass, ObjToDraw
+    - folder names
+        - all_small_characters
+        - split with _ whitespace
+        - well known names shorted to 3-4 characters: libraries -> libs
+        - 
     - file names
-        - folder names
-            - all_small_characters
-            - split with _ whitespace
-            - well known names shorted to 3-4 characters: libraries -> libs
-            - 
         - file naming keys
             - s: self           (self files main work files)
             - b: blueprint      (structs / classes)
@@ -205,13 +211,19 @@
             - u: utililities    (self written library functions, parsers / calculators etc.)
             - x: testing        (test files)
     - variables: variable
+        - in general variables starts with small character and 
         - global: g_variable
         - bools: b_isVariable
+        - well known words are shorted to 3 or 4 character versions
+            - char(character), vrtx(vertex), frag(fragment), col(color)
+        - categories keys are separated via _: map_shaders
+        - prepositions are not separated : sizeof_students, distanceto_nextPrime
     - function names
         - rules
             - starts with a verb
             - clearly describes what function does
             - only one task
+            - starts with small character 
         - doSomeStuff()
     - config file
         - ex: test_name         (configuration files default settings for program to start)

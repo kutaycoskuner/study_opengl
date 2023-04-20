@@ -54,6 +54,9 @@
     <ClCompile Include="source\old\0.21_learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\old\0.221_learnOpenGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\mappings\shaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,6 +101,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\fragShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\v1.2_vrtxShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\v1.2_fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

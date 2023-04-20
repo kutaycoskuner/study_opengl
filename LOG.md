@@ -76,14 +76,18 @@
 - [x] 30-Mar-2023 04-Sep-2022 create same 2 triangles using two different VAO and VBO 
 - [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diff shad.
 - [x] 07-Apr-2023 05-Apr-2023 arch: datayi ayir
+- [x] 21-Apr-2023 07-Apr-2023 add: data class icine alan refacting
 - 05-Apr-2023 fix: split fonksiyonunu duzelt
-- 07-Apr-2023 add: data class icine alan refacting
 - 12-Apr-2023 add: deserialize config or config struct
 
 
 # Log
-- [0.23]
-    - todo aktif data objelerini learnopengl icerisinde degistirme registration icin bir map olustur
+- [0.23] add: Textures ... 
+    - 21-Apr-2023   add: createTexture functions
+    - 21-Apr-2023   learn: practice stb_image.h library
+    - 21-Apr-2023   del: commented out code
+    - 21-Apr-2023   arch: Shader class 
+    - 18-Apr-2023   wip: opengl textures
 
 - [0.221] arch: Refactor ObjToDraw as class static
     - 18-Apr-2023   arch: refactor data obj as static class obj 

@@ -1,8 +1,8 @@
 // ------------------------------------------------------------------------------------------------
-// ----- Libraries
+// ----- Notes
 // ------------------------------------------------------------------------------------------------
 /*
-Version 0.21
+Version: 0.21
 https://learnopengl.com/Getting-started/Shaders
 Shaders has ended.
 
@@ -16,7 +16,10 @@ Shaders has ended.
 #include "../headers/data/data.h"    
 #include "../headers/blueprint/shader.h"     
 #include "../headers/mappings/shaders.h"     
-#include "../headers/core/openGL.h"     
+#include "../headers/core/openGL.h"   
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "../libs/stb_image.h"
 
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <glad/glad.h>  // opengl hardware adaptor !glfw den once
@@ -43,10 +46,10 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// :: load shaders
 	// --------------------------
 	std::unordered_map<std::string, ShaderCompileDesc> shaders = loadShaders();
-	const char* vrtxShaderSrc = shaders.at("vrtxShader").content.c_str();
-	const char* fragShaderSrc = shaders.at("fragShader").content.c_str();
-	const char* fragShaderSrc1 = shaders.at("fragShader_1").content.c_str();
-	const char* fragShaderSrc2 = shaders.at("fragShader_2").content.c_str();
+	const char* vrtx_shader_src = shaders.at("vrtxShader").content.c_str();
+	const char* frag_shader_src = shaders.at("fragShader").content.c_str();
+	const char* frag_shader_src1 = shaders.at("fragShader_1").content.c_str();
+	const char* frag_shader_src2 = shaders.at("fragShader_2").content.c_str();
 
 
 
@@ -82,57 +85,65 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// glad: load all OpenGL function pointers
 	// --------------------------
-	// adapt OpenGL load through GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
 
-	unsigned int vrtxShader = compileShader(vrtxShaderSrc, GL_VERTEX_SHADER);
-	unsigned int fragShader = compileShader(fragShaderSrc, GL_FRAGMENT_SHADER);
+	// build and compile our shader zprogram
+	// ------------------------------------
+	Shader ourShader("shaders/vrtxShader.glsl", "shaders/fragShader.glsl");
 
-	unsigned int fragShaderBlue = compileShader(fragShaderSrc1, GL_FRAGMENT_SHADER);
-	unsigned int fragShaderViol = compileShader(fragShaderSrc2, GL_FRAGMENT_SHADER);
+	unsigned int vrtxShader = compileShader(vrtx_shader_src, GL_VERTEX_SHADER);
+	unsigned int fragShader = compileShader(frag_shader_src, GL_FRAGMENT_SHADER);
+
+	unsigned int fragShaderBlue = compileShader(frag_shader_src1, GL_FRAGMENT_SHADER);
+	unsigned int fragShaderViol = compileShader(frag_shader_src2, GL_FRAGMENT_SHADER);
 
 	// --------------------------
 	unsigned int shaderProgram = linkShaderProgram({ vrtxShader, fragShader });
 	unsigned int shaderProgramBlue = linkShaderProgram({ vrtxShader, fragShaderBlue });
 	unsigned int shaderProgramViol = linkShaderProgram({ fragShaderViol, vrtxShader });
 
+
+	// --------------------------
+	// texture
+	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+	unsigned int texture1 = createTexture("data/textures/container.jpg");
+	unsigned int texture2 = createTexture("data/textures/awesomeface.png");
+
+	// --------------------------
+
 	deleteCompiledShaders({ vrtxShader, fragShader, fragShaderBlue, fragShaderViol });
 
 	// create vertex array object and vertex buffer object
 	// --------------------------
-	const unsigned int bufferSize = 1;
+	const unsigned int buffer_count = 1;
 	unsigned int VBO, VAO, EBO;
-	unsigned int VBOs[bufferSize], VAOs[bufferSize];
-	glGenVertexArrays(bufferSize, VAOs);
-	glGenBuffers(bufferSize, VBOs); // :: memory alani olusturuyor
-	//glGenBuffers(bufferSize, &EBO); // :: ebo icin memory
-
-
-
+	unsigned int VBOs[buffer_count], VAOs[buffer_count];
+	glGenVertexArrays(buffer_count, VAOs);
+	glGenBuffers(buffer_count, VBOs); // :: memory alani olusturuyor
+	glGenBuffers(buffer_count, &EBO); // :: ebo icin memory
 
 	// binding buffers
 	glBindVertexArray(VAOs[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::vertices), ObjToDraw::vertices, GL_STATIC_DRAW);
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::squareVrts), ObjToDraw::squareVrts, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
+
+	// att: pos
+	unsigned int stride = 8;
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	// att: color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-
-
-	// :: exercise 1
-	// --------------------------
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
+	// att: texture
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	// linking vertex attributes
 	// --------------------------       
@@ -150,11 +161,6 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
-	// triangle setup
-// ---------------------
-	//assignBuffer(vertices, sizeof(vertices), VAOs[0], VBOs[0]);
-	//assignBuffer(triangle1, sizeof(triangle1), VAOs[1], VBOs[1]);
-	//assignBuffer(triangle2, sizeof(triangle2), VAOs[2], VBOs[2]);
 
 	
 	// draw wireframe or not
@@ -163,16 +169,19 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	// draw the object
-	// --------------------------
-	//someOpenGLFunctionThatDrawsTriangle();
+
+	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+	// -------------------------------------------------------------------------------------------
+	ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
+	// either set it manually like so:
+	glUniform1i(glGetUniformLocation(shaderProgram, "ktexture1"), 0);
+	// or set it via the texture class
+	ourShader.setInt("texture2", 1);
 
 	// render loop 
 	// --------------------------
 	while (!glfwWindowShouldClose(window))
 	{
-		// input
-		// ------------------------------
 		processInput(window);
 
 		// render clear screen
@@ -183,34 +192,29 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		// draw the object
 		// ------------------------------
 		glUseProgram(shaderProgram);
-		//glBindVertexArray(VAO);
-		// GL_POINTS, GL_TRIANGLES, GL_LINE_STRIP
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glDrawArrays(GL_TRIANGLES, 0, 6); // exercise 1 de 6 nokta oldugu icin
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// update the uniform color
 		// ------------------------------
-		float timeValue = glfwGetTime();
-		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
+		//float timeValue = glfwGetTime();
+		//float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+		//int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+		//glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
 		
 		// :: draw triangle
+		ourShader.use();
 		glBindVertexArray(VAOs[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
-		// :: exercise 2
-		// draw first triangle using the data from the first VAO
-		//glUseProgram(shaderProgramBlue);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
-		// :: exercise 3
-		//drawObjToScr(shaderProgram, VAOs[0]);
-		//drawObjToScr(shaderProgramViol, VAOs[1]);
-		// then we draw the second triangle using the data from the second VAO
-		
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		
 		// check and call events and swap the buffers
 		// ------------------------------
@@ -220,15 +224,8 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	//glDeleteVertexArrays(1, &VAO);
-	//glDeleteBuffers(1, &VBO);
-	//glDeleteBuffers(1, &EBO);
-	//glDeleteProgram(shaderProgram);
-
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(bufferSize, VAOs);
-	glDeleteBuffers(bufferSize, VBOs);
+	glDeleteVertexArrays(buffer_count, VAOs);
+	glDeleteBuffers(buffer_count, VBOs);
 	glDeleteProgram(shaderProgram);
 
 	// glfw: purge allocated memory
@@ -236,6 +233,36 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	glfwTerminate();
 	return 0;
 }
+
+unsigned int createTexture(const std::string& path)
+{
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		if (nrChannels == 3) 
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		}
+		else if (nrChannels == 4)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		}
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture: " << path << std::endl;
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	stbi_image_free(data);
+	return texture;
+}
+
 
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {

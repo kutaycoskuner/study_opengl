@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 16-Apr-2023 | 0.21    |
+| 19-Aug-2022     | 21-Apr-2023 | 0.23    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,7 +23,7 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
-![0.19 Two triangle with different shaders](display/double_triangle_with_different_shaders_2023-03-30.png)
+![0.23 Double texture with uniforms](display/0.23_double-texture-with-uniforms_2023-04-21.png)
 ```
 0.19 Two triangle with different shaders
 ```  
@@ -46,6 +46,7 @@ This is a study repository for learning graphics programming through OpenGL.
     - Libraries
         - GLFW | GLFW is a lightweight utility library for use with OpenGL. [Download](https://www.glfw.org/download.html)
         - GLAD | OpenGL hardware adjustment library. [Download](https://glad.dav1d.de/)
+        - stb_image.h | Image load library (https://github.com/nothings/stb/blob/master/stb_image.h)
     - Environment Setup 
         - Visual Studio (Main IDE)
         - Visual Studio Code

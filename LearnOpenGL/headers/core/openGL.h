@@ -9,11 +9,16 @@
 
 struct ShaderCompileDesc;
 
-std::unordered_map<std::string, ShaderCompileDesc> loadShaders();
 
+unsigned int createTexture(const std::string& path);
+
+// shader util
 unsigned int compileShader(const char* src, int glShaderStage);
 unsigned int linkShaderProgram(const std::vector<unsigned int>& shader_ids);
 void deleteCompiledShaders(const std::vector<unsigned int>& shader_ids);
+std::unordered_map<std::string, ShaderCompileDesc> loadShaders();
+
+//
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao);
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer);
 
