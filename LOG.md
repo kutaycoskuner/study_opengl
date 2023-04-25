@@ -82,6 +82,13 @@
 
 
 # Log
+- [x]
+
+- [0.24] add: Texture exercises
+    - 26-Apr-2023   add: Textures exercise 4
+    - 25-Apr-2023   add: Texture wrapping parameters on createTexture function 
+    - 25-Apr-2023   std: Textures exercise 1,2 
+
 - [0.23] add: Textures ... 
     - 21-Apr-2023   add: createTexture functions
     - 21-Apr-2023   learn: practice stb_image.h library

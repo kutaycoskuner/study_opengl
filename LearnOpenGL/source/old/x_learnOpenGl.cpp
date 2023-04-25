@@ -7,7 +7,7 @@ https://learnopengl.com/Getting-started/Shaders
 Shaders has ended.
 
 */
-#if 1
+#if 0
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
@@ -34,9 +34,6 @@ using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
 // constant variables
 // -----------------------------------
 constexpr unsigned int ERROR_BUFFER_SIZE = 512;
-
-// stores how much we're seeing of either texture
-float mixValue = 0.2f;
 
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
@@ -113,7 +110,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// --------------------------
 	// texture
 	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	unsigned int texture1 = createTexture("data/textures/container.jpg", 2);
+	unsigned int texture1 = createTexture("data/textures/container.jpg");
 	unsigned int texture2 = createTexture("data/textures/awesomeface.png");
 
 	// --------------------------
@@ -171,12 +168,11 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	
 	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
 	// -------------------------------------------------------------------------------------------
 	ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
 	// either set it manually like so:
-	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+	glUniform1i(glGetUniformLocation(shaderProgram, "ktexture1"), 0);
 	// or set it via the texture class
 	ourShader.setInt("texture2", 1);
 
@@ -193,7 +189,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 		// draw the object
 		// ------------------------------
-		//glUseProgram(shaderProgram);
+		glUseProgram(shaderProgram);
 
 		// update the uniform color
 		// ------------------------------
@@ -202,8 +198,6 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		//int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 		//glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
 
-		// set the texture mix value in the shader
-		ourShader.setFloat("mixValue", mixValue);
 		// :: draw triangle
 		ourShader.use();
 		glBindVertexArray(VAOs[0]);
@@ -236,27 +230,17 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	return 0;
 }
 
-unsigned int createTexture(const std::string& path, const int& wrapping)
+unsigned int createTexture(const std::string& path)
 {
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// set the texture wrapping parameters
-	// 0: repeat, 1: mirrored repeat, 2: clamp to edge, 3: clamp to border
-	if (wrapping == 0)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// we want to repeat the awesomeface pattern so we kept it at GL_REPEAT
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}
-	else if (wrapping == 2)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// we want to repeat the awesomeface pattern so we kept it at GL_REPEAT
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	}
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//// set the texture wrapping parameters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// we want to repeat the awesomeface pattern so we kept it at GL_REPEAT
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//// set texture filtering parameters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
@@ -307,19 +291,5 @@ void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		mixValue += 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
-		if (mixValue >= 1.0f)
-			mixValue = 1.0f;
-	}
-	
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		mixValue -= 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
-		if (mixValue <= 0.0f)
-			mixValue = 0.0f;
-	}
 }
 #endif

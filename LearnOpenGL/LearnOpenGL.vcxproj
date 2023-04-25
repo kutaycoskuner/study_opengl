@@ -144,6 +144,7 @@
     </None>
     <ClCompile Include="source\old\0.21_learnOpenGL.cpp" />
     <ClCompile Include="source\old\0.221_learnOpenGL.cpp" />
+    <ClCompile Include="source\old\x_learnOpenGl.cpp" />
     <ClCompile Include="source\util_shaders.cpp" />
     <None Include="shaders\v1.1_fragShader.glsl" />
     <None Include="shaders\fragShader_1.glsl">

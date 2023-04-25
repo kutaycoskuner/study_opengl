@@ -57,6 +57,9 @@
     <ClCompile Include="source\old\0.221_learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\old\x_learnOpenGl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h">

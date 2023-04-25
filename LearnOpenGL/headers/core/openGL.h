@@ -10,7 +10,7 @@
 struct ShaderCompileDesc;
 
 
-unsigned int createTexture(const std::string& path);
+unsigned int createTexture(const std::string& path, const int& wrapping = 0);
 
 // shader util
 unsigned int compileShader(const char* src, int glShaderStage);
@@ -22,7 +22,7 @@ std::unordered_map<std::string, ShaderCompileDesc> loadShaders();
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao);
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer);
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void callbackFrameBufferSize(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config);
 #endif
