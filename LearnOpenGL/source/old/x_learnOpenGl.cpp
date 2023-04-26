@@ -12,10 +12,10 @@ Shaders has ended.
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/test/basic.h"					// kendi test header dosyam
-#include "../headers/utilities/utilities.h"			// config dosyasi okuma ve cekmeye dair kendi kutuphanem
+#include "../headers/utils/utilities.h"			// config dosyasi okuma ve cekmeye dair kendi kutuphanem
 #include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
-#include "../headers/blueprint/shader.h"			// shader objesi olusturmaya dair veritipi
-#include "../headers/mappings/shaders.h"			// shaderlarin isimleri ve dosya konumlarinin mapleri
+#include "../headers/abstract/shader.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/maps/shaders.h"			// shaderlarin isimleri ve dosya konumlarinin mapleri
 #include "../headers/core/openGL.h"					// ana calisma dosyasi
 
 #define STB_IMAGE_IMPLEMENTATION

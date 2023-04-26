@@ -76,11 +76,20 @@
 
 
 # Blackboard
+- testing
+    - unit test
+    - integration test
+
+- nomenclature, naming
+    - uniforms short
+    - events
+
 - Notes
     - texture coordinates range from 0 to 1 in the x and y axis. Retrievving the texture color using texture coordinates is called sampling.
     - learn blob, cache: zaman kazanmak icin kullandigin memory bolgesi
     - pointer and -> dereferencing
     - c style api | c like 
+    - conversionlari goz ardi etme
 
 - framedebugging
     - renderdoc
@@ -107,7 +116,7 @@
     - serialization
         - serialization is the process of converting an object or data structure into a format that can be easily transmitted or stored.
     - deserialization
-
+    - forward decleration: decleration yapip erteletebilirsin | eger * ve &
 
 - git sub module
     - baska bir repoyu nasil sub module olarak kullanirim
@@ -185,6 +194,7 @@
 
 
 # How to
+
 - <visual studio: linking library>
     - right click on project name on solution explorer > properties
     - configuration > vc++ directories > 
@@ -199,3 +209,9 @@
 - f5                                debugger
 - shift + f5                        calisan debug i kapatiyor
 - ctrl + shift + f5                 debug i yeniden calistiriyor
+- chrl + shift + h                  find and replace
+- ctrl + m > o                      collapse
+- ctrl + m > p                      expand
+- ctrl + m > i                      local expand
+- ctrl + shift + f9                  remove all breakpoints
+- ctrl + shift + b                  compile

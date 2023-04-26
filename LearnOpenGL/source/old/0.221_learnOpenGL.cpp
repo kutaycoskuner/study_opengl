@@ -12,10 +12,10 @@
 //// ----- Libraries
 //// ------------------------------------------------------------------------------------------------
 //#include "../headers/test/basic.h"      // kendi test header dosyam
-//#include "../headers/utilities/utilities.h"      // kendi test header dosyam
+//#include "../headers/utils/utilities.h"      // kendi test header dosyam
 //#include "../headers/data/data.h"    
-//#include "../headers/blueprint/shader.h"     
-//#include "../headers/mappings/shaders.h"     
+//#include "../headers/abstract/shader.h"     
+//#include "../headers/maps/shaders.h"     
 //#include "../headers/core/openGL.h"   
 //
 //#define STB_IMAGE_IMPLEMENTATION

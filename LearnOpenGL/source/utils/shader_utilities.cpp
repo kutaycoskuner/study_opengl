@@ -5,10 +5,10 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
-#include "../headers/utilities/utilities.h"      // kendi test header dosyam
+#include "../headers/utils/utilities.h"      // kendi test header dosyam
 #include "../headers/core/openGL.h"     
-#include "../headers/blueprint/shader.h"     
-#include "../headers/mappings/shaders.h"     
+#include "../headers/abstract/shader.h"     
+#include "../headers/maps/shaders.h"     
 
 
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
@@ -75,7 +75,7 @@ std::unordered_map<std::string, ShaderCompileDesc> loadShaders() // todo: path a
 		const std::string& name = it->first;
 		const std::string& path = it->second;
 
-		shaders.emplace(name, ShaderCompileDesc(name, path, readFileContents(path)));
+		shaders.emplace(name, ShaderCompileDesc(name, path, file_utils::readFileContents(path)));
 	}
 	return shaders;
 }

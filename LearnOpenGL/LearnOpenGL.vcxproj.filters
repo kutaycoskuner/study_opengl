@@ -21,19 +21,19 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\x_hello_world.cpp">
+    <ClCompile Include="source\test\x_hello_world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\utilities.cpp">
+    <ClCompile Include="source\utils\utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\learnOpenGL.cpp">
+    <ClCompile Include="source\core\learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\x_test.cpp">
+    <ClCompile Include="source\test\x_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data\obj\d_objToDraw.cpp">
@@ -42,10 +42,10 @@
     <ClCompile Include="data\m_shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="headers\blueprint\shader.h">
+    <ClCompile Include="headers\abstract\shader.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\util_shaders.cpp">
+    <ClCompile Include="source\utils\shader_utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data\obj\dt_Colors.cpp">
@@ -60,6 +60,12 @@
     <ClCompile Include="source\old\x_learnOpenGl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\event_handling\window_events.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utils\img_utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h">
@@ -68,16 +74,25 @@
     <ClInclude Include="headers\core\openGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\utilities\utilities.h">
+    <ClInclude Include="headers\utils\utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\data\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\mappings\shaders.h">
+    <ClInclude Include="headers\maps\shaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libs\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\events\events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\uniforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

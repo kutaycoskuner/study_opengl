@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------------------------------------
 #include "../headers/core/openGL.h"
 #include "../headers/test/basic.h"
-#include "../headers/utilities/utilities.h"
+#include "../headers/utils/utilities.h"
 #include <iostream>
 #include <unordered_map>
 
@@ -12,22 +12,16 @@
 // ------------------------------------------------------------------------------------------------
 int main()
 {
-	// configurations
-	// --------------------------
-	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> config = parseSimple("config/config.yaml");
+	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> config = file_utils::parseSimple("config/config.yaml");
 	
-	// :: test or run?
-	// --------------------------
 	if (config["test"]["is_testing"] == "true")
 	{
 		test();
 	}
 	else
 	{
-		learnOpenGL(config);
+		runApplication(config);
 	}
 	
-	// :: return
-	// --------------------------
 	return 0;
 }

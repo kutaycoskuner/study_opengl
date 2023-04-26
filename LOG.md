@@ -83,6 +83,14 @@
 
 # Log
 - [x]
+    - todo transformation
+    - todo gui
+
+- [0.25] add: Namespace utilities
+    - 26-Apr-2023   wip: Vector class, transformations
+    - 26-Apr-2023   add: Create vector struct, unit test
+    - 26-Apr-2023   add: namespace utilities
+    - 26-Apr-2023   arch: Refactor image_utils, test, events
 
 - [0.24] add: Texture exercises
     - 26-Apr-2023   add: Textures exercise 4

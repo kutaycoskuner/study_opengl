@@ -1,6 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
+#include "../../headers/utils/utilities.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -14,69 +15,79 @@
 
 // scaler
 // ------------------------------
-float scaleByteToZeroOne(unsigned int byte) 
-{ 
-	return (float(byte) / 255.0f); 
-}
-
-std::vector<float> scaleByteToZeroOneVec3(const unsigned int x, const unsigned int y, const unsigned int z)
+namespace math_utils
 {
-	return { scaleByteToZeroOne(x), scaleByteToZeroOne(y), scaleByteToZeroOne(z) };
-}
+	float scaleByteToZeroOne(unsigned int byte)
+	{
+		return (float(byte) / 255.0f);
+	}
 
-std::vector<float> scaleByteToZeroOneVec3(const float x, const float y, const float z)
-{
-	return { scaleByteToZeroOne(x), scaleByteToZeroOne(y), scaleByteToZeroOne(z) };
+	std::vector<float> scaleByteToZeroOneVec3(const unsigned int x, const unsigned int y, const unsigned int z)
+	{
+		return { scaleByteToZeroOne(x), scaleByteToZeroOne(y), scaleByteToZeroOne(z) };
+	}
+
+	std::vector<float> scaleByteToZeroOneVec3(const float x, const float y, const float z)
+	{
+		return { 
+			scaleByteToZeroOne(static_cast<unsigned int>(x)), 
+			scaleByteToZeroOne(static_cast<unsigned int>(y)), 
+			scaleByteToZeroOne(static_cast<unsigned int>(z)) 
+		};
+	}
 }
 
 // string manipulation
 // ------------------------------
-void trim(std::string& str) {
-	// find the first non-whitespace character
-	size_t first = str.find_first_not_of(" \n\r\f\v");
+namespace str_utils
+{
+	void trim(std::string& str) {
+		// find the first non-whitespace character
+		size_t first = str.find_first_not_of(" \n\r\f\v");
 
-	if (first == std::string::npos) {
-		// if the string is all whitespace, clear it
-		str.clear();
-		return;
-	}
-
-	// find the last non-whitespace character
-	size_t last = str.find_last_not_of(" \n\r\f\v");
-
-	// extract the trimmed substring
-	str = str.substr(first, last - first + 1);
-}
-
-std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
-	std::vector<std::string> substrings;
-	size_t start = 0;
-	size_t end = 0;
-
-	while ((end = str.find(delimiter, start)) != std::string::npos) {
-		substrings.push_back(str.substr(start, end - start));
-		start = end + delimiter.length();
-	}
-	substrings.push_back(str.substr(start));
-	return substrings;
-}
-
-int countLeadingSpaces(const std::string& str) {
-	int count = 0;
-	for (char c : str) {
-		if (c == ' ') {
-			count += 1; // assume 4 spaces per tab
+		if (first == std::string::npos) {
+			// if the string is all whitespace, clear it
+			str.clear();
+			return;
 		}
-		else {
-			break;
-		}
+
+		// find the last non-whitespace character
+		size_t last = str.find_last_not_of(" \n\r\f\v");
+
+		// extract the trimmed substring
+		str = str.substr(first, last - first + 1);
 	}
-	return count/2;
+
+	std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
+		std::vector<std::string> substrings;
+		size_t start = 0;
+		size_t end = 0;
+
+		while ((end = str.find(delimiter, start)) != std::string::npos) {
+			substrings.push_back(str.substr(start, end - start));
+			start = end + delimiter.length();
+		}
+		substrings.push_back(str.substr(start));
+		return substrings;
+	}
+
+	int countLeadingSpaces(const std::string& str) {
+		int count = 0;
+		for (char c : str) {
+			if (c == ' ') {
+				count += 1; // assume 4 spaces per tab
+			}
+			else {
+				break;
+			}
+		}
+		return count / 2;
+	}
 }
 
 // read and deserialize file
 // ------------------------------
-std::string readFileContents(const std::string& path)
+std::string file_utils::readFileContents(const std::string& path)
 {
 	// Open the file at the given path
 	std::ifstream file(path);
@@ -96,9 +107,9 @@ std::string readFileContents(const std::string& path)
 	return contents;
 }
 
-std::vector<std::string> parseFileToRowArray(const std::string& path)
+std::vector<std::string> file_utils::parseFileToRowArray(const std::string& path)
 {
-	std::string str = readFileContents(path);
+	std::string str = file_utils::readFileContents(path);
 	std::vector<std::string> rows;
 	std::string delimiter = "\n";
 
@@ -114,8 +125,8 @@ std::vector<std::string> parseFileToRowArray(const std::string& path)
 	return rows;
 }
 
-std::unordered_map<std::string, std::unordered_map<std::string, std::string>> parseSimple(const std::string& path) {
-
+std::unordered_map<std::string, std::unordered_map<std::string, std::string>> file_utils::parseSimple(const std::string& path) {
+	using namespace str_utils;
 	std::vector<std::string> rows = parseFileToRowArray(path);
 	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> config;
 	int currentIndent = 0;
@@ -134,10 +145,10 @@ std::unordered_map<std::string, std::unordered_map<std::string, std::string>> pa
 		//std::cout << substrings[0] << std::endl;
 		// handle value
 		if (substrings.size() < 2 || substrings[1] == "")
-		{ 
+		{
 			parent = substrings[0];
 			config[parent];
-			continue; 
+			continue;
 		}
 		if (substrings[1].size() == 0) { continue; }
 		trim(substrings[1]);

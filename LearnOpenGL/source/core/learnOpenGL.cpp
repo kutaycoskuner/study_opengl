@@ -12,14 +12,13 @@ Shaders has ended.
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/test/basic.h"					// kendi test header dosyam
-#include "../headers/utilities/utilities.h"			// config dosyasi okuma ve cekmeye dair kendi kutuphanem
+#include "../headers/utils/utilities.h"			// config dosyasi okuma ve cekmeye dair kendi kutuphanem
 #include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
-#include "../headers/blueprint/shader.h"			// shader objesi olusturmaya dair veritipi
-#include "../headers/mappings/shaders.h"			// shaderlarin isimleri ve dosya konumlarinin mapleri
+#include "../headers/events/events.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
+#include "../headers/abstract/shader.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/maps/shaders.h"			// shaderlarin isimleri ve dosya konumlarinin mapleri
 #include "../headers/core/openGL.h"					// ana calisma dosyasi
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "../libs/stb_image.h"
 
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <glad/glad.h>			// opengl hardware adaptor !glfw den once
@@ -30,18 +29,20 @@ Shaders has ended.
 // self keywords
 // -----------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
+using namespace math_utils;
+using namespace str_utils;
+using namespace file_utils;
+using namespace img_utils;
 
 // constant variables
 // -----------------------------------
 constexpr unsigned int ERROR_BUFFER_SIZE = 512;
 
-// stores how much we're seeing of either texture
-float mixValue = 0.2f;
 
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config)
+int runApplication(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config)
 {
 	// ------------------------------------------------------------------------------------------------
 	//  Settings
@@ -56,6 +57,10 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	const char* frag_shader_src = shaders.at("fragShader").content.c_str();
 	const char* frag_shader_src1 = shaders.at("fragShader_1").content.c_str();
 	const char* frag_shader_src2 = shaders.at("fragShader_2").content.c_str();
+
+	// stores how much we're seeing of either texture
+	MyUniforms uni;
+	uni.mixValue = 0.2f;
 
 	// glfw init
 	glfwInit();
@@ -112,7 +117,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 
 	// --------------------------
 	// texture
-	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+	setVerticalFlipMode(true);
 	unsigned int texture1 = createTexture("data/textures/container.jpg", 2);
 	unsigned int texture2 = createTexture("data/textures/awesomeface.png");
 
@@ -184,7 +189,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	// --------------------------
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window);
+		processInput(window, uni);
 
 		// render clear screen
 		// ------------------------------
@@ -203,7 +208,7 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 		//glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
 
 		// set the texture mix value in the shader
-		ourShader.setFloat("mixValue", mixValue);
+		ourShader.setFloat("mixValue", uni.mixValue);
 		// :: draw triangle
 		ourShader.use();
 		glBindVertexArray(VAOs[0]);
@@ -236,51 +241,6 @@ int learnOpenGL(std::unordered_map<std::string, std::unordered_map<std::string, 
 	return 0;
 }
 
-unsigned int createTexture(const std::string& path, const int& wrapping)
-{
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// set the texture wrapping parameters
-	// 0: repeat, 1: mirrored repeat, 2: clamp to edge, 3: clamp to border
-	if (wrapping == 0)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// we want to repeat the awesomeface pattern so we kept it at GL_REPEAT
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}
-	else if (wrapping == 2)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// we want to repeat the awesomeface pattern so we kept it at GL_REPEAT
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	}
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		if (nrChannels == 3)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		}
-		else if (nrChannels == 4)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		}
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture: " << path << std::endl;
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	stbi_image_free(data);
-	return texture;
-}
-
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {
 	glBindVertexArray(inptLayout);	// VAO note that we bind to a different VAO now
@@ -296,30 +256,5 @@ void drawObjToScr(const unsigned int& shader, const unsigned int& vao)
 	glUseProgram(shader);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-void callbackFrameBufferSize(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-	
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		mixValue += 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
-		if (mixValue >= 1.0f)
-			mixValue = 1.0f;
-	}
-	
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		mixValue -= 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
-		if (mixValue <= 0.0f)
-			mixValue = 0.0f;
-	}
 }
 #endif
