@@ -13,7 +13,8 @@
 // ------------------------------------------------------------------------------------------------
 void test()
 {
-	testVectorUnit();
+	unitTest_Vec3();
+
 	//std::cout << shader_mapping.size();
 	//parseSimple("config/config.yaml");
 	//parseSimple();

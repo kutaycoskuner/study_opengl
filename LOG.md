@@ -86,6 +86,11 @@
     - todo transformation
     - todo gui
 
+- [0.26] learn: Vector math
+    - 27-Apr-2023   add: Vector dot products
+    - 27-Apr-2023   add: Vector/scalar add/sub
+    - 27-Apr-2023   add: Vector math: plus, length
+
 - [0.25] add: Namespace utilities
     - 26-Apr-2023   wip: Vector class, transformations
     - 26-Apr-2023   add: Create vector struct, unit test

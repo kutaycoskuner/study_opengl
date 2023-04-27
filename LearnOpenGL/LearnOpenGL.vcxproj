@@ -142,6 +142,7 @@
     <None Include="shaders\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
+    <ClCompile Include="headers\test\unitTest_Vec3.cpp" />
     <ClCompile Include="source\event_handling\window_events.cpp" />
     <ClCompile Include="source\old\0.21_learnOpenGL.cpp" />
     <ClCompile Include="source\old\0.221_learnOpenGL.cpp" />

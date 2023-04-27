@@ -1,6 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
+#include "../../headers/abstract/vector.h"
 #include "../../headers/utils/utilities.h"
 #include <iostream>
 #include <fstream>
@@ -34,6 +35,18 @@ namespace math_utils
 			scaleByteToZeroOne(static_cast<unsigned int>(y)), 
 			scaleByteToZeroOne(static_cast<unsigned int>(z)) 
 		};
+	}
+
+	bool compareApprox(const float& a, const float& b)
+	{
+		const float error_threshold = 0.000001f;
+		return fabsf(a - b) < error_threshold;
+	}
+
+	float dotProduct(const Vec3& v1, const Vec3& v2)
+	{
+		float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+		return result;
 	}
 }
 

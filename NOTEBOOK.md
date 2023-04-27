@@ -22,6 +22,9 @@
 
 - styling guide
 
+- vsc keyboard shortcuts
+    - https://visualstudio.microsoft.com/keyboard-shortcuts.pdf
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -76,6 +79,16 @@
 
 
 # Blackboard
+- vector math
+    - vector negation
+    - scalar vector operations | + - * /
+    - vector vector operations 
+        - addition and subtraction
+    - length
+    - normalizing vector
+    - dot product: boylari carpi aralarindaki acinin cosinusu : iki vektorun paralelligine bakiyor 
+    - cross product: 
+
 - testing
     - unit test
     - integration test
@@ -117,6 +130,9 @@
         - serialization is the process of converting an object or data structure into a format that can be easily transmitted or stored.
     - deserialization
     - forward decleration: decleration yapip erteletebilirsin | eger * ve &
+    - const correctness | bulundugu obeyi degistirip degistirmiyor mu hangisi objeyi mutate ediyor state degitiriyor
+    - template meta programming
+    - static fonksiyon o cpp dosyasina ozel fonksiyon demek
 
 - git sub module
     - baska bir repoyu nasil sub module olarak kullanirim
@@ -215,3 +231,4 @@
 - ctrl + m > i                      local expand
 - ctrl + shift + f9                  remove all breakpoints
 - ctrl + shift + b                  compile
+- shift + alt up/down               multi line edit

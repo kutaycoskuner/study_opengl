@@ -1,6 +1,27 @@
 #pragma once
+// ------------------------------------------------------------------------------------------------
+// ----- Libraries
+// ------------------------------------------------------------------------------------------------
 #include <cassert>
+#include <cmath>
 
+struct Vec3;
+
+// ------------------------------------------------------------------------------------------------
+// ----- function declarations
+// ------------------------------------------------------------------------------------------------
+void unitTest_Vec3();
+
+namespace math_utils
+{
+	bool compareApprox(const float& a, const float& b);
+	float dotProduct(const Vec3& v1, const Vec3& v2);
+}
+
+
+// ------------------------------------------------------------------------------------------------
+// ----- abstract
+// ------------------------------------------------------------------------------------------------
 struct Vec3
 {
 	float x;
@@ -9,21 +30,82 @@ struct Vec3
 
 	// default constructor
 	Vec3() :x(0), y(0), z(0) {}
-
 	// parameter constructior
 	Vec3(float in_x, float in_y, float in_z) :x(in_x), y(in_y), z(in_z) {}
+	Vec3(float in_x) :x(in_x), y(in_x), z(in_x) {}
+	// copy constructor
 	Vec3(const Vec3& vec) :x(vec.x), y(vec.y), z(vec.z) {}
 
+	// math
+	// ------------------------------
+	// unary
+	Vec3 operator-() const
+	{
+		return { -x, -y, -z };
+	}
+	// vector vector + 
+	Vec3 operator+(const Vec3& other) const
+	{
+		Vec3 result = { x + other.x, y + other.y, z + other.z };
+		return result;
+	}
+
+	// vector vector - 
+	Vec3 operator-(const Vec3& other) const
+	{
+		Vec3 result = { x - other.x, y - other.y, z - other.z };
+		return result;
+	}
+
+	// scalar vector +
+	Vec3 operator+(const float& other) const
+	{
+		Vec3 result = { x + other, y + other, z + other };
+		return result;
+	}
+
+	// scalar vector -
+	Vec3 operator-(const float& other) const
+	{
+		Vec3 result = { x - other, y - other, z - other };
+		return result;
+	}
+
+	float dot(const Vec3& other) const
+	{
+		float result = math_utils::dotProduct(*this, other);
+		return result;
+	}
+
+	// length
+	float length() const
+	{
+		float result = sqrtf(x * x + y * y + z * z);
+		return result;
+	}
+
+	void normalize() 
+	{
+		float len = this->length();
+		*this = { x / len, y / len, z / len };
+	}
+
+	Vec3 normalized() const
+	{
+		float len = this->length();
+		Vec3 result = { x / len, y / len, z / len };
+		return result;
+	}
 };
 
-static void testVectorUnit()
-{
-	Vec3 default_vec;
-	assert(default_vec.x == 0.0f && default_vec.y == 0.0f && default_vec.z == 0.0f);
+// ------------------------------------------------------------------------------------------------
+// ----- function definitions
+// ------------------------------------------------------------------------------------------------
 
-	Vec3 param_vec(1, 0, 1);
-	assert(param_vec.x == 1.0f && param_vec.y == 0.0f && param_vec.z == 1.0f);
 
-	Vec3 param2_vec(param_vec);
-	assert(param2_vec.x == 1.0f && param2_vec.y == 0.0f && param2_vec.z == 1.0f);
-}
+//template<class T>
+//static float length(T vec)
+//{
+//	return vec.length();
+//}
+

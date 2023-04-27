@@ -20,6 +20,8 @@ namespace math_utils
 	float scaleByteToZeroOne(unsigned int byte);
 	std::vector<float> scaleByteToZeroOneVec3(const unsigned int x, const unsigned int y, const unsigned int z);
 	std::vector<float> scaleByteToZeroOneVec3(const float x, const float y, const float z);
+
+
 }
 
 namespace img_utils
