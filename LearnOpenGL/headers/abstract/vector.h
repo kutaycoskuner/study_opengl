@@ -10,12 +10,12 @@ struct Vec3;
 // ------------------------------------------------------------------------------------------------
 // ----- function declarations
 // ------------------------------------------------------------------------------------------------
-void unitTest_Vec3();
 
 namespace math_utils
 {
 	bool compareApprox(const float& a, const float& b);
-	float dotProduct(const Vec3& v1, const Vec3& v2);
+	float dot3d(const Vec3& v1, const Vec3& v2);
+	Vec3 cross3d(const Vec3& v1, const Vec3& v2);
 }
 
 
@@ -71,9 +71,18 @@ struct Vec3
 		return result;
 	}
 
+	// 
+	bool operator==(const Vec3& other) const
+	{
+		if (x != other.x) return false;
+		if (y != other.y) return false;
+		if (z != other.z) return false;
+		return true;
+	}
+
 	float dot(const Vec3& other) const
 	{
-		float result = math_utils::dotProduct(*this, other);
+		float result = math_utils::dot3d(*this, other);
 		return result;
 	}
 

@@ -43,11 +43,20 @@ namespace math_utils
 		return fabsf(a - b) < error_threshold;
 	}
 
-	float dotProduct(const Vec3& v1, const Vec3& v2)
+	float dot3d(const Vec3& v1, const Vec3& v2)
 	{
 		float result = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 		return result;
 	}
+
+	Vec3 cross3d(const Vec3& v1, const Vec3& v2)
+	{
+		float x = v1.y * v2.z - v1.z * v2.y;
+		float y = v1.z * v2.x - v1.x * v2.z;
+		float z = v1.x * v2.y - v1.y * v2.x;
+		return Vec3(x, y, z);
+	}
+
 }
 
 // string manipulation

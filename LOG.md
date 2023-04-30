@@ -63,8 +63,8 @@
     + versiyon sonunda ! varsa repository push yok
 
 # Push procedure checklist 1.4
-- check todo
 - add log
+- check todo
 - change readme version and date
 - change time log
 - push
@@ -85,6 +85,11 @@
 - [x]
     - todo transformation
     - todo gui
+
+- [0.27] add: Mat4 struct
+    - 30-Apr-2023   add: Unit_test Mat4: default constructor, parametr constructor, copy constructor
+    - 30-Apr-2023   add: Matrix4 struct, constructors, override operators
+    - 30-Apr-2023   add: x,y coordinates as data
 
 - [0.26] learn: Vector math
     - 27-Apr-2023   add: Vector dot products

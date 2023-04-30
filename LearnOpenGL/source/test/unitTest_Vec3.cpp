@@ -1,4 +1,4 @@
-#include "../abstract/vector.h"
+#include "../../headers/abstract/vector.h"
 
 //bool compareApprox(const float&a, const float& b);
 
@@ -58,13 +58,37 @@ static void unitTest_Vec3_math()
 	// dot product
 	Vec3 ver(0, 1, 0);
 	Vec3 hor(1, 0, 0);
-	float dp = math_utils::dotProduct(hor, ver);
+	float dp = math_utils::dot3d(hor, ver);
 	assert(dp == 0);
 	ver = (1, 5, 0);
 	hor = (-1, -5, 0);
-	dp = math_utils::dotProduct(hor, ver);
+	dp = math_utils::dot3d(hor, ver);
 	assert(dp == -1 * hor.length() * ver.length());
+
+	// cross product
+	Vec3 xAxis = Vec3(1, 0, 0);
+	Vec3 yAxis = Vec3(0, 1, 0);
+	Vec3 zAxis = Vec3(0, 0, 1);
+	Vec3 origin = Vec3(0, 0, 0);
+	assert(math_utils::cross3d(xAxis, yAxis) == zAxis);
+	assert(math_utils::cross3d(xAxis, zAxis) == -yAxis);
+	assert(math_utils::cross3d(yAxis, zAxis) == xAxis);
+	assert(math_utils::cross3d(yAxis, xAxis) == -zAxis);
+	assert(math_utils::cross3d(zAxis, xAxis) == yAxis);
+	assert(math_utils::cross3d(zAxis, yAxis) == -xAxis);
+
+
+	assert(math_utils::cross3d(xAxis, -yAxis) == -zAxis);
+	assert(math_utils::cross3d(xAxis, -zAxis) == yAxis);
+	assert(math_utils::cross3d(yAxis, -zAxis) == -xAxis);
+	assert(math_utils::cross3d(yAxis, -xAxis) == zAxis);
+	assert(math_utils::cross3d(zAxis, -xAxis) == -yAxis);
+	assert(math_utils::cross3d(zAxis, -yAxis) == xAxis);
+
+	assert(math_utils::cross3d(xAxis, xAxis) == origin);
 }
+
+
 
 void unitTest_Vec3()
 {

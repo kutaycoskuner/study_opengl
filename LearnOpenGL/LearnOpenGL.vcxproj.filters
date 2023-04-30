@@ -39,7 +39,7 @@
     <ClCompile Include="data\obj\d_objToDraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\m_shaders.cpp">
+    <ClCompile Include="data\adress_mappings\m_shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="headers\abstract\shader.h">
@@ -66,7 +66,13 @@
     <ClCompile Include="source\utils\img_utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="headers\test\unitTest_Vec3.cpp">
+    <ClCompile Include="source\test\unitTest_Vec3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="headers\abstract\matrix.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\test\unitTest_Mat4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,12 +104,15 @@
     <ClInclude Include="headers\abstract\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\test\unit_tests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\v1.0_fragShader.glsl">
+    <None Include="shaders\old\v1.0_fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\v1.0_vrtxShader.glsl">
+    <None Include="shaders\old\v1.0_vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\fragShader_2.glsl">
@@ -112,10 +121,10 @@
     <None Include="shaders\fragShader_1.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="shaders\v1.1_fragShader.glsl">
+    <None Include="shaders\old\v1.1_fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\v1.1_vrtxShader.glsl">
+    <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <Filter>Source Files</Filter>
     </None>
     <None Include="shaders\vrtxShader.glsl">
@@ -124,10 +133,10 @@
     <None Include="shaders\fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\v1.2_vrtxShader.glsl">
+    <None Include="shaders\old\v1.2_vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\v1.2_fragShader.glsl">
+    <None Include="shaders\old\v1.2_fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

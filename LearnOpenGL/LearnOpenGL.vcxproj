@@ -137,19 +137,21 @@
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
     <ClCompile Include="data\obj\dt_Colors.cpp" />
     <ClCompile Include="data\obj\d_objToDraw.cpp" />
-    <ClCompile Include="data\m_shaders.cpp" />
+    <ClCompile Include="data\adress_mappings\m_shaders.cpp" />
     <None Include="shaders\fragShader.glsl" />
-    <None Include="shaders\v1.1_vrtxShader.glsl">
+    <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="headers\test\unitTest_Vec3.cpp" />
+    <ClCompile Include="headers\abstract\matrix.h" />
+    <ClCompile Include="source\test\unitTest_Mat4.cpp" />
+    <ClCompile Include="source\test\unitTest_Vec3.cpp" />
     <ClCompile Include="source\event_handling\window_events.cpp" />
     <ClCompile Include="source\old\0.21_learnOpenGL.cpp" />
     <ClCompile Include="source\old\0.221_learnOpenGL.cpp" />
     <ClCompile Include="source\old\x_learnOpenGl.cpp" />
     <ClCompile Include="source\utils\img_utilities.cpp" />
     <ClCompile Include="source\utils\shader_utilities.cpp" />
-    <None Include="shaders\v1.1_fragShader.glsl" />
+    <None Include="shaders\old\v1.1_fragShader.glsl" />
     <None Include="shaders\fragShader_1.glsl">
       <FileType>Document</FileType>
     </None>
@@ -157,17 +159,17 @@
     <ClCompile Include="headers\abstract\shader.h" />
     <ClCompile Include="source\test\x_test.cpp" />
     <ClCompile Include="source\utils\utilities.cpp" />
-    <None Include="shaders\v1.0_fragShader.glsl">
+    <None Include="shaders\old\v1.0_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
     <None Include="shaders\fragShader_2.glsl" />
-    <None Include="shaders\v1.0_vrtxShader.glsl">
+    <None Include="shaders\old\v1.0_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="source\test\x_hello_world.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <None Include="shaders\v1.2_fragShader.glsl" />
-    <None Include="shaders\v1.2_vrtxShader.glsl" />
+    <None Include="shaders\old\v1.2_fragShader.glsl" />
+    <None Include="shaders\old\v1.2_vrtxShader.glsl" />
     <None Include="shaders\vrtxShader.glsl" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +180,7 @@
     <ClInclude Include="headers\data\data.h" />
     <ClInclude Include="headers\core\openGL.h" />
     <ClInclude Include="headers\maps\shaders.h" />
+    <ClInclude Include="headers\test\unit_tests.h" />
     <ClInclude Include="headers\utils\utilities.h" />
     <ClInclude Include="libs\stb_image.h" />
   </ItemGroup>

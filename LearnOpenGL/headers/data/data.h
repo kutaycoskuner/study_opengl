@@ -14,6 +14,8 @@ public:
     static float vertices[18];
     static float squareVrts[32];
     static unsigned int squareInds[6];
+    static float x_axis[12];
+    static float y_axis[12];
 };
 
 // extern float vertices[18];

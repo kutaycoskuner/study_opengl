@@ -134,13 +134,13 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	glGenBuffers(buffer_count, &EBO); // :: ebo icin memory
 
 	// binding buffers
+	// ----- texture square
 	glBindVertexArray(VAOs[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::squareVrts), ObjToDraw::squareVrts, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
-
 	// att: pos
 	unsigned int stride = 8;
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
@@ -151,6 +151,22 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	// att: texture
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+	//// ----- texture square end
+
+	// attempt :: coordinate lines 
+	//glBindVertexArray(VAOs[0]);
+	//glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::x_axis), ObjToDraw::x_axis, GL_STATIC_DRAW);
+	//glBindVertexArray(VAOs[1]);
+	//glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::y_axis), ObjToDraw::y_axis, GL_STATIC_DRAW);
+	//// att: pos
+	//unsigned int stride = 6;
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	//// att: color
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
 
 	// linking vertex attributes
 	// --------------------------       
@@ -196,10 +212,6 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		glClearColor(scaleByteToZeroOne(18), scaleByteToZeroOne(18), scaleByteToZeroOne(18), 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// draw the object
-		// ------------------------------
-		//glUseProgram(shaderProgram);
-
 		// update the uniform color
 		// ------------------------------
 		//float timeValue = glfwGetTime();
@@ -213,6 +225,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		ourShader.use();
 		glBindVertexArray(VAOs[0]);
 
+		// :: asign texture
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
@@ -221,6 +234,8 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_LINE_STRIP, 0, 2);
+
 
 
 		// check and call events and swap the buffers

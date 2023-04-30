@@ -210,6 +210,11 @@
 
 
 # How to
+- <farkli seyler cizdirme | draw different things>
+    1. find how many objects are going to be drawn: set buffer_count
+    2. buffer dataya cizilecek objeyi ver / her bir obje icin yeni bir vao ve vbo
+    3. glVertexAttribPointer, glEnableVertexAttribArray uzerinde stride ve ilgili verinin boyunu goster
+    4. glDraw elements uzerinde cizim tipi, stride ve int
 
 - <visual studio: linking library>
     - right click on project name on solution explorer > properties
