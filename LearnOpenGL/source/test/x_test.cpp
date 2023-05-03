@@ -15,6 +15,7 @@
 void test()
 {
 	unitTest_Vec3();
+	unitTest_Vec4();
 	unitTest_Mat4();
 
 	//std::cout << shader_mapping.size();

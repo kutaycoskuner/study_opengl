@@ -77,16 +77,28 @@
 - [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diff shad.
 - [x] 07-Apr-2023 05-Apr-2023 arch: datayi ayir
 - [x] 21-Apr-2023 07-Apr-2023 add: data class icine alan refacting
+- [x] 03-May-2023 02-May-2023 add: struct Vec4
 - 05-Apr-2023 fix: split fonksiyonunu duzelt
 - 12-Apr-2023 add: deserialize config or config struct
+- 02-May-2023 add: struct VecN
 
 
 # Log
 - [x]
     - todo transformation
     - todo gui
+    - todo vec4 ekle
+    - todo matris vektor carpimi unit test
+    - todo matris yutiliti
+
+- [0.28] add: Vec4, Mat4, unitTests
+    - 03-May-2023   add: Vec4 and Vec4 unit tests
+    - 01-May-2023   add: Matrix-Matrix product & unit test
+    - 01-May-2023   add: Mat4 aritmetics unit test
+    - 30-Apr-2023   add: References update on readme | documentation?
 
 - [0.27] add: Mat4 struct
+    - 02-May-2023   add: Struct Vec4, wip: Vec4 unit test
     - 30-Apr-2023   add: Unit_test Mat4: default constructor, parametr constructor, copy constructor
     - 30-Apr-2023   add: Matrix4 struct, constructors, override operators
     - 30-Apr-2023   add: x,y coordinates as data

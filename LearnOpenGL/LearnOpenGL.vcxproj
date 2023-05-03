@@ -149,6 +149,7 @@
     <ClCompile Include="source\old\0.21_learnOpenGL.cpp" />
     <ClCompile Include="source\old\0.221_learnOpenGL.cpp" />
     <ClCompile Include="source\old\x_learnOpenGl.cpp" />
+    <ClCompile Include="source\test\unitTest_Vec4.cpp" />
     <ClCompile Include="source\utils\img_utilities.cpp" />
     <ClCompile Include="source\utils\shader_utilities.cpp" />
     <None Include="shaders\old\v1.1_fragShader.glsl" />
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="headers\abstract\uniforms.h" />
     <ClInclude Include="headers\abstract\vector.h" />
+    <ClInclude Include="headers\abstract\vector4.h" />
     <ClInclude Include="headers\events\events.h" />
     <ClInclude Include="headers\test\basic.h" />
     <ClInclude Include="headers\data\data.h" />

@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 30-Apr-2023 | 0.27    |
+| 19-Aug-2022     | 03-May-2023 | 0.28    |
 
 # Table of Contents
 1. [Description](#description)
@@ -41,12 +41,17 @@ This is a study repository for learning graphics programming through OpenGL.
 
 # References
 - Learning
-    - learnopengl.com
+    - Videos
+        - [Grant Sanderson. Essense of Linear Algebra. _3Blue1Brown, Youtube_. 2016.](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
+    - Website
+        - Joey de Vries [learnopengl.com](https://learnopengl.com)
+    - Supervision / Support
+        - Volkan Ilbeyli [github.com/vilbeyli](https://github.com/vilbeyli)
 - Dependencies
     - Libraries
         - GLFW | GLFW is a lightweight utility library for use with OpenGL. [Download](https://www.glfw.org/download.html)
         - GLAD | OpenGL hardware adjustment library. [Download](https://glad.dav1d.de/)
-        - stb_image.h | Image load library (https://github.com/nothings/stb/blob/master/stb_image.h)
+        - stb_image.h | Image file load library. [Downlaod](https://github.com/nothings/stb/blob/master/stb_image.h)
     - Environment Setup 
         - Visual Studio (Main IDE)
         - Visual Studio Code

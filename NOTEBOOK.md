@@ -226,6 +226,9 @@
         - linker > input > additional dependencies
         - add glfw3.lib;opengl32.lib
 
+- <linker error>
+    - birden fazla tanim oldugunda oluyor
+
 # Shortcuts
 - f5                                debugger
 - shift + f5                        calisan debug i kapatiyor

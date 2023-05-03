@@ -1,6 +1,6 @@
 ---
 test:
-  is_testing: false
+  is_testing: true
 
 scr:
   wndw_name: Learn OpenGL
