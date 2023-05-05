@@ -164,8 +164,6 @@ static void unitTest_Vec4_dot()
 	);
 }
 
-// cross
-
 // unittest
 void unitTest_Vec4()
 {
@@ -181,5 +179,4 @@ void unitTest_Vec4()
 	unitTest_Vec4_normalization();
 	unitTest_Vec4_normalized();
 	unitTest_Vec4_dot();
-
 }

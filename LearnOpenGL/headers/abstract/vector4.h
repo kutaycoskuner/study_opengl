@@ -2,6 +2,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
+#include "vector.h"
 #include <cmath>
 
 // ----- abstract declarations
@@ -22,6 +23,7 @@ struct Vec4
 	Vec4() :x(0), y(0), z(0), w(0) {}
 	// parameter constructors
 	Vec4(float p_x, float p_y, float p_z, float p_w) : x(p_x), y(p_y), z(p_z), w(p_w) {}
+	Vec4(const Vec3& v, const float& p_w) : x(v.x), y(v.y), z(v.z), w(p_w) {}
 	Vec4(float p_x) : x(p_x), y(p_x), z(p_x), w(p_x) {}
 	// copy constructor
 	Vec4(const Vec4& vec) :x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}

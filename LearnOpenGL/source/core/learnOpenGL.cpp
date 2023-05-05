@@ -2,9 +2,9 @@
 // ----- Notes
 // ------------------------------------------------------------------------------------------------
 /*
-Version: 0.21
-https://learnopengl.com/Getting-started/Shaders
-Shaders has ended.
+Version: 0.29
+https://learnopengl.com/Getting-started/Transformations
+Transformations chapter has ended.
 
 */
 #if 1
@@ -24,7 +24,9 @@ Shaders has ended.
 #include <glad/glad.h>			// opengl hardware adaptor !glfw den once
 #include <iostream>				// cout / cin icin lazim
 #include <string>				// standart string kutuphanesi
-#include<unordered_map>			// dictionary / map kutuphanesi
+#include <unordered_map>			// dictionary / map kutuphanesi
+#include <cmath>     			//
+
 
 // self keywords
 // -----------------------------------
@@ -214,13 +216,17 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 		// update the uniform color
 		// ------------------------------
-		//float timeValue = glfwGetTime();
+		float time_value = glfwGetTime();
+		float speed = PI / 4;
+		float scale = (sinf(time_value) + 1.0f) / 4 + 0.5f;
+		uni.transform = mat_utils::rotationZ(speed * time_value) * mat_utils::rotationX(speed * time_value) * mat_utils::scale(scale);
 		//float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
 		//int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 		//glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
 
 		// set the texture mix value in the shader
 		ourShader.setFloat("mixValue", uni.mixValue);
+		ourShader.setMat4("transform", uni.transform);
 		// :: draw triangle
 		ourShader.use();
 		glBindVertexArray(VAOs[0]);

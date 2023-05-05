@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 03-May-2023 | 0.28    |
+| 19-Aug-2022     | 05-May-2023 | 0.29    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,7 +23,7 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
-![0.23 Double texture with uniforms](display/0.23_double-texture-with-uniforms_2023-04-21.png)
+![0.29 Transforming drawn object through linear algebra](display/0.29_transforms_2023-05-05.gif)
 ```
 0.19 Two triangle with different shaders
 ```  

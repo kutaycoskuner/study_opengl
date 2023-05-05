@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../headers/abstract/matrix.h"
 #include <string>
 #include <vector>
 #include<unordered_map>
@@ -21,6 +22,7 @@ namespace file_utils
 
 namespace math_utils
 { 
+	constexpr float PI = 3.14159265359f;
 	// scaling
 	float scaleByteToZeroOne(unsigned int byte);
 	// float
@@ -31,6 +33,21 @@ namespace math_utils
 	float dot3d(const Vec3& v1, const Vec3& v2);
 	Vec3 cross3d(const Vec3& v1, const Vec3& v2);
 
+}
+
+namespace mat_utils
+{
+	Mat4 identity4();
+	Mat4 scale(const float& x, const float& y, const float& z);
+	Mat4 scale(const Vec3& vec);
+	Mat4 scale(const float& x);
+	Mat4 translation(const float& x, const float& y, const float& z);
+	Mat4 translation(const float& x);
+	Mat4 translation(const Vec3& vec);
+	Mat4 rotationX(const float& angleInRadians);
+	Mat4 rotationY(const float& angleInRadians);
+	Mat4 rotationZ(const float& angleInRadians);
+	Mat4 rotationXYZ(const float& angleInRadians, const Vec3& axis);
 }
 
 namespace img_utils

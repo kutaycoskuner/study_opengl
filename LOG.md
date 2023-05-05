@@ -78,6 +78,7 @@
 - [x] 07-Apr-2023 05-Apr-2023 arch: datayi ayir
 - [x] 21-Apr-2023 07-Apr-2023 add: data class icine alan refacting
 - [x] 03-May-2023 02-May-2023 add: struct Vec4
+- [x] 03-May-2023 05-May-2023 add: Matrix utilities
 - 05-Apr-2023 fix: split fonksiyonunu duzelt
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
@@ -85,11 +86,15 @@
 
 # Log
 - [x]
-    - todo transformation
     - todo gui
-    - todo vec4 ekle
-    - todo matris vektor carpimi unit test
-    - todo matris yutiliti
+
+- [0.29] add: Matrix utils, transformation integration
+    - 05-May-2023   add: Last display content
+    - 04-May-2023   add: OpenGL realtime uniform change / render scale, rotation
+    - 04-May-2023   add: Shader class Mat4 uniform insertion class
+    - 04-May-2023   add: Mat4 Vec4 product
+    - 04-May-2023   add: Vec4 Vec3 constructor
+    - 04-May-2023   add: Matrix utilities, integration test 1
 
 - [0.28] add: Vec4, Mat4, unitTests
     - 03-May-2023   add: Vec4 and Vec4 unit tests

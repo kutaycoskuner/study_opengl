@@ -2,6 +2,8 @@
 // ------------------------------------------------------------------------------------------------
 // ----- libraries
 // ------------------------------------------------------------------------------------------------
+#include "vector4.h"
+#include "vector.h"
 
 // ------------------------------------------------------------------------------------------------
 // ----- abstract declarations
@@ -20,8 +22,7 @@ struct Mat4
 	// parameters
 	union
 	{
-		// todo: implement access vec4
-		// Vec4 r[4];
+		Vec4 r[4]; // row
 		struct
 		{
 			float _11, _12, _13, _14;
@@ -119,35 +120,21 @@ struct Mat4
 		return result;
 	}
 
+	// mat vec product
+	Vec4 operator*(const Vec4& vec) const
+	{
+		Vec4 result;
+		result.x = vec.dot(this->r[0]);
+		result.y = vec.dot(this->r[1]);
+		result.z = vec.dot(this->r[2]);
+		result.w = vec.dot(this->r[3]);
+		return result;
+	}
+
 	// mat mat product
 	Mat4 operator*(const Mat4& other) const
 	{
 		Mat4 result;
-		// r.m[0][0] = m[0][0] * o.m[0][0] 
-		//		    + m[0][1] * o.m[1][0] 
-		//		    + m[0][2] * o.m[2][0] 
-		//		    + m[0][3] * o.m[3][0]
-		
-		// r.m[0][1] = m[0][0] * o.m[0][1] 
-		//		    + m[0][1] * o.m[1][1] 
-		//		    + m[0][2] * o.m[2][1] 
-		//		    + m[0][3] * o.m[3][1]
-		
-		// r.m[0][2] = m[0][0] * o.m[0][2] 
-		//		    + m[0][1] * o.m[1][2] 
-		//		    + m[0][2] * o.m[2][2] 
-		//		    + m[0][3] * o.m[3][2]
-
-		// r.m[2][1] = m[2][0] * o.m[0][1] 
-		//		    + m[2][1] * o.m[1][1] 
-		//		    + m[2][2] * o.m[2][1] 
-		//		    + m[2][3] * o.m[3][1]
-
-		// r.m[i][j] = m[i][0] * o.m[0][j] 
-		//		    + m[i][1] * o.m[1][j] 
-		//		    + m[i][2] * o.m[2][j] 
-		//		    + m[i][3] * o.m[3][j]
-
 		for (int i = 0; i < 4; i++)
 		{
 			for (int j = 0; j < 4; j++)

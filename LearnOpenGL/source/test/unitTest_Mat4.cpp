@@ -34,6 +34,19 @@ static void unitTest_Mat4_paramConstructor()
 		compareApprox(m._41, param) && compareApprox(m._42, param) && compareApprox(m._43, param) && compareApprox(m._44, param)
 	);
 
+	Mat4 mat(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	assert(
+		compareApprox(mat.m[0][0], 1.0f) && compareApprox(mat.m[0][1], 0.0f) && compareApprox(mat.m[0][2], 0.0f) && compareApprox(mat.m[0][3], 0.0f) &&
+		compareApprox(mat.m[1][0], 0.0f) && compareApprox(mat.m[1][1], 1.0f) && compareApprox(mat.m[1][2], 0.0f) && compareApprox(mat.m[1][3], 0.0f) &&
+		compareApprox(mat.m[2][0], 0.0f) && compareApprox(mat.m[2][1], 0.0f) && compareApprox(mat.m[2][2], 1.0f) && compareApprox(mat.m[2][3], 0.0f) &&
+		compareApprox(mat.m[3][0], 0.0f) && compareApprox(mat.m[3][1], 0.0f) && compareApprox(mat.m[3][2], 0.0f) && compareApprox(mat.m[3][3], 1.0f)
+	);
+
 }
 
 static void unitTest_Mat4_copyConstructor()
@@ -77,22 +90,22 @@ static void unitTest_Mat4_scalar_product()
 
 static void unitTest_Mat4_mat4_product()
 {
-	Mat4 a( 4, 2, 0, 0, 
-			0, 8, 1, 0, 
-			0, 1, 0, 0, 
-			0, 0, 0, 1);
-	
-	Mat4 b( 4, 2, 1, 0,
-		    2, 0, 4, 0,
-			9, 4, 2, 0,
-			0, 0, 0, 1);
-	
+	Mat4 a(4, 2, 0, 0,
+		0, 8, 1, 0,
+		0, 1, 0, 0,
+		0, 0, 0, 1);
+
+	Mat4 b(4, 2, 1, 0,
+		2, 0, 4, 0,
+		9, 4, 2, 0,
+		0, 0, 0, 1);
+
 	Mat4 c = a * b;
 	assert(
-		c.m[0][0] == 20 && c.m[0][1] == 8  && c.m[0][2] == 12 && c.m[0][3] == 0 &&
-		c.m[1][0] == 25 && c.m[1][1] == 4  && c.m[1][2] == 34 && c.m[1][3] == 0 &&
-		c.m[2][0] == 2  && c.m[2][1] == 0  && c.m[2][2] == 4  && c.m[2][3] == 0 &&
-		c.m[3][0] == 0  && c.m[3][1] == 0  && c.m[3][2] == 0  && c.m[3][3] == 1 
+		c.m[0][0] == 20 && c.m[0][1] == 8 && c.m[0][2] == 12 && c.m[0][3] == 0 &&
+		c.m[1][0] == 25 && c.m[1][1] == 4 && c.m[1][2] == 34 && c.m[1][3] == 0 &&
+		c.m[2][0] == 2 && c.m[2][1] == 0 && c.m[2][2] == 4 && c.m[2][3] == 0 &&
+		c.m[3][0] == 0 && c.m[3][1] == 0 && c.m[3][2] == 0 && c.m[3][3] == 1
 	);
 }
 
