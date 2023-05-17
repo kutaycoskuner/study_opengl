@@ -10,7 +10,7 @@ scr:
 settings:
   is_wireframeMode: false
 
-# colors
-  # bg
-  # bg-alter
-  # bg-second
+colors:
+   bg: 12
+   bg-alter:
+   bg-second:

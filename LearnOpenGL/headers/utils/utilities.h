@@ -48,6 +48,7 @@ namespace mat_utils
 	Mat4 rotationY(const float& angleInRadians);
 	Mat4 rotationZ(const float& angleInRadians);
 	Mat4 rotationXYZ(const float& angleInRadians, const Vec3& axis);
+	Mat4 projectPerspective(float near = 0.01f, float far = 100.0f, float left = -0.4f, float right = 0.4f, float top = 0.4f, float bottom = -0.4f);
 }
 
 namespace img_utils

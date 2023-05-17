@@ -20,6 +20,12 @@
 - google filament
     - https://github.com/google
 
+- perspective projection matrix calculation article
+    - http://www.songho.ca/opengl/gl_projectionmatrix.html
+
+- perspective projection jsantell
+    - https://jsantell.com/3d-projection/
+
 - styling guide
 
 - vsc keyboard shortcuts
@@ -59,6 +65,9 @@
     - glsl linker
 
 # Abbreviations
+- fov
+    - field of view: how large the view space is
+
 - NDC
     - Normalized device coordinates: coordinates scaled between -1,1 range
 
@@ -79,6 +88,18 @@
 
 
 # Blackboard
+- coordinate systems
+    - https://learnopengl.com/Getting-started/Coordinate-Systems
+    - local space (or object space) : are the coordinates of your object relative to its local origin; they're the coordinates your object begins in.
+    - world space                   : coordinates relative to global origin of the world
+    - view space (or eye space)     : camera view
+    - clip space                    : -1 to 1 removes anything outer than this range
+    - screen space                  : clip coordinates to monitor screen coordinates    
+
+    - model_matrix         : local -> world
+    - view_matrix          : world -> view
+    - projection_matrix    : view  -> clip
+
 - vector math
     - vector negation
     - scalar vector operations | + - * /
@@ -96,6 +117,12 @@
 - nomenclature, naming
     - uniforms short
     - events
+
+- uniform
+    - update olma sikligi
+        - per frame
+        - per view
+        - per object
 
 - Notes
     - texture coordinates range from 0 to 1 in the x and y axis. Retrievving the texture color using texture coordinates is called sampling.
@@ -137,15 +164,6 @@
 - git sub module
     - baska bir repoyu nasil sub module olarak kullanirim
 
-- 3rd party kutuphane
-    1. kutuphane source u indir
-    2. cmake ile build i yarat
-    3. vs uzerinde acip debug/release buildleri yap
-    4. 1. sub module
-    4. 2. statik kirli yol
-        1. project properties > linker > general > add additional library directories
-        2. project properties > linker > input   > add additional library file name
-        3. project properties > vc++ directories > add library include folder | convention
 
 - glsl shaders
     - c like language
@@ -210,6 +228,30 @@
 
 
 # How to
+- <disardan dosya ekleme>
+    - ekledigin cpp dosyasina sag tiklayip include in project de
+
+- <integrate 3rd party third party libraries>
+    - compiled library
+        - kutuphane source u indir 
+        - cmake ile build i yarat
+        - vs uzerinde acip debug/release buildleri yap
+        - sub module
+        - statik kirli yol
+            - project properties > linker > general > add additional library directories
+            - project properties > linker > input   > add additional library file name
+            - project properties > vc++ directories > add library include folder | convention
+
+    - c style | built in library (ex: stb_image.h)
+        - .h dosyasini proje dosyasinin icine indir
+        - include et
+
+    - header only | non-compiled kutuphane
+        - indir, proje hiyerarsisinde kutuphanelerin icine koy 
+        - project properies > c/c++ > additional include folders 
+            - $(SolutionDir)/FolderName
+
+
 - <farkli seyler cizdirme | draw different things>
     1. find how many objects are going to be drawn: set buffer_count
     2. buffer dataya cizilecek objeyi ver / her bir obje icin yeni bir vao ve vbo
@@ -228,6 +270,7 @@
 
 - <linker error>
     - birden fazla tanim oldugunda oluyor
+    - baska bir sekilde de olabiliyor
 
 # Shortcuts
 - f5                                debugger

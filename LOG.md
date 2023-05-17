@@ -82,11 +82,19 @@
 - 05-Apr-2023 fix: split fonksiyonunu duzelt
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
-
+- 16-May-2023 add: Imgui draw ui encapsulate in self function   
+- 16-May-2023 fix: find reason of perspective distortion 
 
 # Log
 - [x]
-    - todo gui
+    - todo projectPerspectve 2,6 parameter functions
+
+- [0.30] add: Dear Imgui, glm, Transformation pipeline matrices
+    - 17-May-2023   add: Install glm library
+    - 16-May-2023   wip: projectPerspective with aspect ratio
+    - 11-May-2023   add: Imgui basic implementation
+    - 10-May-2023   wip: projectPerspective 
+    - 09-May-2023   add: Transformation pipeline matrices: world, view, projection 
 
 - [0.29] add: Matrix utils, transformation integration
     - 05-May-2023   add: Last display content

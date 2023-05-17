@@ -35,10 +35,10 @@ struct Mat4
 
 	// default constructor
 	Mat4()
-		: _11(0), _12(0), _13(0), _14(0)
-		, _21(0), _22(0), _23(0), _24(0)
-		, _31(0), _32(0), _33(0), _34(0)
-		, _41(0), _42(0), _43(0), _44(0)
+		: _11(1), _12(0), _13(0), _14(0)
+		, _21(0), _22(1), _23(0), _24(0)
+		, _31(0), _32(0), _33(1), _34(0)
+		, _41(0), _42(0), _43(0), _44(1)
 	{}
 	// parameter constructor
 	Mat4(float m11, float m12, float m13, float m14,
@@ -143,6 +143,20 @@ struct Mat4
 				{
 					result.m[i][j] += m[i][k] * other.m[k][j];
 				}
+			}
+		}
+		return result;
+	}
+
+	// transposed
+	Mat4 transposed() const
+	{
+		Mat4 result;
+		for (int ii = 0; ii < 4; ii++)
+		{
+			for (int jj = 0; jj < 4; jj++)
+			{
+				result.m[jj][ii] = m[ii][jj];
 			}
 		}
 		return result;

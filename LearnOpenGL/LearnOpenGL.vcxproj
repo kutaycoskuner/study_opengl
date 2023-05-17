@@ -108,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)\libs\glm-0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,11 +139,20 @@
     <ClCompile Include="data\obj\dt_Colors.cpp" />
     <ClCompile Include="data\obj\d_objToDraw.cpp" />
     <ClCompile Include="data\adress_mappings\m_shaders.cpp" />
+    <None Include="shaders\3d_fragShader.glsl" />
+    <None Include="shaders\3d_vrtxShader.glsl" />
     <None Include="shaders\fragShader.glsl" />
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="headers\abstract\matrix.h" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui.cpp" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui_demo.cpp" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui_draw.cpp" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui_impl_glfw.cpp" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui_tables.cpp" />
+    <ClCompile Include="libs\imgui-1.89.5\imgui_widgets.cpp" />
     <ClCompile Include="source\test\integrationTest_transformations.cpp" />
     <ClCompile Include="source\test\unitTest_Mat4.cpp" />
     <ClCompile Include="source\test\unitTest_Vec3.cpp" />
@@ -187,6 +197,15 @@
     <ClInclude Include="headers\test\integration_tests.h" />
     <ClInclude Include="headers\test\unit_tests.h" />
     <ClInclude Include="headers\utils\utilities.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imconfig.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imgui.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imgui_impl_glfw.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imgui_impl_opengl3.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imgui_internal.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imstb_rectpack.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imstb_textedit.h" />
+    <ClInclude Include="libs\imgui-1.89.5\imstb_truetype.h" />
     <ClInclude Include="libs\stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -12,20 +12,33 @@ Transformations chapter has ended.
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/test/basic.h"					// kendi test header dosyam
-#include "../headers/utils/utilities.h"			// config dosyasi okuma ve cekmeye dair kendi kutuphanem
+#include "../headers/utils/utilities.h"				// config dosyasi okuma ve cekmeye dair kendi kutuphanem
 #include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
-#include "../headers/events/events.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
-#include "../headers/abstract/shader.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/events/events.h"				// opengl in cizecegi verilerin tutuldugu dosyalar
+#include "../headers/abstract/shader.h"				// shader objesi olusturmaya dair veritipi
 #include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
-#include "../headers/maps/shaders.h"			// shaderlarin isimleri ve dosya konumlarinin mapleri
+#include "../headers/maps/shaders.h"				// shaderlarin isimleri ve dosya konumlarinin mapleri
 #include "../headers/core/openGL.h"					// ana calisma dosyasi
 
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <glad/glad.h>			// opengl hardware adaptor !glfw den once
 #include <iostream>				// cout / cin icin lazim
 #include <string>				// standart string kutuphanesi
-#include <unordered_map>			// dictionary / map kutuphanesi
+#include <unordered_map>		// dictionary / map kutuphanesi
 #include <cmath>     			//
+
+// imgui
+#include "../../libs/imgui-1.89.5/imgui.h"
+#include "../../libs/imgui-1.89.5/imgui_impl_glfw.h"
+#include "../../libs/imgui-1.89.5/imgui_impl_opengl3.h"
+
+// glm
+#include <glm/vec3.hpp>						// glm::vec3
+#include <glm/vec4.hpp>						// glm::vec4
+#include <glm/mat4x4.hpp>					// glm::mat4
+#include <glm/ext/matrix_transform.hpp>		// glm::translate, glm::rotate, glm::scale
+#include <glm/ext/matrix_clip_space.hpp>	// glm::perspective
+#include <glm/ext/scalar_constants.hpp>		// glm::pi
 
 
 // self keywords
@@ -46,6 +59,7 @@ constexpr unsigned int ERROR_BUFFER_SIZE = 512;
 // ------------------------------------------------------------------------------------------------
 int runApplication(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config)
 {
+
 	// ------------------------------------------------------------------------------------------------
 	//  Settings
 	// ------------------------------------------------------------------------------------------------
@@ -57,14 +71,21 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	std::unordered_map<std::string, ShaderCompileDesc> shaders = loadShaders();
 	const char* vrtx_shader_src = shaders.at("vrtxShader").content.c_str();
 	const char* frag_shader_src = shaders.at("fragShader").content.c_str();
-	const char* frag_shader_src1 = shaders.at("fragShader_1").content.c_str();
-	const char* frag_shader_src2 = shaders.at("fragShader_2").content.c_str();
 
-	// stores how much we're seeing of either texture
-	MyUniforms uni;
-	uni.mixValue = 0.2f;
+	// uniform variables according to update frequency
+	UniformsPerObject uni_obj;
+	UniformsPerView uni_view;
+	UniformsPerFrame uni_frame;
 
-	// glfw init
+	// initial values for the uniforms
+	uni_obj.world_matrix = mat_utils::identity4();
+	uni_view.view_matrix = mat_utils::identity4();
+	uni_view.projection_matrix = mat_utils::identity4();
+	uni_obj.mixValue = 0.2f;
+
+	// ------------------------------------------------------------------------------------------------
+	//  GLFW
+	// ------------------------------------------------------------------------------------------------
 	glfwInit();
 	// :: first param what option we want to configure; second option is value we set.
 	// :: 3 means we are explicitly using core profile. version 3.3
@@ -75,6 +96,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 	// :: if apple
 	// --------------------------
+	const char* glsl_version = "#version 330";
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
@@ -101,21 +123,37 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		return -1;
 	}
 
+	// ------------------------------------------------------------------------------------------------
+	//  IMGUI Init
+	// ------------------------------------------------------------------------------------------------
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	// Our state
+	bool show_demo_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(scaleByteToZeroOne(16), scaleByteToZeroOne(16), scaleByteToZeroOne(16), 1.00f);
+
 	// build and compile our shader zprogram
 	// ------------------------------------
-	Shader ourShader("shaders/vrtxShader.glsl", "shaders/fragShader.glsl");
+	Shader ourShader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
 
 	unsigned int vrtxShader = compileShader(vrtx_shader_src, GL_VERTEX_SHADER);
 	unsigned int fragShader = compileShader(frag_shader_src, GL_FRAGMENT_SHADER);
 
-	unsigned int fragShaderBlue = compileShader(frag_shader_src1, GL_FRAGMENT_SHADER);
-	unsigned int fragShaderViol = compileShader(frag_shader_src2, GL_FRAGMENT_SHADER);
-
 	// --------------------------
 	unsigned int shaderProgram = linkShaderProgram({ vrtxShader, fragShader });
-	unsigned int shaderProgramBlue = linkShaderProgram({ vrtxShader, fragShaderBlue });
-	unsigned int shaderProgramViol = linkShaderProgram({ fragShaderViol, vrtxShader });
-
 
 	// --------------------------
 	// texture
@@ -124,7 +162,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	unsigned int texture2 = createTexture("data/textures/awesomeface.png");
 
 	// --------------------------
-	deleteCompiledShaders({ vrtxShader, fragShader, fragShaderBlue, fragShaderViol });
+	deleteCompiledShaders({ vrtxShader, fragShader });
 
 	// create vertex array object and vertex buffer object
 	// --------------------------
@@ -194,7 +232,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	
+
 	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
 	// -------------------------------------------------------------------------------------------
 	ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
@@ -202,31 +240,68 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
 	// or set it via the texture class
 	ourShader.setInt("texture2", 1);
+	float speed = PI / 4;
+	float top = 0.5f, left = -0.5f;
 
 	// render loop 
 	// --------------------------
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window, uni);
+		processInput(window, uni_obj);
+
+
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+		{
+			static float f = 0.0f;
+			static int counter = 0;
+
+			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			ImGui::Checkbox("Another Window", &show_another_window);
+
+			ImGui::SliderFloat("Speed", &speed, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("Top", &top, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("Left", &left, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Edit 3 floats representing a color
+
+			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				counter++;
+			ImGui::SameLine();
+			ImGui::Text("counter = %d", counter);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			ImGui::End();
+		}
 
 		// render clear screen
 		// ------------------------------
-		glClearColor(scaleByteToZeroOne(18), scaleByteToZeroOne(18), scaleByteToZeroOne(18), 1.0f);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// update the uniform color
 		// ------------------------------
 		float time_value = glfwGetTime();
-		float speed = PI / 4;
-		float scale = (sinf(time_value) + 1.0f) / 4 + 0.5f;
-		uni.transform = mat_utils::rotationZ(speed * time_value) * mat_utils::rotationX(speed * time_value) * mat_utils::scale(scale);
-		//float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-		//int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		//glUniform4f(vertexColorLocation, scaleByteToZeroOne(18), greenValue, scaleByteToZeroOne(18), 1.0f);
+		float scale = (sinf(time_value) + 1.0f) / 4 + 0.5f; // 0 1 0 -1 | 1 2 1 0
+
+		uni_obj.world_matrix = mat_utils::rotationX(0); //*mat_utils::scale(scale);
+		uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -1.0f)); //*mat_utils::scale(scale);
+		//uni_view.projection_matrix = mat_utils::projectPerspective(PI / 4, float(w) / float(h), -0.5f, -100.0f);
+		//uni_view.projection_matrix = mat_utils::projectPerspective(0.1f, 100.0f, left, -left, top, -top);
+		//uni_view.projection_matrix = mat_utils::projectPerspective(PI/4, 800.0f/600.0f, 0.1f, 100.0f);
+
 
 		// set the texture mix value in the shader
-		ourShader.setFloat("mixValue", uni.mixValue);
-		ourShader.setMat4("transform", uni.transform);
+		ourShader.setFloat("mixValue", uni_obj.mixValue);
+		ourShader.setMat4("world_matrix", uni_obj.world_matrix);
+		ourShader.setMat4("view_matrix", uni_view.view_matrix);
+		ourShader.setMat4("projection_matrix", uni_view.projection_matrix);
 		// :: draw triangle
 		ourShader.use();
 		glBindVertexArray(VAOs[0]);
@@ -242,7 +317,16 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glDrawArrays(GL_LINE_STRIP, 0, 2);
 
+		//// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+		//if (show_demo_window)
+		//	ImGui::ShowDemoWindow(&show_demo_window);
 
+		// Rendering
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// check and call events and swap the buffers
 		// ------------------------------

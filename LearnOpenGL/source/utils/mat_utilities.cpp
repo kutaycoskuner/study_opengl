@@ -5,6 +5,7 @@
 #include "../../headers/abstract/vector.h"
 #include "../../headers/utils/utilities.h"
 #include <cassert>
+#include <cmath>
 
 // ------------------------------------------------------------------------------------------------
 // ----- Function Definitions
@@ -113,4 +114,46 @@ namespace mat_utils
 			0,					 0,					  0,				   1
 		);
 	}
+
+	//Mat4 transpose(const Mat4& mat)
+	//{
+	//	// [0][1] [1][0]
+	//	// [0][2] [2][0]
+
+	//	for (int ii = 0; ii < 4; ii++)
+	//	{
+	//	}
+	//}
+
+	Mat4 projectPerspective(float near, float far, float left, float right, float top, float bottom)
+	{
+		const float n = near;
+		const float f = far;
+		const float t = top;
+		const float b = bottom;
+		const float l = left;
+		const float r = right;
+		return Mat4(
+			(2*n)/(r-l),	0,				(r+l)/(r-l),	0,
+			0,				(2*n)/(t-b),	(t+b)/(t-b),	0,
+			0,				0,				(f+n)/(n-f),	(2*f*n)/(n-f),
+			0,				0,				-1,				0
+		);
+	}
+
+	Mat4 projectPerspective(float fov_inRadians, float aspect_ratio, float near, float far)
+	{
+		const float t = near * std::tan(fov_inRadians / 2);
+		const float b = -t;
+		const float r = aspect_ratio * t;
+		const float l = -r;
+		const float n = near;
+		const float f = far;
+		return projectPerspective(n, f, l, r, t, b);
+	}
+
+	//Mat4 projectOrthographic()
+	//{}
+
+
 }

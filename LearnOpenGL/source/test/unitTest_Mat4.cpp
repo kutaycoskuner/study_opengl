@@ -109,6 +109,24 @@ static void unitTest_Mat4_mat4_product()
 	);
 }
 
+static void unitTest_Mat4_transpose()
+{
+	Mat4 a(
+		4, 2, 1, 0,
+		2, 0, 4, 0,
+		9, 4, 2, 0,
+		12, 0, 0, 1
+	);
+	Mat4 b = a.transposed();
+	for (int ii = 0; ii < 4; ii++)
+	{
+		for (int jj = 0; jj < 4; jj++)
+		{
+			assert(compareApprox(b.m[ii][jj], a.m[jj][ii]));
+		}
+	}
+}
+
 void unitTest_Mat4()
 {
 	unitTest_Mat4_defaultConstructor();
@@ -119,4 +137,5 @@ void unitTest_Mat4()
 	unitTest_Mat4_subtraction();
 	unitTest_Mat4_scalar_product();
 	unitTest_Mat4_mat4_product();
+	unitTest_Mat4_transpose();
 }

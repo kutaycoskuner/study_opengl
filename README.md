@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 05-May-2023 | 0.29    |
+| 19-Aug-2022     | 17-May-2023 | 0.30    |
 
 # Table of Contents
 1. [Description](#description)
@@ -51,6 +51,8 @@ This is a study repository for learning graphics programming through OpenGL.
     - Libraries
         - GLFW | GLFW is a lightweight utility library for use with OpenGL. [Download](https://www.glfw.org/download.html)
         - GLAD | OpenGL hardware adjustment library. [Download](https://glad.dav1d.de/)
+        - GLM  | OpenGL mathematics library [Download](https://glm.g-truc.net/0.9.8/index.html)
+        - Dear ImGui | C++ gui library [Download](https://github.com/ocornut/imgui/releases/tag/v1.89.5)
         - stb_image.h | Image file load library. [Downlaod](https://github.com/nothings/stb/blob/master/stb_image.h)
     - Environment Setup 
         - Visual Studio (Main IDE)
