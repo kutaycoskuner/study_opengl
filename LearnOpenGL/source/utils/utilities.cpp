@@ -18,11 +18,24 @@
 // ------------------------------
 namespace math_utils
 {
+	// scaling
 	float scaleByteToZeroOne(unsigned int byte)
 	{
 		return (float(byte) / 255.0f);
 	}
 
+	// trigonometry
+	float radian(float degree)
+	{
+		return degree * PI / 180.0f;
+	}
+
+	float degree(float radian)
+	{
+		return radian * 180.0f / PI;
+	}
+
+	// vector
 	std::vector<float> scaleByteToZeroOneVec3(const unsigned int x, const unsigned int y, const unsigned int z)
 	{
 		return { scaleByteToZeroOne(x), scaleByteToZeroOne(y), scaleByteToZeroOne(z) };

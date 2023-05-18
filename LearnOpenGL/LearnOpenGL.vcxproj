@@ -141,7 +141,7 @@
     <ClCompile Include="data\adress_mappings\m_shaders.cpp" />
     <None Include="shaders\3d_fragShader.glsl" />
     <None Include="shaders\3d_vrtxShader.glsl" />
-    <None Include="shaders\fragShader.glsl" />
+    <None Include="shaders\old\fragShader.glsl" />
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
@@ -165,7 +165,7 @@
     <ClCompile Include="source\utils\mat_utilities.cpp" />
     <ClCompile Include="source\utils\shader_utilities.cpp" />
     <None Include="shaders\old\v1.1_fragShader.glsl" />
-    <None Include="shaders\fragShader_1.glsl">
+    <None Include="shaders\old\fragShader_1.glsl">
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="source\core\learnOpenGL.cpp" />
@@ -175,7 +175,7 @@
     <None Include="shaders\old\v1.0_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="shaders\fragShader_2.glsl" />
+    <None Include="shaders\old\fragShader_2.glsl" />
     <None Include="shaders\old\v1.0_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
@@ -183,7 +183,7 @@
     <ClCompile Include="source\main.cpp" />
     <None Include="shaders\old\v1.2_fragShader.glsl" />
     <None Include="shaders\old\v1.2_vrtxShader.glsl" />
-    <None Include="shaders\vrtxShader.glsl" />
+    <None Include="shaders\old\vrtxShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\abstract\uniforms.h" />

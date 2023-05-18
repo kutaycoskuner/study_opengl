@@ -11,6 +11,7 @@ public:
 class ObjToDraw
 {
 public:
+    static float cubeVrts[180];
     static float vertices[18];
     static float squareVrts[32];
     static unsigned int squareInds[6];

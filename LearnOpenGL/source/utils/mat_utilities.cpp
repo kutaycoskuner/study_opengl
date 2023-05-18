@@ -108,10 +108,10 @@ namespace mat_utils
 		const Vec3& r = axis;
 		assert(math_utils::compareApprox(axis.length(), 1.0f));
 		return Mat4(
-			cos+r.x*r.x*omc,     r.x*r.y*omc-r.z*sin, r.x*r.z*omc+r.y*sin, 0,
-			r.y*r.x*omc+r.z*sin, cos+r.y*r.y*omc,	  r.y*r.z*omc-r.x*sin, 0,
-			r.y*r.x*omc+r.y*sin, r.z*r.y*omc+r.x*sin, cos+r.z*r.z*omc,     0,
-			0,					 0,					  0,				   1
+			cos+r.x*r.x*omc,		r.x*r.y*omc-r.z*sin,	r.x*r.z*omc+r.y*sin,	0,
+			r.y*r.x*omc+r.z*sin,	cos+r.y*r.y*omc,		r.y*r.z*omc-r.x*sin,	0,
+			r.z*r.x*omc-r.y*sin,	r.z*r.y*omc+r.x*sin,	cos+r.z*r.z*omc,		0,
+			0,						0,						0,						1
 		);
 	}
 
@@ -143,13 +143,15 @@ namespace mat_utils
 
 	Mat4 projectPerspective(float fov_inRadians, float aspect_ratio, float near, float far)
 	{
-		const float t = near * std::tan(fov_inRadians / 2);
-		const float b = -t;
-		const float r = aspect_ratio * t;
-		const float l = -r;
 		const float n = near;
 		const float f = far;
-		return projectPerspective(n, f, l, r, t, b);
+		const float e = 1.0f / std::tan(fov_inRadians / 2);
+		return Mat4(
+			e / aspect_ratio,	0.0f,				0.0f,					0.0f,
+			0.0f,				e,					0.0f,					0.0f,
+			0.0f,				0.0f,				(f+n)/(n-f),			(2.0f*f*n)/(n-f),
+			0.0f,				0.0f,				-1.0f,					0.0f
+			);
 	}
 
 	//Mat4 projectOrthographic()

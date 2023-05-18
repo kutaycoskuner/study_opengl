@@ -178,10 +178,10 @@
     <None Include="shaders\old\v1.0_vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\fragShader_2.glsl">
+    <None Include="shaders\old\fragShader_2.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\fragShader_1.glsl">
+    <None Include="shaders\old\fragShader_1.glsl">
       <Filter>Source Files</Filter>
     </None>
     <None Include="shaders\old\v1.1_fragShader.glsl">
@@ -190,10 +190,10 @@
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="shaders\vrtxShader.glsl">
+    <None Include="shaders\old\vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\fragShader.glsl">
+    <None Include="shaders\old\fragShader.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\old\v1.2_vrtxShader.glsl">

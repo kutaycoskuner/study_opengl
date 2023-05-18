@@ -141,9 +141,12 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// Our state
-	bool show_demo_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(scaleByteToZeroOne(16), scaleByteToZeroOne(16), scaleByteToZeroOne(16), 1.00f);
+	ImVec4 clear_color = ImVec4(
+		scaleByteToZeroOne(std::stoul(config["colors"]["bg"])),
+		scaleByteToZeroOne(std::stoul(config["colors"]["bg"])),
+		scaleByteToZeroOne(std::stoul(config["colors"]["bg"])),
+		1.00f
+	);
 
 	// build and compile our shader zprogram
 	// ------------------------------------
@@ -165,7 +168,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	deleteCompiledShaders({ vrtxShader, fragShader });
 
 	// create vertex array object and vertex buffer object
-	// --------------------------
+	// -------------------------- 
 	const unsigned int buffer_count = 1;
 	unsigned int VBO, VAO, EBO;
 	unsigned int VBOs[buffer_count], VAOs[buffer_count];
@@ -177,19 +180,19 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	// ----- texture square
 	glBindVertexArray(VAOs[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::squareVrts), ObjToDraw::squareVrts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cubeVrts), ObjToDraw::cubeVrts, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
 	// att: pos
-	unsigned int stride = 8;
+	unsigned int stride = 5;
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// att: color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
 	// att: texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	//// ----- texture square end
 
@@ -232,6 +235,8 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
+	glEnable(GL_DEPTH_TEST);
+
 
 	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
 	// -------------------------------------------------------------------------------------------
@@ -241,60 +246,93 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	// or set it via the texture class
 	ourShader.setInt("texture2", 1);
 	float speed = PI / 4;
-	float top = 0.5f, left = -0.5f;
+	float top = 0.5f, left = -0.5f, near = 0.1f, far = 100.0f;
+
+	bool animate = true;
 
 	// render loop 
 	// --------------------------
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window, uni_obj);
-
+		int w, h;
+		glfwGetWindowSize(window, &w, &h);
 
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-		{
-			static float f = 0.0f;
-			static int counter = 0;
+		//2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+		//{
+		//	static float f = 0.0f;
+		//	static int counter = 0;
+		//	static const char* txt_aspectRatio = "Aspect Ratio: ";
 
-			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		//	ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-			ImGui::Checkbox("Another Window", &show_another_window);
+		//	ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
+		//	ImGui::Checkbox("Animate Y", &animate);      // Edit bools storing our window open/close state
+		//	//ImGui::Checkbox("Another Window", &show_another_window);
 
-			ImGui::SliderFloat("Speed", &speed, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::SliderFloat("Top", &top, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::SliderFloat("Left", &left, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Edit 3 floats representing a color
+		//	ImGui::SliderInt("Width", &w, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//	ImGui::SliderInt("Height", &h, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//	ImGui::SliderFloat("Near", &near, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//	ImGui::SliderFloat("Far", &far, 0.0f, 1000.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//	ImGui::SliderFloat("Top/Bottom", &top, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//	ImGui::SliderFloat("Left/Right", &left, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//	ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Edit 3 floats representing a color
 
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
+		//	//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		//	//	counter++;
+		//	//ImGui::SameLine();
+		//	//ImGui::Text("counter = %d", counter);
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-			ImGui::End();
-		}
+		//	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		//	ImGui::End();
+		//}
 
 		// render clear screen
 		// ------------------------------
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		/*
+			0b001
+			0b010
+			0b011
+
+			0b011
+			0b001
+			0b001
+
+			0b011
+			0b010
+			0b010
+
+			0b011
+			0b000
+			0b000
+		*/
 
 		// update the uniform color
 		// ------------------------------
-		float time_value = glfwGetTime();
+		float time_value;
+		if (animate)
+		{
+			time_value = glfwGetTime();
+		}
+		else
+		{
+			time_value = 0;
+		}
 		float scale = (sinf(time_value) + 1.0f) / 4 + 0.5f; // 0 1 0 -1 | 1 2 1 0
 
-		uni_obj.world_matrix = mat_utils::rotationX(0); //*mat_utils::scale(scale);
-		uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -1.0f)); //*mat_utils::scale(scale);
-		//uni_view.projection_matrix = mat_utils::projectPerspective(PI / 4, float(w) / float(h), -0.5f, -100.0f);
-		//uni_view.projection_matrix = mat_utils::projectPerspective(0.1f, 100.0f, left, -left, top, -top);
-		//uni_view.projection_matrix = mat_utils::projectPerspective(PI/4, 800.0f/600.0f, 0.1f, 100.0f);
+		uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(time_value, Vec3(1.0f, 1.0f, 1.0f).normalized());
+		uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -3.0f)); //*mat_utils::scale(scale);
+		//uni_view.projection_matrix = mat_utils::projectPerspective(near, far, left, -left, top, -top);
+
+		float aspect_ratio = float(w) / float(h);
+		uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
 
 
 		// set the texture mix value in the shader
@@ -314,8 +352,8 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//glDrawArrays(GL_LINE_STRIP, 0, 2);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		//// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 		//if (show_demo_window)

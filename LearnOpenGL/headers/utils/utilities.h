@@ -25,6 +25,9 @@ namespace math_utils
 	constexpr float PI = 3.14159265359f;
 	// scaling
 	float scaleByteToZeroOne(unsigned int byte);
+	// trigonometri
+	float radian(float degree);
+	float degree(float radian);
 	// float
 	bool compareApprox(const float& a, const float& b);
 	// vector
@@ -48,7 +51,8 @@ namespace mat_utils
 	Mat4 rotationY(const float& angleInRadians);
 	Mat4 rotationZ(const float& angleInRadians);
 	Mat4 rotationXYZ(const float& angleInRadians, const Vec3& axis);
-	Mat4 projectPerspective(float near = 0.01f, float far = 100.0f, float left = -0.4f, float right = 0.4f, float top = 0.4f, float bottom = -0.4f);
+	Mat4 projectPerspective(float fov_inRadians, float aspect_ratio, float near, float far);
+	Mat4 projectPerspective(float near, float far, float left, float right, float top, float bottom);
 }
 
 namespace img_utils

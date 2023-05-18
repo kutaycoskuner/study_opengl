@@ -6,43 +6,6 @@
 - [log](#log)
 
 
-# Nomenclature
-- 1.1
-    - Conventions
-        1. all lower case with underscore: table_name 
-            - underscore yoksa - : table-names
-            - ikisi de yoksa:    : TableName
-        2. mixed case                     : TableName
-        3. 
-    - common variable names: 1
-        - ex. table_items
-    - class data members: 1
-    - global constants has `k` in front of the mixed
-        - ex. k_table
-    - pointer degisken isimleri `p` ile baslasin
-        - ex. p_table
-        - birden fazla front tag varsa birlestir
-        - kp_table 
-    - function names: 2
-        - DoSometing()
-
-# Comment Discipline 
-- 1.6
-    comment             :        | "#888888"
-    xx                  :   .    | "#dbdbdb"
-    title               :   ==== | "#00c8ff" 
-    sub-title           :   ==   | "#128EC4"
-    description         :   ::   | "#06b4ba" 
-    problem             :   !!   | "#FF2D00"
-    query               :   ??   | "#33ffff" 
-    todo                :   >>   | "#da1991"
-    test                :   test | "#ffa100"
-    separator line      :   --   | "#99ff33"
-    ----------------------------------------
-    highlight           :   **   | "#8fab21"  
-    disabledProperty    :  none
-
-
 # Logging Actions
 - 1.6
     - org: organization, decisions, notebook changes
@@ -79,15 +42,26 @@
 - [x] 21-Apr-2023 07-Apr-2023 add: data class icine alan refacting
 - [x] 03-May-2023 02-May-2023 add: struct Vec4
 - [x] 03-May-2023 05-May-2023 add: Matrix utilities
-- 05-Apr-2023 fix: split fonksiyonunu duzelt
+- [x] 17-May-2023 17-May-2023 todo 6 parameter projectPerspective function
+- [d] 05-Apr-2023 fix: split fonksiyonunu duzelt
+- [x] 18-May-2023 17-May-2023 todo 4 parameter projectPerspective function
+- [x] 18-May-2023 16-May-2023 fix: find reason of perspective distortion 
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 16-May-2023 add: Imgui draw ui encapsulate in self function   
-- 16-May-2023 fix: find reason of perspective distortion 
 
 # Log
-- [x]
-    - todo projectPerspectve 2,6 parameter functions
+- [ ]
+
+
+- [0.31] add: 4 Parameter project perspective ...
+    - 18-May-2023   add: display: Rotating cube
+    - 18-May-2023   fix: RotationXYZ math
+    - 18-May-2023   add: 4 Parameter project perspective
+    - 17-May-2023   add: clear color through config file
+    - 17-May-2023   fun: math utility: Degree to radian converter 
+    - 17-May-2023   add: 6 Parameter frustrum initial values
+
 
 - [0.30] add: Dear Imgui, glm, Transformation pipeline matrices
     - 17-May-2023   add: Install glm library

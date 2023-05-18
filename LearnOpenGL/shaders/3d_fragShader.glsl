@@ -13,7 +13,7 @@ uniform float mixValue;
 void main()
 {
     vec4 tex_color = texture(texture1, TexCoord);
-    FragColor = FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), mixValue) * vec4(ourColor,1); 
+    FragColor = FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), mixValue);// * vec4(ourColor,1); 
 
     //    negatif
     //    FragColor = vec4(vec3(1,1,1)-tex_color.xyz,tex_color.a); 

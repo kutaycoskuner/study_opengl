@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 17-May-2023 | 0.30    |
+| 19-Aug-2022     | 18-May-2023 | 0.31    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,6 +23,11 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
+![0.31 3D Perspective projection / transformation](display/0.31_perspective-rotation_2023-05-18.gif)
+```
+0.19 3D Perspective projection / transformation
+```  
+
 ![0.29 Transforming drawn object through linear algebra](display/0.29_transforms_2023-05-05.gif)
 ```
 0.19 Two triangle with different shaders

@@ -272,6 +272,10 @@
     - birden fazla tanim oldugunda oluyor
     - baska bir sekilde de olabiliyor
 
+- <const char to string | string to const char>
+    - const char* ex = str.c_string()
+    - static_cast<const char*>(str.c_str());
+
 # Shortcuts
 - f5                                debugger
 - shift + f5                        calisan debug i kapatiyor
