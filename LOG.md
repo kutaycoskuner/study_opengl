@@ -49,10 +49,14 @@
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 16-May-2023 add: Imgui draw ui encapsulate in self function   
+- 18-May-2023 arch: refactoring after v0.31
+- 28-May-2023 add: Edge detection / outlines
+
 
 # Log
-- [ ]
-
+- [0.32] add: Multiple cube render
+    - 18-May-2023   add: Multiple cube renders
+    - 18-May-2023   fix: Readme typo fix
 
 - [0.31] add: 4 Parameter project perspective ...
     - 18-May-2023   add: display: Rotating cube

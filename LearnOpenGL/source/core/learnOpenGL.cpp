@@ -2,9 +2,10 @@
 // ----- Notes
 // ------------------------------------------------------------------------------------------------
 /*
-Version: 0.29
-https://learnopengl.com/Getting-started/Transformations
-Transformations chapter has ended.
+Version: 0.32
+https://learnopengl.com/Getting-started/Coordinate-Systems
+Coordinate system end.
+Continue: Camera
 
 */
 #if 1
@@ -250,6 +251,21 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 	bool animate = true;
 
+
+	// cube positions 
+	Vec3 cubePositions[] = {
+		Vec3(2.0f,  5.0f, -15.0f),
+		Vec3(-1.5f, -2.2f, -2.5f),
+		Vec3(-3.8f, -2.0f, -12.3f),
+		Vec3(2.4f, -0.4f, -3.5f),
+		Vec3(-1.7f,  3.0f, -7.5f),
+		Vec3(1.3f, -2.0f, -2.5f),
+		Vec3(1.5f,  2.0f, -2.5f),
+		Vec3(1.5f,  0.2f, -1.5f),
+		Vec3(-1.3f,  1.0f, -1.5f),
+		Vec3(0.0f,  0.0f,  -3.0f)
+	};
+
 	// render loop 
 	// --------------------------
 	while (!glfwWindowShouldClose(window))
@@ -257,6 +273,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		processInput(window, uni_obj);
 		int w, h;
 		glfwGetWindowSize(window, &w, &h);
+		float aspect_ratio = float(w) / float(h);
 
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -327,19 +344,17 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		}
 		float scale = (sinf(time_value) + 1.0f) / 4 + 0.5f; // 0 1 0 -1 | 1 2 1 0
 
+		// create transformations
 		uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(time_value, Vec3(1.0f, 1.0f, 1.0f).normalized());
 		uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -3.0f)); //*mat_utils::scale(scale);
-		//uni_view.projection_matrix = mat_utils::projectPerspective(near, far, left, -left, top, -top);
-
-		float aspect_ratio = float(w) / float(h);
 		uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
-
 
 		// set the texture mix value in the shader
 		ourShader.setFloat("mixValue", uni_obj.mixValue);
-		ourShader.setMat4("world_matrix", uni_obj.world_matrix);
+		//ourShader.setMat4("world_matrix", uni_obj.world_matrix);
 		ourShader.setMat4("view_matrix", uni_view.view_matrix);
 		ourShader.setMat4("projection_matrix", uni_view.projection_matrix);
+
 		// :: draw triangle
 		ourShader.use();
 		glBindVertexArray(VAOs[0]);
@@ -351,9 +366,15 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
-
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		for (unsigned int ii = 0; ii < 10; ii++)
+		{
+			float angle = 20.0f * ii;
+			Mat4 model = mat_utils::translation(cubePositions[ii]) * mat_utils::rotationXYZ( time_value + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
+			ourShader.setMat4("world_matrix", model);
+			//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
+			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		//// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 		//if (show_demo_window)

@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 18-May-2023 | 0.31    |
+| 19-Aug-2022     | 29-May-2023 | 0.32    |
 
 # Table of Contents
 1. [Description](#description)
@@ -25,7 +25,7 @@ This is a study repository for learning graphics programming through OpenGL.
 # Display
 ![0.31 3D Perspective projection / transformation](display/0.31_perspective-rotation_2023-05-18.gif)
 ```
-0.19 3D Perspective projection / transformation
+0.31 3D Perspective projection / transformation
 ```  
 
 ![0.29 Transforming drawn object through linear algebra](display/0.29_transforms_2023-05-05.gif)
@@ -50,6 +50,7 @@ This is a study repository for learning graphics programming through OpenGL.
         - [Grant Sanderson. Essense of Linear Algebra. _3Blue1Brown, Youtube_. 2016.](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
     - Website
         - Joey de Vries [learnopengl.com](https://learnopengl.com)
+        - Jordan Santell [jsantell.com/3d-projection](https://jsantell.com/3d-projection/)
     - Supervision / Support
         - Volkan Ilbeyli [github.com/vilbeyli](https://github.com/vilbeyli)
 - Dependencies
