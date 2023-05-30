@@ -3,6 +3,6 @@
 #define BASIC
 //
 void helloWorld();				// helloWorld.ccp
-void test();					// test.ccp
+int test();						// test.ccp
 //
 #endif

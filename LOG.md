@@ -46,14 +46,23 @@
 - [d] 05-Apr-2023 fix: split fonksiyonunu duzelt
 - [x] 18-May-2023 17-May-2023 todo 4 parameter projectPerspective function
 - [x] 18-May-2023 16-May-2023 fix: find reason of perspective distortion 
+- [x] 30-May-2023 18-May-2023 arch: refactoring after v0.31
+- [x] 30-May-2023 16-May-2023 add: Imgui draw ui encapsulate in self function   
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
-- 16-May-2023 add: Imgui draw ui encapsulate in self function   
-- 18-May-2023 arch: refactoring after v0.31
 - 28-May-2023 add: Edge detection / outlines
-
+- 30-May-2023 add: refactor load shader, mesh, texture functions
 
 # Log
+- []
+
+- [0.33] add: Application abstraction
+    - 30-Mar-2023   arch: application class initilaize, load, mainloop, unload, exit (first level abstraction)
+    - 29-Mar-2023   wip: refactor application class
+    - 29-Mar-2023   add: 0.32 display multiple cubes 94 frame
+    - 29-May-2023   learn: git stash
+    - 28-May-2023   wip: Refactor
+
 - [0.32] add: Multiple cube render
     - 18-May-2023   add: Multiple cube renders
     - 18-May-2023   fix: Readme typo fix

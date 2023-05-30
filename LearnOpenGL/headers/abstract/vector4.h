@@ -27,6 +27,13 @@ struct Vec4
 	Vec4(float p_x) : x(p_x), y(p_x), z(p_x), w(p_x) {}
 	// copy constructor
 	Vec4(const Vec4& vec) :x(vec.x), y(vec.y), z(vec.z), w(vec.w) {}
+	
+	// float pointer converter
+	float* toFloatPointer() 
+	{
+		return &x;
+	}
+	
 	// negation
 	Vec4 operator-() const
 	{

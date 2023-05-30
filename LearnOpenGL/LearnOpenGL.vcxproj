@@ -186,6 +186,8 @@
     <None Include="shaders\old\vrtxShader.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\abstract\application.h" />
+    <ClInclude Include="headers\abstract\ui.h" />
     <ClInclude Include="headers\abstract\uniforms.h" />
     <ClInclude Include="headers\abstract\vector.h" />
     <ClInclude Include="headers\abstract\vector4.h" />

@@ -24,10 +24,12 @@ void runIntegrationTests();
 // ------------------------------------------------------------------------------------------------
 // ----- Function definitions
 // ------------------------------------------------------------------------------------------------
-void test()
+int test()
 {
 	runUnitTests();
 	runIntegrationTests();
+	return EXIT_SUCCESS;
+	// todo fail case gir
 }
 
 void runUnitTests()

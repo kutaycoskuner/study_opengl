@@ -16,6 +16,7 @@ Continue: Camera
 #include "../headers/utils/utilities.h"				// config dosyasi okuma ve cekmeye dair kendi kutuphanem
 #include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
 #include "../headers/events/events.h"				// opengl in cizecegi verilerin tutuldugu dosyalar
+#include "../headers/abstract/application.h"		
 #include "../headers/abstract/shader.h"				// shader objesi olusturmaya dair veritipi
 #include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
 #include "../headers/maps/shaders.h"				// shaderlarin isimleri ve dosya konumlarinin mapleri
@@ -58,31 +59,14 @@ constexpr unsigned int ERROR_BUFFER_SIZE = 512;
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-int runApplication(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config)
+bool Application::Initialize(c_configType& config)
 {
-
 	// ------------------------------------------------------------------------------------------------
 	//  Settings
 	// ------------------------------------------------------------------------------------------------
-	const unsigned int SCR_WIDTH = std::stoul(config["scr"]["width"]);
-	const unsigned int SCR_HEIGHT = std::stoul(config["scr"]["height"]);
-	const char* WNDW_NAME = config["scr"]["wndw_name"].c_str();
-
-	// load shaders
-	std::unordered_map<std::string, ShaderCompileDesc> shaders = loadShaders();
-	const char* vrtx_shader_src = shaders.at("vrtxShader").content.c_str();
-	const char* frag_shader_src = shaders.at("fragShader").content.c_str();
-
-	// uniform variables according to update frequency
-	UniformsPerObject uni_obj;
-	UniformsPerView uni_view;
-	UniformsPerFrame uni_frame;
-
-	// initial values for the uniforms
-	uni_obj.world_matrix = mat_utils::identity4();
-	uni_view.view_matrix = mat_utils::identity4();
-	uni_view.projection_matrix = mat_utils::identity4();
-	uni_obj.mixValue = 0.2f;
+	const unsigned int SCR_WIDTH = std::stoul(config.at("scr").at("width"));
+	const unsigned int SCR_HEIGHT = std::stoul(config.at("scr").at("height"));
+	const char* WNDW_NAME = config.at("scr").at("wndw_name").c_str();
 
 	// ------------------------------------------------------------------------------------------------
 	//  GLFW
@@ -104,7 +88,7 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 	// glfw window creation
 	// --------------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, WNDW_NAME, NULL, NULL);
+	this->window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, WNDW_NAME, NULL, NULL);
 	// first two params x,y in size; 3. name; 4-5 necesssary but ignore
 	if (window == NULL)
 	{
@@ -135,44 +119,52 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsLight();
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// Our state
-	ImVec4 clear_color = ImVec4(
-		scaleByteToZeroOne(std::stoul(config["colors"]["bg"])),
-		scaleByteToZeroOne(std::stoul(config["colors"]["bg"])),
-		scaleByteToZeroOne(std::stoul(config["colors"]["bg"])),
+	this->clear_color = Vec4(
+		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
+		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
+		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
 		1.00f
 	);
+}
+
+bool Application::Load(c_configType& config)
+{
+	// todo: shaders, meshdata, texture
+
+	// load config states
+	this->b_isWireframeMode = config.at("settings").at("is_wireframeMode") == "true";
+
+	// load shaders
+	//std::unordered_map<std::string, ShaderCompileDesc> shaders = loadShaders();
+	//const char* vrtx_shader_src = shaders.at("vrtxShader").content.c_str();
+	//const char* frag_shader_src = shaders.at("fragShader").content.c_str();
 
 	// build and compile our shader zprogram
-	// ------------------------------------
-	Shader ourShader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
-
-	unsigned int vrtxShader = compileShader(vrtx_shader_src, GL_VERTEX_SHADER);
-	unsigned int fragShader = compileShader(frag_shader_src, GL_FRAGMENT_SHADER);
+// ------------------------------------
+	this->ourShader = new Shader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
+	//unsigned int vrtxShader = compileShader(vrtx_shader_src, GL_VERTEX_SHADER);
+	//unsigned int fragShader = compileShader(frag_shader_src, GL_FRAGMENT_SHADER);
 
 	// --------------------------
-	unsigned int shaderProgram = linkShaderProgram({ vrtxShader, fragShader });
+	//unsigned int shaderProgram = linkShaderProgram({ vrtxShader, fragShader });
 
 	// --------------------------
 	// texture
 	setVerticalFlipMode(true);
-	unsigned int texture1 = createTexture("data/textures/container.jpg", 2);
-	unsigned int texture2 = createTexture("data/textures/awesomeface.png");
+	texture1 = createTexture("data/textures/container.jpg", 2);
+	texture2 = createTexture("data/textures/awesomeface.png");
 
 	// --------------------------
-	deleteCompiledShaders({ vrtxShader, fragShader });
+	//deleteCompiledShaders({ vrtxShader, fragShader });
 
 	// create vertex array object and vertex buffer object
-	// -------------------------- 
-	const unsigned int buffer_count = 1;
-	unsigned int VBO, VAO, EBO;
-	unsigned int VBOs[buffer_count], VAOs[buffer_count];
+	// --------------------------
 	glGenVertexArrays(buffer_count, VAOs);
 	glGenBuffers(buffer_count, VBOs); // :: memory alani olusturuyor
 	glGenBuffers(buffer_count, &EBO); // :: ebo icin memory
@@ -185,6 +177,8 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
+
+
 	// att: pos
 	unsigned int stride = 5;
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
@@ -221,36 +215,45 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 	// 5. known as stride space between consequtive vertex attributes
 	// 6. void this is the offset where the position data begins in the buffer
 
-	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+	// clean up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
+	return 1;
 
+}
 
-	// draw wireframe or not
-	if (config["settings"]["is_wireframeMode"] == "true") // todo: deserialize config
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
+void Application::MainLoop()
+{
+	// uniform variables according to update frequency
+	UniformsPerObject uni_obj;
+	UniformsPerView uni_view;
+	UniformsPerFrame uni_frame;
 
-	glEnable(GL_DEPTH_TEST);
-
+	// initial values for the uniforms
+	uni_obj.world_matrix = mat_utils::identity4();
+	uni_view.view_matrix = mat_utils::identity4();
+	uni_view.projection_matrix = mat_utils::identity4();
+	uni_obj.mixValue = 0.2f;
 
 	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
 	// -------------------------------------------------------------------------------------------
-	ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
-	// either set it manually like so:
-	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-	// or set it via the texture class
-	ourShader.setInt("texture2", 1);
+	(*ourShader).use(); // don't forget to activate/use the shader before setting uniforms!
+	ourShader->setInt("texture2", 1);
+
+	// states
 	float speed = PI / 4;
 	float top = 0.5f, left = -0.5f, near = 0.1f, far = 100.0f;
 
 	bool animate = true;
 
+	// draw wireframe or not
+	if (b_isWireframeMode) // todo: deserialize config
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	glEnable(GL_DEPTH_TEST);
 
 	// cube positions 
 	Vec3 cubePositions[] = {
@@ -276,60 +279,12 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		float aspect_ratio = float(w) / float(h);
 
 		// Start the Dear ImGui frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		//2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-		//{
-		//	static float f = 0.0f;
-		//	static int counter = 0;
-		//	static const char* txt_aspectRatio = "Aspect Ratio: ";
-
-		//	ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-		//	ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
-		//	ImGui::Checkbox("Animate Y", &animate);      // Edit bools storing our window open/close state
-		//	//ImGui::Checkbox("Another Window", &show_another_window);
-
-		//	ImGui::SliderInt("Width", &w, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//	ImGui::SliderInt("Height", &h, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//	ImGui::SliderFloat("Near", &near, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//	ImGui::SliderFloat("Far", &far, 0.0f, 1000.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//	ImGui::SliderFloat("Top/Bottom", &top, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//	ImGui::SliderFloat("Left/Right", &left, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//	ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Edit 3 floats representing a color
-
-		//	//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-		//	//	counter++;
-		//	//ImGui::SameLine();
-		//	//ImGui::Text("counter = %d", counter);
-
-		//	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		//	ImGui::End();
-		//}
+		updateUI();
 
 		// render clear screen
 		// ------------------------------
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		/*
-			0b001
-			0b010
-			0b011
-
-			0b011
-			0b001
-			0b001
-
-			0b011
-			0b010
-			0b010
-
-			0b011
-			0b000
-			0b000
-		*/
 
 		// update the uniform color
 		// ------------------------------
@@ -350,60 +305,102 @@ int runApplication(std::unordered_map<std::string, std::unordered_map<std::strin
 		uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
 
 		// set the texture mix value in the shader
-		ourShader.setFloat("mixValue", uni_obj.mixValue);
-		//ourShader.setMat4("world_matrix", uni_obj.world_matrix);
-		ourShader.setMat4("view_matrix", uni_view.view_matrix);
-		ourShader.setMat4("projection_matrix", uni_view.projection_matrix);
+		ourShader->setFloat("mixValue", uni_obj.mixValue);
+		//ourShader->setMat4("world_matrix", uni_obj.world_matrix);
+		ourShader->setMat4("view_matrix", uni_view.view_matrix);
+		ourShader->setMat4("projection_matrix", uni_view.projection_matrix);
 
-		// :: draw triangle
-		ourShader.use();
+		// 
+		int display_w, display_h;
+		glfwGetFramebufferSize(window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+
+		// draw scene
+		ourShader->use();
 		glBindVertexArray(VAOs[0]);
 
-		// :: asign texture
+		// assign texture
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		for (unsigned int ii = 0; ii < 10; ii++)
 		{
 			float angle = 20.0f * ii;
-			Mat4 model = mat_utils::translation(cubePositions[ii]) * mat_utils::rotationXYZ( time_value + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
-			ourShader.setMat4("world_matrix", model);
+			Mat4 model = mat_utils::translation(cubePositions[ii]) * mat_utils::rotationXYZ(time_value + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
+			ourShader->setMat4("world_matrix", model);
 			//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
 			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		//// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		//if (show_demo_window)
-		//	ImGui::ShowDemoWindow(&show_demo_window);
-
-		// Rendering
-		ImGui::Render();
-		int display_w, display_h;
-		glfwGetFramebufferSize(window, &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		// check and call events and swap the buffers
-		// ------------------------------
+		drawUI();
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+}
 
+void Application::Unload()
+{
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
+	delete ourShader;
 	glDeleteVertexArrays(buffer_count, VAOs);
 	glDeleteBuffers(buffer_count, VBOs);
-	glDeleteProgram(shaderProgram);
+}
 
+int Application::Exit()
+{
 	// glfw: purge allocated memory
 	// ------------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
 }
+
+void Application::drawUI()
+{
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Application::updateUI()
+{
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	//// 2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
+	//{
+	//	static float f = 0.0f;
+	//	static int counter = 0;
+	//	static const char* txt_aspectRatio = "Aspect Ratio: ";
+
+	//	ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+	//	ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
+	//	ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
+	//	//ImGui::Checkbox("Another Window", &show_another_window);
+
+	//	ImGui::SliderInt("Width", &this->ui_state.width, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::SliderInt("Height", &this->ui_state.height, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::SliderFloat("Near", &this->ui_state.near, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::SliderFloat("Far", &this->ui_state.far, 0.0f, 1000.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::SliderFloat("Top/Bottom", &this->ui_state.top, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::SliderFloat("Left/Right", &this->ui_state.left, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::ColorEdit3("clear color", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
+
+	//	//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+	//	//	counter++;
+	//	//ImGui::SameLine();
+	//	//ImGui::Text("counter = %d", counter);
+
+	//	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	//	ImGui::End();
+	//}
+}
+
 
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {
@@ -414,6 +411,8 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 }
+
+void Application::drawScene() {}
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)
 {

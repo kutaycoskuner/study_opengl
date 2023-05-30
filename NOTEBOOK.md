@@ -31,6 +31,9 @@
 - vsc keyboard shortcuts
     - https://visualstudio.microsoft.com/keyboard-shortcuts.pdf
 
+- cast operator
+    - https://en.cppreference.com/w/cpp/language/cast_operator
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -151,6 +154,8 @@
     - col: color
 
 - concepts
+    - smart pointer
+    - deferred initialization
     - big five ctors
     - const correctness
     - serialization
@@ -228,6 +233,36 @@
 
 
 # How to
+- <git>
+    - git status
+    - git stash
+    - git stash pop
+    - git stash list
+    - git log
+
+- <how to forward decleration>
+    - ne oldugunu bilmene gerek yok
+    - struct GLFWwindow;
+
+- <ne zaman state>
+    - bir fonksiyonda yaratip diger fonksiyonda kullanacaksan state
+
+- <disardan dosya ekleme>
+    - ekledigin cpp dosyasina sag tiklayip include in project de
+
+- <fonksiyona toplama>
+    - global
+    - fonksiyon parametresi
+    - parametrelerin hepsini structta topla
+    - fonksiyon 3-4 parametreden fazla almasa iyi olur
+    - application class icine gomup fonksiyonlari member a cevir
+
+
+- <casting>
+    - static cast
+    - dynamic cast  derived type i base type a cast etmede
+    - reinterpret cast ne yaptigini biliyorsun
+
 - <disardan dosya ekleme>
     - ekledigin cpp dosyasina sag tiklayip include in project de
 
@@ -287,3 +322,4 @@
 - ctrl + shift + f9                  remove all breakpoints
 - ctrl + shift + b                  compile
 - shift + alt up/down               multi line edit
+- ctrl + alt + l                    solution explorer
