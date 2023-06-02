@@ -48,13 +48,20 @@
 - [x] 18-May-2023 16-May-2023 fix: find reason of perspective distortion 
 - [x] 30-May-2023 18-May-2023 arch: refactoring after v0.31
 - [x] 30-May-2023 16-May-2023 add: Imgui draw ui encapsulate in self function   
+- [x] 31-May-2023 30-May-2023 add: refactor load shader, mesh, texture functions
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
-- 30-May-2023 add: refactor load shader, mesh, texture functions
+- 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
+- 02-Jun-2023 add: consistent naming on file structure
 
 # Log
-- []
+- [0.34] add: Cohesion refactor: drawScene, updateScene
+    - 02-Jun-2023   arch: Refactor: drawScene, updateScene
+    - 31-May-2023   arch: Naming refactor
+    - 31-May-2023   chg: element buffer array idsini array olarak tanimla
+    - 31-May-2023   arch: Refactor: init- windowsystem, uisystem functions
+    - 31-May-2023   arch: Refactor: load- shader, texture, mesh functions
 
 - [0.33] add: Application abstraction
     - 30-Mar-2023   arch: application class initilaize, load, mainloop, unload, exit (first level abstraction)

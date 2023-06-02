@@ -59,36 +59,183 @@ constexpr unsigned int ERROR_BUFFER_SIZE = 512;
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-bool Application::Initialize(c_configType& config)
+bool Application::initialize(k_configType& config)
 {
-	// ------------------------------------------------------------------------------------------------
-	//  Settings
-	// ------------------------------------------------------------------------------------------------
-	const unsigned int SCR_WIDTH = std::stoul(config.at("scr").at("width"));
-	const unsigned int SCR_HEIGHT = std::stoul(config.at("scr").at("height"));
-	const char* WNDW_NAME = config.at("scr").at("wndw_name").c_str();
+	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
+	const unsigned int k_scr_height = std::stoul(config.at("scr").at("height"));
+	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
+	
+	initWindowSystem(k_scr_width, k_scr_height, kp_wndw_name);
+	const char* glsl_version = "#version 330";
+	
+	// glad: load all OpenGL function pointers
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "Failed to initialize GLAD" << std::endl;
+		return -1;
+	}
 
-	// ------------------------------------------------------------------------------------------------
-	//  GLFW
-	// ------------------------------------------------------------------------------------------------
+	initUISystem(glsl_version);
+
+	// Our state
+	this->clear_color = Vec4(
+		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
+		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
+		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
+		1.00f
+	);
+}
+
+bool Application::load(k_configType& config)
+{
+	loadConfig(config);
+
+	loadSceneData(config);
+
+	loadShaders();
+
+	loadTextures();
+
+	loadMeshData();
+
+	return 1;
+}
+
+void Application::loadConfig(const k_configType& config)
+{
+	// load config states
+	this->b_wireframe_mode = config.at("settings").at("is_wireframeMode") == "true";
+}
+
+void Application::loadSceneData(const k_configType& config)
+{
+	scene_state.near = 1.0f;
+	scene_state.far = 100.0f;
+
+	// animation
+	scene_state.b_animate = true;
+
+	// cube positions 
+	scene_state.obj_positions = {
+		Vec3(2.0f,  5.0f, -15.0f),
+		Vec3(-1.5f, -2.2f, -2.5f),
+		Vec3(-3.8f, -2.0f, -12.3f),
+		Vec3(2.4f, -0.4f, -3.5f),
+		Vec3(-1.7f,  3.0f, -7.5f),
+		Vec3(1.3f, -2.0f, -2.5f),
+		Vec3(1.5f,  2.0f, -2.5f),
+		Vec3(1.5f,  0.2f, -1.5f),
+		Vec3(-1.3f,  1.0f, -1.5f),
+		Vec3(0.0f,  0.0f,  -3.0f)
+	};
+}
+
+void Application::loadTextures()
+{
+	// texture
+	setVerticalFlipMode(true);
+	texture1 = createTexture("data/textures/container.jpg", 2);
+	texture2 = createTexture("data/textures/awesomeface.png");
+}
+void Application::loadShaders()
+{
+	// build and compile our shader program
+	this->active_shader = new Shader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
+}
+void Application::loadMeshData()
+{
+	// create vertex array object and vertex buffer object
+	glGenVertexArrays(buffer_count, VAOs);
+	glGenBuffers(buffer_count, VBOs); // :: memory alani olusturuyor
+	glGenBuffers(buffer_count, EBOs); // :: ebo icin memory
+
+	// binding buffers
+	glBindVertexArray(VAOs[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cubeVrts), ObjToDraw::cubeVrts, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
+
+
+	// linking vertex attributes
+	// --------------------------       
+	// 1. parameter specifies which vertex attribute we want to configure  | location of position
+	// 2. parameter specifies siez of vertex. 3vec3 so 3 value
+	// 3. parameter specifies type of data gl_float
+	// 4. parameter specifies if you want to data to be normalized
+	// 5. known as stride space between consequtive vertex attributes
+	// 6. void this is the offset where the position data begins in the buffer
+
+	// att: pos
+	unsigned int stride = 5;
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// att: color
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
+	// att: texture
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	// clean up
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void Application::mainLoop()
+{
+	// uniform variables according to update frequency
+	Uniforms uni;
+	UniformsPerObject& uni_obj = uni.upo;
+	UniformsPerView& uni_view = uni.upv;
+	UniformsPerFrame& uni_frame = uni.upf;
+
+	// initial values for the uniforms
+	uni_obj.world_matrix = mat_utils::identity4();
+	uni_view.view_matrix = mat_utils::identity4();
+	uni_view.projection_matrix = mat_utils::identity4();
+	uni_obj.mixValue = 0.2f;
+
+	// render loop 
+	// --------------------------
+	while (!glfwWindowShouldClose(window))
+	{
+		processInput(window, uni_obj);
+		int w, h;
+		glfwGetWindowSize(window, &w, &h);
+		scene_state.aspect_ratio = float(w) / float(h);
+
+		// Start the Dear ImGui frame
+		updateUI();
+
+		updateScene();
+
+		drawScene(uni);
+
+		drawUI();
+		
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+}
+int Application::initWindowSystem(const unsigned int& width, const unsigned int& height, const char*& window_name)
+{
+	// :: GLFW
 	glfwInit();
-	// :: first param what option we want to configure; second option is value we set.
-	// :: 3 means we are explicitly using core profile. version 3.3
+	// first param what option we want to configure; second option is value we set.
+	// 3 means we are explicitly using core profile. version 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//
+	// if apple
 
-	// :: if apple
-	// --------------------------
-	const char* glsl_version = "#version 330";
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+	#ifdef __APPLE__
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	#endif
 
 	// glfw window creation
-	// --------------------------
-	this->window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, WNDW_NAME, NULL, NULL);
+	this->window = glfwCreateWindow(width, height, window_name, NULL, NULL);
 	// first two params x,y in size; 3. name; 4-5 necesssary but ignore
 	if (window == NULL)
 	{
@@ -99,18 +246,10 @@ bool Application::Initialize(c_configType& config)
 	glfwMakeContextCurrent(window);
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
-
-	// glad: load all OpenGL function pointers
-	// --------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-
-	// ------------------------------------------------------------------------------------------------
-	//  IMGUI Init
-	// ------------------------------------------------------------------------------------------------
+}
+void Application::initUISystem(const char*& glsl_version)
+{
+	//  :: IMGUI Init
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -123,235 +262,19 @@ bool Application::Initialize(c_configType& config)
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
-
-	// Our state
-	this->clear_color = Vec4(
-		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
-		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
-		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
-		1.00f
-	);
 }
 
-bool Application::Load(c_configType& config)
-{
-	// todo: shaders, meshdata, texture
 
-	// load config states
-	this->b_isWireframeMode = config.at("settings").at("is_wireframeMode") == "true";
-
-	// load shaders
-	//std::unordered_map<std::string, ShaderCompileDesc> shaders = loadShaders();
-	//const char* vrtx_shader_src = shaders.at("vrtxShader").content.c_str();
-	//const char* frag_shader_src = shaders.at("fragShader").content.c_str();
-
-	// build and compile our shader zprogram
-// ------------------------------------
-	this->ourShader = new Shader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
-	//unsigned int vrtxShader = compileShader(vrtx_shader_src, GL_VERTEX_SHADER);
-	//unsigned int fragShader = compileShader(frag_shader_src, GL_FRAGMENT_SHADER);
-
-	// --------------------------
-	//unsigned int shaderProgram = linkShaderProgram({ vrtxShader, fragShader });
-
-	// --------------------------
-	// texture
-	setVerticalFlipMode(true);
-	texture1 = createTexture("data/textures/container.jpg", 2);
-	texture2 = createTexture("data/textures/awesomeface.png");
-
-	// --------------------------
-	//deleteCompiledShaders({ vrtxShader, fragShader });
-
-	// create vertex array object and vertex buffer object
-	// --------------------------
-	glGenVertexArrays(buffer_count, VAOs);
-	glGenBuffers(buffer_count, VBOs); // :: memory alani olusturuyor
-	glGenBuffers(buffer_count, &EBO); // :: ebo icin memory
-
-	// binding buffers
-	// ----- texture square
-	glBindVertexArray(VAOs[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cubeVrts), ObjToDraw::cubeVrts, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
-
-
-	// att: pos
-	unsigned int stride = 5;
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// att: color
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
-	// att: texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-	//// ----- texture square end
-
-	// attempt :: coordinate lines 
-	//glBindVertexArray(VAOs[0]);
-	//glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::x_axis), ObjToDraw::x_axis, GL_STATIC_DRAW);
-	//glBindVertexArray(VAOs[1]);
-	//glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::y_axis), ObjToDraw::y_axis, GL_STATIC_DRAW);
-	//// att: pos
-	//unsigned int stride = 6;
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-	//// att: color
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
-
-	// linking vertex attributes
-	// --------------------------       
-	// 1. parameter specifies which vertex attribute we want to configure  | location of position
-	// 2. parameter specifies siez of vertex. 3vec3 so 3 value
-	// 3. parameter specifies type of data gl_float
-	// 4. parameter specifies if you want to data to be normalized
-	// 5. known as stride space between consequtive vertex attributes
-	// 6. void this is the offset where the position data begins in the buffer
-
-	// clean up
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	return 1;
-
-}
-
-void Application::MainLoop()
-{
-	// uniform variables according to update frequency
-	UniformsPerObject uni_obj;
-	UniformsPerView uni_view;
-	UniformsPerFrame uni_frame;
-
-	// initial values for the uniforms
-	uni_obj.world_matrix = mat_utils::identity4();
-	uni_view.view_matrix = mat_utils::identity4();
-	uni_view.projection_matrix = mat_utils::identity4();
-	uni_obj.mixValue = 0.2f;
-
-	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-	// -------------------------------------------------------------------------------------------
-	(*ourShader).use(); // don't forget to activate/use the shader before setting uniforms!
-	ourShader->setInt("texture2", 1);
-
-	// states
-	float speed = PI / 4;
-	float top = 0.5f, left = -0.5f, near = 0.1f, far = 100.0f;
-
-	bool animate = true;
-
-	// draw wireframe or not
-	if (b_isWireframeMode) // todo: deserialize config
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-
-	glEnable(GL_DEPTH_TEST);
-
-	// cube positions 
-	Vec3 cubePositions[] = {
-		Vec3(2.0f,  5.0f, -15.0f),
-		Vec3(-1.5f, -2.2f, -2.5f),
-		Vec3(-3.8f, -2.0f, -12.3f),
-		Vec3(2.4f, -0.4f, -3.5f),
-		Vec3(-1.7f,  3.0f, -7.5f),
-		Vec3(1.3f, -2.0f, -2.5f),
-		Vec3(1.5f,  2.0f, -2.5f),
-		Vec3(1.5f,  0.2f, -1.5f),
-		Vec3(-1.3f,  1.0f, -1.5f),
-		Vec3(0.0f,  0.0f,  -3.0f)
-	};
-
-	// render loop 
-	// --------------------------
-	while (!glfwWindowShouldClose(window))
-	{
-		processInput(window, uni_obj);
-		int w, h;
-		glfwGetWindowSize(window, &w, &h);
-		float aspect_ratio = float(w) / float(h);
-
-		// Start the Dear ImGui frame
-		updateUI();
-
-		// render clear screen
-		// ------------------------------
-		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// update the uniform color
-		// ------------------------------
-		float time_value;
-		if (animate)
-		{
-			time_value = glfwGetTime();
-		}
-		else
-		{
-			time_value = 0;
-		}
-		float scale = (sinf(time_value) + 1.0f) / 4 + 0.5f; // 0 1 0 -1 | 1 2 1 0
-
-		// create transformations
-		uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(time_value, Vec3(1.0f, 1.0f, 1.0f).normalized());
-		uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -3.0f)); //*mat_utils::scale(scale);
-		uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
-
-		// set the texture mix value in the shader
-		ourShader->setFloat("mixValue", uni_obj.mixValue);
-		//ourShader->setMat4("world_matrix", uni_obj.world_matrix);
-		ourShader->setMat4("view_matrix", uni_view.view_matrix);
-		ourShader->setMat4("projection_matrix", uni_view.projection_matrix);
-
-		// 
-		int display_w, display_h;
-		glfwGetFramebufferSize(window, &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
-
-		// draw scene
-		ourShader->use();
-		glBindVertexArray(VAOs[0]);
-
-		// assign texture
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
-
-		for (unsigned int ii = 0; ii < 10; ii++)
-		{
-			float angle = 20.0f * ii;
-			Mat4 model = mat_utils::translation(cubePositions[ii]) * mat_utils::rotationXYZ(time_value + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
-			ourShader->setMat4("world_matrix", model);
-			//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
-			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-
-		drawUI();
-		
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-}
-
-void Application::Unload()
+void Application::unload()
 {
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	delete ourShader;
+	delete active_shader;
 	glDeleteVertexArrays(buffer_count, VAOs);
 	glDeleteBuffers(buffer_count, VBOs);
 }
 
-int Application::Exit()
+int Application::exit()
 {
 	// glfw: purge allocated memory
 	// ------------------------------------------------------------------------
@@ -412,7 +335,77 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
 	glBindVertexArray(0);
 }
 
-void Application::drawScene() {}
+void Application::drawScene(Uniforms& uni) 
+{
+	// todo: draw parameters structa topla | 
+	UniformsPerObject& uni_obj = uni.upo;
+	UniformsPerView& uni_view = uni.upv;
+	UniformsPerFrame& uni_frame = uni.upf;
+	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+	(*active_shader).use(); // don't forget to activate/use the shader before setting uniforms!
+	active_shader->setInt("texture2", 1);
+
+	// draw wireframe or not
+	if (b_wireframe_mode) // todo: deserialize config
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	glEnable(GL_DEPTH_TEST);
+	// render clear screen
+	// ------------------------------
+	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// create transformations
+	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
+	uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -3.0f)); //*mat_utils::scale(scale);
+	uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), scene_state.aspect_ratio, scene_state.near, scene_state.far);
+
+	// set the texture mix value in the shader
+	active_shader->setFloat("mixValue", uni_obj.mixValue);
+	//ourShader->setMat4("world_matrix", uni_obj.world_matrix);
+	active_shader->setMat4("view_matrix", uni_view.view_matrix);
+	active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
+
+	// 
+	int display_w, display_h;
+	glfwGetFramebufferSize(window, &display_w, &display_h);
+	glViewport(0, 0, display_w, display_h);
+
+	// draw scene
+	active_shader->use();
+	glBindVertexArray(VAOs[0]);
+
+	// assign texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+	for (unsigned int ii = 0; ii < 10; ii++)
+	{
+		float angle = 20.0f * ii;
+		Mat4 model = mat_utils::translation(scene_state.obj_positions[ii]) * mat_utils::rotationXYZ(scene_state.time + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
+		active_shader->setMat4("world_matrix", model);
+		//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+}
+
+void Application::updateScene() 
+{
+	// update the uniform color
+	if (scene_state.b_animate)
+	{
+		scene_state.time = (float)glfwGetTime();
+	}
+	else
+	{
+		scene_state.time = 0;
+	}
+}
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)
 {

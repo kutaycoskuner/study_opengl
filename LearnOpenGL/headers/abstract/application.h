@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/vector4.h"
 #include "../abstract/ui.h"
+#include "../abstract/scene_state.h"
 #include <unordered_map>
 #include <string>
 
@@ -13,6 +14,8 @@
 // ------------------------------------------------------------------------------------------------
 struct GLFWwindow;
 class Shader;
+struct Uniforms;
+
 // ------------------------------------------------------------------------------------------------
 // ----- function declerations
 // ------------------------------------------------------------------------------------------------
@@ -23,14 +26,14 @@ class Shader;
 class Application
 {
 public:
-    using c_configType = const std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
+    using k_configType = const std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
 
-    Application() : window(nullptr), ourShader(nullptr) {}
+    Application() : window(nullptr), active_shader(nullptr) {}
     // Program ilk basladiginda izlenen prosedurleri icerir.
     // 
     // - isletim sisteminden bellek isteme
     // - cesitli sistemleri hazirlama
-    bool Initialize(c_configType& config);
+    bool initialize(k_configType& config);
 
     // Program bellegi hazirlandiktan sonra motorun kullanacagi built-in
     // kaynaklari yuklemek icin izlenen prosedurleri icerir.
@@ -38,20 +41,20 @@ public:
     // - built-in shader compilation
     // - built-in texture loading
     // - built-in asset loading
-    bool Load(c_configType& config);
+    bool load(k_configType& config);
  
     // Program kapanirken izlenen prosedurleri icerir.
     //
     // - isletim sistemine kullanilan bellegi iade etme
     // - cesitli sistemleri kapatma
-    int Exit();
+    int exit();
 
 
     // Motorun kullandigi built-in ve diger kaynaklari isletim sistemine
     // iade etmek icin izlenen prosedurleri icerir.
     // 
     // - texture, shader, asset belleklerini isletim sistemine iade etme
-    void Unload();
+    void unload();
 
 
     // Bir frame'i cizmek icin gereken tum mantik ve aritmetik islemlerini icerir.
@@ -61,32 +64,40 @@ public:
     // - cizim icin gerekli datayi toplama
     // - cizim icin komutlari grafik islemcisine gonderme
     // - uygulama penceresine son resmi aktarma
-    void MainLoop();
+    void mainLoop();
 
 private:
-    void drawScene();
-
-    void updateUI();
-    void drawUI();
-    // todo
-    void updateScene();
+    // initialize
+    int initWindowSystem(const unsigned int& width, const unsigned int& height, const char*& window_name);
+    void initUISystem(const char*& glsl_version);
+    // load
+    void loadConfig(const k_configType& config);
+    void loadSceneData(const k_configType& config);
     void loadTextures();
     void loadShaders();
-    void loadMesh();
+    void loadMeshData();
+    // ui
+    void drawUI();
+    void updateUI();
+    // scene
+    void drawScene(Uniforms& uni);
+    void updateScene();
 
 private:
     const static unsigned int buffer_count = 1;
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
-    Shader*      ourShader;
+    Shader*      active_shader;
     unsigned int texture1;
     unsigned int texture2;
     unsigned int VAOs[buffer_count];
     unsigned int VBOs[buffer_count];
-    unsigned int EBO;
-    // config
-    bool b_isWireframeMode;
-    Vec4 clear_color;
-    UIState     ui_state;
+    unsigned int EBOs[buffer_count];
 
+    SceneState scene_state;
+
+    // config
+    bool        b_wireframe_mode;
+    Vec4        clear_color;
+    UIState     ui_state;
 };

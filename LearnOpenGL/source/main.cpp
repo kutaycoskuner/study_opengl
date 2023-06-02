@@ -14,7 +14,7 @@
 int main()
 {
 	// get config 
-	Application::c_configType config = file_utils::parseSimple("config/config.yaml");
+	Application::k_configType config = file_utils::parseSimple("config/config.yaml");
 
 
 	// check if testing
@@ -25,11 +25,11 @@ int main()
 	Application app;
 
 	// run program
-	app.Initialize(config);
-	app.Load(config);
-	app.MainLoop();
-	app.Unload();
-	int exit_code = app.Exit();
+	app.initialize(config);
+	app.load(config);
+	app.mainLoop();
+	app.unload();
+	int exit_code = app.exit();
 
 	return exit_code;
 }

@@ -311,6 +311,9 @@
     - const char* ex = str.c_string()
     - static_cast<const char*>(str.c_str());
 
+- <vs: alti yesil dalgali cizgi>
+    - tanim yok declaration var
+
 # Shortcuts
 - f5                                debugger
 - shift + f5                        calisan debug i kapatiyor
@@ -323,3 +326,4 @@
 - ctrl + shift + b                  compile
 - shift + alt up/down               multi line edit
 - ctrl + alt + l                    solution explorer
+- ctrl + -                          bir onceki satira atla

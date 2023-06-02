@@ -24,3 +24,10 @@ struct UniformsPerFrame
 {
 
 };
+
+struct Uniforms
+{
+	UniformsPerObject	upo;
+	UniformsPerView		upv;
+	UniformsPerFrame	upf;
+};
