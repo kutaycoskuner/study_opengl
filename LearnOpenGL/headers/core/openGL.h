@@ -20,8 +20,5 @@ void drawObjToScr(const unsigned int& shader, const unsigned int& vao);
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer);
 
 //
-
-void callbackFrameBufferSize(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
 int runApplication(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config);
 #endif

@@ -17,6 +17,7 @@ Continue: Camera
 #include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
 #include "../headers/events/events.h"				// opengl in cizecegi verilerin tutuldugu dosyalar
 #include "../headers/abstract/application.h"		
+#include "../headers/abstract/Camera.h"		
 #include "../headers/abstract/shader.h"				// shader objesi olusturmaya dair veritipi
 #include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
 #include "../headers/maps/shaders.h"				// shaderlarin isimleri ve dosya konumlarinin mapleri
@@ -59,6 +60,65 @@ constexpr unsigned int ERROR_BUFFER_SIZE = 512;
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
+Mat4 Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& new_up)
+{
+	direction = (new_pos - new_tar).normalized();
+	right = cross3d(new_up, direction);
+	up = cross3d(direction, right);
+	float rx = right.x;
+	float ry = right.y;
+	float rz = right.z;
+	float ux = new_up.x;
+	float uy = new_up.y;
+	float uz = new_up.z;
+	float dx = direction.x;
+	float dy = direction.y;
+	float dz = direction.z;
+	float px = position.x;
+	float py = position.y;
+	float pz = position.z;
+	return Mat4(
+		rx, ry, rz, 0,
+		ux, uy, uz, 0,
+		dx, dy, dz, 0,
+		0, 0, 0, 1
+	) * 
+		Mat4(
+		1, 0, 0, -px,
+		0, 1, 0, -py,
+		0, 0, 1, -pz,
+		0, 0, 0, 1
+		);
+}
+
+Mat4 Camera::lookAt()
+{
+	float rx = right.x;
+	float ry = right.y;
+	float rz = right.z;
+	float ux = up.x;
+	float uy = up.y;
+	float uz = up.z;
+	float dx = direction.x;
+	float dy = direction.y;
+	float dz = direction.z;
+	float px = position.x;
+	float py = position.y;
+	float pz = position.z;
+	return Mat4(
+		rx, ry, rz, 0,
+		ux, uy, uz, 0,
+		dx, dy, dz, 0,
+		0, 0, 0, 1
+	) *
+		Mat4(
+			1, 0, 0, -px,
+			0, 1, 0, -py,
+			0, 0, 1, -pz,
+			0, 0, 0, 1
+		);
+}
+
 bool Application::initialize(k_configType& config)
 {
 	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
@@ -126,8 +186,14 @@ void Application::loadSceneData(const k_configType& config)
 		Vec3(1.5f,  2.0f, -2.5f),
 		Vec3(1.5f,  0.2f, -1.5f),
 		Vec3(-1.3f,  1.0f, -1.5f),
-		Vec3(0.0f,  0.0f,  -3.0f)
+		Vec3(0.0f,  0.0f,  0.0f)
 	};
+
+	// init camera wuth default values
+	const Vec3 k_position = Vec3(0.0f, 0.0f, 3.0f);
+	const Vec3 k_target = Vec3(0.0f, 0.0f, 0.0f);
+	const Vec3 k_up = Vec3(0.0f, 1.0f, 0.0f);
+	scene_state.camera.lookAt(k_position, k_target, k_up);
 }
 
 void Application::loadTextures()
@@ -167,7 +233,7 @@ void Application::loadMeshData()
 	// 5. known as stride space between consequtive vertex attributes
 	// 6. void this is the offset where the position data begins in the buffer
 
-	// att: pos
+	// att: new_pos
 	unsigned int stride = 5;
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -177,7 +243,7 @@ void Application::loadMeshData()
 	// att: texture
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	// clean up
+	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -193,14 +259,14 @@ void Application::mainLoop()
 	// initial values for the uniforms
 	uni_obj.world_matrix = mat_utils::identity4();
 	uni_view.view_matrix = mat_utils::identity4();
-	uni_view.projection_matrix = mat_utils::identity4();
+	uni_view.projection_matrix = mat_utils::identity4();	
 	uni_obj.mixValue = 0.2f;
 
 	// render loop 
 	// --------------------------
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window, uni_obj);
+		processInput(window, uni_obj, scene_state);
 		int w, h;
 		glfwGetWindowSize(window, &w, &h);
 		scene_state.aspect_ratio = float(w) / float(h);
@@ -359,7 +425,7 @@ void Application::drawScene(Uniforms& uni)
 
 	// create transformations
 	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
-	uni_view.view_matrix = mat_utils::translation(Vec3(0.0f, 0.0f, -3.0f)); //*mat_utils::scale(scale);
+	uni_view.view_matrix = scene_state.camera.lookAt();
 	uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), scene_state.aspect_ratio, scene_state.near, scene_state.far);
 
 	// set the texture mix value in the shader
@@ -405,6 +471,18 @@ void Application::updateScene()
 	{
 		scene_state.time = 0;
 	}
+
+	// camera position
+	const float radius = 10.0f;
+	scene_state.camera.position.x = sin(scene_state.time) * radius;
+	scene_state.camera.position.z = cos(scene_state.time) * radius;
+	int num_obj = scene_state.obj_positions.size();
+
+	scene_state.camera.target = scene_state.obj_positions[(int)(scene_state.time) % num_obj];
+	scene_state.camera.direction = (scene_state.camera.position - scene_state.camera.target).normalized();
+	Vec3 up = Vec3(0.0f, 1.0f, 0.0f);
+	scene_state.camera.right = cross3d(up, scene_state.camera.direction);
+	scene_state.camera.up = cross3d(scene_state.camera.direction, scene_state.camera.right);
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

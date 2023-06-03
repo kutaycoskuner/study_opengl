@@ -34,6 +34,12 @@
 - cast operator
     - https://en.cppreference.com/w/cpp/language/cast_operator
 
+- scratchpixel
+    - https://scratchapixel.com/
+
+- gfx journal by jendrick illner
+    - https://www.jendrikillner.com/tags/weekly/
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -91,6 +97,9 @@
 
 
 # Blackboard
+- module ne demek
+    - .exe, ya da .dll
+
 - coordinate systems
     - https://learnopengl.com/Getting-started/Coordinate-Systems
     - local space (or object space) : are the coordinates of your object relative to its local origin; they're the coordinates your object begins in.
@@ -154,6 +163,7 @@
     - col: color
 
 - concepts
+    - spherical harmonics
     - smart pointer
     - deferred initialization
     - big five ctors
@@ -304,12 +314,19 @@
         - add glfw3.lib;opengl32.lib
 
 - <linker error>
-    - birden fazla tanim oldugunda oluyor
-    - baska bir sekilde de olabiliyor
+    - case 1:
+        - birden fazla tanim oldugunda oluyor
+        - baska bir sekilde de olabiliyor
+    - case 2: 
+        - .h nin icine tanim koyarsak | birden fazla kopya oluyor
 
 - <const char to string | string to const char>
     - const char* ex = str.c_string()
     - static_cast<const char*>(str.c_str());
+
+- <read access violation>
+    - exp: extern keyword unden kaynakli oldu
+    - senin olmayan pointeri dereference
 
 - <vs: alti yesil dalgali cizgi>
     - tanim yok declaration var
@@ -322,7 +339,7 @@
 - ctrl + m > o                      collapse
 - ctrl + m > p                      expand
 - ctrl + m > i                      local expand
-- ctrl + shift + f9                  remove all breakpoints
+- ctrl + shift + f9                 remove all breakpoints
 - ctrl + shift + b                  compile
 - shift + alt up/down               multi line edit
 - ctrl + alt + l                    solution explorer

@@ -51,13 +51,13 @@
     <ClCompile Include="data\obj\dt_Colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\old\0.21_learnOpenGL.cpp">
+    <ClCompile Include="source\core\old\0.21_learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\old\0.221_learnOpenGL.cpp">
+    <ClCompile Include="source\core\old\0.221_learnOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\old\x_learnOpenGl.cpp">
+    <ClCompile Include="source\core\old\x_learnOpenGl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\event_handling\window_events.cpp">
@@ -103,6 +103,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libs\imgui-1.89.5\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="headers\templates\header_template_1.0.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -177,6 +180,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\abstract\scene_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -50,11 +50,27 @@ struct Vec3
 		return result;
 	}
 
+	// vector vector += 
+	void operator+=(const Vec3& other)
+	{
+		x += other.x;
+		y += other.y; 
+		z += other.z;
+	}
+
 	// vector vector - 
 	Vec3 operator-(const Vec3& other) const
 	{
 		Vec3 result = { x - other.x, y - other.y, z - other.z };
 		return result;
+	}
+
+	// vector vector -= 
+	void operator-=(const Vec3& other)
+	{
+		x -= other.x;
+		y -= other.y;
+		z -= other.z;
 	}
 
 	// scalar vector +
@@ -68,6 +84,13 @@ struct Vec3
 	Vec3 operator-(const float& other) const
 	{
 		Vec3 result = { x - other, y - other, z - other };
+		return result;
+	}
+
+	// scalar vector *
+	Vec3 operator*(const float& scalar) const
+	{
+		Vec3 result = { x * scalar, y * scalar, z * scalar };
 		return result;
 	}
 
@@ -106,6 +129,8 @@ struct Vec3
 		return result;
 	}
 };
+
+Vec3 operator*(const float& scalar, const Vec3& vector);
 
 // ------------------------------------------------------------------------------------------------
 // ----- function definitions

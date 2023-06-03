@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 02-Jun-2023 | 0.34    |
+| 19-Aug-2022     | 04-Jun-2023 | 0.35    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,6 +23,11 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
+![0.35 Static camera rotation with changing focus by time](display/0.35_camera-rotation-focus-time_2023-06-04.gif)
+```
+0.35 Static camera rotation with changing focus by time
+```  
+
 ![0.33 Transforming multiple cubes](display/0.33_multiple-cubes_2023-05-30.gif)
 ```
 0.19 Two triangle with different shaders

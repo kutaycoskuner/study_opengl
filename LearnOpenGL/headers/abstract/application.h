@@ -5,6 +5,7 @@
 #include "../abstract/vector4.h"
 #include "../abstract/ui.h"
 #include "../abstract/scene_state.h"
+#include "../abstract/Camera.h"
 #include <unordered_map>
 #include <string>
 
@@ -13,8 +14,8 @@
 // ----- abstract declarations
 // ------------------------------------------------------------------------------------------------
 struct GLFWwindow;
-class Shader;
 struct Uniforms;
+class Shader;
 
 // ------------------------------------------------------------------------------------------------
 // ----- function declerations

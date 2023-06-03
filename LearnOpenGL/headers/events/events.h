@@ -1,6 +1,7 @@
 #pragma once
-#include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
-#include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
+struct SceneState;
+struct UniformsPerObject;
+struct GLFWwindow;
 
 void callbackFrameBufferSize(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window, UniformsPerObject& uni);
+void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_state);

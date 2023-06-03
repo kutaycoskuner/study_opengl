@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../abstract/vector3.h"
+#include "../abstract/Camera.h"
 #include <vector>
 
 struct SceneState
@@ -9,6 +10,9 @@ struct SceneState
     float aspect_ratio;
     float near;
     float far;
+
+    // camera
+    Camera camera;
 
     // animate
     float time;

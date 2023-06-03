@@ -49,13 +49,22 @@
 - [x] 30-May-2023 18-May-2023 arch: refactoring after v0.31
 - [x] 30-May-2023 16-May-2023 add: Imgui draw ui encapsulate in self function   
 - [x] 31-May-2023 30-May-2023 add: refactor load shader, mesh, texture functions
+- [x] 04-Jun-2023 04-Jun-2023 add: display: Camera rotation
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
 - 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
 - 02-Jun-2023 add: consistent naming on file structure
+- 04-Jun-2023 arch: Comment standard
 
 # Log
+- [0.35] wip: Camera static rotation / planar movement
+    - 04-Jun-2023   add: display: Camera static rotation
+    - 04-Jun-2023   add: Vec3 += -= * override functions
+    - 04-Jun-2023   add: Camera key movement
+    - 03-Jun-2023   wip: Camera lookAt with 3 parameters: position, target, up
+    - 03-Jun-2023   wip: Camera variables, lookAt no parameters
+
 - [0.34] add: Cohesion refactor: drawScene, updateScene
     - 02-Jun-2023   arch: Refactor: drawScene, updateScene
     - 31-May-2023   arch: Naming refactor

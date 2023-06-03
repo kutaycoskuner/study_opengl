@@ -88,6 +88,22 @@ static void unitTest_Vec3_math()
 	assert(math_utils::cross3d(xAxis, xAxis) == origin);
 }
 
+static void unitTest_Vec3_increment_vec()
+{
+	Vec3 a = Vec3(1.0f, 0.0f, 0.0f);
+	Vec3 b = Vec3(0.0f, 1.0f, 1.0f);
+	a += b;
+	assert(a.x = 1.0f, a.y = 1.0f, a.z = 1.0f);
+}
+
+static void unitTest_Vec3_decrement_vec()
+{
+	Vec3 a = Vec3(1.0f, 0.0f, 0.0f);
+	Vec3 b = Vec3(0.0f, 1.0f, 1.0f);
+	a -= b;
+	assert(a.x = 1.0f, a.y = -1.0f, a.z = -1.0f);
+}
+
 
 
 void unitTest_Vec3()
@@ -96,4 +112,6 @@ void unitTest_Vec3()
 	unitTest_Vec3_paramConstructor();
 	unitTest_Vec3_copyConstructor();
 	unitTest_Vec3_math();
+	unitTest_Vec3_increment_vec();
+	unitTest_Vec3_decrement_vec();
 }
