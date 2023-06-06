@@ -331,6 +331,12 @@
 - <vs: alti yesil dalgali cizgi>
     - tanim yok declaration var
 
+- <parametre koyamadigin callback fonksiyonu>
+    - seceenekler
+        - global degisken
+        - glfw window user pointer
+        - manually handle every frame
+
 # Shortcuts
 - f5                                debugger
 - shift + f5                        calisan debug i kapatiyor
@@ -344,3 +350,5 @@
 - shift + alt up/down               multi line edit
 - ctrl + alt + l                    solution explorer
 - ctrl + -                          bir onceki satira atla
+- ctrl + m, s                       collapse
+- ctrl + m, i                       expand

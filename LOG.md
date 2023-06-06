@@ -34,7 +34,7 @@
 
 
 # Todo
-- [x] 05-Apr-202324-Aug-2022 utility yi ayir
+- [x] 05-Apr-2023 24-Aug-2022 utility yi ayir
 - [x] 30-Mar-2023 04-Sep-2022 draw 2 triangles next to each other 
 - [x] 30-Mar-2023 04-Sep-2022 create same 2 triangles using two different VAO and VBO 
 - [x] 30-Mar-2023 04-Sep-2022 create two shader programs where the second program uses different fragment shader that outputs different color and draw tri with diff shad.
@@ -56,8 +56,18 @@
 - 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
 - 02-Jun-2023 add: consistent naming on file structure
 - 04-Jun-2023 arch: Comment standard
+- 06-Jun-2023 add: application singleton
+- 06-Jun-2023 add: Camera class
+- 06-Jun-2023 add: refactor after 0.36
 
 # Log
+- [0.36] add: Camera movement, zoom
+    - 06-Jun-2023   add: Camera zoom
+    - 06-Jun-2023   add: Camera mouse rotation
+    - 06-Jun-2023   wip: Camera mouse rotation through pitch yaw
+    - 05-Jun-2023   add: deltaTime to camera speed
+    - 04-Jun-2023   fix: Readme typo
+
 - [0.35] wip: Camera static rotation / planar movement
     - 04-Jun-2023   add: display: Camera static rotation
     - 04-Jun-2023   add: Vec3 += -= * override functions

@@ -185,6 +185,9 @@
     <ClInclude Include="headers\abstract\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\abstract\WindowState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\old\v1.0_fragShader.glsl">

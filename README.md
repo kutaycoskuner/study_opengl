@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 04-Jun-2023 | 0.35    |
+| 19-Aug-2022     | 06-Jun-2023 | 0.36    |
 
 # Table of Contents
 1. [Description](#description)
@@ -30,7 +30,7 @@ This is a study repository for learning graphics programming through OpenGL.
 
 ![0.33 Transforming multiple cubes](display/0.33_multiple-cubes_2023-05-30.gif)
 ```
-0.19 Two triangle with different shaders
+0.33 Transforming multiple cubes
 ```  
 
 ![0.31 3D Perspective projection / transformation](display/0.31_perspective-rotation_2023-05-18.gif)
@@ -40,7 +40,7 @@ This is a study repository for learning graphics programming through OpenGL.
 
 ![0.21 Time based color shift](display/0.21_time-based-color-shifting-through-uniforms_2023-04-14.gif)
 ```
-0.21 Time based color shift
+0.21 Time based color shift with uniforms
 ```  
 
 ![0.21 Pixel color interpolation](display/0.21_pixel-color-calculation-2_2023-04-14.png)

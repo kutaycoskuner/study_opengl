@@ -6,6 +6,7 @@
 #include "../abstract/ui.h"
 #include "../abstract/scene_state.h"
 #include "../abstract/Camera.h"
+#include "../abstract/WindowState.h"
 #include <unordered_map>
 #include <string>
 
@@ -66,6 +67,9 @@ public:
     // - cizim icin komutlari grafik islemcisine gonderme
     // - uygulama penceresine son resmi aktarma
     void mainLoop();
+    // handle
+    void handleMouseEvent(GLFWwindow* window, double xpos, double ypos);
+    void handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset);
 
 private:
     // initialize
@@ -96,6 +100,10 @@ private:
     unsigned int EBOs[buffer_count];
 
     SceneState scene_state;
+    WindowState window_state;
+
+    // standards
+    Vec3 world_up;
 
     // config
     bool        b_wireframe_mode;

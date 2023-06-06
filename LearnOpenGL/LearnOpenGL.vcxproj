@@ -194,6 +194,7 @@
     <ClInclude Include="headers\abstract\uniforms.h" />
     <ClInclude Include="headers\abstract\vector3.h" />
     <ClInclude Include="headers\abstract\vector4.h" />
+    <ClInclude Include="headers\abstract\WindowState.h" />
     <ClInclude Include="headers\events\events.h" />
     <ClInclude Include="headers\test\basic.h" />
     <ClInclude Include="headers\data\data.h" />

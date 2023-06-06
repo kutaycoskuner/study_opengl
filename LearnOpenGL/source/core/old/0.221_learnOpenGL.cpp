@@ -29,7 +29,7 @@
 //
 //using uint = unsigned int;
 //
-//constexpr unsigned int ERROR_BUFFER_SIZE = 512;
+//constexpr unsigned int kg_error_buffer_size = 512;
 //
 //// ------------------------------------------------------------------------------------------------
 //// ----- Functions Definitions

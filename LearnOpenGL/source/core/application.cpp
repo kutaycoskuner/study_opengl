@@ -17,7 +17,7 @@ Continue: Camera
 #include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
 #include "../headers/events/events.h"				// opengl in cizecegi verilerin tutuldugu dosyalar
 #include "../headers/abstract/application.h"		
-#include "../headers/abstract/Camera.h"		
+#include "../headers/abstract/Camera.h"	
 #include "../headers/abstract/shader.h"				// shader objesi olusturmaya dair veritipi
 #include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
 #include "../headers/maps/shaders.h"				// shaderlarin isimleri ve dosya konumlarinin mapleri
@@ -52,25 +52,28 @@ using namespace str_utils;
 using namespace file_utils;
 using namespace img_utils;
 
-// constant variables
+// global, constant variables
 // -----------------------------------
-constexpr unsigned int ERROR_BUFFER_SIZE = 512;
-
+constexpr unsigned int kg_error_buffer_size = 512;
+Application* gp_app;
 
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-Mat4 Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& new_up)
+
+Mat4 Camera::calcViewMatrix(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up)
 {
+	position = new_pos;
+	up = world_up;
 	direction = (new_pos - new_tar).normalized();
-	right = cross3d(new_up, direction);
-	up = cross3d(direction, right);
+	right = cross3d(world_up, direction).normalized();
+	up = cross3d(direction, right).normalized();
 	float rx = right.x;
 	float ry = right.y;
 	float rz = right.z;
-	float ux = new_up.x;
-	float uy = new_up.y;
-	float uz = new_up.z;
+	float ux = world_up.x;
+	float uy = world_up.y;
+	float uz = world_up.z;
 	float dx = direction.x;
 	float dy = direction.y;
 	float dz = direction.z;
@@ -82,16 +85,16 @@ Mat4 Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& new_up
 		ux, uy, uz, 0,
 		dx, dy, dz, 0,
 		0, 0, 0, 1
-	) * 
+	) *
 		Mat4(
-		1, 0, 0, -px,
-		0, 1, 0, -py,
-		0, 0, 1, -pz,
-		0, 0, 0, 1
+			1, 0, 0, -px,
+			0, 1, 0, -py,
+			0, 0, 1, -pz,
+			0, 0, 0, 1
 		);
 }
 
-Mat4 Camera::lookAt()
+Mat4 Camera::calcViewMatrix()
 {
 	float rx = right.x;
 	float ry = right.y;
@@ -119,15 +122,72 @@ Mat4 Camera::lookAt()
 		);
 }
 
+void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
+{
+	WindowState& ws = window_state;
+	if (ws.b_first_mouse)
+	{
+		ws.mouse_x = xpos;
+		ws.mouse_y = ypos;
+		ws.b_first_mouse = false;
+	}
+
+	float xoffset = xpos - ws.mouse_x;
+	float yoffset = ypos - ws.mouse_y; // reversed since y-coordinates range from bottom to top
+	ws.mouse_x = xpos;
+	ws.mouse_y = ypos;
+
+	float sensitivity = 0.1f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	Camera& cam = scene_state.camera;
+	cam.pitch += yoffset;
+	cam.yaw += xoffset;
+
+	// limiter
+	if (cam.pitch > 89.0f)
+		cam.pitch = 89.0f;
+	if (cam.pitch < -89.0f)
+		cam.pitch = -89.0f;
+
+	cam.calcAxes(cam.pitch, cam.yaw, world_up);
+	
+}
+
+void Application::handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset)
+{
+	float& fov = scene_state.fov;
+	fov -= (float)yoffset;
+	if (fov < 1.0f)
+		fov = 1.0f;
+	if (fov > 45.0f)
+		fov = 45.0f;
+}
+
+void Camera::calcAxes(const float& pitch, const float& yaw, const Vec3& world_up)
+{
+	Vec3 new_dir;
+	new_dir.x = cos(radian(yaw)) * cos(radian(pitch));
+	new_dir.y = sin(radian(pitch));
+	new_dir.z = sin(radian(yaw)) * cos(radian(pitch));
+	direction = new_dir.normalized();
+	right = cross3d(world_up, direction).normalized();
+	up = cross3d(direction, right).normalized();
+}
+
 bool Application::initialize(k_configType& config)
 {
+	gp_app = this;
 	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
 	const unsigned int k_scr_height = std::stoul(config.at("scr").at("height"));
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
-	
+
+	world_up = Vec3(0.0f, 1.0f, 0.0f);
+
 	initWindowSystem(k_scr_width, k_scr_height, kp_wndw_name);
 	const char* glsl_version = "#version 330";
-	
+
 	// glad: load all OpenGL function pointers
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -158,6 +218,13 @@ bool Application::load(k_configType& config)
 
 	loadMeshData();
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, callbackMouse); // todo initialize
+	glfwSetScrollCallback(window, callbackScroll);
+	window_state.b_first_mouse = true;
+	window_state.mouse_x = std::stoul(config.at("scr").at("width")) / 2.0f;
+	window_state.mouse_y = std::stoul(config.at("scr").at("height")) / 2.0f;
+
 	return 1;
 }
 
@@ -169,8 +236,15 @@ void Application::loadConfig(const k_configType& config)
 
 void Application::loadSceneData(const k_configType& config)
 {
-	scene_state.near = 1.0f;
-	scene_state.far = 100.0f;
+	SceneState& ss = scene_state;
+	ss.near = 1.0f;
+	ss.far = 100.0f;
+	ss.fov = 45.0f;
+	ss.last_frame_time = 0.0f;
+
+	Camera& cam = ss.camera;
+	cam.pitch	= 0.0f;
+	cam.yaw		= 90.0f;
 
 	// animation
 	scene_state.b_animate = true;
@@ -190,10 +264,10 @@ void Application::loadSceneData(const k_configType& config)
 	};
 
 	// init camera wuth default values
-	const Vec3 k_position = Vec3(0.0f, 0.0f, 3.0f);
-	const Vec3 k_target = Vec3(0.0f, 0.0f, 0.0f);
-	const Vec3 k_up = Vec3(0.0f, 1.0f, 0.0f);
-	scene_state.camera.lookAt(k_position, k_target, k_up);
+	const Vec3 k_position = Vec3(0.0f, 0.0f, 5.0f);
+	const Vec3 k_target_point = Vec3(0.0f, 0.0f, 0.0f);
+	const Vec3 k_world_up = world_up;
+	scene_state.camera.calcViewMatrix(k_position, k_target_point, k_world_up);
 }
 
 void Application::loadTextures()
@@ -203,11 +277,13 @@ void Application::loadTextures()
 	texture1 = createTexture("data/textures/container.jpg", 2);
 	texture2 = createTexture("data/textures/awesomeface.png");
 }
+
 void Application::loadShaders()
 {
 	// build and compile our shader program
 	this->active_shader = new Shader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
 }
+
 void Application::loadMeshData()
 {
 	// create vertex array object and vertex buffer object
@@ -259,7 +335,7 @@ void Application::mainLoop()
 	// initial values for the uniforms
 	uni_obj.world_matrix = mat_utils::identity4();
 	uni_view.view_matrix = mat_utils::identity4();
-	uni_view.projection_matrix = mat_utils::identity4();	
+	uni_view.projection_matrix = mat_utils::identity4();
 	uni_obj.mixValue = 0.2f;
 
 	// render loop 
@@ -279,11 +355,12 @@ void Application::mainLoop()
 		drawScene(uni);
 
 		drawUI();
-		
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 }
+
 int Application::initWindowSystem(const unsigned int& width, const unsigned int& height, const char*& window_name)
 {
 	// :: GLFW
@@ -296,9 +373,9 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	//
 	// if apple
 
-	#ifdef __APPLE__
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	#endif
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
 	// glfw window creation
 	this->window = glfwCreateWindow(width, height, window_name, NULL, NULL);
@@ -313,6 +390,7 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
 }
+
 void Application::initUISystem(const char*& glsl_version)
 {
 	//  :: IMGUI Init
@@ -329,7 +407,6 @@ void Application::initUISystem(const char*& glsl_version)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 }
-
 
 void Application::unload()
 {
@@ -390,7 +467,6 @@ void Application::updateUI()
 	//}
 }
 
-
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {
 	glBindVertexArray(inptLayout);	// VAO note that we bind to a different VAO now
@@ -401,7 +477,7 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
 	glBindVertexArray(0);
 }
 
-void Application::drawScene(Uniforms& uni) 
+void Application::drawScene(Uniforms& uni)
 {
 	// todo: draw parameters structa topla | 
 	UniformsPerObject& uni_obj = uni.upo;
@@ -424,9 +500,10 @@ void Application::drawScene(Uniforms& uni)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// create transformations
-	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
-	uni_view.view_matrix = scene_state.camera.lookAt();
-	uni_view.projection_matrix = mat_utils::projectPerspective(radian(45.0f), scene_state.aspect_ratio, scene_state.near, scene_state.far);
+	SceneState& ss = scene_state;
+	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(ss.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
+	uni_view.view_matrix = scene_state.camera.calcViewMatrix();
+	uni_view.projection_matrix = mat_utils::projectPerspective(radian(ss.fov), ss.aspect_ratio, ss.near, ss.far);
 
 	// set the texture mix value in the shader
 	active_shader->setFloat("mixValue", uni_obj.mixValue);
@@ -460,9 +537,9 @@ void Application::drawScene(Uniforms& uni)
 	}
 }
 
-void Application::updateScene() 
+void Application::updateScene()
 {
-	// update the uniform color
+	// update time
 	if (scene_state.b_animate)
 	{
 		scene_state.time = (float)glfwGetTime();
@@ -471,18 +548,20 @@ void Application::updateScene()
 	{
 		scene_state.time = 0;
 	}
+	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
+	scene_state.last_frame_time = scene_state.time;
 
 	// camera position
-	const float radius = 10.0f;
-	scene_state.camera.position.x = sin(scene_state.time) * radius;
-	scene_state.camera.position.z = cos(scene_state.time) * radius;
-	int num_obj = scene_state.obj_positions.size();
+	//const float radius = 10.0f;
+	//scene_state.camera.position.x = sin(scene_state.time) * radius;
+	//scene_state.camera.position.z = cos(scene_state.time) * radius;
+	//int num_obj = scene_state.obj_positions.size();
 
-	scene_state.camera.target = scene_state.obj_positions[(int)(scene_state.time) % num_obj];
-	scene_state.camera.direction = (scene_state.camera.position - scene_state.camera.target).normalized();
-	Vec3 up = Vec3(0.0f, 1.0f, 0.0f);
-	scene_state.camera.right = cross3d(up, scene_state.camera.direction);
-	scene_state.camera.up = cross3d(scene_state.camera.direction, scene_state.camera.right);
+	////scene_state.camera.target = scene_state.obj_positions[(int)(scene_state.time) % num_obj];
+	//scene_state.camera.new_dir = (scene_state.camera.position - scene_state.camera.target).normalized();
+	//Vec3 up = Vec3(0.0f, 1.0f, 0.0f);
+	//scene_state.camera.right = cross3d(up, scene_state.camera.new_dir);
+	//scene_state.camera.up = cross3d(scene_state.camera.new_dir, scene_state.camera.right);
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

@@ -2,9 +2,15 @@
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/abstract/Application.h"			// shader objesi olusturmaya dair veritipi
 #include "../headers/abstract/scene_state.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/abstract/WindowState.h"		
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 
+
+// ----- variables
+// ----------------------------------------------------------------------------
+extern Application* gp_app;
 
 
 // ------------------------------------------------------------------------------------------------
@@ -16,11 +22,10 @@ void callbackFrameBufferSize(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-Vec3 operator*(const float& scalar, const Vec3& vector)
+Vec3 operator*(const float& scalar, const Vec3& vector)	
 {
 	return vector * scalar;
 }
-
 
 void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_state)
 {
@@ -42,7 +47,7 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_
 	}
 
 	// camera
-	const float cam_speed = 0.05f; // adjust accordingly
+	const float cam_speed = 2.5f * scene_state.delta_time; // adjust accordingly
 	Vec3& cam_pos = scene_state.camera.position;
 	const Vec3& cam_dir = scene_state.camera.direction;
 	const Vec3& cam_up = scene_state.camera.up;
@@ -55,4 +60,15 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_
 		cam_pos += math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		cam_pos -= math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
+}
+
+
+void callbackMouse(GLFWwindow* window, double xpos, double ypos)
+{
+	gp_app->handleMouseEvent(window, xpos, ypos);
+}
+
+void callbackScroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+	gp_app->handleScrollEvent(window, xoffset, yoffset);
 }

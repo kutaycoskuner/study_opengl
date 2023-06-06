@@ -10,11 +10,14 @@ struct SceneState
     float aspect_ratio;
     float near;
     float far;
+    float fov;
 
     // camera
     Camera camera;
 
     // animate
+    float delta_time;
+    float last_frame_time;
     float time;
     bool b_animate;
 

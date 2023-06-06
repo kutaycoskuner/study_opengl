@@ -18,7 +18,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Variables
 // ------------------------------------------------------------------------------------------------
-constexpr unsigned int ERROR_BUFFER_SIZE = 512;
+constexpr unsigned int kg_error_buffer_size = 512;
 
 // ------------------------------------------------------------------------------------------------
 // ----- Functions
@@ -30,11 +30,11 @@ unsigned int compileShader(const char* src, int glShaderStage)
 	glShaderSource(shader_id, 1, &src, NULL);
 	glCompileShader(shader_id);
 	int success;
-	char infoLog[ERROR_BUFFER_SIZE];
+	char infoLog[kg_error_buffer_size];
 	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(shader_id, ERROR_BUFFER_SIZE, NULL, infoLog);
+		glGetShaderInfoLog(shader_id, kg_error_buffer_size, NULL, infoLog);
 		std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 	return shader_id;
@@ -43,7 +43,7 @@ unsigned int compileShader(const char* src, int glShaderStage)
 unsigned int linkShaderProgram(const std::vector<unsigned int>& shader_ids)
 {
 	int success;
-	char infoLog[ERROR_BUFFER_SIZE];
+	char infoLog[kg_error_buffer_size];
 	unsigned int shaderProgram_id = glCreateProgram();
 	// for
 	for (unsigned int shader_id : shader_ids)

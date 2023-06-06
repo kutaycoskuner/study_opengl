@@ -13,17 +13,24 @@
 
 // ----- abstract
 // ----------------------------------------------------------------------------
+// todo: classs
 struct Camera
 {
 public:
+	// position
 	Vec3 position;
-	Vec3 target;
+	// axis
 	Vec3 direction;
-	float current_speed;
-
 	Vec3 right;
 	Vec3 up;
-	Mat4 lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& new_up);
-	Mat4 lookAt();
+	// movement
+	float current_speed;
+	// angles
+	float yaw;
+	float pitch;
 
+	// functions
+	Mat4 calcViewMatrix(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up);
+	Mat4 calcViewMatrix();
+	void calcAxes(const float& pitch, const float& yaw, const Vec3& world_up);
 };
