@@ -7,6 +7,7 @@
 struct SceneState
 {
     // frustum
+    // todo: move in to camera
     float aspect_ratio;
     float near;
     float far;
@@ -15,7 +16,10 @@ struct SceneState
     // camera
     Camera camera;
 
-    // animate
+    // light
+    Vec3 light_color;
+
+    // animation
     float delta_time;
     float last_frame_time;
     float time;
@@ -23,4 +27,5 @@ struct SceneState
 
     // positions
     std::vector<Vec3> obj_positions;
+    std::vector<Vec3> obj_colors;
 };

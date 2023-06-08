@@ -2,10 +2,10 @@
 // ----- Notes
 // ------------------------------------------------------------------------------------------------
 /*
-Version: 0.32
+Version: 0.36
 https://learnopengl.com/Getting-started/Coordinate-Systems
-Coordinate system end.
-Continue: Camera
+Camera system end.
+Continue: Lighting
 
 */
 #if 1
@@ -43,6 +43,8 @@ Continue: Camera
 #include <glm/ext/matrix_clip_space.hpp>	// glm::perspective
 #include <glm/ext/scalar_constants.hpp>		// glm::pi
 
+#include <memory>
+
 
 // self keywords
 // -----------------------------------
@@ -60,41 +62,16 @@ Application* gp_app;
 // ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-
-Mat4 Camera::calcViewMatrix(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up)
+void Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up)
 {
 	position = new_pos;
 	up = world_up;
 	direction = (new_pos - new_tar).normalized();
 	right = cross3d(world_up, direction).normalized();
 	up = cross3d(direction, right).normalized();
-	float rx = right.x;
-	float ry = right.y;
-	float rz = right.z;
-	float ux = world_up.x;
-	float uy = world_up.y;
-	float uz = world_up.z;
-	float dx = direction.x;
-	float dy = direction.y;
-	float dz = direction.z;
-	float px = position.x;
-	float py = position.y;
-	float pz = position.z;
-	return Mat4(
-		rx, ry, rz, 0,
-		ux, uy, uz, 0,
-		dx, dy, dz, 0,
-		0, 0, 0, 1
-	) *
-		Mat4(
-			1, 0, 0, -px,
-			0, 1, 0, -py,
-			0, 0, 1, -pz,
-			0, 0, 0, 1
-		);
 }
 
-Mat4 Camera::calcViewMatrix()
+Mat4 Camera::calcViewMatrix() const
 {
 	float rx = right.x;
 	float ry = right.y;
@@ -151,8 +128,8 @@ void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 	if (cam.pitch < -89.0f)
 		cam.pitch = -89.0f;
 
-	cam.calcAxes(cam.pitch, cam.yaw, world_up);
-	
+	cam.rotate(cam.pitch, cam.yaw, world_up);
+
 }
 
 void Application::handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset)
@@ -165,7 +142,7 @@ void Application::handleScrollEvent(GLFWwindow* window, double xoffset, double y
 		fov = 45.0f;
 }
 
-void Camera::calcAxes(const float& pitch, const float& yaw, const Vec3& world_up)
+void Camera::rotate(const float& pitch, const float& yaw, const Vec3& world_up)
 {
 	Vec3 new_dir;
 	new_dir.x = cos(radian(yaw)) * cos(radian(pitch));
@@ -184,9 +161,13 @@ bool Application::initialize(k_configType& config)
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
 
 	world_up = Vec3(0.0f, 1.0f, 0.0f);
+	scene_state.light_color = Vec3(0.33f, 0.42f, 0.18f);
 
 	initWindowSystem(k_scr_width, k_scr_height, kp_wndw_name);
 	const char* glsl_version = "#version 330";
+	window_state.b_first_mouse = true;
+	window_state.mouse_x = std::stoul(config.at("scr").at("width")) / 2.0f;
+	window_state.mouse_y = std::stoul(config.at("scr").at("height")) / 2.0f;
 
 	// glad: load all OpenGL function pointers
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -218,13 +199,6 @@ bool Application::load(k_configType& config)
 
 	loadMeshData();
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, callbackMouse); // todo initialize
-	glfwSetScrollCallback(window, callbackScroll);
-	window_state.b_first_mouse = true;
-	window_state.mouse_x = std::stoul(config.at("scr").at("width")) / 2.0f;
-	window_state.mouse_y = std::stoul(config.at("scr").at("height")) / 2.0f;
-
 	return 1;
 }
 
@@ -243,11 +217,11 @@ void Application::loadSceneData(const k_configType& config)
 	ss.last_frame_time = 0.0f;
 
 	Camera& cam = ss.camera;
-	cam.pitch	= 0.0f;
-	cam.yaw		= 90.0f;
+	cam.pitch = 0.0f;
+	cam.yaw = 90.0f;
 
 	// animation
-	scene_state.b_animate = true;
+	ss.b_animate = true;
 
 	// cube positions 
 	scene_state.obj_positions = {
@@ -267,7 +241,7 @@ void Application::loadSceneData(const k_configType& config)
 	const Vec3 k_position = Vec3(0.0f, 0.0f, 5.0f);
 	const Vec3 k_target_point = Vec3(0.0f, 0.0f, 0.0f);
 	const Vec3 k_world_up = world_up;
-	scene_state.camera.calcViewMatrix(k_position, k_target_point, k_world_up);
+	cam.lookAt(k_position, k_target_point, k_world_up);
 }
 
 void Application::loadTextures()
@@ -281,7 +255,34 @@ void Application::loadTextures()
 void Application::loadShaders()
 {
 	// build and compile our shader program
-	this->active_shader = new Shader("shaders/3d_vrtxShader.glsl", "shaders/3d_fragShader.glsl");
+	// todo: butun shaderlari yukle daha sonra aktifi sec | bu 3d pipeline ini bozuyor
+	const std::vector<std::vector<std::string>> shader_paths =
+	{
+		{
+			"shaders/light_vrtxShader.glsl",
+			"shaders/light_fragShader.glsl",
+		},
+		{
+			"shaders/3d_fragShader.glsl",
+			"shaders/3d_fragShader.glsl"
+		}
+	};
+
+	std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+	for (const std::vector<std::string>& path_pair : shader_paths)
+	{
+		const std::string vrtx = path_pair[0];
+		const std::string frag = path_pair[1];
+		// get between / and _ for key
+		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
+		std::string left_trimmed_key = path_parts[0];
+		path_parts = str_utils::split(left_trimmed_key, "/");
+		const std::string name = path_parts.back();
+		//
+		shaders[name] = std::make_shared<Shader>(vrtx, frag);
+	}
+
+	this->active_shader = shaders.at("light");
 }
 
 void Application::loadMeshData()
@@ -290,6 +291,7 @@ void Application::loadMeshData()
 	glGenVertexArrays(buffer_count, VAOs);
 	glGenBuffers(buffer_count, VBOs); // :: memory alani olusturuyor
 	glGenBuffers(buffer_count, EBOs); // :: ebo icin memory
+
 
 	// binding buffers
 	glBindVertexArray(VAOs[0]);
@@ -319,6 +321,18 @@ void Application::loadMeshData()
 	// att: texture
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	// light
+	glGenVertexArrays(1, &lightVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	// we only need to bind to the VBO, the container's VBO's data already contains the data.
+	// todo: vertexbuffer class olustur
+	glBindVertexArray(lightVAO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::lightCubeVrts), ObjToDraw::lightCubeVrts, GL_STATIC_DRAW);
+	// set the vertex attribute 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -389,6 +403,9 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwMakeContextCurrent(window);
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, callbackMouse);
+	glfwSetScrollCallback(window, callbackScroll);
 }
 
 void Application::initUISystem(const char*& glsl_version)
@@ -412,7 +429,6 @@ void Application::unload()
 {
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	delete active_shader;
 	glDeleteVertexArrays(buffer_count, VAOs);
 	glDeleteBuffers(buffer_count, VBOs);
 }
@@ -486,6 +502,8 @@ void Application::drawScene(Uniforms& uni)
 	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
 	(*active_shader).use(); // don't forget to activate/use the shader before setting uniforms!
 	active_shader->setInt("texture2", 1);
+	active_shader->setVec3("lightColor", Vec3(0.0f, 1.0f, 1.0f));
+	active_shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 
 	// draw wireframe or not
 	if (b_wireframe_mode) // todo: deserialize config
@@ -500,17 +518,21 @@ void Application::drawScene(Uniforms& uni)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// create transformations
-	SceneState& ss = scene_state;
+	const SceneState& ss = scene_state;
 	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(ss.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
-	uni_view.view_matrix = scene_state.camera.calcViewMatrix();
+
+	uni_view.view_matrix = ss.camera.calcViewMatrix();
 	uni_view.projection_matrix = mat_utils::projectPerspective(radian(ss.fov), ss.aspect_ratio, ss.near, ss.far);
+	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
+
+	uni_frame.light_color = ss.light_color;
 
 	// set the texture mix value in the shader
-	active_shader->setFloat("mixValue", uni_obj.mixValue);
+	//active_shader->setFloat("mixValue", uni_obj.mixValue);
 	//ourShader->setMat4("world_matrix", uni_obj.world_matrix);
-	active_shader->setMat4("view_matrix", uni_view.view_matrix);
-	active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
-
+	//active_shader->setMat4("view_matrix", uni_view.view_matrix);
+	//active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
+	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
 	// 
 	int display_w, display_h;
 	glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -518,13 +540,13 @@ void Application::drawScene(Uniforms& uni)
 
 	// draw scene
 	active_shader->use();
-	glBindVertexArray(VAOs[0]);
+	glBindVertexArray(lightVAO);
 
 	// assign texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, texture1);
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, texture2);
 
 	for (unsigned int ii = 0; ii < 10; ii++)
 	{
@@ -550,18 +572,6 @@ void Application::updateScene()
 	}
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
 	scene_state.last_frame_time = scene_state.time;
-
-	// camera position
-	//const float radius = 10.0f;
-	//scene_state.camera.position.x = sin(scene_state.time) * radius;
-	//scene_state.camera.position.z = cos(scene_state.time) * radius;
-	//int num_obj = scene_state.obj_positions.size();
-
-	////scene_state.camera.target = scene_state.obj_positions[(int)(scene_state.time) % num_obj];
-	//scene_state.camera.new_dir = (scene_state.camera.position - scene_state.camera.target).normalized();
-	//Vec3 up = Vec3(0.0f, 1.0f, 0.0f);
-	//scene_state.camera.right = cross3d(up, scene_state.camera.new_dir);
-	//scene_state.camera.up = cross3d(scene_state.camera.new_dir, scene_state.camera.right);
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

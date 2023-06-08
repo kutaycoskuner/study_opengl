@@ -97,6 +97,15 @@
 
 
 # Blackboard
+- unordered map
+    - [] hem okuyup hem yaziyor yoks yaziyor
+    - yoksa patlamasi icin .at("")
+
+- pointer tipleri
+    - shared pointer, unique pointer
+    - raw pointer, smart pointer
+    - bu objeyi refer eden 
+
 - module ne demek
     - .exe, ya da .dll
 
@@ -163,6 +172,7 @@
     - col: color
 
 - concepts
+    - array of structs, struct of arrays
     - spherical harmonics
     - smart pointer
     - deferred initialization
@@ -336,6 +346,11 @@
         - global degisken
         - glfw window user pointer
         - manually handle every frame
+
+- <kod kalitesi>
+    - naming
+    - responsiibility, ownership dagilimlari
+    - const refler
 
 # Shortcuts
 - f5                                debugger

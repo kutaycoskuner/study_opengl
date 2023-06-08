@@ -2,6 +2,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
+#include "../abstract/vector3.h"
 #include "../abstract/matrix.h"
 
 // ------------------------------------------------------------------------------------------------
@@ -18,11 +19,12 @@ struct UniformsPerView
 {
 	Mat4 view_matrix;
 	Mat4 projection_matrix;
+	Mat4 view_proj_matrix;
 };
 
 struct UniformsPerFrame
 {
-
+	Vec3 light_color;
 };
 
 struct Uniforms

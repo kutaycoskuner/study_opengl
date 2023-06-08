@@ -141,6 +141,7 @@
     <ClCompile Include="data\adress_mappings\m_shaders.cpp" />
     <None Include="shaders\3d_fragShader.glsl" />
     <None Include="shaders\3d_vrtxShader.glsl" />
+    <None Include="shaders\light_vrtxShader.glsl" />
     <None Include="shaders\old\fragShader.glsl" />
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
@@ -154,6 +155,9 @@
     <ClCompile Include="libs\imgui-1.89.5\imgui_impl_opengl3.cpp" />
     <ClCompile Include="libs\imgui-1.89.5\imgui_tables.cpp" />
     <ClCompile Include="libs\imgui-1.89.5\imgui_widgets.cpp" />
+    <None Include="shaders\light_fragShader.glsl">
+      <FileType>Document</FileType>
+    </None>
     <ClCompile Include="source\test\integrationTest_transformations.cpp" />
     <ClCompile Include="source\test\unitTest_Mat4.cpp" />
     <ClCompile Include="source\test\unitTest_Vec3.cpp" />

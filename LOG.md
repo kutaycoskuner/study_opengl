@@ -61,6 +61,12 @@
 - 06-Jun-2023 add: refactor after 0.36
 
 # Log
+- [0.37] wip: Light, Load all shaders at once
+    - 09-Jun-2023   add: Load all shaders at once loadShaders()
+    - 07-Jun-2023   wip: lighting
+    - 06-Jun-2023   arch: split calcViewMatrix split 2 functions lookAt, rotate
+    - 06-Jun-2023   add: display: 0.36 camera movement
+
 - [0.36] add: Camera movement, zoom
     - 06-Jun-2023   add: Camera zoom
     - 06-Jun-2023   add: Camera mouse rotation

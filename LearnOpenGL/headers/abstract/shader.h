@@ -107,6 +107,9 @@ public:
         glDeleteShader(vertex);
         glDeleteShader(fragment);
     }
+    Shader(const std::string& vertexPath, const std::string& fragPath): 
+        Shader(vertexPath.c_str(), fragPath.c_str())
+    {}
     // activate the shader
     // ------------------------------------------------------------------------
     void use() 
@@ -133,6 +136,16 @@ public:
     void setMat4(const std::string& name, const Mat4& value) const
     {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_TRUE, &value.m[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setVec3(const std::string& name, const Vec3& value) const
+    {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
+    }
+    // ------------------------------------------------------------------------
+    void setVec3(const std::string& name, const float& vx, const float& vy, const float& vz) const
+    {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), vx, vy, vz);
     }
 
 private:

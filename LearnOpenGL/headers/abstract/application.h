@@ -9,6 +9,7 @@
 #include "../abstract/WindowState.h"
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 
 // ------------------------------------------------------------------------------------------------
@@ -92,10 +93,11 @@ private:
     const static unsigned int buffer_count = 1;
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
-    Shader*      active_shader;
+    std::shared_ptr<Shader> active_shader;
     unsigned int texture1;
     unsigned int texture2;
     unsigned int VAOs[buffer_count];
+    unsigned int lightVAO;
     unsigned int VBOs[buffer_count];
     unsigned int EBOs[buffer_count];
 
@@ -104,6 +106,7 @@ private:
 
     // standards
     Vec3 world_up;
+   
 
     // config
     bool        b_wireframe_mode;
