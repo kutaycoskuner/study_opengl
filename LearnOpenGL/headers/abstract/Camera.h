@@ -2,7 +2,7 @@
 // ----- libraries
 // ----------------------------------------------------------------------------
 #include "../abstract/vector3.h"
-#include "../abstract/matrix.h"
+#include "../abstract/matrix4.h"
 
 
 // ----- forward declarations

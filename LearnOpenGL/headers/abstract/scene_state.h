@@ -17,13 +17,16 @@ struct SceneState
     Camera camera;
 
     // light
+    Vec3 light_pos;
     Vec3 light_color;
 
     // animation
+    float time;
     float delta_time;
     float last_frame_time;
-    float time;
+    float angle_multiplier;
     bool b_animate;
+    float animation_time;
 
     // positions
     std::vector<Vec3> obj_positions;

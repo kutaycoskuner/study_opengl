@@ -148,6 +148,12 @@ struct Mat4
 		return result;
 	}
 
+	// override =* 
+	void operator*=(const Mat4& other)
+	{
+		*this = *this * other;
+	}
+
 	// transposed
 	Mat4 transposed() const
 	{

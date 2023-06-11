@@ -18,6 +18,7 @@
 struct GLFWwindow;
 struct Uniforms;
 class Shader;
+using uint = unsigned int;
 
 // ------------------------------------------------------------------------------------------------
 // ----- function declerations
@@ -82,10 +83,11 @@ private:
     void loadTextures();
     void loadShaders();
     void loadMeshData();
+    void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
     // ui
     void drawUI();
     void updateUI();
-    // scene
+    // draw scene
     void drawScene(Uniforms& uni);
     void updateScene();
 
@@ -94,22 +96,24 @@ private:
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
     std::shared_ptr<Shader> active_shader;
+    std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
     unsigned int texture1;
     unsigned int texture2;
     unsigned int VAOs[buffer_count];
     unsigned int lightVAO;
+    unsigned int lightVBO;
     unsigned int VBOs[buffer_count];
     unsigned int EBOs[buffer_count];
 
     SceneState scene_state;
     WindowState window_state;
+    UIState     ui_state;
 
     // standards
     Vec3 world_up;
-   
+    Vec3 world_origin;
 
     // config
     bool        b_wireframe_mode;
     Vec4        clear_color;
-    UIState     ui_state;
 };

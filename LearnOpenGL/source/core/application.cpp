@@ -161,6 +161,7 @@ bool Application::initialize(k_configType& config)
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
 
 	world_up = Vec3(0.0f, 1.0f, 0.0f);
+	world_origin = Vec3(0.0f, 0.0f, 0.0f);
 	scene_state.light_color = Vec3(0.33f, 0.42f, 0.18f);
 
 	initWindowSystem(k_scr_width, k_scr_height, kp_wndw_name);
@@ -216,12 +217,17 @@ void Application::loadSceneData(const k_configType& config)
 	ss.fov = 45.0f;
 	ss.last_frame_time = 0.0f;
 
+	// camera
 	Camera& cam = ss.camera;
 	cam.pitch = 0.0f;
 	cam.yaw = 90.0f;
 
+	// light
+	ss.light_pos = Vec3(1.2f, 1.0f, 2.0f);
+
 	// animation
 	ss.b_animate = true;
+	ss.angle_multiplier = 0.0f;
 
 	// cube positions 
 	scene_state.obj_positions = {
@@ -234,11 +240,11 @@ void Application::loadSceneData(const k_configType& config)
 		Vec3(1.5f,  2.0f, -2.5f),
 		Vec3(1.5f,  0.2f, -1.5f),
 		Vec3(-1.3f,  1.0f, -1.5f),
-		Vec3(0.0f,  0.0f,  0.0f)
+		//Vec3(0.0f,  0.0f,  0.0f)
 	};
 
 	// init camera wuth default values
-	const Vec3 k_position = Vec3(0.0f, 0.0f, 5.0f);
+	const Vec3 k_position = Vec3(1.2f, 2.0f, 5.0f);
 	const Vec3 k_target_point = Vec3(0.0f, 0.0f, 0.0f);
 	const Vec3 k_world_up = world_up;
 	cam.lookAt(k_position, k_target_point, k_world_up);
@@ -263,12 +269,11 @@ void Application::loadShaders()
 			"shaders/light_fragShader.glsl",
 		},
 		{
-			"shaders/3d_fragShader.glsl",
+			"shaders/3d_vrtxShader.glsl",
 			"shaders/3d_fragShader.glsl"
 		}
 	};
 
-	std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
 	for (const std::vector<std::string>& path_pair : shader_paths)
 	{
 		const std::string vrtx = path_pair[0];
@@ -282,7 +287,6 @@ void Application::loadShaders()
 		shaders[name] = std::make_shared<Shader>(vrtx, frag);
 	}
 
-	this->active_shader = shaders.at("light");
 }
 
 void Application::loadMeshData()
@@ -300,7 +304,6 @@ void Application::loadMeshData()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
-
 
 	// linking vertex attributes
 	// --------------------------       
@@ -324,18 +327,45 @@ void Application::loadMeshData()
 
 	// light
 	glGenVertexArrays(1, &lightVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	glGenBuffers(1, &lightVBO); // :: memory alani olusturuyor
+	glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
 	glBindVertexArray(lightVAO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::lightCubeVrts), ObjToDraw::lightCubeVrts, GL_STATIC_DRAW);
+	stride = 6;
 	// set the vertex attribute 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	// att: normals
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	//generateBuffer(lightVAO, lightVBO, ObjToDraw::cubeVrts, 5, 1, 0);
+
 
 	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+void Application::generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex)
+{
+	// light
+	glGenVertexArrays(1, &vrtx_arr);
+	glGenBuffers(1, &vrtx_buffer); // :: memory alani olusturuyor
+	glBindBuffer(GL_ARRAY_BUFFER, vrtx_buffer);
+	// we only need to bind to the VBO, the container's VBO's data already contains the data.
+	// todo: vertexbuffer class olustur
+	glBindVertexArray(vrtx_arr);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(obj_vrts), obj_vrts, GL_STATIC_DRAW);
+	// att: vrtx 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
+	if (vrtx)
+		glEnableVertexAttribArray(0);
+	// att: texture
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	if (tex)
+		glEnableVertexAttribArray(2);
 }
 
 void Application::mainLoop()
@@ -403,8 +433,8 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwMakeContextCurrent(window);
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, callbackMouse);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetCursorPosCallback(window, callbackMouse);
 	glfwSetScrollCallback(window, callbackScroll);
 }
 
@@ -453,7 +483,7 @@ void Application::updateUI()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	//// 2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
+	// 2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
 	//{
 	//	static float f = 0.0f;
 	//	static int counter = 0;
@@ -499,11 +529,6 @@ void Application::drawScene(Uniforms& uni)
 	UniformsPerObject& uni_obj = uni.upo;
 	UniformsPerView& uni_view = uni.upv;
 	UniformsPerFrame& uni_frame = uni.upf;
-	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-	(*active_shader).use(); // don't forget to activate/use the shader before setting uniforms!
-	active_shader->setInt("texture2", 1);
-	active_shader->setVec3("lightColor", Vec3(0.0f, 1.0f, 1.0f));
-	active_shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 
 	// draw wireframe or not
 	if (b_wireframe_mode) // todo: deserialize config
@@ -511,67 +536,108 @@ void Application::drawScene(Uniforms& uni)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
+	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
+
 	// render clear screen
-	// ------------------------------
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// create transformations
-	const SceneState& ss = scene_state;
-	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(ss.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
-
-	uni_view.view_matrix = ss.camera.calcViewMatrix();
-	uni_view.projection_matrix = mat_utils::projectPerspective(radian(ss.fov), ss.aspect_ratio, ss.near, ss.far);
-	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
-
-	uni_frame.light_color = ss.light_color;
-
-	// set the texture mix value in the shader
-	//active_shader->setFloat("mixValue", uni_obj.mixValue);
-	//ourShader->setMat4("world_matrix", uni_obj.world_matrix);
-	//active_shader->setMat4("view_matrix", uni_view.view_matrix);
-	//active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
-	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
 	// 
 	int display_w, display_h;
 	glfwGetFramebufferSize(window, &display_w, &display_h);
 	glViewport(0, 0, display_w, display_h);
 
-	// draw scene
-	active_shader->use();
+	// create transformations
+	const SceneState& ss = scene_state;
+	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(ss.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
+	uni_view.view_matrix = ss.camera.calcViewMatrix();
+	uni_view.projection_matrix = mat_utils::projectPerspective(radian(ss.fov), ss.aspect_ratio, ss.near, ss.far);
+	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
+	uni_frame.light_color = ss.light_color;
+
+
+	// draw lights
+	// --------------------------------------------------------------------------
+	// set active shader
+	this->active_shader = shaders.at("light");
+	// activate shader
+	(*active_shader).use();
+	// assign uniforms
+	active_shader->setVec3("lightPos", ss.light_pos);
+	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
+	active_shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+	active_shader->setMat4("world_matrix", uni_obj.world_matrix);
+	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
+
 	glBindVertexArray(lightVAO);
 
-	// assign texture
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, texture1);
-	//glActiveTexture(GL_TEXTURE1);
-	//glBindTexture(GL_TEXTURE_2D, texture2);
+	float angle = 0.0f;
+	float mirror_x = 0.7f;
+	float mirror_z = 1.0f;
+	Mat4 model = mat_utils::translation(Vec3(-mirror_x, 0.0f, mirror_z));
+	model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, 0.1f).normalized()); //*mat_utils::scale(scale);
+	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
+	active_shader->setMat4("world_matrix", model);
 
-	for (unsigned int ii = 0; ii < 10; ii++)
-	{
-		float angle = 20.0f * ii;
-		Mat4 model = mat_utils::translation(scene_state.obj_positions[ii]) * mat_utils::rotationXYZ(scene_state.time + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
-		active_shader->setMat4("world_matrix", model);
-		//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+	// draw objects
+	// --------------------------------------------------------------------------
+	// set active shader
+	this->active_shader = shaders.at("3d");
+	// activate shader
+	active_shader->use();
+	// assign uniforms
+	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
+	active_shader->setInt("texture2", 1);
+	active_shader->setFloat("mixValue", uni_obj.mixValue);
+	active_shader->setMat4("world_matrix", uni_obj.world_matrix);
+	active_shader->setMat4("view_matrix", uni_view.view_matrix);
+	active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
+	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
+
+	// assign texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+	glBindVertexArray(VAOs[0]);
+	model = mat_utils::translation(Vec3(mirror_x, 0.0f, -mirror_z));
+	//model *= mat_utils::rotationXYZ(radian(30.0f), Vec3(1.0f, 1.0f, 1.0f).normalized());
+	model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, 0.1f).normalized()); //*mat_utils::scale(scale);
+	active_shader->setMat4("world_matrix", model);
+	model *= mat_utils::scale(.01f);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	//for (unsigned int ii = 0; ii < ss.obj_positions.size(); ii++)
+	//{
+	//	float angle = 20.0f * ii * ss.angle_multiplier;
+	//	Mat4 model = mat_utils::translation(ss.obj_positions[ii]) * mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
+	//	active_shader->setMat4("world_matrix", model);
+	//	//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
+	//	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//	glDrawArrays(GL_TRIANGLES, 0, 36);
+	//}
+
 }
 
 void Application::updateScene()
 {
 	// update time
+	scene_state.time = (float)glfwGetTime();
+	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
+	scene_state.last_frame_time = scene_state.time;
+	// animation
 	if (scene_state.b_animate)
 	{
-		scene_state.time = (float)glfwGetTime();
+		scene_state.animation_time = scene_state.time;
 	}
 	else
 	{
-		scene_state.time = 0;
+		scene_state.animation_time = 0.0f;
 	}
-	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
-	scene_state.last_frame_time = scene_state.time;
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

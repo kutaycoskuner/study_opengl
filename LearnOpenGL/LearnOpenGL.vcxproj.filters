@@ -69,7 +69,7 @@
     <ClCompile Include="source\test\unitTest_Vec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="headers\abstract\matrix.h">
+    <ClCompile Include="headers\abstract\matrix4.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\test\unitTest_Mat4.cpp">

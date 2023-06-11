@@ -59,8 +59,19 @@
 - 06-Jun-2023 add: application singleton
 - 06-Jun-2023 add: Camera class
 - 06-Jun-2023 add: refactor after 0.36
+- 11-Jun-2023 add: phong shading
+- 11-Jun-2023 arch: mat4 transformasyonlari alt alta yaz
 
 # Log
+                                                                               |
+- [0.38] wip: Diffuse light
+    - 11-Jun-2023   add: diffuse light on shading from static light source
+    - 11-Jun-2023   add: Learnopengl scene imitation
+    - 11-Jun-2023   add: Mat4 *= function
+    - 09-Jun-2023   add: New scene for lighting 1 light 1 texture object
+    - 09-Jun-2023   fix: b_animate / time dependency broken by adding anim_time
+    - 09-Jun-2023   add: Draw scene with different objecs and diff. shaders
+
 - [0.37] wip: Light, Load all shaders at once
     - 09-Jun-2023   add: Load all shaders at once loadShaders()
     - 07-Jun-2023   wip: lighting

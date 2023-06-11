@@ -97,6 +97,16 @@
 
 
 # Blackboard
+- normalde scale
+    - inverse transpose 3 3 aliyoruz
+    - scale i inverse transpose yaptigimizda sadece invert oluyor.
+    - pure rotasyon martrislerinin inverse transpose una esit.
+    - scale i cikarmak invert etmek
+
+- lighting models
+    - phong lighting model
+        - ambient, diffuse, specular lighting
+
 - unordered map
     - [] hem okuyup hem yaziyor yoks yaziyor
     - yoksa patlamasi icin .at("")

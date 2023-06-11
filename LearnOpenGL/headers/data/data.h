@@ -12,7 +12,7 @@ class ObjToDraw
 {
 public:
     static float cubeVrts[180];
-    static float lightCubeVrts[108];
+    static float lightCubeVrts[216];
     static float vertices[18];
     static float squareVrts[32];
     static unsigned int squareInds[6];
