@@ -1,8 +1,8 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
-#include "../../headers/abstract/matrix.h"
-#include "../../headers/abstract/vector.h"
+#include "../../headers/abstract/matrix4.h"
+#include "../../headers/abstract/vector4.h"
 #include "../../headers/utils/utilities.h"
 #include <cassert>
 #include <cmath>
@@ -101,6 +101,7 @@ namespace mat_utils
 
 	Mat4 rotationXYZ(const float& angleInRadians, const Vec3& axis)
 	{
+		//if () // todo: normalized degilse normalalized yap 
 		const float cos = cosf(angleInRadians);
 		const float sin = sinf(angleInRadians);
 		const float one_minus_cos = 1 - cos;
@@ -113,6 +114,19 @@ namespace mat_utils
 			r.z*r.x*omc-r.y*sin,	r.z*r.y*omc+r.x*sin,	cos+r.z*r.z*omc,		0,
 			0,						0,						0,						1
 		);
+	}
+
+	Mat4 transpose(const Mat4& matrix)
+	{
+		Mat4 result;
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				result.m[j][i] = matrix.m[i][j];
+			}
+		}
+
+		return result;
 	}
 
 	//Mat4 transpose(const Mat4& mat)

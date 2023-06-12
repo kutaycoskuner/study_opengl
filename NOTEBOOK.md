@@ -172,6 +172,14 @@
         - #202020
         - #090909
         - #121212
+    - violet
+        - #da1991
+    - red
+        - #ff0048
+    - green
+        - #91ff01
+    - blue
+        - #06b4ba
 
 - magic number
     - guzel degisken isimlendirmesi ile saglamak lazim

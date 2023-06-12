@@ -25,13 +25,6 @@
 
     + versiyon sonunda ! varsa repository push yok
 
-# Push procedure checklist 1.4
-- add log
-- check todo
-- change readme version and date
-- change time log
-- push
-
 
 # Todo
 - [x] 05-Apr-2023 24-Aug-2022 utility yi ayir
@@ -50,6 +43,8 @@
 - [x] 30-May-2023 16-May-2023 add: Imgui draw ui encapsulate in self function   
 - [x] 31-May-2023 30-May-2023 add: refactor load shader, mesh, texture functions
 - [x] 04-Jun-2023 04-Jun-2023 add: display: Camera rotation
+- [x] 12-Jun-2023 11-Jun-2023 arch: mat4 transformasyonlari alt alta yaz
+- [x] 12-Jun-2023 11-Jun-2023 add: phong shading
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
@@ -59,11 +54,23 @@
 - 06-Jun-2023 add: application singleton
 - 06-Jun-2023 add: Camera class
 - 06-Jun-2023 add: refactor after 0.36
-- 11-Jun-2023 add: phong shading
-- 11-Jun-2023 arch: mat4 transformasyonlari alt alta yaz
+- 12-Jun-2023 fix: naming inconsistency on shaders
+
+# Push procedure checklist 1.4
+- add log
+- check todo
+- change readme version and date
+- change time log
+- push
 
 # Log
                                                                                |
+- [0.39] add: Phong shading
+    - 12-Jun-2023  add: display: Phong shading
+    - 12-Jun-2023  add: Specular light | phong shading completed
+    - 12-Jun-2023  add: Matrix utilities: transpose
+    - 12-Jun-2023  add: Math utils: scaleByteToOne vector3 version
+
 - [0.38] wip: Diffuse light
     - 11-Jun-2023   add: diffuse light on shading from static light source
     - 11-Jun-2023   add: Learnopengl scene imitation

@@ -226,10 +226,10 @@
     <None Include="shaders\3d_vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\light_vrtxShader.glsl">
+    <None Include="shaders\lit_vrtxShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\light_fragShader.glsl">
+    <None Include="shaders\lit_fragShader.glsl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

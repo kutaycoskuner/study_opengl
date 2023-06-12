@@ -181,9 +181,9 @@ bool Application::initialize(k_configType& config)
 
 	// Our state
 	this->clear_color = Vec4(
-		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
-		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
-		scaleByteToZeroOne(std::stoul(config.at("colors").at("bg"))),
+		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
+		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
+		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
 		1.00f
 	);
 }
@@ -223,10 +223,10 @@ void Application::loadSceneData(const k_configType& config)
 	cam.yaw = 90.0f;
 
 	// light
-	ss.light_pos = Vec3(1.2f, 1.0f, 2.0f);
+	ss.light_pos = Vec3(0.0f, .8f, 0.0f);
 
 	// animation
-	ss.b_animate = true;
+	ss.b_animate = 1;
 	ss.angle_multiplier = 0.0f;
 
 	// cube positions 
@@ -265,8 +265,8 @@ void Application::loadShaders()
 	const std::vector<std::vector<std::string>> shader_paths =
 	{
 		{
-			"shaders/light_vrtxShader.glsl",
-			"shaders/light_fragShader.glsl",
+			"shaders/lit_vrtxShader.glsl",
+			"shaders/lit_fragShader.glsl",
 		},
 		{
 			"shaders/3d_vrtxShader.glsl",
@@ -326,12 +326,12 @@ void Application::loadMeshData()
 	glEnableVertexAttribArray(2);
 
 	// light
-	glGenVertexArrays(1, &lightVAO);
-	glGenBuffers(1, &lightVBO); // :: memory alani olusturuyor
-	glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
+	glGenVertexArrays(1, &litVAO);
+	glGenBuffers(1, &litVBO); // :: memory alani olusturuyor
+	glBindBuffer(GL_ARRAY_BUFFER, litVBO);
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
-	glBindVertexArray(lightVAO);
+	glBindVertexArray(litVAO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::lightCubeVrts), ObjToDraw::lightCubeVrts, GL_STATIC_DRAW);
 	stride = 6;
 	// set the vertex attribute 
@@ -340,7 +340,7 @@ void Application::loadMeshData()
 	// att: normals
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	//generateBuffer(lightVAO, lightVBO, ObjToDraw::cubeVrts, 5, 1, 0);
+	//generateBuffer(litVAO, litVBO, ObjToDraw::cubeVrts, 5, 1, 0);
 
 
 	// clean new_up
@@ -556,34 +556,7 @@ void Application::drawScene(Uniforms& uni)
 	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
 	uni_frame.light_color = ss.light_color;
 
-
-	// draw lights
-	// --------------------------------------------------------------------------
-	// set active shader
-	this->active_shader = shaders.at("light");
-	// activate shader
-	(*active_shader).use();
-	// assign uniforms
-	active_shader->setVec3("lightPos", ss.light_pos);
-	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
-	active_shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-	active_shader->setMat4("world_matrix", uni_obj.world_matrix);
-	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
-
-	glBindVertexArray(lightVAO);
-
-	float angle = 0.0f;
-	float mirror_x = 0.7f;
-	float mirror_z = 1.0f;
-	Mat4 model = mat_utils::translation(Vec3(-mirror_x, 0.0f, mirror_z));
-	model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, 0.1f).normalized()); //*mat_utils::scale(scale);
-	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
-	active_shader->setMat4("world_matrix", model);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-	// draw objects
+	// light placeholder
 	// --------------------------------------------------------------------------
 	// set active shader
 	this->active_shader = shaders.at("3d");
@@ -593,7 +566,6 @@ void Application::drawScene(Uniforms& uni)
 	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
 	active_shader->setInt("texture2", 1);
 	active_shader->setFloat("mixValue", uni_obj.mixValue);
-	active_shader->setMat4("world_matrix", uni_obj.world_matrix);
 	active_shader->setMat4("view_matrix", uni_view.view_matrix);
 	active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
 	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
@@ -604,13 +576,13 @@ void Application::drawScene(Uniforms& uni)
 	glBindTexture(GL_TEXTURE_2D, texture2);
 
 	glBindVertexArray(VAOs[0]);
-	model = mat_utils::translation(Vec3(mirror_x, 0.0f, -mirror_z));
-	//model *= mat_utils::rotationXYZ(radian(30.0f), Vec3(1.0f, 1.0f, 1.0f).normalized());
-	model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, 0.1f).normalized()); //*mat_utils::scale(scale);
+	Mat4 model = mat_utils::translation(ss.light_pos)
+		  * mat_utils::scale(0.04f);
+	;
 	active_shader->setMat4("world_matrix", model);
-	model *= mat_utils::scale(.01f);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+	
 	//for (unsigned int ii = 0; ii < ss.obj_positions.size(); ii++)
 	//{
 	//	float angle = 20.0f * ii * ss.angle_multiplier;
@@ -620,6 +592,80 @@ void Application::drawScene(Uniforms& uni)
 	//	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	//	glDrawArrays(GL_TRIANGLES, 0, 36);
 	//}
+
+	// lit object: 1
+	// --------------------------------------------------------------------------
+	// set active shader
+	this->active_shader = shaders.at("lit");
+	// activate shader
+	(*active_shader).use();
+	// assign uniforms
+	active_shader->setVec3("lightPos", ss.light_pos);
+	active_shader->setVec3("view_pos", ss.camera.position);
+	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
+	active_shader->setVec3("objectColor", RGBToByte(255, 0, 72));
+	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
+
+	glBindVertexArray(litVAO);
+
+	float angle = 0.0f;
+	float mirror_x = -0.7f;
+	float mirror_z = -1.0f;
+	model = mat_utils::translation(Vec3(1.5f * mirror_x, ss.light_pos.y/2, 2 * mirror_z))
+		* mat_utils::rotationY(radian(45.0f))
+		* mat_utils::rotationXYZ(ss.animation_time, Vec3(1.0f, 0.0f, -0.3f).normalized())
+		* mat_utils::scale(0.4f);
+		;
+	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
+	active_shader->setMat4("world_matrix", model);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	// lit object: 2
+// --------------------------------------------------------------------------
+// set active shader
+	this->active_shader = shaders.at("lit");
+	// activate shader
+	(*active_shader).use();
+	// assign uniforms
+	active_shader->setVec3("objectColor", RGBToByte(145, 255, 1));
+
+	glBindVertexArray(litVAO);
+
+	model = mat_utils::translation(Vec3(-mirror_x, ss.light_pos.y/2, -mirror_z / 2.0f))
+		* mat_utils::rotationY(radian(45.0f))
+		* mat_utils::rotationXYZ(ss.animation_time, Vec3(1.0f, 0.0f, -0.3f).normalized())
+		* mat_utils::scale(0.4f);
+	;
+	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
+	active_shader->setMat4("world_matrix", model);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	// lit object: ground
+	// --------------------------------------------------------------------------
+	// set active shader
+	this->active_shader = shaders.at("lit");
+	// activate shader
+	(*active_shader).use();
+	// assign uniforms
+	active_shader->setVec3("objectColor", RGBToByte(6, 180, 186));
+
+	glBindVertexArray(litVAO);
+
+	model = 
+		  mat_utils::translation(Vec3(0.0f, ss.light_pos.y-1.0f, 0.0f))
+		//* mat_utils::rotationX(radian(135.0f))
+		//* mat_utils::rotationY(radian(45.0f))
+		//* mat_utils::rotationX(radian(-45.0f))
+		* mat_utils::scale(3.0f, 0.05f, 3.0f)
+		//* mat_utils::scale(5.0f, 5.0f, 0.1f);
+	;
+	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
+	active_shader->setMat4("world_matrix", model);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
 }
 

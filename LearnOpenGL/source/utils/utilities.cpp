@@ -24,6 +24,25 @@ namespace math_utils
 		return (float(byte) / 255.0f);
 	}
 
+	float scaleByteToZeroOne(float byte)
+	{
+		return (byte / 255.0f);
+	}
+
+	Vec3 scaleByteToZeroOne(float a, float b, float c)
+	{
+		return Vec3(scaleByteToZeroOne(float(a)), 
+					scaleByteToZeroOne(float(b)), 
+					scaleByteToZeroOne(float(c))
+		);
+	}
+
+	Vec3 RGBToByte(unsigned int a, unsigned int b, unsigned int c)
+	{
+		return scaleByteToZeroOne(a, b, c);
+	}
+
+
 	// trigonometry
 	float radian(float degree)
 	{

@@ -11,7 +11,8 @@ uniform mat4 view_proj_matrix;
 
 void main()
 {
-	normal = vec3(world_matrix * vec4(aNormal, 0.0f));
+	mat3 world_normal_matrix = mat3(transpose(inverse(world_matrix)));
+	normal = vec3(world_normal_matrix * aNormal);
 	world_pos = vec3(world_matrix * vec4(aPos, 1.0f));
 	gl_Position = view_proj_matrix * world_matrix * vec4(aPos, 1.0f);
 }

@@ -92,7 +92,7 @@ private:
     void updateScene();
 
 private:
-    const static unsigned int buffer_count = 1;
+    const static unsigned int buffer_count = 2;
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
     std::shared_ptr<Shader> active_shader;
@@ -100,8 +100,8 @@ private:
     unsigned int texture1;
     unsigned int texture2;
     unsigned int VAOs[buffer_count];
-    unsigned int lightVAO;
-    unsigned int lightVBO;
+    unsigned int litVAO;
+    unsigned int litVBO;
     unsigned int VBOs[buffer_count];
     unsigned int EBOs[buffer_count];
 

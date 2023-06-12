@@ -25,6 +25,9 @@ namespace math_utils
 	constexpr float PI = 3.14159265359f;
 	// scaling
 	float scaleByteToZeroOne(unsigned int byte);
+	float scaleByteToZeroOne(float byte);
+	Vec3 scaleByteToZeroOne(float a, float b, float c);
+	Vec3 RGBToByte(unsigned int a, unsigned int b, unsigned int c);
 	// trigonometri
 	float radian(float degree);
 	float degree(float radian);
@@ -41,6 +44,10 @@ namespace math_utils
 namespace mat_utils
 {
 	Mat4 identity4();
+	Mat4 transpose(const Mat4& mat);
+	Mat4 inverse(const Mat4& mat);
+	float determinant(const Mat4& mat);
+	Mat4 cofactor(const Mat4& mat);
 	Mat4 scale(const float& x, const float& y, const float& z);
 	Mat4 scale(const Vec3& vec);
 	Mat4 scale(const float& x);
