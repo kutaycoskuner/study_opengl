@@ -40,6 +40,9 @@
 - gfx journal by jendrick illner
     - https://www.jendrikillner.com/tags/weekly/
 
+- material properties
+    - http://devernay.free.fr/cours/opengl/materials.html
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -97,6 +100,11 @@
 
 
 # Blackboard
+- process peed
+    - code edit hizlandirma
+    - dosya navigasyonu
+    - acik dosyalari degistirme
+
 - normalde scale
     - inverse transpose 3 3 aliyoruz
     - scale i inverse transpose yaptigimizda sadece invert oluyor.
@@ -145,7 +153,8 @@
     - unit test
     - integration test
 
-- nomenclature, naming
+- nomenclature, 
+    - shadderlarda raw girdi in_ / vertex ciktisi v_ / fragment ciktisi f_ premarker
     - uniforms short
     - events
 

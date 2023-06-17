@@ -5,20 +5,22 @@
 #include "../abstract/vector4.h"
 #include "../abstract/ui.h"
 #include "../abstract/scene_state.h"
-#include "../abstract/Camera.h"
-#include "../abstract/WindowState.h"
+#include "../abstract/camera.h"
+#include "../abstract/window_state.h"
 #include <unordered_map>
 #include <string>
 #include <memory>
 
 
 // ------------------------------------------------------------------------------------------------
-// ----- abstract declarations
+// ----- forward declarations
 // ------------------------------------------------------------------------------------------------
 struct GLFWwindow;
 struct Uniforms;
+struct Material;
 class Shader;
 using uint = unsigned int;
+
 
 // ------------------------------------------------------------------------------------------------
 // ----- function declerations
@@ -69,6 +71,8 @@ public:
     // - cizim icin komutlari grafik islemcisine gonderme
     // - uygulama penceresine son resmi aktarma
     void mainLoop();
+    void setMaterial(const Material& material);
+
     // handle
     void handleMouseEvent(GLFWwindow* window, double xpos, double ypos);
     void handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset);
@@ -93,6 +97,7 @@ private:
 
 private:
     const static unsigned int buffer_count = 2;
+    const float reduction_128f = 0.0078125f;
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
     std::shared_ptr<Shader> active_shader;

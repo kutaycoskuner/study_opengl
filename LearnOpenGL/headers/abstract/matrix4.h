@@ -134,7 +134,7 @@ struct Mat4
 	// mat mat product
 	Mat4 operator*(const Mat4& other) const
 	{
-		Mat4 result;
+		Mat4 result = Mat4(0.0f);
 		for (int i = 0; i < 4; i++)
 		{
 			for (int j = 0; j < 4; j++)

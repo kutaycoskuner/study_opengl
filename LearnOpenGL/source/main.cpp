@@ -16,10 +16,8 @@ int main()
 	// get config 
 	Application::k_configType config = file_utils::parseSimple("config/config.yaml");
 
-
-	// check if testing
-	if (config.at("test").at("is_testing") == "true")
-		return test();
+	// unit, integration test
+	test();
 
 	// instantiate
 	Application app;

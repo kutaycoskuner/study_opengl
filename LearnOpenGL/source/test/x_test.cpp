@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
-#include "../headers/abstract/vector.h"
+#include "../headers/abstract/vector4.h"
 #include "../headers/test/unit_tests.h"
 #include "../headers/test/integration_tests.h"
 #include "../headers/core/openGL.h"

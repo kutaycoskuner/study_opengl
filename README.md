@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 12-Jun-2023 | 0.39    |
+| 19-Aug-2022     | 18-Jun-2023 | 0.40    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,6 +23,10 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
+![0.39 Phong shading](display/0.40_phong-shading-materials_2023-06-18.gif)
+```
+0.40 Phong shading and pre-defined materials
+```  
 
 ![0.39 Phong shading](display/0.39_phong_shading_2023-06-12.gif)
 ```
@@ -66,3 +70,5 @@ This is a study repository for learning graphics programming through OpenGL.
         - Visual Studio Code
         - RenderDoc (Frame Debugging)
         - CMake
+- Data
+    - OpenGL/VRML Materials. [http://devernay.free.fr/cours/opengl/materials.html](http://devernay.free.fr/cours/opengl/materials.html)

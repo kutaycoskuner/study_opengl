@@ -2,9 +2,9 @@
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
-#include "../headers/abstract/Application.h"			// shader objesi olusturmaya dair veritipi
+#include "../headers/abstract/application.h"			// shader objesi olusturmaya dair veritipi
 #include "../headers/abstract/scene_state.h"			// shader objesi olusturmaya dair veritipi
-#include "../headers/abstract/WindowState.h"		
+#include "../headers/abstract/window_state.h"		
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 
 

@@ -136,9 +136,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
-    <ClCompile Include="data\obj\dt_Colors.cpp" />
-    <ClCompile Include="data\obj\d_objToDraw.cpp" />
     <ClCompile Include="data\adress_mappings\m_shaders.cpp" />
+    <ClCompile Include="data\obj\colors.cpp" />
+    <ClCompile Include="data\obj\material.cpp" />
+    <ClCompile Include="data\obj\objto_draw.cpp" />
     <None Include="shaders\3d_fragShader.glsl" />
     <None Include="shaders\3d_vrtxShader.glsl" />
     <None Include="shaders\lit_vrtxShader.glsl" />
@@ -158,17 +159,15 @@
     <None Include="shaders\lit_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="source\test\integrationTest_transformations.cpp" />
+    <ClCompile Include="source\test\intTest_transformations.cpp" />
     <ClCompile Include="source\test\unitTest_Mat4.cpp" />
     <ClCompile Include="source\test\unitTest_Vec3.cpp" />
     <ClCompile Include="source\event_handling\window_events.cpp" />
-    <ClCompile Include="source\core\old\0.21_learnOpenGL.cpp" />
-    <ClCompile Include="source\core\old\0.221_learnOpenGL.cpp" />
-    <ClCompile Include="source\core\old\x_learnOpenGl.cpp" />
     <ClCompile Include="source\test\unitTest_Vec4.cpp" />
-    <ClCompile Include="source\utils\img_utilities.cpp" />
-    <ClCompile Include="source\utils\mat_utilities.cpp" />
-    <ClCompile Include="source\utils\shader_utilities.cpp" />
+    <ClCompile Include="source\utils\common_utils.cpp" />
+    <ClCompile Include="source\utils\image_utils.cpp" />
+    <ClCompile Include="source\utils\matrix_utils.cpp" />
+    <ClCompile Include="source\utils\shader_utils.cpp" />
     <None Include="shaders\old\v1.1_fragShader.glsl" />
     <None Include="shaders\old\fragShader_1.glsl">
       <FileType>Document</FileType>
@@ -176,7 +175,7 @@
     <ClCompile Include="source\core\application.cpp" />
     <ClCompile Include="headers\abstract\shader.h" />
     <ClCompile Include="source\test\x_test.cpp" />
-    <ClCompile Include="source\utils\utilities.cpp" />
+    <ClCompile Include="source\utils\self_utils.cpp" />
     <None Include="shaders\old\v1.0_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
@@ -192,17 +191,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\abstract\application.h" />
-    <ClInclude Include="headers\abstract\Camera.h" />
+    <ClInclude Include="headers\abstract\camera.h" />
+    <ClInclude Include="headers\abstract\light.h" />
+    <ClInclude Include="headers\abstract\material.h" />
     <ClInclude Include="headers\abstract\scene_state.h" />
     <ClInclude Include="headers\abstract\ui.h" />
     <ClInclude Include="headers\abstract\uniforms.h" />
     <ClInclude Include="headers\abstract\vector3.h" />
     <ClInclude Include="headers\abstract\vector4.h" />
-    <ClInclude Include="headers\abstract\WindowState.h" />
+    <ClInclude Include="headers\abstract\window_state.h" />
     <ClInclude Include="headers\events\events.h" />
     <ClInclude Include="headers\test\basic.h" />
     <ClInclude Include="headers\data\data.h" />
-    <ClInclude Include="headers\core\openGL.h" />
+    <ClInclude Include="headers\core\opengl.h" />
     <ClInclude Include="headers\maps\shaders.h" />
     <ClInclude Include="headers\test\integration_tests.h" />
     <ClInclude Include="headers\test\unit_tests.h" />

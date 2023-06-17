@@ -27,7 +27,7 @@
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\utils\utilities.cpp">
+    <ClCompile Include="source\utils\self_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\core\application.cpp">
@@ -36,34 +36,22 @@
     <ClCompile Include="source\test\x_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\obj\d_objToDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="data\adress_mappings\m_shaders.cpp">
+    <ClCompile Include="data\obj\objto_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="headers\abstract\shader.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\utils\shader_utilities.cpp">
+    <ClCompile Include="source\utils\shader_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\obj\dt_Colors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\old\0.21_learnOpenGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\old\0.221_learnOpenGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\old\x_learnOpenGl.cpp">
+    <ClCompile Include="data\obj\colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\event_handling\window_events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\utils\img_utilities.cpp">
+    <ClCompile Include="source\utils\image_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\test\unitTest_Vec3.cpp">
@@ -78,10 +66,10 @@
     <ClCompile Include="source\test\unitTest_Vec4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\utils\mat_utilities.cpp">
+    <ClCompile Include="source\utils\matrix_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\integrationTest_transformations.cpp">
+    <ClCompile Include="source\test\intTest_transformations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libs\imgui-1.89.5\imgui.cpp">
@@ -108,12 +96,21 @@
     <ClCompile Include="headers\templates\header_template_1.0.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\utils\common_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\obj\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\adress_mappings\m_shaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\core\openGL.h">
+    <ClInclude Include="headers\core\opengl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\utils\utilities.h">
@@ -182,10 +179,16 @@
     <ClInclude Include="headers\abstract\scene_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\abstract\Camera.h">
+    <ClInclude Include="headers\abstract\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\abstract\WindowState.h">
+    <ClInclude Include="headers\abstract\window_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

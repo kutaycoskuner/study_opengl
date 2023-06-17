@@ -45,6 +45,9 @@
 - [x] 04-Jun-2023 04-Jun-2023 add: display: Camera rotation
 - [x] 12-Jun-2023 11-Jun-2023 arch: mat4 transformasyonlari alt alta yaz
 - [x] 12-Jun-2023 11-Jun-2023 add: phong shading
+- [x] 12-Jun-2023 12-Jun-2023 fix: naming inconsistency on shaders
+- [x] 12-Jun-2023 06-Jun-2023 add: refactor after 0.36: file / folder renaming
+- [x] 13-Jun-2023 12-Jun-2023 add: basic ligtging exercises
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
@@ -53,8 +56,6 @@
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
 - 06-Jun-2023 add: Camera class
-- 06-Jun-2023 add: refactor after 0.36
-- 12-Jun-2023 fix: naming inconsistency on shaders
 
 # Push procedure checklist 1.4
 - add log
@@ -65,11 +66,21 @@
 
 # Log
                                                                                |
+- [0.40] add: Material, Light structs
+    - 18-Jun-2023   add: display 0.40 phong shading and materials
+    - 18-Jun-2023   fix: Light going black time calculatino fix sin + 1 / 2
+    - 17-Jun-2023   add: Material, Light parametrization in shader
+    - 13-Jun-2023   wip: Material props use in shader
+    - 13-Jun-2023   add: Material struct, Materials class set functions
+    - 12-Jun-2023   arch: file folder renaming
+    - 12-Jun-2023   add: Orbit light on basic lightning scene
+    - 12-Jun-2023   fix: Shader variables naming inconsistency
+
 - [0.39] add: Phong shading
-    - 12-Jun-2023  add: display: Phong shading
-    - 12-Jun-2023  add: Specular light | phong shading completed
-    - 12-Jun-2023  add: Matrix utilities: transpose
-    - 12-Jun-2023  add: Math utils: scaleByteToOne vector3 version
+    - 12-Jun-2023   add: display: Phong shading
+    - 12-Jun-2023   add: Specular light | phong shading completed
+    - 12-Jun-2023   add: Matrix utilities: transpose
+    - 12-Jun-2023   add: Math utils: scaleByteToOne vector3 version
 
 - [0.38] wip: Diffuse light
     - 11-Jun-2023   add: diffuse light on shading from static light source

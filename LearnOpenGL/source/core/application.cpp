@@ -2,26 +2,23 @@
 // ----- Notes
 // ------------------------------------------------------------------------------------------------
 /*
-Version: 0.36
-https://learnopengl.com/Getting-started/Coordinate-Systems
-Camera system end.
-Continue: Lighting
-
+	I will write some stuff here someday.
+	...
 */
 #if 1
-// ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/test/basic.h"					// kendi test header dosyam
-#include "../headers/utils/utilities.h"				// config dosyasi okuma ve cekmeye dair kendi kutuphanem
-#include "../headers/data/data.h"					// opengl in cizecegi verilerin tutuldugu dosyalar
-#include "../headers/events/events.h"				// opengl in cizecegi verilerin tutuldugu dosyalar
+#include "../headers/utils/utilities.h"				
+#include "../headers/data/data.h"				
+#include "../headers/events/events.h"				
 #include "../headers/abstract/application.h"		
-#include "../headers/abstract/Camera.h"	
-#include "../headers/abstract/shader.h"				// shader objesi olusturmaya dair veritipi
-#include "../headers/abstract/uniforms.h"			// shader objesi olusturmaya dair veritipi
-#include "../headers/maps/shaders.h"				// shaderlarin isimleri ve dosya konumlarinin mapleri
-#include "../headers/core/openGL.h"					// ana calisma dosyasi
+#include "../headers/abstract/camera.h"	
+#include "../headers/abstract/shader.h"				
+#include "../headers/abstract/material.h"				
+#include "../headers/abstract/uniforms.h"		
+#include "../headers/maps/shaders.h"			
+#include "../headers/core/opengl.h"					
 
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <glad/glad.h>			// opengl hardware adaptor !glfw den once
@@ -36,12 +33,12 @@ Continue: Lighting
 #include "../../libs/imgui-1.89.5/imgui_impl_opengl3.h"
 
 // glm
-#include <glm/vec3.hpp>						// glm::vec3
-#include <glm/vec4.hpp>						// glm::vec4
-#include <glm/mat4x4.hpp>					// glm::mat4
-#include <glm/ext/matrix_transform.hpp>		// glm::translate, glm::rotate, glm::scale
-#include <glm/ext/matrix_clip_space.hpp>	// glm::perspective
-#include <glm/ext/scalar_constants.hpp>		// glm::pi
+//#include <glm/vec3.hpp>						// glm::vec3
+//#include <glm/vec4.hpp>						// glm::vec4
+//#include <glm/mat4x4.hpp>					// glm::mat4
+//#include <glm/ext/matrix_transform.hpp>		// glm::translate, glm::rotate, glm::scale
+//#include <glm/ext/matrix_clip_space.hpp>	// glm::perspective
+//#include <glm/ext/scalar_constants.hpp>		// glm::pi
 
 #include <memory>
 
@@ -59,7 +56,6 @@ using namespace img_utils;
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
 
-// ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
 void Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up)
@@ -159,7 +155,6 @@ bool Application::initialize(k_configType& config)
 	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
 	const unsigned int k_scr_height = std::stoul(config.at("scr").at("height"));
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
-
 	world_up = Vec3(0.0f, 1.0f, 0.0f);
 	world_origin = Vec3(0.0f, 0.0f, 0.0f);
 	scene_state.light_color = Vec3(0.33f, 0.42f, 0.18f);
@@ -265,12 +260,12 @@ void Application::loadShaders()
 	const std::vector<std::vector<std::string>> shader_paths =
 	{
 		{
-			"shaders/lit_vrtxShader.glsl",
-			"shaders/lit_fragShader.glsl",
+			"shaders/phong_lit_vrtx_shader.glsl",
+			"shaders/phong_lit_frag_shader.glsl",
 		},
 		{
-			"shaders/3d_vrtxShader.glsl",
-			"shaders/3d_fragShader.glsl"
+			"shaders/3d_vrtx_shader.glsl",
+			"shaders/3d_frag_shader.glsl"
 		}
 	};
 
@@ -325,7 +320,7 @@ void Application::loadMeshData()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	// light
+	// lit: coord, normal, texture
 	glGenVertexArrays(1, &litVAO);
 	glGenBuffers(1, &litVBO); // :: memory alani olusturuyor
 	glBindBuffer(GL_ARRAY_BUFFER, litVBO);
@@ -333,13 +328,16 @@ void Application::loadMeshData()
 	// todo: vertexbuffer class olustur
 	glBindVertexArray(litVAO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::lightCubeVrts), ObjToDraw::lightCubeVrts, GL_STATIC_DRAW);
-	stride = 6;
+	stride = 8;
 	// set the vertex attribute 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// att: normals
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	// att: texture
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 	//generateBuffer(litVAO, litVBO, ObjToDraw::cubeVrts, 5, 1, 0);
 
 
@@ -435,7 +433,7 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	//glfwSetCursorPosCallback(window, callbackMouse);
-	glfwSetScrollCallback(window, callbackScroll);
+	//glfwSetScrollCallback(window, callbackScroll);
 }
 
 void Application::initUISystem(const char*& glsl_version)
@@ -563,21 +561,14 @@ void Application::drawScene(Uniforms& uni)
 	// activate shader
 	active_shader->use();
 	// assign uniforms
-	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
-	active_shader->setInt("texture2", 1);
-	active_shader->setFloat("mixValue", uni_obj.mixValue);
+	active_shader->setVec3("light_color", ss.light_color);
 	active_shader->setMat4("view_matrix", uni_view.view_matrix);
 	active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
 	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
 
-	// assign texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
 	glBindVertexArray(VAOs[0]);
 	Mat4 model = mat_utils::translation(ss.light_pos)
-		  * mat_utils::scale(0.04f);
+		   * mat_utils::scale(0.04f);
 	;
 	active_shader->setMat4("world_matrix", model);
 
@@ -596,22 +587,33 @@ void Application::drawScene(Uniforms& uni)
 	// lit object: 1
 	// --------------------------------------------------------------------------
 	// set active shader
-	this->active_shader = shaders.at("lit");
+	this->active_shader = shaders.at("phong");
 	// activate shader
 	(*active_shader).use();
+	// light uniforms
+	Vec3 reduced_light_diffuse = ss.light_color * 0.5f;
+	Vec3 reduced_light_ambient = reduced_light_diffuse * 0.2f;
+	active_shader->setVec3("light.position", ss.light_pos);
+	active_shader->setVec3("light.ambient", reduced_light_ambient);
+	active_shader->setVec3("light.diffuse", reduced_light_diffuse); // darken diffuse light a bit
+	active_shader->setVec3("light.specular", 1.0f);
 	// assign uniforms
-	active_shader->setVec3("lightPos", ss.light_pos);
+	active_shader->setInt("texture1", 0);
+	active_shader->setInt("texture2", 1);
+	active_shader->setFloat("mix_val", uni_obj.mixValue);
+	active_shader->setVec3("light_pos", ss.light_pos);
 	active_shader->setVec3("view_pos", ss.camera.position);
-	active_shader->setVec3("lightColor", Vec3(1.0f, 1.0f, 1.0f));
-	active_shader->setVec3("objectColor", RGBToByte(255, 0, 72));
 	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
+
+	setMaterial(PresetMaterial::red_plastic);
+
 
 	glBindVertexArray(litVAO);
 
 	float angle = 0.0f;
 	float mirror_x = -0.7f;
 	float mirror_z = -1.0f;
-	model = mat_utils::translation(Vec3(1.5f * mirror_x, ss.light_pos.y/2, 2 * mirror_z))
+	model = mat_utils::translation(Vec3(1.5f * mirror_x, ss.light_pos.y/2, mirror_z))
 		* mat_utils::rotationY(radian(45.0f))
 		* mat_utils::rotationXYZ(ss.animation_time, Vec3(1.0f, 0.0f, -0.3f).normalized())
 		* mat_utils::scale(0.4f);
@@ -619,62 +621,83 @@ void Application::drawScene(Uniforms& uni)
 	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
 	active_shader->setMat4("world_matrix", model);
 
+	// assign texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	// lit object: 2
 // --------------------------------------------------------------------------
 // set active shader
-	this->active_shader = shaders.at("lit");
+	this->active_shader = shaders.at("phong");
 	// activate shader
 	(*active_shader).use();
 	// assign uniforms
-	active_shader->setVec3("objectColor", RGBToByte(145, 255, 1));
+	active_shader->setVec3("obj_color", ByteToZeroOne(145, 255, 1));
 
 	glBindVertexArray(litVAO);
 
-	model = mat_utils::translation(Vec3(-mirror_x, ss.light_pos.y/2, -mirror_z / 2.0f))
+	model = mat_utils::translation(Vec3(-mirror_x, ss.light_pos.y/2, -mirror_z))
 		* mat_utils::rotationY(radian(45.0f))
 		* mat_utils::rotationXYZ(ss.animation_time, Vec3(1.0f, 0.0f, -0.3f).normalized())
 		* mat_utils::scale(0.4f);
 	;
 	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
 	active_shader->setMat4("world_matrix", model);
+	setMaterial(PresetMaterial::emerald);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-	// lit object: ground
+	// lit object: ground plane
 	// --------------------------------------------------------------------------
 	// set active shader
-	this->active_shader = shaders.at("lit");
+	this->active_shader = shaders.at("phong");
 	// activate shader
 	(*active_shader).use();
 	// assign uniforms
-	active_shader->setVec3("objectColor", RGBToByte(6, 180, 186));
+	active_shader->setVec3("obj_color", ByteToZeroOne(6, 180, 186));
 
 	glBindVertexArray(litVAO);
 
 	model = 
 		  mat_utils::translation(Vec3(0.0f, ss.light_pos.y-1.0f, 0.0f))
 		//* mat_utils::rotationX(radian(135.0f))
-		//* mat_utils::rotationY(radian(45.0f))
+		//* mat_utils::rotationY(radian(100.0f*ss.time))
 		//* mat_utils::rotationX(radian(-45.0f))
 		* mat_utils::scale(3.0f, 0.05f, 3.0f)
 		//* mat_utils::scale(5.0f, 5.0f, 0.1f);
 	;
 	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
 	active_shader->setMat4("world_matrix", model);
+	setMaterial(PresetMaterial::bronze);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
 }
 
+void Application::setMaterial(const Material& material)
+{
+	active_shader->setVec3("material.ambient",		material.ambient);
+	active_shader->setVec3("material.diffuse",		material.diffuse);
+	active_shader->setVec3("material.specular",		material.specular);
+	active_shader->setFloat("material.shininess",	material.shininess * 128.0f);
+	//active_shader->setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+	//active_shader->setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+	//active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+	//active_shader->setFloat("material.shininess", 32.0f);
+}
+
 void Application::updateScene()
 {
 	// update time
+	SceneState& ss = scene_state;
 	scene_state.time = (float)glfwGetTime();
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
 	scene_state.last_frame_time = scene_state.time;
+
 	// animation
 	if (scene_state.b_animate)
 	{
@@ -684,6 +707,15 @@ void Application::updateScene()
 	{
 		scene_state.animation_time = 0.0f;
 	}
+
+	// rotate light
+	ss.light_pos.x = 2 * cos(ss.time);
+	ss.light_pos.z = 2 * sin(ss.time);
+
+	// change light color
+	ss.light_color.x = (sin(ss.time * 2.0f) + 1.0f) * 0.5f;
+	ss.light_color.y = (sin(ss.time * 0.7f) + 1.0f) * 0.5f;
+	ss.light_color.z = (sin(ss.time * 1.3f) + 1.0f) * 0.5f;
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

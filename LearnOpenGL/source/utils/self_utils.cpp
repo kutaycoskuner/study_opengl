@@ -37,7 +37,7 @@ namespace math_utils
 		);
 	}
 
-	Vec3 RGBToByte(unsigned int a, unsigned int b, unsigned int c)
+	Vec3 ByteToZeroOne(unsigned int a, unsigned int b, unsigned int c)
 	{
 		return scaleByteToZeroOne(a, b, c);
 	}

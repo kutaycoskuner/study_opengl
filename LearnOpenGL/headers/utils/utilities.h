@@ -27,7 +27,7 @@ namespace math_utils
 	float scaleByteToZeroOne(unsigned int byte);
 	float scaleByteToZeroOne(float byte);
 	Vec3 scaleByteToZeroOne(float a, float b, float c);
-	Vec3 RGBToByte(unsigned int a, unsigned int b, unsigned int c);
+	Vec3 ByteToZeroOne(unsigned int a, unsigned int b, unsigned int c);
 	// trigonometri
 	float radian(float degree);
 	float degree(float radian);
