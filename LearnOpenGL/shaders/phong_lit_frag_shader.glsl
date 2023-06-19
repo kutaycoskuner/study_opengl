@@ -10,9 +10,8 @@ struct Light
 
 struct Material
 {
-
-	vec3 ambient;
-	vec3 diffuse;
+    vec3 diffuse;
+//	sampler2D diffuse;
 	vec3 specular;
 	float shininess;
 };
@@ -21,7 +20,7 @@ out vec4 f_frag_color;
 
 in vec3 v_normal;  
 in vec3 v_world_pos;
-in vec2 v_tex;
+in vec2 v_tex_coords;
 
 uniform vec3 view_pos;
 uniform Material material;
@@ -36,23 +35,27 @@ uniform float mix_val;
 void main()
 {
     // ambient calculation
-    vec3 ambient = light.ambient * material.ambient;
+    vec3 ambient = light.ambient;
 
     // diffuse light calculation
+    // ----------------------------------------------------------------------------------
     vec3 out_normal = normalize(v_normal);
     vec3 light_dir = normalize(light.position - v_world_pos);
     float diffuse_factor = max(dot(out_normal, light_dir) ,0.0f);
-    vec3 diffuse = light.diffuse * (diffuse_factor * material.diffuse);
+    vec3 diffuse = light.diffuse * diffuse_factor
+    * material.diffuse
+//    * vec3(texture(material.diffuse, v_tex_coords))
+    ;
 
     // specular calculation
-    float shininess = material.shininess; // source material datasi boyle kullaniyor. Gotumden carpmiyorum 128 ile
+    float shininess = material.shininess; 
     vec3 view_dir = normalize(view_pos - v_world_pos);
     vec3 reflection_dir = reflect(-light_dir, out_normal);
     float out_specular = pow(max(dot(view_dir, reflection_dir), 0.0), shininess);
     vec3 specular =  light.specular * (out_specular * material.specular);   
 
     // result
-    vec4 calc_obj_color1 = texture(texture1, v_tex);
+    vec4 calc_obj_color1 = texture(texture1, v_tex_coords);
     vec3 result = ambient + diffuse + specular;
     f_frag_color = vec4(result, 1.0f);
 }

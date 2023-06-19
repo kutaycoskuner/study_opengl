@@ -384,13 +384,13 @@
 - shift + f5                        calisan debug i kapatiyor
 - ctrl + shift + f5                 debug i yeniden calistiriyor
 - chrl + shift + h                  find and replace
-- ctrl + m > o                      collapse
-- ctrl + m > p                      expand
 - ctrl + m > i                      local expand
 - ctrl + shift + f9                 remove all breakpoints
 - ctrl + shift + b                  compile
 - shift + alt up/down               multi line edit
 - ctrl + alt + l                    solution explorer
 - ctrl + -                          bir onceki satira atla
+- ctrl + m > o                      collapse
+- ctrl + m > p                      expand
 - ctrl + m, s                       collapse
 - ctrl + m, i                       expand

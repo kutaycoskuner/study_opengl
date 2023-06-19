@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 18-Jun-2023 | 0.40    |
+| 19-Aug-2022     | 20-Jun-2023 | 0.41    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,9 +23,9 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
-![0.39 Phong shading](display/0.40_phong-shading-materials_2023-06-18.gif)
+![0.41 Light Maps Emission](display/0.41_lightmaps-emission_2023-06-20.gif)
 ```
-0.40 Phong shading and pre-defined materials
+0.41 Light map and emission
 ```  
 
 ![0.39 Phong shading](display/0.39_phong_shading_2023-06-12.gif)

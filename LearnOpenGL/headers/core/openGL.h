@@ -2,6 +2,7 @@
 #ifndef S_OPENGL
 #define S_OPENGL
 
+#include "../abstract/vector3.h" // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <string>
 #include<unordered_map>
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
@@ -19,6 +20,7 @@ std::unordered_map<std::string, ShaderCompileDesc> loadShaders();
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao);
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer);
 
-//
-int runApplication(std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& config);
+// animation
+Vec3 setTriangleLightColorShiftByTime(const float& time);
+
 #endif

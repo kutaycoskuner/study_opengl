@@ -46,7 +46,7 @@ public:
     // 
     // - built-in shader compilation
     // - built-in texture loading
-    // - built-in asset loading
+    // - built-in asset lfoading
     bool load(k_configType& config);
  
     // Program kapanirken izlenen prosedurleri icerir.
@@ -71,7 +71,6 @@ public:
     // - cizim icin komutlari grafik islemcisine gonderme
     // - uygulama penceresine son resmi aktarma
     void mainLoop();
-    void setMaterial(const Material& material);
 
     // handle
     void handleMouseEvent(GLFWwindow* window, double xpos, double ypos);
@@ -81,6 +80,7 @@ private:
     // initialize
     int initWindowSystem(const unsigned int& width, const unsigned int& height, const char*& window_name);
     void initUISystem(const char*& glsl_version);
+    
     // load
     void loadConfig(const k_configType& config);
     void loadSceneData(const k_configType& config);
@@ -88,22 +88,34 @@ private:
     void loadShaders();
     void loadMeshData();
     void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
+    
     // ui
     void drawUI();
     void updateUI();
+
     // draw scene
     void drawScene(Uniforms& uni);
     void updateScene();
+    void setMaterial(const Material& material);
+    void setPresetMaterial(const Material& material);
+    
+    // data
+    void phongScene(Uniforms& uni);
+    void lightMapScene(Uniforms& uni);
 
 private:
     const static unsigned int buffer_count = 2;
     const float reduction_128f = 0.0078125f;
+
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
     std::shared_ptr<Shader> active_shader;
     std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
     unsigned int texture1;
     unsigned int texture2;
+    unsigned int texture_diffuse;
+    unsigned int texture_specular;
+    unsigned int texture_emission;
     unsigned int VAOs[buffer_count];
     unsigned int litVAO;
     unsigned int litVBO;

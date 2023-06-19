@@ -13,11 +13,13 @@
 // ----------------------------------------------------------------------------
 struct Material
 {
-
 	Vec3 ambient;
 	Vec3 diffuse;
 	Vec3 specular;
 	float shininess;
+	int diffuse_map_id;
+	int normal_map_id;
+	int specular_map_id;
 
 	// default constructor
 	Material() :

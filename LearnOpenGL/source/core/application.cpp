@@ -8,12 +8,12 @@
 #if 1
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
-#include "../headers/test/basic.h"					// kendi test header dosyam
-#include "../headers/utils/utilities.h"				
-#include "../headers/data/data.h"				
-#include "../headers/events/events.h"				
-#include "../headers/abstract/application.h"		
-#include "../headers/abstract/camera.h"	
+#include "../headers/test/basic.h"					// project start basic test
+#include "../headers/utils/utilities.h"				// self written utilities
+#include "../headers/data/data.h"					// data headers ex. model vertices
+#include "../headers/events/events.h"				// window, mouse-, keyboard input events
+#include "../headers/abstract/application.h"	
+#include "../headers/abstract/camera.h"				
 #include "../headers/abstract/shader.h"				
 #include "../headers/abstract/material.h"				
 #include "../headers/abstract/uniforms.h"		
@@ -21,11 +21,11 @@
 #include "../headers/core/opengl.h"					
 
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
-#include <glad/glad.h>			// opengl hardware adaptor !glfw den once
-#include <iostream>				// cout / cin icin lazim
-#include <string>				// standart string kutuphanesi
-#include <unordered_map>		// dictionary / map kutuphanesi
-#include <cmath>     			//
+#include <glad/glad.h>			// opengl hardware adaptor before glfw
+#include <iostream>				
+#include <string>				
+#include <unordered_map>		
+#include <cmath>     			
 
 // imgui
 #include "../../libs/imgui-1.89.5/imgui.h"
@@ -44,7 +44,7 @@
 
 
 // self keywords
-// -----------------------------------
+// ------------------------------------------------------------------------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
 using namespace math_utils;
 using namespace str_utils;
@@ -239,7 +239,8 @@ void Application::loadSceneData(const k_configType& config)
 	};
 
 	// init camera wuth default values
-	const Vec3 k_position = Vec3(1.2f, 2.0f, 5.0f);
+	//const Vec3 k_position = Vec3(1.2f, 2.0f, 5.0f);	      // materials shader test
+	const Vec3 k_position = Vec3(1.2f, -2.0f, 5.0f); // lightmap test
 	const Vec3 k_target_point = Vec3(0.0f, 0.0f, 0.0f);
 	const Vec3 k_world_up = world_up;
 	cam.lookAt(k_position, k_target_point, k_world_up);
@@ -251,6 +252,9 @@ void Application::loadTextures()
 	setVerticalFlipMode(true);
 	texture1 = createTexture("data/textures/container.jpg", 2);
 	texture2 = createTexture("data/textures/awesomeface.png");
+	texture_diffuse = createTexture("data/textures/container2.png");
+	texture_specular = createTexture("data/textures/container2_specular.png");
+	texture_emission = createTexture("data/textures/matrix.jpg");
 }
 
 void Application::loadShaders()
@@ -262,10 +266,14 @@ void Application::loadShaders()
 		{
 			"shaders/phong_lit_vrtx_shader.glsl",
 			"shaders/phong_lit_frag_shader.glsl",
-		},
-		{
+		}
+		,{
 			"shaders/3d_vrtx_shader.glsl",
 			"shaders/3d_frag_shader.glsl"
+		}
+		,{
+			"shaders/lightmap_lit_vrtx_shader.glsl",
+			"shaders/lightmap_lit_frag_shader.glsl"
 		}
 	};
 
@@ -307,7 +315,7 @@ void Application::loadMeshData()
 	// 3. parameter specifies type of data gl_float
 	// 4. parameter specifies if you want to data to be normalized
 	// 5. known as stride space between consequtive vertex attributes
-	// 6. void this is the offset where the position data begins in the buffer
+	// 6. void this is the !! offset where the position data begins in the buffer
 
 	// att: new_pos
 	unsigned int stride = 5;
@@ -336,7 +344,7 @@ void Application::loadMeshData()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	// att: texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	//generateBuffer(litVAO, litVBO, ObjToDraw::cubeVrts, 5, 1, 0);
 
@@ -523,11 +531,6 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
 
 void Application::drawScene(Uniforms& uni)
 {
-	// todo: draw parameters structa topla | 
-	UniformsPerObject& uni_obj = uni.upo;
-	UniformsPerView& uni_view = uni.upv;
-	UniformsPerFrame& uni_frame = uni.upf;
-
 	// draw wireframe or not
 	if (b_wireframe_mode) // todo: deserialize config
 	{
@@ -541,153 +544,31 @@ void Application::drawScene(Uniforms& uni)
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// 
+	// get width and height
 	int display_w, display_h;
 	glfwGetFramebufferSize(window, &display_w, &display_h);
 	glViewport(0, 0, display_w, display_h);
 
-	// create transformations
-	const SceneState& ss = scene_state;
-	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f)) * mat_utils::rotationXYZ(ss.time, Vec3(1.0f, 1.0f, 1.0f).normalized());
-	uni_view.view_matrix = ss.camera.calcViewMatrix();
-	uni_view.projection_matrix = mat_utils::projectPerspective(radian(ss.fov), ss.aspect_ratio, ss.near, ss.far);
-	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
-	uni_frame.light_color = ss.light_color;
-
-	// light placeholder
-	// --------------------------------------------------------------------------
-	// set active shader
-	this->active_shader = shaders.at("3d");
-	// activate shader
-	active_shader->use();
-	// assign uniforms
-	active_shader->setVec3("light_color", ss.light_color);
-	active_shader->setMat4("view_matrix", uni_view.view_matrix);
-	active_shader->setMat4("projection_matrix", uni_view.projection_matrix);
-	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
-
-	glBindVertexArray(VAOs[0]);
-	Mat4 model = mat_utils::translation(ss.light_pos)
-		   * mat_utils::scale(0.04f);
-	;
-	active_shader->setMat4("world_matrix", model);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	
-	//for (unsigned int ii = 0; ii < ss.obj_positions.size(); ii++)
-	//{
-	//	float angle = 20.0f * ii * ss.angle_multiplier;
-	//	Mat4 model = mat_utils::translation(ss.obj_positions[ii]) * mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(1.0f, 1.0f, 1.0f).normalized()); //*mat_utils::scale(scale);
-	//	active_shader->setMat4("world_matrix", model);
-	//	//model = mat_utils::projectPerspective(radian(45.0f), aspect_ratio, near, far);
-	//	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	//	glDrawArrays(GL_TRIANGLES, 0, 36);
-	//}
-
-	// lit object: 1
-	// --------------------------------------------------------------------------
-	// set active shader
-	this->active_shader = shaders.at("phong");
-	// activate shader
-	(*active_shader).use();
-	// light uniforms
-	Vec3 reduced_light_diffuse = ss.light_color * 0.5f;
-	Vec3 reduced_light_ambient = reduced_light_diffuse * 0.2f;
-	active_shader->setVec3("light.position", ss.light_pos);
-	active_shader->setVec3("light.ambient", reduced_light_ambient);
-	active_shader->setVec3("light.diffuse", reduced_light_diffuse); // darken diffuse light a bit
-	active_shader->setVec3("light.specular", 1.0f);
-	// assign uniforms
-	active_shader->setInt("texture1", 0);
-	active_shader->setInt("texture2", 1);
-	active_shader->setFloat("mix_val", uni_obj.mixValue);
-	active_shader->setVec3("light_pos", ss.light_pos);
-	active_shader->setVec3("view_pos", ss.camera.position);
-	active_shader->setMat4("view_proj_matrix", uni_view.view_proj_matrix);
-
-	setMaterial(PresetMaterial::red_plastic);
-
-
-	glBindVertexArray(litVAO);
-
-	float angle = 0.0f;
-	float mirror_x = -0.7f;
-	float mirror_z = -1.0f;
-	model = mat_utils::translation(Vec3(1.5f * mirror_x, ss.light_pos.y/2, mirror_z))
-		* mat_utils::rotationY(radian(45.0f))
-		* mat_utils::rotationXYZ(ss.animation_time, Vec3(1.0f, 0.0f, -0.3f).normalized())
-		* mat_utils::scale(0.4f);
-		;
-	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
-	active_shader->setMat4("world_matrix", model);
-
-	// assign texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	// lit object: 2
-// --------------------------------------------------------------------------
-// set active shader
-	this->active_shader = shaders.at("phong");
-	// activate shader
-	(*active_shader).use();
-	// assign uniforms
-	active_shader->setVec3("obj_color", ByteToZeroOne(145, 255, 1));
-
-	glBindVertexArray(litVAO);
-
-	model = mat_utils::translation(Vec3(-mirror_x, ss.light_pos.y/2, -mirror_z))
-		* mat_utils::rotationY(radian(45.0f))
-		* mat_utils::rotationXYZ(ss.animation_time, Vec3(1.0f, 0.0f, -0.3f).normalized())
-		* mat_utils::scale(0.4f);
-	;
-	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
-	active_shader->setMat4("world_matrix", model);
-	setMaterial(PresetMaterial::emerald);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	// lit object: ground plane
-	// --------------------------------------------------------------------------
-	// set active shader
-	this->active_shader = shaders.at("phong");
-	// activate shader
-	(*active_shader).use();
-	// assign uniforms
-	active_shader->setVec3("obj_color", ByteToZeroOne(6, 180, 186));
-
-	glBindVertexArray(litVAO);
-
-	model = 
-		  mat_utils::translation(Vec3(0.0f, ss.light_pos.y-1.0f, 0.0f))
-		//* mat_utils::rotationX(radian(135.0f))
-		//* mat_utils::rotationY(radian(100.0f*ss.time))
-		//* mat_utils::rotationX(radian(-45.0f))
-		* mat_utils::scale(3.0f, 0.05f, 3.0f)
-		//* mat_utils::scale(5.0f, 5.0f, 0.1f);
-	;
-	//model *= mat_utils::rotationXYZ(ss.animation_time + angle, Vec3(-1.0f, 0.0f, .1f).normalized()); //*mat_utils::scale(scale);
-	active_shader->setMat4("world_matrix", model);
-	setMaterial(PresetMaterial::bronze);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
+	// draw scene
+	lightMapScene(uni);
 }
 
-void Application::setMaterial(const Material& material)
+void Application::setPresetMaterial(const Material& material)
 {
-	active_shader->setVec3("material.ambient",		material.ambient);
-	active_shader->setVec3("material.diffuse",		material.diffuse);
-	active_shader->setVec3("material.specular",		material.specular);
-	active_shader->setFloat("material.shininess",	material.shininess * 128.0f);
+	active_shader->setVec3("material.specular", material.specular);
+	active_shader->setVec3("material.diffuse", material.diffuse);
+	active_shader->setFloat("material.shininess", material.shininess * 128.0f);
 	//active_shader->setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
 	//active_shader->setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
 	//active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 	//active_shader->setFloat("material.shininess", 32.0f);
+}
+
+void Application::setMaterial(const Material& material)
+{
+	active_shader->setVec3("material.specular", material.specular);
+	active_shader->setInt("material.diffuse_map", 0);
+	active_shader->setFloat("material.shininess", material.shininess);
 }
 
 void Application::updateScene()
@@ -709,13 +590,61 @@ void Application::updateScene()
 	}
 
 	// rotate light
-	ss.light_pos.x = 2 * cos(ss.time);
-	ss.light_pos.z = 2 * sin(ss.time);
+	//ss.light_pos.x = 2.0f * cos(ss.time);
+	//ss.light_pos.z = 2.0f * sin(ss.time);
+
+	// translate light
+	ss.light_pos = Vec3(1.8f, 0.0f, 2.0f);
 
 	// change light color
-	ss.light_color.x = (sin(ss.time * 2.0f) + 1.0f) * 0.5f;
-	ss.light_color.y = (sin(ss.time * 0.7f) + 1.0f) * 0.5f;
-	ss.light_color.z = (sin(ss.time * 1.3f) + 1.0f) * 0.5f;
+	//ss.light_color = setTriangleLightColorShiftByTime(ss.time);
+	ss.light_color = Vec3(1.0f, 1.0f, 1.0f);
+
+
+}
+
+Vec3 setTriangleLightColorShiftByTime(const float& time)
+{
+	float color_state = ((sin(time * 0.5f) + 1.0f) * 0.5f) * 6.0f;
+	float r, g, b;
+
+	if (color_state < 1.0f)
+	{
+		r = 1.0f;
+		g = color_state;
+		b = 0.0f;
+	}
+	else if (color_state < 2.0f)
+	{
+		r = 2.0f - color_state;
+		g = 1.0f;
+		b = 0.0f;
+	}
+	else if (color_state < 3.0f)
+	{
+		r = 0.0f;
+		g = 1.0f;
+		b = color_state - 2.0f;
+	}
+	else if (color_state < 4.0f)
+	{
+		r = 0.0f;
+		g = 4.0f - color_state;
+		b = 1.0f;
+	}
+	else if (color_state < 5.0f)
+	{
+		r = color_state - 4.0f;
+		g = 0.0f;
+		b = 1.0f;
+	}
+	else
+	{
+		r = 1.0f;
+		g = 0.0f;
+		b = 6.0f - color_state;
+	}
+	return Vec3(r, g, b);
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

@@ -48,11 +48,11 @@
 - [x] 12-Jun-2023 12-Jun-2023 fix: naming inconsistency on shaders
 - [x] 12-Jun-2023 06-Jun-2023 add: refactor after 0.36: file / folder renaming
 - [x] 13-Jun-2023 12-Jun-2023 add: basic ligtging exercises
+- [x] 20-Jun-2023 02-Jun-2023 add: consistent naming on file structure
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
 - 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
-- 02-Jun-2023 add: consistent naming on file structure
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
 - 06-Jun-2023 add: Camera class
@@ -66,6 +66,17 @@
 
 # Log
                                                                                |
+- [0.41] add: Light map and emission
+    - 19-Jun-2023  
+        - add: display: light map and emission
+        - add: emission texture
+        - add: lightmap use on texture
+        - 21.12-21.40   wip: Sampling texture   
+        - 16.26-17.00   add: light map scene
+        - 15.53-16.26   arch: scenes in their own file 
+    - 18-Jun-2023   add: red to green, green to blue, blue to red color shift function
+    - 18-Jun-2023   fix: light rotation formula 2 to 2.0f
+
 - [0.40] add: Material, Light structs
     - 18-Jun-2023   add: display 0.40 phong shading and materials
     - 18-Jun-2023   fix: Light going black time calculatino fix sin + 1 / 2

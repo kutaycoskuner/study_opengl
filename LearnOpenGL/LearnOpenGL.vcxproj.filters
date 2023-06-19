@@ -105,6 +105,12 @@
     <ClCompile Include="data\adress_mappings\m_shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="data\scenes\scenes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shaders\lightmap_lit_vrtx_shader.glsl">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h">
@@ -234,6 +240,9 @@
     </None>
     <None Include="shaders\lit_fragShader.glsl">
       <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\lightmap_lit_frag_shader.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

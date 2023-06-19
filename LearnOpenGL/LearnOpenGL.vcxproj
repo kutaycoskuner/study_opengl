@@ -142,11 +142,15 @@
     <ClCompile Include="data\obj\objto_draw.cpp" />
     <None Include="shaders\3d_fragShader.glsl" />
     <None Include="shaders\3d_vrtxShader.glsl" />
+    <None Include="shaders\lightmap_lit_frag_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="shaders\lit_vrtxShader.glsl" />
     <None Include="shaders\old\fragShader.glsl" />
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
+    <ClCompile Include="data\scenes\scenes.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
     <ClCompile Include="headers\templates\header_template_1.0.h" />
     <ClCompile Include="libs\imgui-1.89.5\imgui.cpp" />
@@ -159,6 +163,9 @@
     <None Include="shaders\lit_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
+    <ClCompile Include="shaders\lightmap_lit_vrtx_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\test\intTest_transformations.cpp" />
     <ClCompile Include="source\test\unitTest_Mat4.cpp" />
     <ClCompile Include="source\test\unitTest_Vec3.cpp" />
