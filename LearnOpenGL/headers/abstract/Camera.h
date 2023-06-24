@@ -25,6 +25,9 @@ public:
 	Vec3 right;
 	Vec3 up;
 
+	// frustum
+
+
 	// movement
 	float current_speed;
 

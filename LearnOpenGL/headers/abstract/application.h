@@ -102,6 +102,7 @@ private:
     // data
     void phongScene(Uniforms& uni);
     void lightMapScene(Uniforms& uni);
+    void lightCasterScene(Uniforms& uni);
 
 private:
     const static unsigned int buffer_count = 2;

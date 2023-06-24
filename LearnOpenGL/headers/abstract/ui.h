@@ -1,4 +1,5 @@
 #pragma once
+#include "../abstract/vector3.h" 
 #include "../abstract/vector4.h" 
 
 struct UIState

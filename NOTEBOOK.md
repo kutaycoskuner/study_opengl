@@ -43,6 +43,9 @@
 - material properties
     - http://devernay.free.fr/cours/opengl/materials.html
 
+- outline render webgl
+    - https://omar-shehata.medium.com/how-to-render-outlines-in-webgl-8253c14724f9
+
 # Structure
 - project
     + config                : degiskenlerin tutuldugu yer
@@ -100,6 +103,16 @@
 
 
 # Blackboard
+- attenuation (sonumlenme) for light
+    - F = 1 / (Kc + Kl * d + Kq * d * d)
+    - d = distance from the fragment to light source
+    - kc = constant, kl = linear, kq = quadratic
+
+- light casters light source
+    - directional
+    - point
+    - spot light
+
 - process peed
     - code edit hizlandirma
     - dosya navigasyonu

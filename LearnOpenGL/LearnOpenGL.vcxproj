@@ -136,12 +136,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
-    <ClCompile Include="data\adress_mappings\m_shaders.cpp" />
     <ClCompile Include="data\obj\colors.cpp" />
     <ClCompile Include="data\obj\material.cpp" />
-    <ClCompile Include="data\obj\objto_draw.cpp" />
+    <ClCompile Include="data\obj\object_coords.cpp" />
     <None Include="shaders\3d_fragShader.glsl" />
     <None Include="shaders\3d_vrtxShader.glsl" />
+    <None Include="shaders\lightcaster-directional_lit_frag_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\lightcaster-directional_lit_vrtx_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\lightcaster-point_lit_frag_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\lightcaster-point_lit_vrtx_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\lightcaster-spot_lit_frag_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\lightcaster-spot_lit_vrtx_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="shaders\lightmap_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>

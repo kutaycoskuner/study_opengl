@@ -1,24 +1,22 @@
 #pragma once
 
 #include "../abstract/vector3.h"
-#include "../abstract/Camera.h"
+#include "../abstract/camera.h"
+#include "../abstract/light.h"
 #include <vector>
 
 struct SceneState
 {
-    // frustum
+    // camera 
+    Camera camera;
     // todo: move in to camera
     float aspect_ratio;
     float near;
     float far;
     float fov;
 
-    // camera
-    Camera camera;
-
     // light
-    Vec3 light_pos;
-    Vec3 light_color;
+    Light light;
 
     // animation
     float time;
@@ -31,4 +29,7 @@ struct SceneState
     // positions
     std::vector<Vec3> obj_positions;
     std::vector<Vec3> obj_colors;
+
+    // ui
+    bool b_toggleui;
 };

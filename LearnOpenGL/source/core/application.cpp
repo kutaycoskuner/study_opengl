@@ -155,9 +155,8 @@ bool Application::initialize(k_configType& config)
 	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
 	const unsigned int k_scr_height = std::stoul(config.at("scr").at("height"));
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
-	world_up = Vec3(0.0f, 1.0f, 0.0f);
-	world_origin = Vec3(0.0f, 0.0f, 0.0f);
-	scene_state.light_color = Vec3(0.33f, 0.42f, 0.18f);
+
+
 
 	initWindowSystem(k_scr_width, k_scr_height, kp_wndw_name);
 	const char* glsl_version = "#version 330";
@@ -174,7 +173,7 @@ bool Application::initialize(k_configType& config)
 
 	initUISystem(glsl_version);
 
-	// Our state
+	// our state
 	this->clear_color = Vec4(
 		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
 		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
@@ -207,25 +206,42 @@ void Application::loadConfig(const k_configType& config)
 void Application::loadSceneData(const k_configType& config)
 {
 	SceneState& ss = scene_state;
-	ss.near = 1.0f;
-	ss.far = 100.0f;
-	ss.fov = 45.0f;
-	ss.last_frame_time = 0.0f;
+
+	// world
+	world_up = Vec3(0.0f, 1.0f, 0.0f);
+	world_origin = Vec3(0.0f, 0.0f, 0.0f);
 
 	// camera
 	Camera& cam = ss.camera;
 	cam.pitch = 0.0f;
 	cam.yaw = 90.0f;
+	ss.near = 1.0f;
+	ss.far = 100.0f;
+	ss.fov = 45.0f;
+	//const Vec3 k_camera_position = Vec3(0.0f, 0.0f, 5.0f);				// lightcaster test
+	//const Vec3 k_camera_position = Vec3(1.2f, -2.0f, 5.0f);				// lightmap test
+	const Vec3 k_camera_position = Vec3(1.2f, 2.0f, 5.0f);			// materials shader test
+	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);
+	const Vec3 k_world_up = world_up;
+	cam.lookAt(k_camera_position, k_camera_target_point, k_world_up);
 
 	// light
-	ss.light_pos = Vec3(0.0f, .8f, 0.0f);
+	ss.light.position = Vec3(0.0f, 1.0f, 0.0f);
+	ss.light.brightness = 10.0f;
+	ss.light.color = Vec3(0.33f, 0.42f, 0.18f);
+	ss.light.direction = Vec3(-0.33f, -.84f, -0.86f); // spot
+	//ss.light.direction = Vec3(-1.0f, -0.8f, -.2f); // directional
 
 	// animation
 	ss.b_animate = 1;
 	ss.angle_multiplier = 0.0f;
+	ss.last_frame_time = 0.0f;
+
+	// ui
+	ss.b_toggleui = false;
 
 	// cube positions 
-	scene_state.obj_positions = {
+	ss.obj_positions = {
 		Vec3(2.0f,  5.0f, -15.0f),
 		Vec3(-1.5f, -2.2f, -2.5f),
 		Vec3(-3.8f, -2.0f, -12.3f),
@@ -238,12 +254,6 @@ void Application::loadSceneData(const k_configType& config)
 		//Vec3(0.0f,  0.0f,  0.0f)
 	};
 
-	// init camera wuth default values
-	//const Vec3 k_position = Vec3(1.2f, 2.0f, 5.0f);	      // materials shader test
-	const Vec3 k_position = Vec3(1.2f, -2.0f, 5.0f); // lightmap test
-	const Vec3 k_target_point = Vec3(0.0f, 0.0f, 0.0f);
-	const Vec3 k_world_up = world_up;
-	cam.lookAt(k_position, k_target_point, k_world_up);
 }
 
 void Application::loadTextures()
@@ -274,6 +284,18 @@ void Application::loadShaders()
 		,{
 			"shaders/lightmap_lit_vrtx_shader.glsl",
 			"shaders/lightmap_lit_frag_shader.glsl"
+		}
+		,{
+			"shaders/lightcaster-directional_lit_vrtx_shader.glsl",
+			"shaders/lightcaster-directional_lit_frag_shader.glsl"
+		}
+		,{
+			"shaders/lightcaster-point_lit_vrtx_shader.glsl",
+			"shaders/lightcaster-point_lit_frag_shader.glsl"
+		}
+		,{
+			"shaders/lightcaster-spot_lit_vrtx_shader.glsl",
+			"shaders/lightcaster-spot_lit_frag_shader.glsl"
 		}
 	};
 
@@ -489,34 +511,38 @@ void Application::updateUI()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	// 2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
-	//{
-	//	static float f = 0.0f;
-	//	static int counter = 0;
-	//	static const char* txt_aspectRatio = "Aspect Ratio: ";
+	// remove this retun to activate ui
+	if (!scene_state.b_toggleui)
+		return;
 
-	//	ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+	 //2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
+	{
+		static float f = 0.0f;
+		static int counter = 0;
+		static const char* txt_aspectRatio = "Aspect Ratio: ";
 
-	//	ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
-	//	ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
-	//	//ImGui::Checkbox("Another Window", &show_another_window);
+		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
-	//	ImGui::SliderInt("Width", &this->ui_state.width, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//	ImGui::SliderInt("Height", &this->ui_state.height, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//	ImGui::SliderFloat("Near", &this->ui_state.near, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//	ImGui::SliderFloat("Far", &this->ui_state.far, 0.0f, 1000.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//	ImGui::SliderFloat("Top/Bottom", &this->ui_state.top, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//	ImGui::SliderFloat("Left/Right", &this->ui_state.left, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//	ImGui::ColorEdit3("clear color", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
+		ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
+		ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
+		//ImGui::Checkbox("Another Window", &show_another_window);
 
-	//	//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-	//	//	counter++;
-	//	//ImGui::SameLine();
-	//	//ImGui::Text("counter = %d", counter);
+		ImGui::SliderInt("Width", &this->ui_state.width, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderInt("Height", &this->ui_state.height, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Light Dir X", &this->scene_state.light.direction.x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::ColorEdit3("clear color", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
 
-	//	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-	//	ImGui::End();
-	//}
+		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		//	counter++;
+		//ImGui::SameLine();
+		//ImGui::Text("counter = %d", counter);
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::End();
+	}
 }
 
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
@@ -550,7 +576,7 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
-	lightMapScene(uni);
+	lightCasterScene(uni);
 }
 
 void Application::setPresetMaterial(const Material& material)
@@ -589,17 +615,22 @@ void Application::updateScene()
 		scene_state.animation_time = 0.0f;
 	}
 
-	// rotate light
-	//ss.light_pos.x = 2.0f * cos(ss.time);
-	//ss.light_pos.z = 2.0f * sin(ss.time);
 
 	// translate light
-	ss.light_pos = Vec3(1.8f, 0.0f, 2.0f);
+	//ss.light.position = Vec3(1.8f, 0.0f, 2.0f);		// light map
+	//ss.light.position = Vec3(0.0f, 0.0f, -1.0f);		// light caster
+
+	// rotate light
+	float scale = 1.0f;
+	//ss.light.position.x = scale * cos(ss.time);
+	//ss.light.position.z = scale * sin(ss.time);
 
 	// change light color
-	//ss.light_color = setTriangleLightColorShiftByTime(ss.time);
-	ss.light_color = Vec3(1.0f, 1.0f, 1.0f);
+	//ss.light.color = setTriangleLightColorShiftByTime(ss.time);
+	ss.light.color = Vec3(1.0f, 1.0f, 1.0f);
 
+	// ui changes
+	//ss.light.direction = ui_state.spotlight_dir;
 
 }
 

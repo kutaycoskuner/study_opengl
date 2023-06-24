@@ -49,6 +49,9 @@
 - [x] 12-Jun-2023 06-Jun-2023 add: refactor after 0.36: file / folder renaming
 - [x] 13-Jun-2023 12-Jun-2023 add: basic ligtging exercises
 - [x] 20-Jun-2023 02-Jun-2023 add: consistent naming on file structure
+- [x] 25-Jun-2023 24-Jun-2023 add: light casters display scene
+- [x] 25-Jun-2023 24-Jun-2023 add: ui toggle button
+- [x] 25-Jun-2023 24-Jun-2023 add: light brightness, light color 
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
@@ -56,6 +59,8 @@
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
 - 06-Jun-2023 add: Camera class
+- 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
+- 24-Jun-2023 add: ui camera, direction, light direction controls
 
 # Push procedure checklist 1.4
 - add log
@@ -66,6 +71,21 @@
 
 # Log
                                                                                |
+- [0.42] add: Lightcasters: directional, point, spot
+    - 25-Jun-2023 
+        - add: light brightness
+        - add: ui toggle button (x)
+        - add: display: lightcasters
+    - 24-Jun-2023
+        - wip:  lightcaster display scenes
+        - arch: scene state light variables removed and included within light object
+    - 23-Jun-2023 
+        - add: light casters directional, point, spot light
+    - 22-Jun-2023
+        - wip: light casters scene, shaders
+    - 20-Jun-2023
+        - arch: file naming consistency
+
 - [0.41] add: Light map and emission
     - 19-Jun-2023  
         - add: display: light map and emission

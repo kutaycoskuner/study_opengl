@@ -36,7 +36,7 @@
     <ClCompile Include="source\test\x_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\obj\objto_draw.cpp">
+    <ClCompile Include="data\obj\object_coords.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="headers\abstract\shader.h">
@@ -100,9 +100,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data\obj\material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="data\adress_mappings\m_shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data\scenes\scenes.cpp">
@@ -242,6 +239,24 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="shaders\lightmap_lit_frag_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightcaster-point_lit_frag_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightcaster-point_lit_vrtx_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightcaster-directional_lit_vrtx_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightcaster-directional_lit_frag_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightcaster-spot_lit_frag_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightcaster-spot_lit_vrtx_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

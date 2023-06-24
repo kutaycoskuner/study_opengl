@@ -29,6 +29,9 @@ Vec3 operator*(const float& scalar, const Vec3& vector)
 
 void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_state)
 {
+
+	static bool keyPressed = false;
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
@@ -48,6 +51,7 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_
 
 	// camera
 	const float cam_speed = 2.5f * scene_state.delta_time; // adjust accordingly
+	SceneState& ss = scene_state;
 	Vec3& cam_pos = scene_state.camera.position;
 	const Vec3& cam_dir = scene_state.camera.direction;
 	const Vec3& cam_up = scene_state.camera.up;
@@ -60,6 +64,20 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_
 		cam_pos += math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		cam_pos -= math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
+
+	// Check if the key is X and if it was pressed
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+	{
+		keyPressed = true;
+	}
+
+	// toggle ui
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE && keyPressed)
+	{
+		ss.b_toggleui = !ss.b_toggleui;
+		keyPressed = false;
+	}
+		
 }
 
 
