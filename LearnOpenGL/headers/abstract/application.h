@@ -1,5 +1,4 @@
 #pragma once
-// ------------------------------------------------------------------------------------------------
 // ----- libraries
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/vector4.h"
@@ -12,7 +11,6 @@
 #include <memory>
 
 
-// ------------------------------------------------------------------------------------------------
 // ----- forward declarations
 // ------------------------------------------------------------------------------------------------
 struct GLFWwindow;
@@ -22,11 +20,9 @@ class Shader;
 using uint = unsigned int;
 
 
-// ------------------------------------------------------------------------------------------------
 // ----- function declerations
 // ------------------------------------------------------------------------------------------------
 
-// ------------------------------------------------------------------------------------------------
 // ----- abstract
 // ------------------------------------------------------------------------------------------------
 class Application
@@ -98,11 +94,17 @@ private:
     void updateScene();
     void setMaterial(const Material& material);
     void setPresetMaterial(const Material& material);
+
+    // draw objects
+    void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
+    void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
+    void drawObj(int vao, const char* shader_name, Uniforms& uni);
     
     // data
     void phongScene(Uniforms& uni);
     void lightMapScene(Uniforms& uni);
     void lightCasterScene(Uniforms& uni);
+    void multipleLightsScene(Uniforms& uni);
 
 private:
     const static unsigned int buffer_count = 2;
@@ -117,11 +119,14 @@ private:
     unsigned int texture_diffuse;
     unsigned int texture_specular;
     unsigned int texture_emission;
-    unsigned int VAOs[buffer_count];
-    unsigned int litVAO;
-    unsigned int litVBO;
-    unsigned int VBOs[buffer_count];
-    unsigned int EBOs[buffer_count];
+    unsigned int texture_ground_diffuse;
+    unsigned int texture_ground_specular;
+    unsigned int texture_ground_emission;
+    unsigned int vaos[buffer_count];
+    unsigned int lit_vao;
+    unsigned int lit_vbo;
+    unsigned int vbos[buffer_count];
+    unsigned int ebos[buffer_count];
 
     SceneState scene_state;
     WindowState window_state;

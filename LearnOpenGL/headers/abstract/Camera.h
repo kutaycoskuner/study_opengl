@@ -26,12 +26,15 @@ public:
 	Vec3 up;
 
 	// frustum
-
+	float aspect_ratio;
+	float near;
+	float far;
+	float fov;
 
 	// movement
 	float current_speed;
 
-	// angles
+	// angles from word
 	float yaw;
 	float pitch;
 

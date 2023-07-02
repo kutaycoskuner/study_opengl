@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 25-Jun-2023 | 0.42    |
+| 19-Aug-2022     | 03-Jul-2023 | 0.43    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,6 +23,11 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
+![0.43 multiple lights](display/0.43_multiple-lights_2023-07-03.gif)
+```
+0.43 Multiple lights: 1 directional- 3 point- (rgb), 1 spot light
+```  
+
 ![0.42 Light casteres](display/0.42_light-casters_2023-06-25.gif)
 ```
 0.42 Light casters respectively: directional-, point-, spot light

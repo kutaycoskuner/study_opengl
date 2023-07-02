@@ -2,23 +2,37 @@
 #ifndef D_DATA
 #define D_DATA
 #include "../abstract/material.h"
+#include <vector>
+#include <string>
+
+class ShaderPaths
+{
+public:
+	static const std::vector<std::vector<std::string>> shader_paths;
+};
 
 class OpenGLParams
 {
 public:
-	static float borderColor[4];
+	static float border_color[4];
 };
 
 class ObjToDraw
 {
 public:
-	static float cubeVrts[180];
-	static float lightCubeVrts[288];
+	static float cube_vrts[180];
+	static float light_cube_vrts[288];
 	static float vertices[18];
-	static float squareVrts[32];
-	static unsigned int squareInds[6];
+	static float square_vrts[32];
+	static unsigned int square_inds[6];
 	static float x_axis[12];
 	static float y_axis[12];
+};
+
+class ObjWorldPositions
+{
+public:
+	static std::vector<Vec3> obj_world_positions;
 };
 
 class PresetMaterial

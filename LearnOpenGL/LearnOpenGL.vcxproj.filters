@@ -21,7 +21,7 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\x_hello_world.cpp">
+    <ClCompile Include="source\test\btest_hello_world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
@@ -33,10 +33,10 @@
     <ClCompile Include="source\core\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\x_test.cpp">
+    <ClCompile Include="source\test\btest_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\obj\object_coords.cpp">
+    <ClCompile Include="data\obj\obj_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="headers\abstract\shader.h">
@@ -45,7 +45,7 @@
     <ClCompile Include="source\utils\shader_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\obj\colors.cpp">
+    <ClCompile Include="data\material\colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\event_handling\window_events.cpp">
@@ -54,22 +54,22 @@
     <ClCompile Include="source\utils\image_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\unitTest_Vec3.cpp">
+    <ClCompile Include="source\test\utest_vector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="headers\abstract\matrix4.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\unitTest_Mat4.cpp">
+    <ClCompile Include="source\test\utest_matrix4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\unitTest_Vec4.cpp">
+    <ClCompile Include="source\test\utest_vector4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\utils\matrix_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\test\intTest_transformations.cpp">
+    <ClCompile Include="source\test\itest_transformations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libs\imgui-1.89.5\imgui.cpp">
@@ -99,13 +99,34 @@
     <ClCompile Include="source\utils\common_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\obj\material.cpp">
+    <ClCompile Include="data\material\material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\scenes\scenes.cpp">
+    <ClCompile Include="data\scenes\draw_obj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaders\lightmap_lit_vrtx_shader.glsl">
+    <ClCompile Include="shaders\2.1.lightmap_lit_vrtx_shader.glsl">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\obj\obj_world_positions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\scenes\0_phong_scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\scenes\1_lightmap_scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\scenes\2_lightcaster_scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\scenes\3_multiplelights_scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\maps\shader_paths.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -238,25 +259,31 @@
     <None Include="shaders\lit_fragShader.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="shaders\lightmap_lit_frag_shader.glsl">
+    <None Include="shaders\2.1.lightmap_lit_frag_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lightcaster-point_lit_frag_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-point_lit_frag_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lightcaster-point_lit_vrtx_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-point_lit_vrtx_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lightcaster-directional_lit_vrtx_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-directional_lit_vrtx_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lightcaster-directional_lit_frag_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-directional_lit_frag_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lightcaster-spot_lit_frag_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-spot_lit_frag_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lightcaster-spot_lit_vrtx_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-spot_lit_vrtx_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\2.3.multiplelights_lit_vrtx_shader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\2.3.multiplelights_lit_frag_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

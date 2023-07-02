@@ -136,30 +136,37 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
-    <ClCompile Include="data\obj\colors.cpp" />
-    <ClCompile Include="data\obj\material.cpp" />
-    <ClCompile Include="data\obj\object_coords.cpp" />
+    <ClCompile Include="data\maps\shader_paths.cpp" />
+    <ClCompile Include="data\material\colors.cpp" />
+    <ClCompile Include="data\material\material.cpp" />
+    <ClCompile Include="data\obj\obj_data.cpp" />
+    <None Include="shaders\2.3.multiplelights_lit_frag_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\2.3.multiplelights_lit_vrtx_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="shaders\3d_fragShader.glsl" />
     <None Include="shaders\3d_vrtxShader.glsl" />
-    <None Include="shaders\lightcaster-directional_lit_frag_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-directional_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shaders\lightcaster-directional_lit_vrtx_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-directional_lit_vrtx_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shaders\lightcaster-point_lit_frag_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-point_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shaders\lightcaster-point_lit_vrtx_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-point_lit_vrtx_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shaders\lightcaster-spot_lit_frag_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-spot_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shaders\lightcaster-spot_lit_vrtx_shader.glsl">
+    <None Include="shaders\2.2.lightcaster-spot_lit_vrtx_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shaders\lightmap_lit_frag_shader.glsl">
+    <None Include="shaders\2.1.lightmap_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="shaders\lit_vrtxShader.glsl" />
@@ -167,7 +174,12 @@
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="data\scenes\scenes.cpp" />
+    <ClCompile Include="data\obj\obj_world_positions.cpp" />
+    <ClCompile Include="data\scenes\2_lightcaster_scene.cpp" />
+    <ClCompile Include="data\scenes\1_lightmap_scene.cpp" />
+    <ClCompile Include="data\scenes\3_multiplelights_scene.cpp" />
+    <ClCompile Include="data\scenes\0_phong_scene.cpp" />
+    <ClCompile Include="data\scenes\draw_obj.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
     <ClCompile Include="headers\templates\header_template_1.0.h" />
     <ClCompile Include="libs\imgui-1.89.5\imgui.cpp" />
@@ -180,14 +192,15 @@
     <None Include="shaders\lit_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="shaders\lightmap_lit_vrtx_shader.glsl">
+    <ClCompile Include="shaders\2.1.lightmap_lit_vrtx_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\test\intTest_transformations.cpp" />
-    <ClCompile Include="source\test\unitTest_Mat4.cpp" />
-    <ClCompile Include="source\test\unitTest_Vec3.cpp" />
+    <ClCompile Include="source\core\camera.cpp" />
+    <ClCompile Include="source\test\itest_transformations.cpp" />
+    <ClCompile Include="source\test\utest_matrix4.cpp" />
+    <ClCompile Include="source\test\utest_vector3.cpp" />
     <ClCompile Include="source\event_handling\window_events.cpp" />
-    <ClCompile Include="source\test\unitTest_Vec4.cpp" />
+    <ClCompile Include="source\test\utest_vector4.cpp" />
     <ClCompile Include="source\utils\common_utils.cpp" />
     <ClCompile Include="source\utils\image_utils.cpp" />
     <ClCompile Include="source\utils\matrix_utils.cpp" />
@@ -198,7 +211,7 @@
     </None>
     <ClCompile Include="source\core\application.cpp" />
     <ClCompile Include="headers\abstract\shader.h" />
-    <ClCompile Include="source\test\x_test.cpp" />
+    <ClCompile Include="source\test\btest_test.cpp" />
     <ClCompile Include="source\utils\self_utils.cpp" />
     <None Include="shaders\old\v1.0_fragShader.glsl">
       <FileType>Document</FileType>
@@ -207,7 +220,7 @@
     <None Include="shaders\old\v1.0_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="source\test\x_hello_world.cpp" />
+    <ClCompile Include="source\test\btest_hello_world.cpp" />
     <ClCompile Include="source\main.cpp" />
     <None Include="shaders\old\v1.2_fragShader.glsl" />
     <None Include="shaders\old\v1.2_vrtxShader.glsl" />

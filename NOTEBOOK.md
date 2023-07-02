@@ -103,6 +103,13 @@
 
 
 # Blackboard
+- effects
+    - dithering
+    - outline
+    - pixelation
+    - cel shading
+    - goosh shading
+
 - attenuation (sonumlenme) for light
     - F = 1 / (Kc + Kl * d + Kq * d * d)
     - d = distance from the fragment to light source

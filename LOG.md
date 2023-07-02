@@ -52,15 +52,18 @@
 - [x] 25-Jun-2023 24-Jun-2023 add: light casters display scene
 - [x] 25-Jun-2023 24-Jun-2023 add: ui toggle button
 - [x] 25-Jun-2023 24-Jun-2023 add: light brightness, light color 
+- [x] 25-Jun-2023 06-Jun-2023 add: Camera class / struct
+- [x] 25-Jun-2023 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
+    - opengl.h | objto_draw | 3d_frag_shader | utest_vector4 |
+- [x] 03-Jul-2023 01-Jul-2023 add: new scene for multiple lights, scene state multiple light positions
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
-- 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
-- 06-Jun-2023 add: Camera class
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
 - 24-Jun-2023 add: ui camera, direction, light direction controls
+- 25-Jun-2023 add: documentation: keys, ui controls
 
 # Push procedure checklist 1.4
 - add log
@@ -71,6 +74,23 @@
 
 # Log
                                                                                |
+- [0.43] add: Multiple lights
+    - 03-Jul-2023
+        - add: display: multiple lights
+        - add: multiple lights scene
+        - add: self made ground texture, emission, specular
+    - 01-Jul-2023 
+        - add: multiple lights shader | directional, point, spot light functions
+        - arch: version name on shader file names
+    - 30-Jun-2023 
+        - arch: shader paths separated into its own file as data
+        - arch: each scene split to its own file
+    - 25-Jun-2023
+        - arch: object world positions moved to data
+        - arch: renaming test files: integrationTest to itest, unitTest to utest, basic test to btest
+        - arch: ar, near, far, fov variables moved in camera struct
+        - arch: split camera functions on its own .cpp file
+
 - [0.42] add: Lightcasters: directional, point, spot
     - 25-Jun-2023 
         - add: light brightness
@@ -106,12 +126,6 @@
     - 12-Jun-2023   arch: file folder renaming
     - 12-Jun-2023   add: Orbit light on basic lightning scene
     - 12-Jun-2023   fix: Shader variables naming inconsistency
-
-- [0.39] add: Phong shading
-    - 12-Jun-2023   add: display: Phong shading
-    - 12-Jun-2023   add: Specular light | phong shading completed
-    - 12-Jun-2023   add: Matrix utilities: transpose
-    - 12-Jun-2023   add: Math utils: scaleByteToOne vector3 version
 
 - [0.38] wip: Diffuse light
     - 11-Jun-2023   add: diffuse light on shading from static light source

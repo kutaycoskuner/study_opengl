@@ -9,14 +9,10 @@ struct SceneState
 {
     // camera 
     Camera camera;
-    // todo: move in to camera
-    float aspect_ratio;
-    float near;
-    float far;
-    float fov;
 
     // light
     Light light;
+    std::vector<Light> lights;
 
     // animation
     float time;

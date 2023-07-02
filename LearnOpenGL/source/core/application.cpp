@@ -58,42 +58,6 @@ Application* gp_app;
 
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-void Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up)
-{
-	position = new_pos;
-	up = world_up;
-	direction = (new_pos - new_tar).normalized();
-	right = cross3d(world_up, direction).normalized();
-	up = cross3d(direction, right).normalized();
-}
-
-Mat4 Camera::calcViewMatrix() const
-{
-	float rx = right.x;
-	float ry = right.y;
-	float rz = right.z;
-	float ux = up.x;
-	float uy = up.y;
-	float uz = up.z;
-	float dx = direction.x;
-	float dy = direction.y;
-	float dz = direction.z;
-	float px = position.x;
-	float py = position.y;
-	float pz = position.z;
-	return Mat4(
-		rx, ry, rz, 0,
-		ux, uy, uz, 0,
-		dx, dy, dz, 0,
-		0, 0, 0, 1
-	) *
-		Mat4(
-			1, 0, 0, -px,
-			0, 1, 0, -py,
-			0, 0, 1, -pz,
-			0, 0, 0, 1
-		);
-}
 
 void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 {
@@ -130,23 +94,12 @@ void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 
 void Application::handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset)
 {
-	float& fov = scene_state.fov;
+	float& fov = scene_state.camera.fov;
 	fov -= (float)yoffset;
 	if (fov < 1.0f)
 		fov = 1.0f;
 	if (fov > 45.0f)
 		fov = 45.0f;
-}
-
-void Camera::rotate(const float& pitch, const float& yaw, const Vec3& world_up)
-{
-	Vec3 new_dir;
-	new_dir.x = cos(radian(yaw)) * cos(radian(pitch));
-	new_dir.y = sin(radian(pitch));
-	new_dir.z = sin(radian(yaw)) * cos(radian(pitch));
-	direction = new_dir.normalized();
-	right = cross3d(world_up, direction).normalized();
-	up = cross3d(direction, right).normalized();
 }
 
 bool Application::initialize(k_configType& config)
@@ -213,11 +166,11 @@ void Application::loadSceneData(const k_configType& config)
 
 	// camera
 	Camera& cam = ss.camera;
-	cam.pitch = 0.0f;
-	cam.yaw = 90.0f;
-	ss.near = 1.0f;
-	ss.far = 100.0f;
-	ss.fov = 45.0f;
+	ss.camera.pitch = 0.0f;
+	ss.camera.yaw = 90.0f;
+	ss.camera.near = 1.0f;
+	ss.camera.far = 100.0f;
+	ss.camera.fov = 45.0f;
 	//const Vec3 k_camera_position = Vec3(0.0f, 0.0f, 5.0f);				// lightcaster test
 	//const Vec3 k_camera_position = Vec3(1.2f, -2.0f, 5.0f);				// lightmap test
 	const Vec3 k_camera_position = Vec3(1.2f, 2.0f, 5.0f);			// materials shader test
@@ -241,18 +194,7 @@ void Application::loadSceneData(const k_configType& config)
 	ss.b_toggleui = false;
 
 	// cube positions 
-	ss.obj_positions = {
-		Vec3(2.0f,  5.0f, -15.0f),
-		Vec3(-1.5f, -2.2f, -2.5f),
-		Vec3(-3.8f, -2.0f, -12.3f),
-		Vec3(2.4f, -0.4f, -3.5f),
-		Vec3(-1.7f,  3.0f, -7.5f),
-		Vec3(1.3f, -2.0f, -2.5f),
-		Vec3(1.5f,  2.0f, -2.5f),
-		Vec3(1.5f,  0.2f, -1.5f),
-		Vec3(-1.3f,  1.0f, -1.5f),
-		//Vec3(0.0f,  0.0f,  0.0f)
-	};
+	ss.obj_positions = ObjWorldPositions::obj_world_positions;
 
 }
 
@@ -264,40 +206,17 @@ void Application::loadTextures()
 	texture2 = createTexture("data/textures/awesomeface.png");
 	texture_diffuse = createTexture("data/textures/container2.png");
 	texture_specular = createTexture("data/textures/container2_specular.png");
-	texture_emission = createTexture("data/textures/matrix.jpg");
+	texture_emission = createTexture("data/textures/800_checker_emission.png");
+	texture_ground_diffuse = createTexture("data/textures/800_blackchecker.png");
+	texture_ground_specular = createTexture("data/textures/800_checker_specular.png");
+	texture_ground_emission = createTexture("data/textures/800_checker_emission.png");
 }
 
 void Application::loadShaders()
 {
 	// build and compile our shader program
 	// todo: butun shaderlari yukle daha sonra aktifi sec | bu 3d pipeline ini bozuyor
-	const std::vector<std::vector<std::string>> shader_paths =
-	{
-		{
-			"shaders/phong_lit_vrtx_shader.glsl",
-			"shaders/phong_lit_frag_shader.glsl",
-		}
-		,{
-			"shaders/3d_vrtx_shader.glsl",
-			"shaders/3d_frag_shader.glsl"
-		}
-		,{
-			"shaders/lightmap_lit_vrtx_shader.glsl",
-			"shaders/lightmap_lit_frag_shader.glsl"
-		}
-		,{
-			"shaders/lightcaster-directional_lit_vrtx_shader.glsl",
-			"shaders/lightcaster-directional_lit_frag_shader.glsl"
-		}
-		,{
-			"shaders/lightcaster-point_lit_vrtx_shader.glsl",
-			"shaders/lightcaster-point_lit_frag_shader.glsl"
-		}
-		,{
-			"shaders/lightcaster-spot_lit_vrtx_shader.glsl",
-			"shaders/lightcaster-spot_lit_frag_shader.glsl"
-		}
-	};
+	const std::vector<std::vector<std::string>> shader_paths = ShaderPaths::shader_paths;
 
 	for (const std::vector<std::string>& path_pair : shader_paths)
 	{
@@ -306,7 +225,8 @@ void Application::loadShaders()
 		// get between / and _ for key
 		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
 		std::string left_trimmed_key = path_parts[0];
-		path_parts = str_utils::split(left_trimmed_key, "/");
+		//path_parts = str_utils::split(left_trimmed_key, "/");
+		path_parts = str_utils::split(left_trimmed_key, ".");
 		const std::string name = path_parts.back();
 		//
 		shaders[name] = std::make_shared<Shader>(vrtx, frag);
@@ -317,18 +237,18 @@ void Application::loadShaders()
 void Application::loadMeshData()
 {
 	// create vertex array object and vertex buffer object
-	glGenVertexArrays(buffer_count, VAOs);
-	glGenBuffers(buffer_count, VBOs); // :: memory alani olusturuyor
-	glGenBuffers(buffer_count, EBOs); // :: ebo icin memory
+	glGenVertexArrays(buffer_count, vaos);
+	glGenBuffers(buffer_count, vbos); // :: memory alani olusturuyor
+	glGenBuffers(buffer_count, ebos); // :: ebo icin memory
 
 
 	// binding buffers
-	glBindVertexArray(VAOs[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cubeVrts), ObjToDraw::cubeVrts, GL_STATIC_DRAW);
+	glBindVertexArray(vaos[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cube_vrts), ObjToDraw::cube_vrts, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::squareInds), ObjToDraw::squareInds, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebos[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::square_inds), ObjToDraw::square_inds, GL_STATIC_DRAW);
 
 	// linking vertex attributes
 	// --------------------------       
@@ -351,13 +271,13 @@ void Application::loadMeshData()
 	glEnableVertexAttribArray(2);
 
 	// lit: coord, normal, texture
-	glGenVertexArrays(1, &litVAO);
-	glGenBuffers(1, &litVBO); // :: memory alani olusturuyor
-	glBindBuffer(GL_ARRAY_BUFFER, litVBO);
+	glGenVertexArrays(1, &lit_vao);
+	glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
+	glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
-	glBindVertexArray(litVAO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::lightCubeVrts), ObjToDraw::lightCubeVrts, GL_STATIC_DRAW);
+	glBindVertexArray(lit_vao);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::light_cube_vrts), ObjToDraw::light_cube_vrts, GL_STATIC_DRAW);
 	stride = 8;
 	// set the vertex attribute 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
@@ -368,7 +288,7 @@ void Application::loadMeshData()
 	// att: texture
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	//generateBuffer(litVAO, litVBO, ObjToDraw::cubeVrts, 5, 1, 0);
+	//generateBuffer(lit_vao, lit_vbo, ObjToDraw::cube_vrts, 5, 1, 0);
 
 
 	// clean new_up
@@ -417,7 +337,8 @@ void Application::mainLoop()
 		processInput(window, uni_obj, scene_state);
 		int w, h;
 		glfwGetWindowSize(window, &w, &h);
-		scene_state.aspect_ratio = float(w) / float(h);
+		SceneState& ss = scene_state;
+		ss.camera.aspect_ratio = float(w) / float(h);
 
 		// Start the Dear ImGui frame
 		updateUI();
@@ -487,8 +408,8 @@ void Application::unload()
 {
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(buffer_count, VAOs);
-	glDeleteBuffers(buffer_count, VBOs);
+	glDeleteVertexArrays(buffer_count, vaos);
+	glDeleteBuffers(buffer_count, vbos);
 }
 
 int Application::exit()
@@ -523,12 +444,10 @@ void Application::updateUI()
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
-		ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
+		//ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
+		//ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
 		//ImGui::Checkbox("Another Window", &show_another_window);
 
-		ImGui::SliderInt("Width", &this->ui_state.width, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderInt("Height", &this->ui_state.height, 0.0f, 2.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Light Dir X", &this->scene_state.light.direction.x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -576,7 +495,7 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
-	lightCasterScene(uni);
+	multipleLightsScene(uni);
 }
 
 void Application::setPresetMaterial(const Material& material)
