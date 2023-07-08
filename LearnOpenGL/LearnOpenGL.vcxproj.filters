@@ -129,6 +129,15 @@
     <ClCompile Include="data\maps\shader_paths.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="data\obj\predefined_lights.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="headers\abstract\vector2.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\test\basic.h">
@@ -213,6 +222,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\abstract\light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -42,4 +42,6 @@ public:
 	Mat4 calcViewMatrix() const;
 	void rotate(const float& pitch, const float& yaw, const Vec3& world_up);
 	void lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up);
+private:
+	void calcAxisFromDirection(const Vec3& world_up);
 };

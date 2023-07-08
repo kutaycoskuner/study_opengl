@@ -300,6 +300,14 @@
 
 
 # How to
+- <cpp and header file structure>
+    1. notes
+    2. libraries
+    3. self keywords
+    4. global variables
+    5. function declarations
+    6. abstract
+    7. function definitions
 - <git>
     - git status
     - git stash
@@ -333,16 +341,27 @@
 - <disardan dosya ekleme>
     - ekledigin cpp dosyasina sag tiklayip include in project de
 
-- <integrate 3rd party third party libraries>
+- <integrate 3rd party third party libraries | self compile library>
     - compiled library
         - kutuphane source u indir 
         - cmake ile build i yarat
+            - https://learnopengl.com/Getting-started/Creating-a-window
+            - download
+            - create build folder in the same folder
+            - open cmake
+                - where is the source code:     folder
+                - where to build the binaries:  folder/build
+                - configure
+                - check values in red click configure again
+                - generate
         - vs uzerinde acip debug/release buildleri yap
+            - top menu > build > build solution
         - sub module
-        - statik kirli yol
+        - statik kirli yol (.lib NOT .dll)
+            - project properties > vc++ directories > add library directiories > lib folder | conventio
+            - project properties > vc++ directories > add library directiories > include folder 
+            - project properties > linker > input   > additional dependencies > ex. glfw3.lib;opengl32.lib | buraya .dll degil .lib geliyor
             - project properties > linker > general > add additional library directories
-            - project properties > linker > input   > add additional library file name
-            - project properties > vc++ directories > add library include folder | convention
 
     - c style | built in library (ex: stb_image.h)
         - .h dosyasini proje dosyasinin icine indir

@@ -37,16 +37,16 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_
 
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		uni.mixValue += 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
-		if (uni.mixValue >= 1.0f)
-			uni.mixValue = 1.0f;
+		uni.mix_value += 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
+		if (uni.mix_value >= 1.0f)
+			uni.mix_value = 1.0f;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		uni.mixValue -= 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
-		if (uni.mixValue <= 0.0f)
-			uni.mixValue = 0.0f;
+		uni.mix_value -= 0.001f; // change this value accordingly (might be too slow or too fast based on system hardware)
+		if (uni.mix_value <= 0.0f)
+			uni.mix_value = 0.0f;
 	}
 
 	// camera
@@ -57,13 +57,13 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni, SceneState& scene_
 	const Vec3& cam_up = scene_state.camera.up;
 	
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cam_pos -= cam_speed * cam_dir;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cam_pos += cam_dir * cam_speed;
+		cam_pos += cam_speed * cam_dir;
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		cam_pos += math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		cam_pos -= math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cam_pos -= cam_dir * cam_speed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cam_pos += math_utils::cross3d(cam_dir, cam_up).normalized() * cam_speed;
 
 	// Check if the key is X and if it was pressed
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)

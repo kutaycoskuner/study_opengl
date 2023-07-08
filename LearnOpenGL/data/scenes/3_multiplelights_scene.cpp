@@ -33,7 +33,7 @@ void Application::multipleLightsScene(Uniforms& uni)
 	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
 	
 	drawLightPlaceholder(vaos[0], "3d", uni);
-	drawGroundPlane(lit_vao, "multiplelights", uni);
+	//drawGroundPlane(lit_vao, "multiplelights", uni);
 	drawObj(lit_vao, "multiplelights", uni);
 
 }

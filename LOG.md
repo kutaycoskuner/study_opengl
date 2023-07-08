@@ -64,6 +64,7 @@
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
 - 24-Jun-2023 add: ui camera, direction, light direction controls
 - 25-Jun-2023 add: documentation: keys, ui controls
+- 08-Jul-2023 fix: assimp import olayini coz
 
 # Push procedure checklist 1.4
 - add log
@@ -74,6 +75,19 @@
 
 # Log
                                                                                |
+- [0.44]
+    - 08-Jul-2023 add: Mesh abstraction
+        - wip: fix: assimp import, 
+        - wip: model abstraction 
+    - 07-Jul-2023
+        - add: Vector2 class derived from vector4
+        - arch: light parametrization
+    - 06-Jul-2023 wip: light parametrization, technical debt
+    - 05-Jul-2023
+        - fix: specular reflection problem
+        - arch: refactor shader 2.3 
+        - add: assimp library as static library .lib
+
 - [0.43] add: Multiple lights
     - 03-Jul-2023
         - add: display: multiple lights

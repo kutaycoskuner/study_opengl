@@ -72,7 +72,7 @@ This is a study repository for learning graphics programming through OpenGL.
     - Libraries
         - GLFW | GLFW is a lightweight utility library for use with OpenGL. [Download](https://www.glfw.org/download.html)
         - GLAD | OpenGL hardware adjustment library. [Download](https://glad.dav1d.de/)
-        - GLM  | OpenGL mathematics library [Download](https://glm.g-truc.net/0.9.8/index.html)
+        - Asset-Importer-Lib | Importing 3d file formats into a shader, in-memory imediate format [Downlaod](http://assimp.org/)
         - Dear ImGui | C++ gui library [Download](https://github.com/ocornut/imgui/releases/tag/v1.89.5)
         - stb_image.h | Image file load library. [Downlaod](https://github.com/nothings/stb/blob/master/stb_image.h)
     - Environment Setup 

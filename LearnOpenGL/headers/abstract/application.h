@@ -97,14 +97,19 @@ private:
 
     // draw objects
     void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
-    void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
+    //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
     
-    // data
+    // specific scenes
     void phongScene(Uniforms& uni);
     void lightMapScene(Uniforms& uni);
     void lightCasterScene(Uniforms& uni);
     void multipleLightsScene(Uniforms& uni);
+
+    // custom functions
+    void setPointLightParameters(Uniforms& uni);
+    void setSpotLightParameters(Uniforms& uni);
+    void setDirectionalLightParameters(Uniforms& uni);
 
 private:
     const static unsigned int buffer_count = 2;

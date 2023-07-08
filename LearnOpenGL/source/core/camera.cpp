@@ -11,11 +11,10 @@
 // ----------------------------------------------------------------------------
 void Camera::lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up)
 {
-	position = new_pos;
+	//position = new_pos;
 	up = world_up;
-	direction = (new_pos - new_tar).normalized();
-	right = math_utils::cross3d(world_up, direction).normalized();
-	up = math_utils::cross3d(direction, right).normalized();
+	direction = (new_tar - position).normalized();
+	calcAxisFromDirection(world_up);
 }
 
 Mat4 Camera::calcViewMatrix() const
@@ -49,10 +48,15 @@ Mat4 Camera::calcViewMatrix() const
 void Camera::rotate(const float& pitch, const float& yaw, const Vec3& world_up)
 {
 	Vec3 new_dir;
-	new_dir.x = cos(math_utils::radian(yaw)) * cos(math_utils::radian(pitch));
+	new_dir.x = sin(math_utils::radian(yaw)) * cos(math_utils::radian(pitch));
 	new_dir.y = sin(math_utils::radian(pitch));
-	new_dir.z = sin(math_utils::radian(yaw)) * cos(math_utils::radian(pitch));
+	new_dir.z = - cos(math_utils::radian(yaw)) * cos(math_utils::radian(pitch));
 	direction = new_dir.normalized();
+	calcAxisFromDirection(world_up);
+}
+
+void Camera::calcAxisFromDirection(const Vec3& world_up)
+{
 	right = math_utils::cross3d(world_up, direction).normalized();
-	up = math_utils::cross3d(direction, right).normalized();
+	up = math_utils::cross3d(right, direction).normalized();
 }

@@ -11,8 +11,9 @@ struct SceneState
     Camera camera;
 
     // light
-    Light light;
-    std::vector<Light> lights;
+    std::vector<DirectionalLight> directional_lights;
+    std::vector<PointLight> point_lights;
+    std::vector<SpotLight> spot_lights;
 
     // animation
     float time;
