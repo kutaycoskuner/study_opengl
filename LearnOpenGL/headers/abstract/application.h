@@ -30,11 +30,17 @@ class Application
 public:
     using k_configType = const std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
 
+    // standards
+    static const Vec3 world_up;
+    static const Vec3 world_origin;
+
+    static bool toggle_mouselock;
+
+    static void resetCamera(Camera& camera);
+
     Application() : window(nullptr), active_shader(nullptr) {}
-    // Program ilk basladiginda izlenen prosedurleri icerir.
-    // 
-    // - isletim sisteminden bellek isteme
-    // - cesitli sistemleri hazirlama
+    // - ask memory from operating system
+    // - preapre libraries
     bool initialize(k_configType& config);
 
     // Program bellegi hazirlandiktan sonra motorun kullanacagi built-in
@@ -96,15 +102,23 @@ private:
     void setPresetMaterial(const Material& material);
 
     // draw objects
+    void drawAxis(int vao, const char* shader_name, Uniforms& uni);
     void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
-    void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
+    //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
     
-    // data
+    // specific scenes
     void phongScene(Uniforms& uni);
     void lightMapScene(Uniforms& uni);
     void lightCasterScene(Uniforms& uni);
     void multipleLightsScene(Uniforms& uni);
+
+    // custom functions
+    void setPointLightParameters(Uniforms& uni);
+    void setSpotLightParameters(Uniforms& uni);
+    void setDirectionalLightParameters(Uniforms& uni);
+
+    // reset
 
 private:
     const static unsigned int buffer_count = 2;
@@ -128,13 +142,9 @@ private:
     unsigned int vbos[buffer_count];
     unsigned int ebos[buffer_count];
 
-    SceneState scene_state;
+    SceneState  scene_state;
     WindowState window_state;
     UIState     ui_state;
-
-    // standards
-    Vec3 world_up;
-    Vec3 world_origin;
 
     // config
     bool        b_wireframe_mode;

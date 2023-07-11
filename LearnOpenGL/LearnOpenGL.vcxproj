@@ -24,6 +24,7 @@
     <ProjectGuid>{c1c29370-15df-4534-b4e3-483362831f6a}</ProjectGuid>
     <RootNamespace>LearnOpenGL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>study_opengl</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,8 +72,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>D:\ProgrammingLibrary\cpp\glfw-3.3.8\build\src\Debug;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\ProgrammingLibrary\cpp\glad-0.136\include;C:\Users\kutay\OneDrive\Documents\GitHub\Study-LearnOpenGL-cpp\LearnOpenGL\headers;D:\ProgrammingLibrary\cpp\glfw-3.3.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\libs\assimp-5.2.5\build\Debug;$(SolutionDir)\libs\glfw-3.3.8\src\Debug;$(SolutionDir)\libs\glad-0.136\src;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\libs\assimp-5.2.5\include;$(SolutionDir)\headers;$(SolutionDir)\libs\glfw-3.3.8\include;$(SolutionDir)\libs\glad-0.136\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,12 +109,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\libs\glm-0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\libs\glad-0.136\src;$(SolutionDir)\libs\glm-0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
@@ -135,11 +138,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c" />
     <ClCompile Include="data\maps\shader_paths.cpp" />
     <ClCompile Include="data\material\colors.cpp" />
     <ClCompile Include="data\material\material.cpp" />
     <ClCompile Include="data\obj\obj_data.cpp" />
+    <None Include="x64\Debug\assimp-vc143-mtd.dll" />
+    <None Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.exp" />
     <None Include="shaders\2.3.multiplelights_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
@@ -175,13 +179,13 @@
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="data\obj\obj_world_positions.cpp" />
-    <ClCompile Include="data\scenes\2_lightcaster_scene.cpp" />
-    <ClCompile Include="data\scenes\1_lightmap_scene.cpp" />
+    <ClCompile Include="data\obj\predefined_lights.cpp" />
     <ClCompile Include="data\scenes\3_multiplelights_scene.cpp" />
-    <ClCompile Include="data\scenes\0_phong_scene.cpp" />
     <ClCompile Include="data\scenes\draw_obj.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
+    <ClCompile Include="headers\abstract\vector2.h" />
     <ClCompile Include="headers\templates\header_template_1.0.h" />
+    <ClCompile Include="libs\glad-0.136\src\glad.c" />
     <ClCompile Include="libs\imgui-1.89.5\imgui.cpp" />
     <ClCompile Include="libs\imgui-1.89.5\imgui_demo.cpp" />
     <ClCompile Include="libs\imgui-1.89.5\imgui_draw.cpp" />
@@ -196,6 +200,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\core\camera.cpp" />
+    <ClCompile Include="source\core\mesh.cpp" />
     <ClCompile Include="source\test\itest_transformations.cpp" />
     <ClCompile Include="source\test\utest_matrix4.cpp" />
     <ClCompile Include="source\test\utest_vector3.cpp" />
@@ -231,11 +236,13 @@
     <ClInclude Include="headers\abstract\camera.h" />
     <ClInclude Include="headers\abstract\light.h" />
     <ClInclude Include="headers\abstract\material.h" />
+    <ClInclude Include="headers\abstract\model.h" />
     <ClInclude Include="headers\abstract\scene_state.h" />
     <ClInclude Include="headers\abstract\ui.h" />
     <ClInclude Include="headers\abstract\uniforms.h" />
     <ClInclude Include="headers\abstract\vector3.h" />
     <ClInclude Include="headers\abstract\vector4.h" />
+    <ClInclude Include="headers\abstract\mesh.h" />
     <ClInclude Include="headers\abstract\window_state.h" />
     <ClInclude Include="headers\events\events.h" />
     <ClInclude Include="headers\test\basic.h" />
@@ -255,6 +262,9 @@
     <ClInclude Include="libs\imgui-1.89.5\imstb_textedit.h" />
     <ClInclude Include="libs\imgui-1.89.5\imstb_truetype.h" />
     <ClInclude Include="libs\stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

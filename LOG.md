@@ -56,6 +56,8 @@
 - [x] 25-Jun-2023 02-Jun-2023 add: Code standard: openGL.h / d_objToDraw / 3d_fragShader / unitTest_Vector4 cases ekle
     - opengl.h | objto_draw | 3d_frag_shader | utest_vector4 |
 - [x] 03-Jul-2023 01-Jul-2023 add: new scene for multiple lights, scene state multiple light positions
+- [x] 11-Jul-2023 11-Jul-2023 add: kutuphanelerin static pathlerini duzelt
+- [x] 11-Jul-2023 08-Jul-2023 fix: assimp import olayini coz
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
@@ -64,6 +66,7 @@
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
 - 24-Jun-2023 add: ui camera, direction, light direction controls
 - 25-Jun-2023 add: documentation: keys, ui controls
+- 11-Jul-2023 add: pitch distortion
 
 # Push procedure checklist 1.4
 - add log
@@ -74,6 +77,30 @@
 
 # Log
                                                                                |
+- [0.44] arch: Camera rework ...
+    - 11-Jul-2023
+        - add: display multiple lights fixeds
+        - fix: fixed some of the warnings
+        - add: assimp library loaded
+        - add: libraries relative path 
+        - add: toggle mouse lock with z key
+        - fix: Camera getRight, getUp
+        - add: Camera reset function
+        - add: Camera speed multiplier with shift
+        - add: Q E keys to move up and down
+        - fix: Camera class
+    - 08-Jul-2023 add: Mesh abstraction
+        - wip: fix: assimp import, 
+        - wip: model abstraction 
+    - 07-Jul-2023
+        - add: Vector2 class derived from vector4
+        - arch: light parametrization
+    - 06-Jul-2023 wip: light parametrization, technical debt
+    - 05-Jul-2023
+        - fix: specular reflection problem
+        - arch: refactor shader 2.3 
+        - add: assimp library as static library .lib
+
 - [0.43] add: Multiple lights
     - 03-Jul-2023
         - add: display: multiple lights

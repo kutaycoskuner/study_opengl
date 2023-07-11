@@ -8,22 +8,18 @@
 // ----- forward declarations
 // ----------------------------------------------------------------------------
 
-// ----- function declarations
-// ----------------------------------------------------------------------------
-
 // ----- abstract
 // ----------------------------------------------------------------------------
-// todo: classs
-struct Camera
+class Camera
 {
 public:
 	// position
 	Vec3 position;
 
-	// axis
-	Vec3 direction;
-	Vec3 right;
-	Vec3 up;
+
+	// angles from the world in radian
+	float yaw_rad;
+	float pitch_rad;
 
 	// frustum
 	float aspect_ratio;
@@ -33,13 +29,17 @@ public:
 
 	// movement
 	float current_speed;
-
-	// angles from word
-	float yaw;
-	float pitch;
+	float rotation_sensitivity;
 
 	// functions
-	Mat4 calcViewMatrix() const;
-	void rotate(const float& pitch, const float& yaw, const Vec3& world_up);
-	void lookAt(const Vec3& new_pos, const Vec3& new_tar, const Vec3& world_up);
+	void lookAtTarget(const Vec3& target);
+	void lookAtDirection(const Vec3& direction);
+	Mat4 calcViewMatrix(const Vec3& world_up) const;
+	void rotate(float x_offset, float y_offset);
+
+	Vec3 getDirection() const;
+	Vec3 getRight(const Vec3& world_up) const;
+	Vec3 getUp(const Vec3& world_up) const;
+
+	Mat4 getVectors(const Vec3& world_up) const;
 };

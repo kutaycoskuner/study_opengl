@@ -32,13 +32,10 @@
 #include "../../libs/imgui-1.89.5/imgui_impl_glfw.h"
 #include "../../libs/imgui-1.89.5/imgui_impl_opengl3.h"
 
-// glm
-//#include <glm/vec3.hpp>						// glm::vec3
-//#include <glm/vec4.hpp>						// glm::vec4
-//#include <glm/mat4x4.hpp>					// glm::mat4
-//#include <glm/ext/matrix_transform.hpp>		// glm::translate, glm::rotate, glm::scale
-//#include <glm/ext/matrix_clip_space.hpp>	// glm::perspective
-//#include <glm/ext/scalar_constants.hpp>		// glm::pi
+// assimp
+#include "../../libs/assimp-5.2.5/include/assimp/Importer.hpp"
+#include "../../libs/assimp-5.2.5/include/assimp/scene.h"
+#include "../../libs/assimp-5.2.5/include/assimp/postprocess.h"
 
 #include <memory>
 
@@ -55,56 +52,16 @@ using namespace img_utils;
 // -----------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
+const Vec3 Application::world_up = Vec3(0.0f, 1.0f, 0.0f);
+const Vec3 Application::world_origin = Vec3(0.0f, 0.0f, 0.0f);
+bool Application::toggle_mouselock = true;
 
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
-
-void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
-{
-	WindowState& ws = window_state;
-	if (ws.b_first_mouse)
-	{
-		ws.mouse_x = xpos;
-		ws.mouse_y = ypos;
-		ws.b_first_mouse = false;
-	}
-
-	float xoffset = xpos - ws.mouse_x;
-	float yoffset = ypos - ws.mouse_y; // reversed since y-coordinates range from bottom to top
-	ws.mouse_x = xpos;
-	ws.mouse_y = ypos;
-
-	float sensitivity = 0.1f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	Camera& cam = scene_state.camera;
-	cam.pitch += yoffset;
-	cam.yaw += xoffset;
-
-	// limiter
-	if (cam.pitch > 89.0f)
-		cam.pitch = 89.0f;
-	if (cam.pitch < -89.0f)
-		cam.pitch = -89.0f;
-
-	cam.rotate(cam.pitch, cam.yaw, world_up);
-
-}
-
-void Application::handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset)
-{
-	float& fov = scene_state.camera.fov;
-	fov -= (float)yoffset;
-	if (fov < 1.0f)
-		fov = 1.0f;
-	if (fov > 45.0f)
-		fov = 45.0f;
-}
-
 bool Application::initialize(k_configType& config)
 {
 	gp_app = this;
+
 	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
 	const unsigned int k_scr_height = std::stoul(config.at("scr").at("height"));
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
@@ -121,10 +78,19 @@ bool Application::initialize(k_configType& config)
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
+		return bool(- 1);
 	}
 
 	initUISystem(glsl_version);
+
+	// init asset importer
+	//Assimp::Importer importer;
+	//if (importer.IsExtensionSupported("obj")) {
+	//	std::cout << "Assimp library loaded successfully!" << std::endl;
+	//}
+	//else {
+	//	std::cout << "Failed to load Assimp library." << std::endl;
+	//}
 
 	// our state
 	this->clear_color = Vec4(
@@ -133,6 +99,7 @@ bool Application::initialize(k_configType& config)
 		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
 		1.00f
 	);
+	return 0;
 }
 
 bool Application::load(k_configType& config)
@@ -160,30 +127,60 @@ void Application::loadSceneData(const k_configType& config)
 {
 	SceneState& ss = scene_state;
 
-	// world
-	world_up = Vec3(0.0f, 1.0f, 0.0f);
-	world_origin = Vec3(0.0f, 0.0f, 0.0f);
-
-	// camera
+	// ----- camera
+	// --------------------------------------------------------------------------------------
 	Camera& cam = ss.camera;
-	ss.camera.pitch = 0.0f;
-	ss.camera.yaw = 90.0f;
+	
 	ss.camera.near = 1.0f;
 	ss.camera.far = 100.0f;
 	ss.camera.fov = 45.0f;
-	//const Vec3 k_camera_position = Vec3(0.0f, 0.0f, 5.0f);				// lightcaster test
-	//const Vec3 k_camera_position = Vec3(1.2f, -2.0f, 5.0f);				// lightmap test
-	const Vec3 k_camera_position = Vec3(1.2f, 2.0f, 5.0f);			// materials shader test
-	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);
-	const Vec3 k_world_up = world_up;
-	cam.lookAt(k_camera_position, k_camera_target_point, k_world_up);
+	
+	ss.camera.rotation_sensitivity = 0.02f;
 
-	// light
-	ss.light.position = Vec3(0.0f, 1.0f, 0.0f);
-	ss.light.brightness = 10.0f;
-	ss.light.color = Vec3(0.33f, 0.42f, 0.18f);
-	ss.light.direction = Vec3(-0.33f, -.84f, -0.86f); // spot
-	//ss.light.direction = Vec3(-1.0f, -0.8f, -.2f); // directional
+	resetCamera(ss.camera);
+	
+	// ----- lights
+	// --------------------------------------------------------------------------------------
+	// directional
+	int num_dlights = 1;
+	int num_plights = 3;
+	int num_slights = 1;
+	for (int ii = 0; ii < num_dlights; ii++)
+	{
+		ss.directional_lights.emplace_back();
+		ss.directional_lights[ii].direction	= Vec3(-1.0f, -0.5f, -1.0f);
+		ss.directional_lights[ii].direction = Vec3(-1.0f, -0.8f, -0.2f);
+		ss.directional_lights[ii].diffuse	= Vec3(0.8f, 0.8f, 0.8f);
+		ss.directional_lights[ii].ambient	= Vec3(0.08f, .08f, 0.08f);
+		ss.directional_lights[ii].specular	= Vec3(1.0f, 1.0f, 1.0f);
+	}
+	// point
+	for (int ii = 0; ii < num_plights; ii++)
+	{
+		ss.point_lights.emplace_back();
+		ss.point_lights[ii].position	= Vec3(0.0f, 0.0f, 0.0f);
+		ss.point_lights[ii].ambient		= Vec3(0.05f, 0.05f, 0.05f);
+		ss.point_lights[ii].diffuse		= Vec3(0.8f, 0.8f, 0.8f);
+		ss.point_lights[ii].specular	= Vec3(1.0f, 1.0f, 1.0f);
+		ss.point_lights[ii].constant	= 1.0f;
+		ss.point_lights[ii].linear		= 0.09f;
+		ss.point_lights[ii].quadratic	= 0.032f;
+	}
+	// spot
+	for (int ii = 0; ii < num_slights; ii++)
+	{
+		ss.spot_lights.emplace_back();
+		ss.spot_lights[ii].position = Vec3(0.0f, 1.0f, 0.0f);
+		ss.spot_lights[ii].direction = Vec3(0.0f, -1.0f, 0.0f);
+		ss.spot_lights[ii].ambient = Vec3(0.02f, 0.02f, 0.02f);
+		ss.spot_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.0f);
+		ss.spot_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
+		ss.spot_lights[ii].constant = 1.0f;
+		ss.spot_lights[ii].linear = 0.09f;
+		ss.spot_lights[ii].quadratic = 0.032f;
+		ss.spot_lights[ii].cutoff = cos(radian(27.5f));
+		ss.spot_lights[ii].outer_cutoff = cos(radian(30.0f));
+	}
 
 	// animation
 	ss.b_animate = 1;
@@ -195,7 +192,6 @@ void Application::loadSceneData(const k_configType& config)
 
 	// cube positions 
 	ss.obj_positions = ObjWorldPositions::obj_world_positions;
-
 }
 
 void Application::loadTextures()
@@ -206,10 +202,10 @@ void Application::loadTextures()
 	texture2 = createTexture("data/textures/awesomeface.png");
 	texture_diffuse = createTexture("data/textures/container2.png");
 	texture_specular = createTexture("data/textures/container2_specular.png");
-	texture_emission = createTexture("data/textures/800_checker_emission.png");
+	//texture_emission = createTexture("data/textures/800_checker_emission.png");
 	texture_ground_diffuse = createTexture("data/textures/800_blackchecker.png");
-	texture_ground_specular = createTexture("data/textures/800_checker_specular.png");
-	texture_ground_emission = createTexture("data/textures/800_checker_emission.png");
+	texture_ground_specular = createTexture("data/textures/800_checker_specular_regions.png");
+	texture_ground_emission = createTexture("data/textures/800_checker_emission_regions.png");
 }
 
 void Application::loadShaders()
@@ -328,7 +324,7 @@ void Application::mainLoop()
 	uni_obj.world_matrix = mat_utils::identity4();
 	uni_view.view_matrix = mat_utils::identity4();
 	uni_view.projection_matrix = mat_utils::identity4();
-	uni_obj.mixValue = 0.2f;
+	uni_obj.mix_value = 0.2f;
 
 	// render loop 
 	// --------------------------
@@ -382,9 +378,10 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwMakeContextCurrent(window);
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	//glfwSetCursorPosCallback(window, callbackMouse);
-	//glfwSetScrollCallback(window, callbackScroll);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, callbackMouse);
+	glfwSetScrollCallback(window, callbackScroll);
+	return 0;
 }
 
 void Application::initUISystem(const char*& glsl_version)
@@ -448,10 +445,10 @@ void Application::updateUI()
 		//ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
 		//ImGui::Checkbox("Another Window", &show_another_window);
 
-		ImGui::SliderFloat("Light Dir X", &this->scene_state.light.direction.x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::SliderFloat("Light Dir X", &this->scene_state.light.direction.x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::ColorEdit3("clear color", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
 
 		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -536,7 +533,7 @@ void Application::updateScene()
 
 
 	// translate light
-	//ss.light.position = Vec3(1.8f, 0.0f, 2.0f);		// light map
+	//ss.light.position = Vec3(1.8f, 0.0f, 2.0f);			// light map
 	//ss.light.position = Vec3(0.0f, 0.0f, -1.0f);		// light caster
 
 	// rotate light
@@ -546,11 +543,19 @@ void Application::updateScene()
 
 	// change light color
 	//ss.light.color = setTriangleLightColorShiftByTime(ss.time);
-	ss.light.color = Vec3(1.0f, 1.0f, 1.0f);
+	//ss.light.color = Vec3(1.0f, 1.0f, 1.0f);
 
 	// ui changes
 	//ss.light.direction = ui_state.spotlight_dir;
 
+}
+
+void Application::resetCamera(Camera& camera)
+{
+	camera.position = Vec3(0.0f, 0.0f, 5.0f);
+	camera.position = Vec3(2.0f, 3.0f, 5.0f);
+	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);
+	camera.lookAtTarget(k_camera_target_point);
 }
 
 Vec3 setTriangleLightColorShiftByTime(const float& time)

@@ -204,11 +204,15 @@
     - violet
         - #da1991
     - red
-        - #ff0048
+        - #ff0048               1, 0, .282
+        - #ff3352   -> blender
     - green
-        - #91ff01
+        - #91ff01   ->          .569, 1, .004
+        - #8bdc00   -> blender
     - blue
-        - #06b4ba
+        - #06b4ba               .024, .706, .729
+        - #2890ff   -> blender   
+
 
 - magic number
     - guzel degisken isimlendirmesi ile saglamak lazim
@@ -300,6 +304,17 @@
 
 
 # How to
+- <class icinde static mi degil mi>
+    - application geneline mi ozel instance ina mi
+
+- <cpp and header file structure>
+    1. notes
+    2. libraries
+    3. self keywords
+    4. global variables
+    5. function declarations
+    6. abstract
+    7. function definitions
 - <git>
     - git status
     - git stash
@@ -333,16 +348,27 @@
 - <disardan dosya ekleme>
     - ekledigin cpp dosyasina sag tiklayip include in project de
 
-- <integrate 3rd party third party libraries>
+- <integrate 3rd party third party libraries | self compile library>
     - compiled library
         - kutuphane source u indir 
         - cmake ile build i yarat
+            - https://learnopengl.com/Getting-started/Creating-a-window
+            - download
+            - create build folder in the same folder
+            - open cmake
+                - where is the source code:     folder
+                - where to build the binaries:  folder/build
+                - configure
+                - check values in red click configure again
+                - generate
         - vs uzerinde acip debug/release buildleri yap
+            - top menu > build > build solution
         - sub module
-        - statik kirli yol
+        - statik kirli yol (.lib NOT .dll)
+            - project properties > vc++ directories > add library directiories > lib folder | conventio
+            - project properties > vc++ directories > add library directiories > include folder 
+            - project properties > linker > input   > additional dependencies > ex. glfw3.lib;opengl32.lib | buraya .dll degil .lib geliyor
             - project properties > linker > general > add additional library directories
-            - project properties > linker > input   > add additional library file name
-            - project properties > vc++ directories > add library include folder | convention
 
     - c style | built in library (ex: stb_image.h)
         - .h dosyasini proje dosyasinin icine indir
@@ -398,6 +424,14 @@
     - naming
     - responsiibility, ownership dagilimlari
     - const refler
+
+- <warnings>
+    - warning C4715: 'Application::initialize': not all control paths return a value
+        - return donmesi gereken bir fonksiyon donmuyor?
+    - warning STL4038: The contents of <variant> are available only with C++17 or later.
+        - project > properties > c/c++ > langugae > c++ langugae standard ayarla
+    - warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+    - warning C5105: macro expansion producing 'defined' has undefined behavior
 
 # Shortcuts
 - f5                                debugger

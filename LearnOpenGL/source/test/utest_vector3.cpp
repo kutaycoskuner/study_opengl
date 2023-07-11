@@ -60,8 +60,8 @@ static void unitTest_Vec3_math()
 	Vec3 hor(1, 0, 0);
 	float dp = math_utils::dot3d(hor, ver);
 	assert(dp == 0);
-	ver = (1, 5, 0);
-	hor = (-1, -5, 0);
+	ver = (1.0f, 5.0f, 0.0f);
+	hor = (-1.0f, -5.0f, 0.0f);
 	dp = math_utils::dot3d(hor, ver);
 	assert(dp == -1 * hor.length() * ver.length());
 
@@ -93,7 +93,9 @@ static void unitTest_Vec3_increment_vec()
 	Vec3 a = Vec3(1.0f, 0.0f, 0.0f);
 	Vec3 b = Vec3(0.0f, 1.0f, 1.0f);
 	a += b;
-	assert(a.x = 1.0f, a.y = 1.0f, a.z = 1.0f);
+	assert(a.x = 1.0f);
+	assert(a.y = 1.0f);
+	assert(a.z = 1.0f);
 }
 
 static void unitTest_Vec3_decrement_vec()
@@ -101,7 +103,9 @@ static void unitTest_Vec3_decrement_vec()
 	Vec3 a = Vec3(1.0f, 0.0f, 0.0f);
 	Vec3 b = Vec3(0.0f, 1.0f, 1.0f);
 	a -= b;
-	assert(a.x = 1.0f, a.y = -1.0f, a.z = -1.0f);
+	assert(a.x = 1.0f);
+	assert(a.y = -1.0f);
+	assert(a.z = -1.0f);
 }
 
 

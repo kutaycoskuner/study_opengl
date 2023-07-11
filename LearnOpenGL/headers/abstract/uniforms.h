@@ -12,7 +12,7 @@
 // ------------------------------------------------------------------------------------------------
 struct UniformsPerObject
 {
-	float mixValue;
+	float mix_value;
 	Mat4 world_matrix;
 	Mat4 world_normal_matrix;
 	Material material;
@@ -29,7 +29,7 @@ struct UniformsPerView
 struct UniformsPerFrame
 {
 	Vec3 light_color;
-	Light light;
+	DirectionalLight light;
 };
 
 struct Uniforms

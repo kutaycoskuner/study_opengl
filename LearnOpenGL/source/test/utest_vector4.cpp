@@ -28,7 +28,7 @@ static void unitTest_Vec4_paramConstructor()
 // copy constructor
 static void unitTest_Vec4_copyConstructor()
 {
-	Vec4 vec_toCopy(1, 5, 12, 3.2);
+	Vec4 vec_toCopy(1.0f, 5.0f, 12.0f, 3.2f);
 	Vec4 vec(vec_toCopy);
 	assert(
 		compareApprox(vec.x, 1.0f) &&
@@ -126,12 +126,10 @@ static void unitTest_Vec4_normalization()
 	constexpr float y = 3.0f / len;
 	constexpr float z = 4.0f / len;
 	constexpr float w = 5.0f / len;
-	assert(
-		compareApprox(vec.x, x),
-		compareApprox(vec.y, y),
-		compareApprox(vec.z, z),
-		compareApprox(vec.w, w)
-	);
+	assert(compareApprox(vec.x, x));
+	assert(compareApprox(vec.y, y));
+	assert(compareApprox(vec.z, z));
+	assert(compareApprox(vec.w, w));
 }
 
 // normalized
@@ -144,12 +142,10 @@ static void unitTest_Vec4_normalized()
 	const float y = vec1.y / len;
 	const float z = vec1.z / len;
 	const float w = vec1.w / len;
-	assert(
-		compareApprox(vec.x, x),
-		compareApprox(vec.y, y),
-		compareApprox(vec.z, z),
-		compareApprox(vec.w, w)
-	);
+	assert(compareApprox(vec.x, x));
+	assert(compareApprox(vec.y, y));
+	assert(compareApprox(vec.z, z));
+	assert(compareApprox(vec.w, w));
 }
 
 // dot

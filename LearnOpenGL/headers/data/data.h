@@ -2,8 +2,16 @@
 #ifndef D_DATA
 #define D_DATA
 #include "../abstract/material.h"
+#include "../abstract/light.h"
 #include <vector>
 #include <string>
+//
+class StaticLights
+{
+public:
+	static std::vector<DirectionalLight> predef_dlights;
+};
+
 
 class ShaderPaths
 {
@@ -63,14 +71,5 @@ public:
 	static const Material white_rubber;
 	static const Material yellow_rubber;
 };
-
-// extern float vertices[18];
-//
-// extern float triangle1[9];
-// extern float triangle2[9];
-//
-// extern float vertices_2tri[18];
-// extern float vertices_reduced[12];
-// extern unsigned int indices[6];
 
 #endif

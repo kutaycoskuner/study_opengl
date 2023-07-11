@@ -24,9 +24,6 @@
     <ClCompile Include="source\test\btest_hello_world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\ProgrammingLibrary\cpp\glad-0.136\src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\utils\self_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,19 +111,22 @@
     <ClCompile Include="data\obj\obj_world_positions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data\scenes\0_phong_scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="data\scenes\1_lightmap_scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="data\scenes\2_lightcaster_scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="data\scenes\3_multiplelights_scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data\maps\shader_paths.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\obj\predefined_lights.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="headers\abstract\vector2.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\glad-0.136\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,6 +215,12 @@
     <ClInclude Include="headers\abstract\light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\abstract\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\abstract\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\old\v1.0_fragShader.glsl">
@@ -286,5 +292,10 @@
     <None Include="shaders\2.3.multiplelights_lit_frag_shader.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.exp" />
+    <None Include="x64\Debug\assimp-vc143-mtd.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.lib" />
   </ItemGroup>
 </Project>

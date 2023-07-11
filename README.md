@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 03-Jul-2023 | 0.43    |
+| 19-Aug-2022     | 11-Jul-2023 | 0.44    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,9 +23,9 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
-![0.43 multiple lights](display/0.43_multiple-lights_2023-07-03.gif)
+![0.44 multiple lights](display/0.44_multiple-lights_fixed_2023-07-11.gif)
 ```
-0.43 Multiple lights: 1 directional- 3 point- (rgb), 1 spot light
+0.44 Multiple lights: 1 directional- 3 point- (rgb), 1 spot light
 ```  
 
 ![0.42 Light casteres](display/0.42_light-casters_2023-06-25.gif)
@@ -72,7 +72,7 @@ This is a study repository for learning graphics programming through OpenGL.
     - Libraries
         - GLFW | GLFW is a lightweight utility library for use with OpenGL. [Download](https://www.glfw.org/download.html)
         - GLAD | OpenGL hardware adjustment library. [Download](https://glad.dav1d.de/)
-        - GLM  | OpenGL mathematics library [Download](https://glm.g-truc.net/0.9.8/index.html)
+        - Asset-Importer-Lib | Importing 3d file formats into a shader, in-memory imediate format [Downlaod](http://assimp.org/)
         - Dear ImGui | C++ gui library [Download](https://github.com/ocornut/imgui/releases/tag/v1.89.5)
         - stb_image.h | Image file load library. [Downlaod](https://github.com/nothings/stb/blob/master/stb_image.h)
     - Environment Setup 

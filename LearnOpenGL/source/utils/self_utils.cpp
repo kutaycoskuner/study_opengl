@@ -39,7 +39,7 @@ namespace math_utils
 
 	Vec3 ByteToZeroOne(unsigned int a, unsigned int b, unsigned int c)
 	{
-		return scaleByteToZeroOne(a, b, c);
+		return scaleByteToZeroOne(float(a), float(b), float(c));
 	}
 
 
@@ -88,7 +88,6 @@ namespace math_utils
 		float z = v1.x * v2.y - v1.y * v2.x;
 		return Vec3(x, y, z);
 	}
-
 }
 
 // string manipulation

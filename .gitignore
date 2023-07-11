@@ -439,3 +439,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+!LearnOpenGL\data\obj\*
