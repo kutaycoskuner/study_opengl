@@ -58,6 +58,11 @@
 - [x] 03-Jul-2023 01-Jul-2023 add: new scene for multiple lights, scene state multiple light positions
 - [x] 11-Jul-2023 11-Jul-2023 add: kutuphanelerin static pathlerini duzelt
 - [x] 11-Jul-2023 08-Jul-2023 fix: assimp import olayini coz
+- [x] 20-Jul-2023 20-Jul-2023 fix: textures are not mapped correctly
+    - fix through texture flipping on y axis
+- [x] 20-Jul-2023 fix: specular texture not working
+    - forgot to assign textures to send shader
+- [x] 21-Jul-2023 20-Jul-2023 add: load self model
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
@@ -77,6 +82,21 @@
 
 # Log
                                                                                |
+- [0.45] add: asset importer library
+    - 21-Jul-2023
+        - add: display model import
+        - fix: specular texture problem
+    - 20-Jul-2023
+        - add: model references
+        - arch: draw / update separation on set light parameter functions
+        - add: Test models creation and import
+        - add: workshop file on gitignore
+        - add: assimp model loader
+        - fix: model load texture problem (flip texture on y axis)
+    - 13-Jul-2023
+        - wip: assimp model import implementation
+        - add: mesh class
+
 - [0.44] arch: Camera rework ...
     - 11-Jul-2023
         - add: display multiple lights fixeds

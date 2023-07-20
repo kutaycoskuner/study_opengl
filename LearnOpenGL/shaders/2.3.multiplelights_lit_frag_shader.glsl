@@ -2,26 +2,6 @@
 #if 1
 // abstract
 // ---------------------------------------------------------------------------------------
-//struct Light
-//{
-//    vec3 direction;
-//	vec3 position;
-//
-//    vec3 color;
-//    float brightness;
-//
-//	vec3 ambient;
-//	vec3 diffuse;
-//	vec3 specular;
-//
-//    float constant;
-//    float linear;
-//    float quadratic;
-//
-//    float inner_cutoff;
-//    float outer_cutoff;
-//};
-
 struct DirectionalLight {
    
    vec3 direction;
@@ -63,9 +43,9 @@ struct SpotLight {
 
 struct Material {
     vec3 diffuse;
-	sampler2D diffuse_map;
-    sampler2D specular_map;
-    sampler2D emission_map;
+    sampler2D texture_diffuse1;
+    sampler2D texture_specular1;
+    sampler2D texture_emissive1;
 	vec3 specular;
     float emission_factor;
 	float shininess;
@@ -76,7 +56,7 @@ struct Surface {
     vec3 normal;
     vec3 diffuse;
     vec3 specular;
-    vec3 emission;
+    vec3 emissive;
 };
 
 // globals = uniform variables
@@ -109,6 +89,7 @@ vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir
     // specular shading
     vec3 reflect_dir = reflect(-lightDir, surface.normal);
     float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+
     // combine results
     vec3 ambient  = light.ambient  * surface.diffuse;
     vec3 diffuse  = light.diffuse  * diff * surface.diffuse;
@@ -172,15 +153,20 @@ void main()
     // assign Surface
     Surface surface;
     surface.normal      = normalize(v_normal);
-    surface.diffuse     = vec3(texture(material.diffuse_map, v_tex_coords));
-    surface.specular    = vec3(texture(material.specular_map, v_tex_coords));
-    surface.emission    = vec3(texture(material.emission_map, v_tex_coords));
+    surface.diffuse     = vec3(texture(material.texture_diffuse1, v_tex_coords));
+    surface.specular    = vec3(texture(material.texture_specular1, v_tex_coords));
+    surface.emissive    = vec3(texture(material.texture_emissive1, v_tex_coords));
+   
+   
+//   surface.diffuse     = vec3(texture(material.diffuse_map, v_tex_coords));
+//    surface.specular    = vec3(texture(texture2, v_tex_coords));
+//    surface.emission    = vec3(texture(material.emission_map, v_tex_coords));
 
     // calculate properties
     vec3 view_dir = normalize(view_pos - v_world_pos);
 
     // add directional light
-//    illumination += calcDirectionalLight(directional_light, surface, view_dir);
+    illumination += calcDirectionalLight(directional_light, surface, view_dir);
 
     // add point light
      for(int ii = 0; ii < NR_POINT_LIGHTS; ii++)
@@ -192,9 +178,10 @@ void main()
     illumination += calcSpotLight(spot_light, surface, v_world_pos, view_dir);
 
     // add emission
-//    illumination += surface.emission;
+    illumination += surface.emissive * material.emission_factor;
     
     // result
+//    f_frag_color = vec4(surface.diffuse, 1.0f);
     f_frag_color = vec4(illumination, 1.0f);
 }
 

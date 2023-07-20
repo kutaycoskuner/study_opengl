@@ -106,12 +106,14 @@ private:
     void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
     //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
+    void drawModel(Model model, int vao, const char* shader_name, Uniforms& uni);
     
     // specific scenes
     void phongScene(Uniforms& uni);
     void lightMapScene(Uniforms& uni);
     void lightCasterScene(Uniforms& uni);
     void multipleLightsScene(Uniforms& uni);
+    void importModelScene(Uniforms& uni);
 
     // custom functions
     void setPointLightParameters(Uniforms& uni);

@@ -181,6 +181,7 @@
     <ClCompile Include="data\obj\obj_world_positions.cpp" />
     <ClCompile Include="data\obj\predefined_lights.cpp" />
     <ClCompile Include="data\scenes\3_multiplelights_scene.cpp" />
+    <ClCompile Include="data\scenes\4_importmodel_scene.cpp" />
     <ClCompile Include="data\scenes\draw_obj.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
     <ClCompile Include="headers\abstract\vector2.h" />
@@ -200,7 +201,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\core\camera.cpp" />
-    <ClCompile Include="source\core\mesh.cpp" />
+    <ClCompile Include="source\core\asset_import.cpp" />
     <ClCompile Include="source\test\itest_transformations.cpp" />
     <ClCompile Include="source\test\utest_matrix4.cpp" />
     <ClCompile Include="source\test\utest_vector3.cpp" />

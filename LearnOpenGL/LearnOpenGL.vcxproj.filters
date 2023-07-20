@@ -123,10 +123,13 @@
     <ClCompile Include="headers\abstract\vector2.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\mesh.cpp">
+    <ClCompile Include="source\core\asset_import.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libs\glad-0.136\src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="data\scenes\4_importmodel_scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

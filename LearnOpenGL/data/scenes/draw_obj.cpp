@@ -39,28 +39,14 @@ void Application::drawLightPlaceholder(int vao, const char* shader_name, Uniform
 
 	glBindVertexArray(vao);
 
-	float multiplier = 2.0f;
+	float multiplier = 4.0f;
 
 	for (int ii = 0; ii < 3; ii++)
 	{
-		if (ii == 0)
-		{
-			active_shader->setVec3("light_color", Vec3(1.0f, 0.0f, 0.0f)); // light_coloru degistirme
-		}
-		if (ii == 1)
-		{
-			active_shader->setVec3("light_color", Vec3(0.0f, 1.0f, 0.0f)); // light_coloru degistirme
-		}
-		if (ii == 2)
-		{
-			active_shader->setVec3("light_color", Vec3(0.0f, 0.0f, 1.0f)); // light_coloru degistirme
-		}
-		Mat4 model = mat_utils::translation(Vec3(
-			multiplier * sin(scene_state.time + 2 * PI/3.0f*ii),
-			1.0f, 
-			multiplier * cos(scene_state.time + 2 * PI / 3.0f * ii)
-			))
-			* mat_utils::scale(0.05f);
+		active_shader->setVec3("light_color", scene_state.point_lights[ii].diffuse);
+
+		Mat4 model = mat_utils::translation(scene_state.point_lights[ii].position)
+			* mat_utils::scale(0.1f);
 		;
 		active_shader->setMat4("world_matrix", model);
 
@@ -158,35 +144,17 @@ void Application::drawAxis(int vao, const char* shader_name, Uniforms& uni)
 void Application::setPointLightParameters(Uniforms& uni)
 {
 	// point light
-	float multiplier = 2.0f;
+	float multiplier = 4.0f;
 	for (int ii = 0; ii < 3; ii++)
 	{
 		std::string name = "point_lights[" + std::to_string(ii) + "].";
-		active_shader->setVec3(name + "position",
-			Vec3(multiplier * sin(scene_state.time + 2 * PI / 3.0f * ii),
-				scene_state.camera.position.y - 1.0f,
-				multiplier * cos(scene_state.time + 2 * PI / 3.0f * ii))
-		);
+		active_shader->setVec3(name + "position"	, scene_state.point_lights[ii].position);
 		active_shader->setVec3(name + "ambient"		, scene_state.point_lights[ii].ambient);
+		active_shader->setVec3(name + "diffuse"		, scene_state.point_lights[ii].diffuse);
 		active_shader->setVec3(name + "specular"	, scene_state.point_lights[ii].specular);
 		active_shader->setFloat(name + "constant"	, scene_state.point_lights[ii].constant);
 		active_shader->setFloat(name + "linear"		, scene_state.point_lights[ii].linear);
 		active_shader->setFloat(name + "quadratic"	, scene_state.point_lights[ii].quadratic);
-		if (ii % 3 == 0)
-		{
-			active_shader->setVec3(name + "diffuse"	, Vec3(1.0f, 0.0f, 0.0f)); // light_coloru degistirme
-			active_shader->setVec3(name + "specular", Vec3(0.5f, 0.2f, 0.2f));
-		}
-		if (ii % 3 == 1)
-		{
-			active_shader->setVec3(name + "diffuse"	, Vec3(0.0f, 1.0f, 0.0f)); // light_coloru degistirme
-			active_shader->setVec3(name + "specular", Vec3(0.2f, 0.5f, 0.2f));
-		}
-		if (ii % 3 == 2)
-		{
-			active_shader->setVec3(name + "diffuse"	, Vec3(0.0f, 0.0f, 1.0f)); // light_coloru degistirme
-			active_shader->setVec3(name + "specular", Vec3(0.2f, 0.2f, 0.5f));
-		}
 	}
 }
 
@@ -305,4 +273,35 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
+}
+
+void Application::drawModel(Model model, int vao, const char* shader_name, Uniforms& uni)
+{
+	this->active_shader = shaders.at(shader_name);
+	// activate shader
+	(*active_shader).use();
+	// light uniforms
+	SceneState& ss = scene_state;
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+
+	// assign textures and uniforms
+	active_shader->setInt("material.texture_diffuse1", 0);
+	active_shader->setInt("material.texture_specular1", 1);
+	active_shader->setInt("material.texture_emissive1", 2);
+	//active_shader->setInt("material.texture_normal1", 2);
+	//active_shader->setInt("material.texture_height1", 3);
+	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+	active_shader->setFloat("material.emission_factor", 5.0f);
+	active_shader->setFloat("material.shininess", 32.0f);
+
+	// set ligt parameters
+	setDirectionalLightParameters(uni);
+	setPointLightParameters(uni);
+	setSpotLightParameters(uni);
+
+	Mat4 world = mat_utils::identity4();
+	active_shader->setMat4("world_matrix", world);
+	model.draw(*active_shader);
 }

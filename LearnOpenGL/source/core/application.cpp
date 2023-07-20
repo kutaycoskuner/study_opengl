@@ -8,6 +8,11 @@
 #if 1
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
+// imgui
+#include "../../libs/imgui-1.89.5/imgui.h"
+#include "../../libs/imgui-1.89.5/imgui_impl_glfw.h"
+#include "../../libs/imgui-1.89.5/imgui_impl_opengl3.h"
+
 #include "../headers/test/basic.h"					// project start basic test
 #include "../headers/utils/utilities.h"				// self written utilities
 #include "../headers/data/data.h"					// data headers ex. model vertices
@@ -16,7 +21,8 @@
 #include "../headers/abstract/camera.h"				
 #include "../headers/abstract/shader.h"				
 #include "../headers/abstract/material.h"				
-#include "../headers/abstract/uniforms.h"		
+#include "../headers/abstract/uniforms.h"	
+#include "../headers/abstract/model.h"		
 #include "../headers/maps/shaders.h"			
 #include "../headers/core/opengl.h"					
 
@@ -27,18 +33,8 @@
 #include <unordered_map>		
 #include <cmath>     			
 
-// imgui
-#include "../../libs/imgui-1.89.5/imgui.h"
-#include "../../libs/imgui-1.89.5/imgui_impl_glfw.h"
-#include "../../libs/imgui-1.89.5/imgui_impl_opengl3.h"
-
-// assimp
-#include "../../libs/assimp-5.2.5/include/assimp/Importer.hpp"
-#include "../../libs/assimp-5.2.5/include/assimp/scene.h"
-#include "../../libs/assimp-5.2.5/include/assimp/postprocess.h"
-
 #include <memory>
-
+#include <filesystem>
 
 // self keywords
 // ------------------------------------------------------------------------------------------------
@@ -52,9 +48,9 @@ using namespace img_utils;
 // -----------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
-const Vec3 Application::world_up = Vec3(0.0f, 1.0f, 0.0f);
-const Vec3 Application::world_origin = Vec3(0.0f, 0.0f, 0.0f);
-bool Application::toggle_mouselock = true;
+const Vec3	Application::world_up			= Vec3(0.0f, 1.0f, 0.0f);
+const Vec3	Application::world_origin		= Vec3(0.0f, 0.0f, 0.0f);
+bool		Application::toggle_mouselock	= true;
 
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
@@ -83,14 +79,14 @@ bool Application::initialize(k_configType& config)
 
 	initUISystem(glsl_version);
 
+	// stb image library should flip textures?
+	img_utils::setVerticalFlipMode(true);
+
 	// init asset importer
-	//Assimp::Importer importer;
-	//if (importer.IsExtensionSupported("obj")) {
-	//	std::cout << "Assimp library loaded successfully!" << std::endl;
-	//}
-	//else {
-	//	std::cout << "Failed to load Assimp library." << std::endl;
-	//}
+	Assimp::Importer importer;
+	if (!importer.IsExtensionSupported("obj")) {
+		std::cout << "Failed to load Assimp library." << std::endl;
+	}
 
 	// our state
 	this->clear_color = Vec4(
@@ -148,7 +144,7 @@ void Application::loadSceneData(const k_configType& config)
 	for (int ii = 0; ii < num_dlights; ii++)
 	{
 		ss.directional_lights.emplace_back();
-		ss.directional_lights[ii].direction	= Vec3(-1.0f, -0.5f, -1.0f);
+		//ss.directional_lights[ii].direction	= Vec3(-1.0f, -0.5f, -1.0f);
 		ss.directional_lights[ii].direction = Vec3(-1.0f, -0.8f, -0.2f);
 		ss.directional_lights[ii].diffuse	= Vec3(0.8f, 0.8f, 0.8f);
 		ss.directional_lights[ii].ambient	= Vec3(0.08f, .08f, 0.08f);
@@ -170,7 +166,7 @@ void Application::loadSceneData(const k_configType& config)
 	for (int ii = 0; ii < num_slights; ii++)
 	{
 		ss.spot_lights.emplace_back();
-		ss.spot_lights[ii].position = Vec3(0.0f, 1.0f, 0.0f);
+		ss.spot_lights[ii].position = Vec3(0.0f, 15.0f, 0.0f);
 		ss.spot_lights[ii].direction = Vec3(0.0f, -1.0f, 0.0f);
 		ss.spot_lights[ii].ambient = Vec3(0.02f, 0.02f, 0.02f);
 		ss.spot_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.0f);
@@ -183,12 +179,17 @@ void Application::loadSceneData(const k_configType& config)
 	}
 
 	// animation
-	ss.b_animate = 1;
+	ss.animate = true;
 	ss.angle_multiplier = 0.0f;
 	ss.last_frame_time = 0.0f;
 
 	// ui
 	ss.b_toggleui = false;
+
+	// ----- models
+	const char* model_path = "data/models/testobjects_by_kutaycoskuner/testobjects.obj";
+	Model ourModel(model_path);
+	ss.model = Model(ourModel);
 
 	// cube positions 
 	ss.obj_positions = ObjWorldPositions::obj_world_positions;
@@ -201,8 +202,8 @@ void Application::loadTextures()
 	texture1 = createTexture("data/textures/container.jpg", 2);
 	texture2 = createTexture("data/textures/awesomeface.png");
 	texture_diffuse = createTexture("data/textures/container2.png");
-	texture_specular = createTexture("data/textures/container2_specular.png");
-	//texture_emission = createTexture("data/textures/800_checker_emission.png");
+	texture_specular = createTexture("data/textures/2k-uv_specular.jpg");
+	texture_emission = createTexture("data/textures/800_checker_emission.png");
 	texture_ground_diffuse = createTexture("data/textures/800_blackchecker.png");
 	texture_ground_specular = createTexture("data/textures/800_checker_specular_regions.png");
 	texture_ground_emission = createTexture("data/textures/800_checker_emission_regions.png");
@@ -378,7 +379,7 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwMakeContextCurrent(window);
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, callbackMouse);
 	glfwSetScrollCallback(window, callbackScroll);
 	return 0;
@@ -492,7 +493,7 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
-	multipleLightsScene(uni);
+	importModelScene(uni);
 }
 
 void Application::setPresetMaterial(const Material& material)
@@ -521,29 +522,35 @@ void Application::updateScene()
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
 	scene_state.last_frame_time = scene_state.time;
 
-	// animation
-	if (scene_state.b_animate)
+	// animate?
+	if (!scene_state.animate)
+		return;
+
+	//// animation
+	//if (scene_state.b_animate)
+	//{
+	//	scene_state.animation_time = scene_state.time;
+	//}
+	//else
+	//{
+	//	scene_state.animation_time = 0.0f;
+	//}
+
+	
+	float distance_multiplier = 3.0f;
+	for (int ii = 0; ii < ss.point_lights.size(); ii++)
 	{
-		scene_state.animation_time = scene_state.time;
+		// change light position
+		ss.point_lights[ii].position = Vec3(
+				distance_multiplier * sin(ss.time + 2 * PI / 3.0f * ii),
+				4.0f,
+				distance_multiplier * cos(ss.time + 2 * PI / 3.0f * ii))
+		;
+
+		// change light color
+		float change_key = ss.time + ii;
+		setTriangleLightColorShiftByTime(ss.point_lights[ii].diffuse, change_key);
 	}
-	else
-	{
-		scene_state.animation_time = 0.0f;
-	}
-
-
-	// translate light
-	//ss.light.position = Vec3(1.8f, 0.0f, 2.0f);			// light map
-	//ss.light.position = Vec3(0.0f, 0.0f, -1.0f);		// light caster
-
-	// rotate light
-	float scale = 1.0f;
-	//ss.light.position.x = scale * cos(ss.time);
-	//ss.light.position.z = scale * sin(ss.time);
-
-	// change light color
-	//ss.light.color = setTriangleLightColorShiftByTime(ss.time);
-	//ss.light.color = Vec3(1.0f, 1.0f, 1.0f);
 
 	// ui changes
 	//ss.light.direction = ui_state.spotlight_dir;
@@ -552,13 +559,13 @@ void Application::updateScene()
 
 void Application::resetCamera(Camera& camera)
 {
-	camera.position = Vec3(0.0f, 0.0f, 5.0f);
-	camera.position = Vec3(2.0f, 3.0f, 5.0f);
+	//camera.position = Vec3(0.0f, 0.0f, 5.0f);
+	camera.position = Vec3(-12.0f, 10.0f, 12.0f);
 	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);
 	camera.lookAtTarget(k_camera_target_point);
 }
 
-Vec3 setTriangleLightColorShiftByTime(const float& time)
+void setTriangleLightColorShiftByTime(Vec3& light_color, const float& time)
 {
 	float color_state = ((sin(time * 0.5f) + 1.0f) * 0.5f) * 6.0f;
 	float r, g, b;
@@ -599,7 +606,7 @@ Vec3 setTriangleLightColorShiftByTime(const float& time)
 		g = 0.0f;
 		b = 6.0f - color_state;
 	}
-	return Vec3(r, g, b);
+	light_color = Vec3(r, g, b);
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)

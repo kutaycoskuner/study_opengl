@@ -4,7 +4,10 @@
 #include "../abstract/mesh.h"
 #include "../abstract/shader.h"
 
-#include "../../libs/assimp-5.2.5/config.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <vector>
 #include <string>
@@ -15,23 +18,37 @@
 class Model
 {
 public:
-	Model(char* path)
+	// Default constructor
+	Model() 
+	{
+	}
+
+	// copy constructor
+	Model(const Model& other)
+	{
+		// Perform a deep copy of the member variables
+		meshes = other.meshes;
+		textures_loaded = other.textures_loaded;
+		directory = other.directory;
+	}
+
+	// parameter constructor
+	Model(const char* path)
 	{
 		loadModel(path);
 	}
 	
-	void draw(Shader& shader) {
-		for (int ii = 0; ii < meshes.size(); ii++)
-			meshes[ii].draw(shader);
-	}
+	void draw(Shader& shader);
 
 private:
 	// model data
-	std::vector<Mesh>	meshes;
-	std::string			directory;
+	std::vector<Mesh>		meshes;
+	std::vector<Texture>	textures_loaded;
+	std::string				directory;
 
 	void loadModel(std::string path);
-	//void processNode(aiNode* node, const aiScene* scene);
-	//Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-	//std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string type_name);
+	void processNode(aiNode* node, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+	std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string type_name);
 };
+

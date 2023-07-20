@@ -21,6 +21,6 @@ void drawObjToScr(const unsigned int& shader, const unsigned int& vao);
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer);
 
 // animation
-Vec3 setTriangleLightColorShiftByTime(const float& time);
+void setTriangleLightColorShiftByTime(Vec3& light_color, const float& time);
 
 #endif

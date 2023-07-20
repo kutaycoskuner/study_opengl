@@ -304,6 +304,10 @@
 
 
 # How to
+- <shading>
+    - sadece color without lighting istediginde diffuse map i frag vectore gonder.
+    
+
 - <class icinde static mi degil mi>
     - application geneline mi ozel instance ina mi
 
