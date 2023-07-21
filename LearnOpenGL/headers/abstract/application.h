@@ -114,6 +114,7 @@ private:
     void lightCasterScene(Uniforms& uni);
     void multipleLightsScene(Uniforms& uni);
     void importModelScene(Uniforms& uni);
+    void testObjectsScene(Uniforms& uni);
 
     // custom functions
     void setPointLightParameters(Uniforms& uni);

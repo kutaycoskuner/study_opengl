@@ -437,6 +437,13 @@
     - warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
     - warning C5105: macro expansion producing 'defined' has undefined behavior
 
+- <depth testing>
+    - keep z value of index to determine what is front what is back to avoid unnecessary calculation
+    - glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  | clear previous depth as well as color to draw new
+    - glDepthMask(GL_FALSE);  read only depth buffer?
+    - fdepth = (z-near) / (far-near)
+    - fdepth = (1/z - 1/near) / ( 1/far - 1/near) -> gives greater precision when the objects are near
+
 # Shortcuts
 - f5                                debugger
 - shift + f5                        calisan debug i kapatiyor

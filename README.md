@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 21-Jul-2023 | 0.45    |
+| 19-Aug-2022     | 21-Jul-2023 | 0.46    |
 
 # Table of Contents
 1. [Description](#description)
@@ -23,9 +23,14 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
-![0.45 model import illuminated](display/0.45_assimp-model-import-illuminated.gif)
+![0.46 depth testing](display/0.46_depth-testing_2023-07-21.png)
 ```
-0.45 Model import illuminated (diffuse, specular, emission)
+0.46 Scaled depth testing
+```  
+
+![0.46 model import illuminated](display/0.46_shader-specular-fix_2023-07-21.gif)
+```
+0.46 Model import illuminated (diffuse, specular, emission)
 ```  
 
 ![0.44 multiple lights](display/0.44_multiple-lights_fixed_2023-07-11.gif)
@@ -68,7 +73,7 @@ This is a study repository for learning graphics programming through OpenGL.
 - Learning
     - Videos
         - [Grant Sanderson. Essense of Linear Algebra. _3Blue1Brown, Youtube_. 2016.](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
-    - Website
+    - Websites
         - Joey de Vries [learnopengl.com](https://learnopengl.com)
         - Jordan Santell [jsantell.com/3d-projection](https://jsantell.com/3d-projection/)
     - Supervision / Support
@@ -91,4 +96,5 @@ This is a study repository for learning graphics programming through OpenGL.
     - Models
         - Backpack by Berk Gedik [https://sketchfab.com/3d-models/survival-guitar-backpack-799f8c4511f84fab8c3f12887f7e6b36](https://sketchfab.com/3d-models/survival-guitar-backpack-799f8c4511f84fab8c3f12887f7e6b36)
         - Lantern by Rajil Jose Macatangay (polyhaven) [https://polyhaven.com/a/Lantern_01](https://polyhaven.com/a/Lantern_01)
+        - Suzanne by Blender [https://docs.blender.org/manual/en/latest/modeling/meshes/primitives.html](https://docs.blender.org/manual/en/latest/modeling/meshes/primitives.html)
         - Test Objects by Kutay Coskuner (inspired by Robin Seibold) 

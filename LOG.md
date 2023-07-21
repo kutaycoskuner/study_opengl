@@ -82,6 +82,15 @@
 
 # Log
                                                                                |
+- [0.46] add: Depth testing
+    - 21-Jul-2023
+        - add: depth testing
+        - add: new scene for depth testing chapter
+    - 21-Jul-2023
+        - add: display fixed specular
+        - fix: weird speculars on bottom parts solved through adding view dir uniform, reflection calculation
+        - fix: readme references
+
 - [0.45] add: asset importer library
     - 21-Jul-2023
         - add: display model import

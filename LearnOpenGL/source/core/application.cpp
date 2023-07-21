@@ -182,6 +182,7 @@ void Application::loadSceneData(const k_configType& config)
 	ss.animate = true;
 	ss.angle_multiplier = 0.0f;
 	ss.last_frame_time = 0.0f;
+	ss.emission_factor = 5.0f;
 
 	// ui
 	ss.b_toggleui = false;
@@ -482,6 +483,9 @@ void Application::drawScene(Uniforms& uni)
 
 	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
+	
+	// 
+	//glDepthFunc(GL_ALWAYS);
 
 	// render clear screen
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
@@ -493,7 +497,7 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
-	importModelScene(uni);
+	testObjectsScene(uni);
 }
 
 void Application::setPresetMaterial(const Material& material)
@@ -551,6 +555,9 @@ void Application::updateScene()
 		float change_key = ss.time + ii;
 		setTriangleLightColorShiftByTime(ss.point_lights[ii].diffuse, change_key);
 	}
+
+	// emission breath
+	ss.emission_factor = 5.0f * sin(ss.time);
 
 	// ui changes
 	//ss.light.direction = ui_state.spotlight_dir;

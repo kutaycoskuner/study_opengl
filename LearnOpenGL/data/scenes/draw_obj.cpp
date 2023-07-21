@@ -287,13 +287,15 @@ void Application::drawModel(Model model, int vao, const char* shader_name, Unifo
 	UniformsPerFrame& upf = uni.upf;
 
 	// assign textures and uniforms
+	active_shader->setVec3("view_pos", ss.camera.position);
+	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
 	active_shader->setInt("material.texture_diffuse1", 0);
 	active_shader->setInt("material.texture_specular1", 1);
 	active_shader->setInt("material.texture_emissive1", 2);
 	//active_shader->setInt("material.texture_normal1", 2);
 	//active_shader->setInt("material.texture_height1", 3);
-	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
-	active_shader->setFloat("material.emission_factor", 5.0f);
+	active_shader->setFloat("material.emission_factor", ss.emission_factor);
 	active_shader->setFloat("material.shininess", 32.0f);
 
 	// set ligt parameters

@@ -21,6 +21,7 @@ struct SceneState
     float delta_time;
     float last_frame_time;
     float angle_multiplier;
+    float emission_factor;
     bool animate;
     float animation_time;
 
