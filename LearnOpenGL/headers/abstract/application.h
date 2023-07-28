@@ -101,11 +101,17 @@ private:
     void setMaterial(const Material& material);
     void setPresetMaterial(const Material& material);
 
+    // stencil
+    void disableStencil();
+    void enableStencil();
+    void defaultStencil();
+
     // draw objects
     void drawAxis(int vao, const char* shader_name, Uniforms& uni);
     void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
     //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
+    void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawModel(Model model, int vao, const char* shader_name, Uniforms& uni);
     
     // specific scenes

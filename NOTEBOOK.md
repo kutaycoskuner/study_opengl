@@ -302,6 +302,9 @@
 - downloaded GLAD included file to project
 - added glad.c file to project
 
+# Blackboard
+- <>
+
 
 # How to
 - <shading>

@@ -37,10 +37,8 @@ void Application::importModelScene(Uniforms& uni)
 		= mat_utils::projectPerspective(radian(ss.camera.fov), ss.camera.aspect_ratio, ss.camera.near, ss.camera.far);
 	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
 
-
-
 	//drawAxis(vaos[0], "3d", uni);
 	drawLightPlaceholder(vaos[0], "3d", uni);
-	drawModel(ss.model, lit_vao, "multiplelights", uni);
+	drawModel(ss.models[0], lit_vao, "multiplelights", uni);
 
 }

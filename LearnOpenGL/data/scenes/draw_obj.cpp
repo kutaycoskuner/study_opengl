@@ -140,7 +140,6 @@ void Application::drawAxis(int vao, const char* shader_name, Uniforms& uni)
 
 }
 
-
 void Application::setPointLightParameters(Uniforms& uni)
 {
 	// point light
@@ -221,6 +220,8 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 	active_shader->setInt("material.emission_map", 2);
 	active_shader->setFloat("material.emission_factor", sin(ss.time));
 	active_shader->setFloat("material.shininess", 64.0f);
+	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
+	active_shader->setFloat("outline_scale", maxObjectScale);
 	
 	// assign texture
 	glActiveTexture(GL_TEXTURE0);
@@ -232,9 +233,11 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 
 	glBindVertexArray(vao);
 
-	float scale_factor = .4f;
-	float movement_scale = 2.0f;
-	float y_position_of_models = .5f;
+	// ----- draw cubes
+	// --------------------------------------------------------------------------------------
+	float scale_factor = 1.5f;
+	float movement_scale = 10.0f;
+	float y_position_of_models = 3.0f;
 	model =
 		mat_utils::translation(Vec3(0.0f, y_position_of_models, movement_scale * cos(ss.time)))
 		* mat_utils::rotationY(radian(360.0f) * ss.time)
@@ -253,6 +256,46 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 	active_shader->setMat4("world_matrix", model);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
+}
+
+void Application::drawGroundPlane(int vao, const char* shader_name, Uniforms& uni)
+{
+	// lit object: ground plane
+// --------------------------------------------------------------------------
+// set active shader
+	this->active_shader = shaders.at(shader_name);
+	// activate shader
+	(*active_shader).use();
+	// light uniforms
+	SceneState& ss = scene_state;
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+
+	// assign uniforms
+	active_shader->setInt("texture1", 0);
+	active_shader->setInt("texture2", 1);
+	active_shader->setFloat("mix_val", upo.mix_value);
+	active_shader->setVec3("view_pos", ss.camera.position);
+	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+	// directional light
+	setDirectionalLightParameters(uni);
+	// point light
+	setPointLightParameters(uni);
+	//// spotLight
+	setSpotLightParameters(uni);
+
+	Mat4 model = mat_utils::identity4();
+	active_shader->setMat4("world_matrix", model);
+
+	// material
+	active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+	active_shader->setInt("material.diffuse_map", 0);
+	active_shader->setInt("material.specular_map", 1);
+	active_shader->setInt("material.emission_map", 2);
+	active_shader->setFloat("material.emission_factor", sin(ss.time));
+	active_shader->setFloat("material.shininess", 64.0f);
 	// ----- draw ground plane with same 
 	// --------------------------------------------------------------------------------------
 	// assign texture
@@ -263,16 +306,17 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, texture_ground_emission);
 
-	scale_factor = 3.0f;
+	float scale_factor = 10.0f;
 	model =
 		mat_utils::translation(Vec3(0.0f, 0.0f, 0.0f))
 		//* mat_utils::rotationY(radian(-15.0f))
-		* mat_utils::scale(scale_factor, 0.01f, scale_factor)
+		* mat_utils::scale(scale_factor, 0.5f, scale_factor)
 		;
+	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
+	active_shader->setFloat("outline_scale", maxObjectScale);
+
 	active_shader->setMat4("world_matrix", model);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
 }
 
 void Application::drawModel(Model model, int vao, const char* shader_name, Uniforms& uni)
@@ -305,5 +349,9 @@ void Application::drawModel(Model model, int vao, const char* shader_name, Unifo
 
 	Mat4 world = mat_utils::identity4();
 	active_shader->setMat4("world_matrix", world);
+
+	float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
+	active_shader->setFloat("outline_scale", maxObjectScale);
+
 	model.draw(*active_shader);
 }

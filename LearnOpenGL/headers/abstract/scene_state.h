@@ -30,7 +30,7 @@ struct SceneState
     std::vector<Vec3> obj_colors;
 
     // models
-    Model model;
+    std::vector<Model> models;
 
     // ui
     bool b_toggleui;

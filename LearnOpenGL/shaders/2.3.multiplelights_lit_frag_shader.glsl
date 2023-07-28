@@ -150,6 +150,7 @@ void main()
 {
     // define output color value
     vec3 illumination = vec3(0.0f);
+    vec3 dark = vec3(0.0f);
 
     // assign Surface
     Surface surface;
@@ -184,6 +185,7 @@ void main()
     // result
 //    f_frag_color = vec4(surface.diffuse, 1.0f);
     f_frag_color = vec4(illumination, 1.0f);
+//    f_frag_color = vec4(dark, 1.0f);
 }
 
 #endif

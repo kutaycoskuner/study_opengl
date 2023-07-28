@@ -82,6 +82,20 @@
 
 # Log
                                                                                |
+- [0.47] add: Stencil testing
+    - 29-Jul-2023
+        - add: documentation camera controls
+        - add: display stencil test 2
+        - add: display stencil test 1
+    - 28-Jul-2023
+        - add: set scene state model from single variable to vector
+        - add: test objects created separately
+        - add: display stencil scale outlining normalized thickess
+    - 27-Jul-2023
+        - wip: outline thickness problem
+        - add: outlining object through stencil testing
+        - wip: stencil testing
+
 - [0.46] add: Depth testing
     - 21-Jul-2023
         - add: depth testing

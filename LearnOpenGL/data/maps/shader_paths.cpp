@@ -40,6 +40,10 @@ const std::vector<std::vector<std::string>> ShaderPaths::shader_paths =
 		"shaders/3.0.depthtesting_lit_vrtx_shader.glsl",
 		"shaders/3.0.depthtesting_lit_frag_shader.glsl"
 	}
+		,{
+		"shaders/3.1.stenciltesting_vrtx_shader.glsl",
+		"shaders/3.1.stenciltesting_frag_shader.glsl"
+	}
 };
 
 // another model try with keys. this approach is abstracting the identifier from file names.

@@ -48,12 +48,34 @@ using namespace img_utils;
 // -----------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
-const Vec3	Application::world_up			= Vec3(0.0f, 1.0f, 0.0f);
-const Vec3	Application::world_origin		= Vec3(0.0f, 0.0f, 0.0f);
-bool		Application::toggle_mouselock	= true;
+const Vec3	Application::world_up = Vec3(0.0f, 1.0f, 0.0f);
+const Vec3	Application::world_origin = Vec3(0.0f, 0.0f, 0.0f);
+bool		Application::toggle_mouselock = true;
 
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
+void Application::disableStencil()
+{
+	glStencilFunc(GL_ALWAYS, 1, 0xFF); // 
+	glStencilMask(0xFF);
+}
+
+void Application::enableStencil()
+{
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	//glDisable(GL_DEPTH_TEST);
+}
+
+void Application::defaultStencil()
+{
+	// return to default state
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+	//glEnable(GL_DEPTH_TEST);
+}
+
+
 bool Application::initialize(k_configType& config)
 {
 	gp_app = this;
@@ -74,7 +96,7 @@ bool Application::initialize(k_configType& config)
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-		return bool(- 1);
+		return bool(-1);
 	}
 
 	initUISystem(glsl_version);
@@ -126,15 +148,15 @@ void Application::loadSceneData(const k_configType& config)
 	// ----- camera
 	// --------------------------------------------------------------------------------------
 	Camera& cam = ss.camera;
-	
+
 	ss.camera.near = 1.0f;
 	ss.camera.far = 100.0f;
 	ss.camera.fov = 45.0f;
-	
+
 	ss.camera.rotation_sensitivity = 0.02f;
 
 	resetCamera(ss.camera);
-	
+
 	// ----- lights
 	// --------------------------------------------------------------------------------------
 	// directional
@@ -146,21 +168,21 @@ void Application::loadSceneData(const k_configType& config)
 		ss.directional_lights.emplace_back();
 		//ss.directional_lights[ii].direction	= Vec3(-1.0f, -0.5f, -1.0f);
 		ss.directional_lights[ii].direction = Vec3(-1.0f, -0.8f, -0.2f);
-		ss.directional_lights[ii].diffuse	= Vec3(0.8f, 0.8f, 0.8f);
-		ss.directional_lights[ii].ambient	= Vec3(0.08f, .08f, 0.08f);
-		ss.directional_lights[ii].specular	= Vec3(1.0f, 1.0f, 1.0f);
+		ss.directional_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.8f);
+		ss.directional_lights[ii].ambient = Vec3(0.08f, .08f, 0.08f);
+		ss.directional_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
 	}
 	// point
 	for (int ii = 0; ii < num_plights; ii++)
 	{
 		ss.point_lights.emplace_back();
-		ss.point_lights[ii].position	= Vec3(0.0f, 0.0f, 0.0f);
-		ss.point_lights[ii].ambient		= Vec3(0.05f, 0.05f, 0.05f);
-		ss.point_lights[ii].diffuse		= Vec3(0.8f, 0.8f, 0.8f);
-		ss.point_lights[ii].specular	= Vec3(1.0f, 1.0f, 1.0f);
-		ss.point_lights[ii].constant	= 1.0f;
-		ss.point_lights[ii].linear		= 0.09f;
-		ss.point_lights[ii].quadratic	= 0.032f;
+		ss.point_lights[ii].position = Vec3(0.0f, 0.0f, 0.0f);
+		ss.point_lights[ii].ambient = Vec3(0.05f, 0.05f, 0.05f);
+		ss.point_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.8f);
+		ss.point_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
+		ss.point_lights[ii].constant = 1.0f;
+		ss.point_lights[ii].linear = 0.09f;
+		ss.point_lights[ii].quadratic = 0.032f;
 	}
 	// spot
 	for (int ii = 0; ii < num_slights; ii++)
@@ -188,9 +210,27 @@ void Application::loadSceneData(const k_configType& config)
 	ss.b_toggleui = false;
 
 	// ----- models
-	const char* model_path = "data/models/testobjects_by_kutaycoskuner/testobjects.obj";
-	Model ourModel(model_path);
-	ss.model = Model(ourModel);
+	std::vector<const char*> model_paths = {
+		"data/models/testobject0_frustum/testobject.obj",
+		"data/models/testobject1_dodecahedron/testobject.obj",
+		"data/models/testobject2_sphere/testobject.obj",
+		"data/models/testobject3_cube0/testobject.obj",
+		"data/models/testobject4_cube1/testobject.obj",
+		"data/models/testobject5_cube2/testobject.obj",
+		"data/models/testobject6_cube3/testobject.obj",
+		"data/models/testobject7_torus/testobject.obj",
+		"data/models/testobject8_mine/testobject.obj",
+		"data/models/testobject9_cylinder/testobject.obj",
+		"data/models/testobject10_suzanne/testobject.obj",
+		"data/models/testobject11_cone/testobject.obj"
+	};
+
+	for (int ii = 0; ii < model_paths.size(); ii++)
+	{
+		Model ourModel(model_paths[ii]);
+		ss.models.push_back(Model(ourModel));
+	}
+
 
 	// cube positions 
 	ss.obj_positions = ObjWorldPositions::obj_world_positions;
@@ -330,6 +370,9 @@ void Application::mainLoop()
 
 	// render loop 
 	// --------------------------
+
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window, uni_obj, scene_state);
@@ -435,7 +478,7 @@ void Application::updateUI()
 	if (!scene_state.b_toggleui)
 		return;
 
-	 //2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
+	//2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
 	{
 		static float f = 0.0f;
 		static int counter = 0;
@@ -483,13 +526,23 @@ void Application::drawScene(Uniforms& uni)
 
 	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
-	
-	// 
-	//glDepthFunc(GL_ALWAYS);
+	// enable stencil test
+	glEnable(GL_STENCIL_TEST);
+
+
+
+	// https://learnopengl.com/Advanced-OpenGL/Stencil-testing
+	// both the depth and stencil test pass, we will use the reference value
+	glStencilOp(
+		GL_KEEP,		// stencil action if stencil test fails 
+		GL_KEEP,		// stencil action if stencil test passes but depth test fails
+		GL_REPLACE		// stencil action if both pass
+	);
 
 	// render clear screen
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearStencil(0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// get width and height
 	int display_w, display_h;
@@ -497,6 +550,8 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
+	//multipleLightsScene(uni);
+	//importModelScene(uni);
 	testObjectsScene(uni);
 }
 
@@ -540,16 +595,16 @@ void Application::updateScene()
 	//	scene_state.animation_time = 0.0f;
 	//}
 
-	
+
 	float distance_multiplier = 3.0f;
 	for (int ii = 0; ii < ss.point_lights.size(); ii++)
 	{
 		// change light position
 		ss.point_lights[ii].position = Vec3(
-				distance_multiplier * sin(ss.time + 2 * PI / 3.0f * ii),
-				4.0f,
-				distance_multiplier * cos(ss.time + 2 * PI / 3.0f * ii))
-		;
+			distance_multiplier * sin(ss.time + 2 * PI / 3.0f * ii),
+			4.0f,
+			distance_multiplier * cos(ss.time + 2 * PI / 3.0f * ii))
+			;
 
 		// change light color
 		float change_key = ss.time + ii;

@@ -37,10 +37,17 @@ void Application::testObjectsScene(Uniforms& uni)
 		= mat_utils::projectPerspective(radian(ss.camera.fov), ss.camera.aspect_ratio, ss.camera.near, ss.camera.far);
 	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
 
-
-
-	//drawAxis(vaos[0], "3d", uni);
 	drawLightPlaceholder(vaos[0], "3d", uni);
-	drawModel(ss.model, lit_vao, "depthtesting", uni);
+
+	for (int ii = 0; ii < ss.models.size(); ii++)
+	{
+		// draw 
+		disableStencil();
+		drawModel(ss.models[ii], lit_vao, "multiplelights", uni);
+		// outline
+		enableStencil();
+		drawModel(ss.models[ii], lit_vao, "stenciltesting", uni);
+		defaultStencil();
+	}
 
 }

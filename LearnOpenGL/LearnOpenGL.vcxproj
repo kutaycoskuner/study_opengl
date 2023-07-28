@@ -180,7 +180,7 @@
     </None>
     <ClCompile Include="data\obj\obj_world_positions.cpp" />
     <ClCompile Include="data\obj\predefined_lights.cpp" />
-    <ClCompile Include="data\scenes\2_multiplelights_scene.cpp" />
+    <ClCompile Include="data\scenes\2.0_multiplelights_scene.cpp" />
     <ClCompile Include="data\scenes\2.3_importmodel_scene.cpp" />
     <ClCompile Include="data\scenes\3.0_testobjects_scene.cpp" />
     <ClCompile Include="data\scenes\draw_obj.cpp" />
