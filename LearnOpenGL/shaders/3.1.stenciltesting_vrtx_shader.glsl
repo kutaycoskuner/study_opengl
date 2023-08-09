@@ -21,18 +21,18 @@ float far   = 100.0f;
 void main()
 {
 	// method 1.0: direct outline
-	// vec3 currentPos = in_pos * (1.0f + base_outline_scale);
+	// vec3 current_pos = in_pos * (1.0f + base_outline_scale);
 	
 	// method 1.1: direct outline normalized thickness
-	//	float test = pow(outline_scale, 0.6f);
-	//	vec3 currentPos = in_pos * (1.0f + (base_outline_scale / test));
+	float test = pow(outline_scale, 0.6f);
+	vec3 current_pos = in_pos * (1.0f + (base_outline_scale / test));
 	
 	// method 2.0: normal exposition
-	//	vec3 currentPos = in_pos + (in_norm * base_outline_scale); 
+//	vec3 current_pos = in_pos + (in_norm * base_outline_scale); 
 
 	// method 2.1: normal exposition normalized thickness
-	float scale_factor = pow(outline_scale, 0.6f);
-	vec3 current_pos = in_pos + (in_norm * (base_outline_scale / scale_factor)); 
+	// float scale_factor = pow(outline_scale, 0.6f);
+	// vec3 current_pos = in_pos + (in_norm * (base_outline_scale / scale_factor)); 
 	gl_Position = view_proj_matrix * world_matrix * vec4(current_pos, 1.0f);
 }
 #endif

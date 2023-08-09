@@ -4,6 +4,10 @@
 #include "../../headers/data/data.h"
 #include "../../headers/utils/utilities.h"
 
+#include <map>
+#include <algorithm>
+
+
 // self keywords
 // ------------------------------------------------------------------------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
@@ -91,9 +95,9 @@ void Application::drawAxis(int vao, const char* shader_name, Uniforms& uni)
 		main_axis,
 		other_axis,
 		other_axis
-		))
+	))
 		* mat_utils::scale(scale_factor)
-	;
+		;
 	active_shader->setVec3("light_color", Vec3(1.0, 0.0f, 0.282f)); // light_coloru degistirme
 	active_shader->setMat4("world_matrix", model);
 
@@ -117,9 +121,9 @@ void Application::drawAxis(int vao, const char* shader_name, Uniforms& uni)
 		other_axis,
 		other_axis,
 		main_axis
-		))
+	))
 		* mat_utils::scale(scale_factor)
-	;
+		;
 	active_shader->setVec3("light_color", Vec3(.024f, 0.706f, 0.729f)); // light_coloru degistirme
 	active_shader->setMat4("world_matrix", model);
 
@@ -147,13 +151,13 @@ void Application::setPointLightParameters(Uniforms& uni)
 	for (int ii = 0; ii < 3; ii++)
 	{
 		std::string name = "point_lights[" + std::to_string(ii) + "].";
-		active_shader->setVec3(name + "position"	, scene_state.point_lights[ii].position);
-		active_shader->setVec3(name + "ambient"		, scene_state.point_lights[ii].ambient);
-		active_shader->setVec3(name + "diffuse"		, scene_state.point_lights[ii].diffuse);
-		active_shader->setVec3(name + "specular"	, scene_state.point_lights[ii].specular);
-		active_shader->setFloat(name + "constant"	, scene_state.point_lights[ii].constant);
-		active_shader->setFloat(name + "linear"		, scene_state.point_lights[ii].linear);
-		active_shader->setFloat(name + "quadratic"	, scene_state.point_lights[ii].quadratic);
+		active_shader->setVec3(name + "position", scene_state.point_lights[ii].position);
+		active_shader->setVec3(name + "ambient", scene_state.point_lights[ii].ambient);
+		active_shader->setVec3(name + "diffuse", scene_state.point_lights[ii].diffuse);
+		active_shader->setVec3(name + "specular", scene_state.point_lights[ii].specular);
+		active_shader->setFloat(name + "constant", scene_state.point_lights[ii].constant);
+		active_shader->setFloat(name + "linear", scene_state.point_lights[ii].linear);
+		active_shader->setFloat(name + "quadratic", scene_state.point_lights[ii].quadratic);
 	}
 }
 
@@ -222,7 +226,7 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 	active_shader->setFloat("material.shininess", 64.0f);
 	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
 	active_shader->setFloat("outline_scale", maxObjectScale);
-	
+
 	// assign texture
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture_diffuse);
@@ -354,4 +358,133 @@ void Application::drawModel(Model model, int vao, const char* shader_name, Unifo
 	active_shader->setFloat("outline_scale", maxObjectScale);
 
 	model.draw(*active_shader);
+}
+
+
+void Application::drawOverlappingCubes(int vao, const char* shader_name, Uniforms& uni)
+{
+
+	// lit object: ground plane
+	// --------------------------------------------------------------------------
+	// set active shader
+	this->active_shader = shaders.at(shader_name);
+	// activate shader
+	(*active_shader).use();
+	// light uniforms
+	SceneState& ss = scene_state;
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+
+	// set camera
+	float camera_pos_multipler = 7.0f;
+	ss.camera.position = Vec3(camera_pos_multipler * cos(ss.time), 2.0f, camera_pos_multipler * sin(ss.time));
+	ss.camera.lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
+	//ss.camera.yaw_rad = 0.0f;
+	//ss.camera.pitch_rad = -0.132f;
+
+	// assign uniforms
+	active_shader->setVec3("view_pos", ss.camera.position);
+	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+	// directional light
+	setDirectionalLightParameters(uni);
+	// point light
+	setPointLightParameters(uni);
+	//// spotLight
+	setSpotLightParameters(uni);
+
+	Mat4 model = mat_utils::identity4();
+	active_shader->setMat4("world_matrix", model);
+
+	// material
+	active_shader->setInt("material.diffuse_map", 0);
+
+
+	// outline parameter
+	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
+	active_shader->setFloat("outline_scale", maxObjectScale);
+
+	// assign texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture_diffuse);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture_specular);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, texture_emission);
+
+	glBindVertexArray(vao);
+
+
+	//ss.camera.position = Vec3(5.2f, 2.2f, 5.2f);
+	std::vector<Vec3> vegetation_positions;
+	float veg_posy = 0.9f;
+	vegetation_positions.push_back(Vec3(-1.5f, veg_posy, -0.48f));
+	vegetation_positions.push_back(Vec3(1.5f, veg_posy, 0.51f));
+	vegetation_positions.push_back(Vec3(0.0f, veg_posy, 0.7f));
+	vegetation_positions.push_back(Vec3(-0.3f, veg_posy, -2.3f));
+	vegetation_positions.push_back(Vec3(0.5f, veg_posy, -0.6f));
+	vegetation_positions.push_back(Vec3(2.0f, veg_posy, -0.67f));
+	vegetation_positions.push_back(Vec3(3.0f, veg_posy, -0.35f));
+	vegetation_positions.push_back(Vec3(-2.5f, veg_posy, -0.23f));
+	vegetation_positions.push_back(Vec3(-2.2f, veg_posy, -0.85f));
+
+	/*
+		1. Draw all opaque objects first.
+		2. Sort all the transparent objects.
+		3. Draw all the transparent objects in sorted order.
+	*/
+
+	// ----- draw cubes
+	// --------------------------------------------------------------------------------------
+	float scale_factor = 1.5f;
+	float movement_scale = 10.0f;
+	float y_position_of_models = 1.0f;
+	float position_x = 0.0f;
+	float position_z = 0.0f;
+	for (unsigned int i = 0; i < vegetation_positions.size(); i++)
+	{
+		model = mat_utils::identity4()
+			* mat_utils::translate(vegetation_positions[i])
+			* mat_utils::rotateY(-ss.camera.yaw_rad)
+			* mat_utils::rotateX(ss.camera.pitch_rad);
+		active_shader->setMat4("world_matrix", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6); // sadece ilk 6 vertexi ciziyoruz ki kup cizmesin
+	}
+
+
+	std::map<float, Vec3> sorted;
+	for (unsigned int i = 0; i < vegetation_positions.size(); i++)
+	{
+		float distance = vec_utils::length(ss.camera.position - vegetation_positions[i]);
+		sorted[distance] = vegetation_positions[i];
+	}
+
+	// assign texture
+	int num = 0;
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures_diffuse[0]);
+
+	for (std::map<float, Vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
+	{
+		/*if (num % 2 == 0)
+		{
+			glBindTexture(GL_TEXTURE_2D, textures_diffuse[0]);
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, textures_diffuse[1]);
+		}*/
+
+		model = mat_utils::identity4()
+			* mat_utils::translate(it->second.x, it->second.y, it->second.z + 1.0f);
+		/*	* mat_utils::rotateY(-ss.camera.yaw_rad)
+			* mat_utils::rotateX(ss.camera.pitch_rad);*/
+		active_shader->setMat4("world_matrix", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6); // sadece ilk 6 vertexi ciziyoruz ki kup cizmesin
+		num += 1;
+	}
+
 }

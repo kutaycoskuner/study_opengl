@@ -72,6 +72,9 @@
 - 24-Jun-2023 add: ui camera, direction, light direction controls
 - 25-Jun-2023 add: documentation: keys, ui controls
 - 11-Jul-2023 add: pitch distortion
+- 29-Jul-2023 chg: rename source folder, proj name
+- 03-Aug-2023 fix: optimization model loading
+- 03-Aug-2023 learn: profiler kullanma
 
 # Push procedure checklist 1.4
 - add log
@@ -82,6 +85,20 @@
 
 # Log
                                                                                |
+- [0.48] add: Blending
+    - 09-Aug-2023 
+        - add: display blending test
+        - add: blending test
+        - add: vector utilities : distance, length functions
+        - add: alpha channels test grass scene
+    - 04-Aug-2023
+        - add: matrix utils:: translate rotate instead of translation, rotation
+    - 03-Aug-2023
+        - add: blending test scene
+        - wip: Blending test scene 
+        - fix: overlapping stencil problem outlining per single item with depth desting
+    - 29-Jul-2023 fix: readme block wrapping, reference typo
+
 - [0.47] add: Stencil testing
     - 29-Jul-2023
         - add: documentation camera controls

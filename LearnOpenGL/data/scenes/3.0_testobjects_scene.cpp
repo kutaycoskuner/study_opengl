@@ -17,7 +17,6 @@ using namespace img_utils;
 
 // functions definitions
 // ----------------------------------------------------------------------------
-
 void Application::testObjectsScene(Uniforms& uni)
 {
 
@@ -41,13 +40,15 @@ void Application::testObjectsScene(Uniforms& uni)
 
 	for (int ii = 0; ii < ss.models.size(); ii++)
 	{
-		// draw 
+		// draw the model without stencil testing (to draw the object)
 		disableStencil();
 		drawModel(ss.models[ii], lit_vao, "multiplelights", uni);
 		// outline
 		enableStencil();
 		drawModel(ss.models[ii], lit_vao, "stenciltesting", uni);
-		defaultStencil();
+		clearStencil();
+		// clear stencil after each object
+		glClear(GL_STENCIL_BUFFER_BIT);
 	}
 
 }

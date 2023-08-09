@@ -54,12 +54,25 @@ namespace mat_utils
 	Mat4 translation(const float& x, const float& y, const float& z);
 	Mat4 translation(const float& x);
 	Mat4 translation(const Vec3& vec);
+	Mat4 translate(const float& x, const float& y, const float& z);
+	Mat4 translate(const float& x);
+	Mat4 translate(const Vec3& vec);
 	Mat4 rotationX(const float& angleInRadians);
 	Mat4 rotationY(const float& angleInRadians);
 	Mat4 rotationZ(const float& angleInRadians);
 	Mat4 rotationXYZ(const float& angleInRadians, const Vec3& axis);
+	Mat4 rotateX(const float& angleInRadians);
+	Mat4 rotateY(const float& angleInRadians);
+	Mat4 rotateZ(const float& angleInRadians);
+	Mat4 rotateXYZ(const float& angleInRadians, const Vec3& axis);
 	Mat4 projectPerspective(float fov_inRadians, float aspect_ratio, float near, float far);
 	Mat4 projectPerspective(float near, float far, float left, float right, float top, float bottom);
+}
+
+namespace vec_utils
+{
+	float length(const Vec3& vec);
+	float distance(const Vec3& vec1, const Vec3& vec2);
 }
 
 namespace img_utils

@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update | Version |
 | :-------------- | :---------- | :-----: | 
-| 19-Aug-2022     | 29-Jul-2023 | 0.47    |
+| 19-Aug-2022     | 09-Aug-2023 | 0.48    |
 
 # Table of Contents
 1. [Description](#description)
@@ -39,13 +39,30 @@ This is a study repository for learning graphics programming through OpenGL.
 # Feature List
 
 # Display
+![0.48 blending](display/0.48_blending_2023-08-09.gif)
+```cpp
+0.48 Transparency through blending
+```  
+
+![0.48 Stencil Testing 2](display/0.48_stencil-test-outline-per-item_2023-08-03.gif)
+```cpp
+0.48 Outline per item
+// Method 2.1 + Cleansing stencil buffer after each object draw
+```  
+
 ![0.47 Stencil testing 2](display/0.47_stencil-test-methods-problems_2023-07-29.gif)
 ```cpp
-0.47 stencil testing - outline normalized (left: method 1, mid: method 2, right: method 2 without color)
-// --------------------------------------------------
+0.47 stencil testing - outline normalized 
+    (left: method 1, mid: method 2, right: method 2 without color)
+// ---------------------------------------------------------------------------------------
 // Method 2.1: Normal extension with normalized thickness
-// Problem 1: This approach solving the problem of method 1; scale of outlining is not based of origin but normal scaled a small amount and added to the position. However, the problem of this method is normals on the same position with different direction (hard edges) causing to split mesh face by face. It is causing a distortion and break on the corners.
-// Problem 2: Altohugh the depth test is active, closer objects are not drawing their outlines. The reason for this problem is not yet identified.
+// Problem 1: This approach solving the problem of method 1; scale of outlining is not 
+//    based of origin but normal scaled a small amount and added to the position. However, 
+//    the problem of this method is normals on the same position with different direction 
+//    (hard edges) causing to split mesh face by face. It is causing a distortion and 
+//    break on the corners.
+// Problem 2: Altohugh the depth test is active, closer objects are not drawing their 
+//    outlines. The reason for this problem is not yet identified.
 float scale_factor = pow(outline_scale, 0.6f);
 vec3 current_pos = in_pos + (in_norm * (base_outline_scale / scale_factor)); 
 gl_Position = view_proj_matrix * world_matrix * vec4(current_pos, 1.0f);
@@ -54,9 +71,11 @@ gl_Position = view_proj_matrix * world_matrix * vec4(current_pos, 1.0f);
 ![0.47 Stencil testing](display/0.47_stencil-test-outlining-normalized-scale_2023-07-27.gif)
 ```cpp
 0.47 stencil testing - outline normalized
-// --------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // Method 1.1: Scaling from position
-// Problem: If the object origin is not centered or object is not uniform scaling will be distorted. Does not really work for complex models with multiple meshes since it is impossible to guarantee origin is centered to object.
+// Problem: If the object origin is not centered or object is not uniform scaling will be 
+//     distorted. Does not really work for complex models with multiple meshes since it is 
+//     impossible to guarantee origin is centered to object.
 float scale_factor = pow(outline_scale, 0.6f);
 vec3 currentPos = in_pos * (1.0f + (base_outline_scale / scale_factor));
 ```  
@@ -112,7 +131,7 @@ vec3 currentPos = in_pos * (1.0f + (base_outline_scale / scale_factor));
     - Videos
         - [Sanderson, Grant. "Essense of Linear Algebra". _Uploaded by 3Blue1Brown, Youtube_. 2016.](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
         - [Gordan, Victor."Stencil Buffer & Outlining". _Uploaded by Victor Gordan, Youtube_. 2021.](https://www.youtube.com/watch?v=ngF9LWWxhd0)
-        - [Will, Brian. "OpenGL - depth and stencil buffers". _Uploaded by Brian Will, Youtube_. 2019](https://youtu.be/wVcWOghETFw)
+        - [Will, Brian. "OpenGL - depth and stencil buffers". _Uploaded by Brian Will, Youtube_. 2019.](https://youtu.be/wVcWOghETFw)
     - Websites
         - Joey de Vries [learnopengl.com](https://learnopengl.com)
         - Jordan Santell [jsantell.com/3d-projection](https://jsantell.com/3d-projection/)

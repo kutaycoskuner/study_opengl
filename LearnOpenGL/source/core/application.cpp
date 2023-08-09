@@ -56,7 +56,7 @@ bool		Application::toggle_mouselock = true;
 // ------------------------------------------------------------------------------------------------
 void Application::disableStencil()
 {
-	glStencilFunc(GL_ALWAYS, 1, 0xFF); // 
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
 }
 
@@ -67,11 +67,13 @@ void Application::enableStencil()
 	//glDisable(GL_DEPTH_TEST);
 }
 
-void Application::defaultStencil()
+void Application::clearStencil()
 {
 	// return to default state
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
+	glClear(GL_STENCIL_BUFFER_BIT);
+
 	//glEnable(GL_DEPTH_TEST);
 }
 
@@ -152,7 +154,7 @@ void Application::loadSceneData(const k_configType& config)
 	ss.camera.near = 1.0f;
 	ss.camera.far = 100.0f;
 	ss.camera.fov = 45.0f;
-
+	
 	ss.camera.rotation_sensitivity = 0.02f;
 
 	resetCamera(ss.camera);
@@ -223,13 +225,14 @@ void Application::loadSceneData(const k_configType& config)
 		"data/models/testobject9_cylinder/testobject.obj",
 		"data/models/testobject10_suzanne/testobject.obj",
 		"data/models/testobject11_cone/testobject.obj"
+		//"data/models/testobjects_by_kutaycoskuner/testobjects.obj"
 	};
 
-	for (int ii = 0; ii < model_paths.size(); ii++)
-	{
-		Model ourModel(model_paths[ii]);
-		ss.models.push_back(Model(ourModel));
-	}
+	//for (int ii = 0; ii < model_paths.size(); ii++)
+	//{
+	//	Model ourModel(model_paths[ii]);
+	//	ss.models.push_back(Model(ourModel));
+	//}
 
 
 	// cube positions 
@@ -242,7 +245,9 @@ void Application::loadTextures()
 	setVerticalFlipMode(true);
 	texture1 = createTexture("data/textures/container.jpg", 2);
 	texture2 = createTexture("data/textures/awesomeface.png");
-	texture_diffuse = createTexture("data/textures/container2.png");
+	texture_diffuse = createTexture("data/textures/grass.png");
+	textures_diffuse[0] = createTexture("data/textures/blending_transparent_window.png");
+	textures_diffuse[1] = createTexture("data/textures/blending_transparent_window_blue.png");
 	texture_specular = createTexture("data/textures/2k-uv_specular.jpg");
 	texture_emission = createTexture("data/textures/800_checker_emission.png");
 	texture_ground_diffuse = createTexture("data/textures/800_blackchecker.png");
@@ -494,7 +499,13 @@ void Application::updateUI()
 		//ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		//ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		//ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3("clear color", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
+		//ImGui::ColorEdit3("", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
+
+		ImGui::SliderFloat("Camera Pos X", &this->scene_state.camera.position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pos Y", &this->scene_state.camera.position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pos Z", &this->scene_state.camera.position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Yaw  ", &this->scene_state.camera.yaw_rad	, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pitch", &this->scene_state.camera.pitch_rad	, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 		//	counter++;
@@ -528,7 +539,9 @@ void Application::drawScene(Uniforms& uni)
 	glEnable(GL_DEPTH_TEST);
 	// enable stencil test
 	glEnable(GL_STENCIL_TEST);
-
+	// enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 	// https://learnopengl.com/Advanced-OpenGL/Stencil-testing
@@ -552,7 +565,9 @@ void Application::drawScene(Uniforms& uni)
 	// draw scene
 	//multipleLightsScene(uni);
 	//importModelScene(uni);
-	testObjectsScene(uni);
+	//testObjectsScene(uni);
+	blendingTestScene(uni);
+
 }
 
 void Application::setPresetMaterial(const Material& material)

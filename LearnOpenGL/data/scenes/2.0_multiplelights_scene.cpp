@@ -44,7 +44,7 @@ void Application::multipleLightsScene(Uniforms& uni)
 	enableStencil();
 	drawObj(lit_vao, "stenciltesting", uni);
 	// return to default
-	defaultStencil();
+	clearStencil();
 
 	// draw 
 	disableStencil();
@@ -53,6 +53,6 @@ void Application::multipleLightsScene(Uniforms& uni)
 	enableStencil();
 	drawGroundPlane(lit_vao, "stenciltesting", uni);
 	// return to default
-	defaultStencil();
+	clearStencil();
 
 }

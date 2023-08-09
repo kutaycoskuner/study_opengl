@@ -104,7 +104,7 @@ private:
     // stencil
     void disableStencil();
     void enableStencil();
-    void defaultStencil();
+    void clearStencil();
 
     // draw objects
     void drawAxis(int vao, const char* shader_name, Uniforms& uni);
@@ -113,7 +113,8 @@ private:
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
     void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawModel(Model model, int vao, const char* shader_name, Uniforms& uni);
-    
+    void drawOverlappingCubes(int vao, const char* shader_name, Uniforms& uni);
+
     // specific scenes
     void phongScene(Uniforms& uni);
     void lightMapScene(Uniforms& uni);
@@ -121,6 +122,7 @@ private:
     void multipleLightsScene(Uniforms& uni);
     void importModelScene(Uniforms& uni);
     void testObjectsScene(Uniforms& uni);
+    void blendingTestScene(Uniforms& uni);
 
     // custom functions
     void setPointLightParameters(Uniforms& uni);
@@ -145,9 +147,12 @@ private:
     unsigned int texture_ground_diffuse;
     unsigned int texture_ground_specular;
     unsigned int texture_ground_emission;
-    unsigned int vaos[buffer_count];
     unsigned int lit_vao;
     unsigned int lit_vbo;
+    unsigned int textures_diffuse[buffer_count];
+    unsigned int textures_specular[buffer_count];
+    unsigned int textures_emission[buffer_count];
+    unsigned int vaos[buffer_count];
     unsigned int vbos[buffer_count];
     unsigned int ebos[buffer_count];
 

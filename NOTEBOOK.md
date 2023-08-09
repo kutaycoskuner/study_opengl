@@ -307,6 +307,9 @@
 
 
 # How to
+- <multiple render target debugging>
+    - 
+
 - <shading>
     - sadece color without lighting istediginde diffuse map i frag vectore gonder.
     

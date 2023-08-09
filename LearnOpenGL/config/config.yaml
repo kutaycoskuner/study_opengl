@@ -11,6 +11,6 @@ settings:
   is_wireframeMode: false
 
 colors:
-   bg: 16
+   bg: 12
    bg-alter: 0
    bg-second: 0

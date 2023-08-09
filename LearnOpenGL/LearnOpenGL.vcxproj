@@ -142,6 +142,7 @@
     <ClCompile Include="data\material\colors.cpp" />
     <ClCompile Include="data\material\material.cpp" />
     <ClCompile Include="data\obj\obj_data.cpp" />
+    <ClCompile Include="source\utils\vector_utils.cpp" />
     <None Include="x64\Debug\assimp-vc143-mtd.dll" />
     <None Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.exp" />
     <None Include="shaders\2.3.multiplelights_lit_frag_shader.glsl">
@@ -183,6 +184,7 @@
     <ClCompile Include="data\scenes\2.0_multiplelights_scene.cpp" />
     <ClCompile Include="data\scenes\2.3_importmodel_scene.cpp" />
     <ClCompile Include="data\scenes\3.0_testobjects_scene.cpp" />
+    <ClCompile Include="data\scenes\3.2_blending_testscene.cpp" />
     <ClCompile Include="data\scenes\draw_obj.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
     <ClCompile Include="headers\abstract\vector2.h" />
