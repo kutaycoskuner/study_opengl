@@ -112,6 +112,7 @@ private:
     //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
     void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
+    void drawSingleCube(int vao, const char* shader_name, Uniforms& uni);
     void drawModel(Model model, int vao, const char* shader_name, Uniforms& uni);
     void drawOverlappingCubes(int vao, const char* shader_name, Uniforms& uni);
 
@@ -123,6 +124,7 @@ private:
     void importModelScene(Uniforms& uni);
     void testObjectsScene(Uniforms& uni);
     void blendingTestScene(Uniforms& uni);
+    void faceCullingTestScene(Uniforms& uni);
 
     // custom functions
     void setPointLightParameters(Uniforms& uni);
@@ -139,19 +141,30 @@ private:
     GLFWwindow* window;
     std::shared_ptr<Shader> active_shader;
     std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+    
     unsigned int texture1;
     unsigned int texture2;
+
     unsigned int texture_diffuse;
     unsigned int texture_specular;
     unsigned int texture_emission;
+    
     unsigned int texture_ground_diffuse;
     unsigned int texture_ground_specular;
     unsigned int texture_ground_emission;
+    
     unsigned int lit_vao;
     unsigned int lit_vbo;
+    unsigned int lit_ebo;
+    
     unsigned int textures_diffuse[buffer_count];
     unsigned int textures_specular[buffer_count];
     unsigned int textures_emission[buffer_count];
+    
+    std::vector<unsigned int> vec_texture_diffuse;
+    std::vector<unsigned int> vec_texture_specular;
+    std::vector<unsigned int> vec_texture_emission;
+    
     unsigned int vaos[buffer_count];
     unsigned int vbos[buffer_count];
     unsigned int ebos[buffer_count];

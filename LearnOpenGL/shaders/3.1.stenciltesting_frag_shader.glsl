@@ -88,7 +88,12 @@ float far   = 100.0f;
 void main()
 {
     // define output color value
-    vec3 illumination = vec3(0.9f);
+//    vec3 illumination = vec3(0.9f);
+    
+    // blender selection color
+    vec3 illumination = vec3(1.0f, 0.62f, 0.16f);
+    
+
 
     f_frag_color = vec4(illumination, 1.0f);
 

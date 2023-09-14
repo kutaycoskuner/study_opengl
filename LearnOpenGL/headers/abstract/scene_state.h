@@ -20,10 +20,15 @@ struct SceneState
     float time;
     float delta_time;
     float last_frame_time;
+
     float angle_multiplier;
-    float emission_factor;
     bool animate;
     float animation_time;
+    float emission_factor;
+
+    Vec3  obj_position;
+    float obj_rotation_angle_y;
+    Vec3  obj_scale;
 
     // positions
     std::vector<Vec3> obj_positions;

@@ -28,13 +28,16 @@ public:
 class ObjToDraw
 {
 public:
-	static float cube_vrts[180];
-	static float light_cube_vrts[288];
-	static float vertices[18];
-	static float square_vrts[32];
+	static float		cube_vrts__pos_uv[180];
+
+	static float		cube_vrts__pos_norm_uv[288];
+	static unsigned int cube_inds__pos_norm_uv[36];
+	
+	static float		square_vrts[32];
 	static unsigned int square_inds[6];
-	static float x_axis[12];
-	static float y_axis[12];
+
+	static float		x_axis[12];
+	static float		y_axis[12];
 };
 
 class ObjWorldPositions

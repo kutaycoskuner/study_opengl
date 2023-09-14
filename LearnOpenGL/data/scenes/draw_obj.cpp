@@ -277,8 +277,6 @@ void Application::drawGroundPlane(int vao, const char* shader_name, Uniforms& un
 	UniformsPerFrame& upf = uni.upf;
 
 	// assign uniforms
-	active_shader->setInt("texture1", 0);
-	active_shader->setInt("texture2", 1);
 	active_shader->setFloat("mix_val", upo.mix_value);
 	active_shader->setVec3("view_pos", ss.camera.position);
 	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
@@ -295,9 +293,9 @@ void Application::drawGroundPlane(int vao, const char* shader_name, Uniforms& un
 
 	// material
 	active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-	active_shader->setInt("material.diffuse_map", 0);
-	active_shader->setInt("material.specular_map", 1);
-	active_shader->setInt("material.emission_map", 2);
+	active_shader->setInt("material.diffuse_map1", 0);
+	active_shader->setInt("material.specular_map1", 1);
+	active_shader->setInt("material.emission_map1", 2);
 	active_shader->setFloat("material.emission_factor", sin(ss.time));
 	active_shader->setFloat("material.shininess", 64.0f);
 	// ----- draw ground plane with same 
@@ -320,7 +318,73 @@ void Application::drawGroundPlane(int vao, const char* shader_name, Uniforms& un
 	active_shader->setFloat("outline_scale", maxObjectScale);
 
 	active_shader->setMat4("world_matrix", model);
+
+	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void Application::drawSingleCube(int vao, const char* shader_name, Uniforms& uni)
+{
+	// lit object: ground plane
+// --------------------------------------------------------------------------
+// set active shader
+	this->active_shader = shaders.at(shader_name);
+	// activate shader
+	(*active_shader).use();
+	// light uniforms
+	SceneState& ss = scene_state;
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+
+	// assign uniforms
+	active_shader->setFloat("mix_val", upo.mix_value);
+	active_shader->setVec3("view_pos", ss.camera.position);
+	active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+	// directional light
+	setDirectionalLightParameters(uni);
+	// point light
+	setPointLightParameters(uni);
+	//// spotLight
+	setSpotLightParameters(uni);
+
+	Mat4 model = mat_utils::identity4();
+	active_shader->setMat4("world_matrix", model);
+
+	// material
+	//active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+	active_shader->setInt("material.diffuse_map1", 0);
+	active_shader->setInt("material.specular_map1", 1);
+	active_shader->setInt("material.emission_map1", 2);
+	active_shader->setFloat("material.emission_factor", ss.emission_factor);
+	active_shader->setFloat("material.shininess", 64.0f);
+	// ----- draw ground plane with same 
+	// --------------------------------------------------------------------------------------
+	// assign texture
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture_diffuse);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture_specular);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, texture_emission);
+
+
+	float scale_factor = 10.0f;
+	
+	model =
+		mat_utils::translation(Vec3(0.0f, 2.0f, 0.0f))
+		* mat_utils::rotationY(math_utils::radian(ss.obj_rotation_angle_y))
+		* mat_utils::scale(scale_factor, scale_factor, scale_factor)
+		;
+	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
+	active_shader->setFloat("outline_scale", maxObjectScale);
+
+	active_shader->setMat4("world_matrix", model);
+	glBindVertexArray(vao);
+	//glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
 void Application::drawModel(Model model, int vao, const char* shader_name, Uniforms& uni)
@@ -341,10 +405,7 @@ void Application::drawModel(Model model, int vao, const char* shader_name, Unifo
 	active_shader->setInt("material.texture_diffuse1", 0);
 	active_shader->setInt("material.texture_specular1", 1);
 	active_shader->setInt("material.texture_emissive1", 2);
-	//active_shader->setInt("material.texture_normal1", 2);
-	//active_shader->setInt("material.texture_height1", 3);
 	active_shader->setFloat("material.emission_factor", ss.emission_factor);
-	active_shader->setFloat("material.shininess", 32.0f);
 
 	// set ligt parameters
 	setDirectionalLightParameters(uni);
@@ -359,7 +420,6 @@ void Application::drawModel(Model model, int vao, const char* shader_name, Unifo
 
 	model.draw(*active_shader);
 }
-
 
 void Application::drawOverlappingCubes(int vao, const char* shader_name, Uniforms& uni)
 {

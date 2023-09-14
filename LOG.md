@@ -75,6 +75,7 @@
 - 29-Jul-2023 chg: rename source folder, proj name
 - 03-Aug-2023 fix: optimization model loading
 - 03-Aug-2023 learn: profiler kullanma
+- 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
 
 # Push procedure checklist 1.4
 - add log
@@ -85,6 +86,18 @@
 
 # Log
                                                                                |
+- [0.49] add: Face culling
+    - 13-Sep-2023
+        - add: display face culling
+        - add: animate button play/stop on ui   
+        - refactor: update / draw animation elements
+        - fix: data name refactoring
+        - fix: face culling problems
+        - fix: gitignore data/obj folder
+    - 12-Sep-2023
+        - add: face culling front faces success
+        - add: face culling test scene
+
 - [0.48] add: Blending
     - 09-Aug-2023 
         - add: display blending test

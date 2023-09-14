@@ -212,6 +212,8 @@
     - blue
         - #06b4ba               .024, .706, .729
         - #2890ff   -> blender   
+    - selection (orange / overlay)
+                    -> blender  1.0, 0.62, 0.16
 
 
 - magic number
@@ -292,6 +294,11 @@
     - protocol buffers
     - messagepack
 
+- standard defaults
+    - winding order :   counter clockwise
+    - axis          :   right hand rule
+    - camera        :   
+
 # Documentation
 - created project
 - added git
@@ -307,6 +314,10 @@
 
 
 # How to
+- <git dosya gormeme>
+    - obj dosyayi gormuyor bu durumda hem dosya adi hem de icerigini ayri ayri git ignore a eklemek gerekiyor
+    - bkz. gitignore
+
 - <multiple render target debugging>
     - 
 
@@ -449,6 +460,10 @@
     - glDepthMask(GL_FALSE);  read only depth buffer?
     - fdepth = (z-near) / (far-near)
     - fdepth = (1/z - 1/near) / ( 1/far - 1/near) -> gives greater precision when the objects are near
+
+- <renderdocs>
+    - uniform aktarma knotrolu
+        - ilk vs uzerinden uniformlarin dogru shadera gonderilip gonderilmedigini kontrol et
 
 # Shortcuts
 - f5                                debugger

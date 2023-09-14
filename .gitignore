@@ -441,4 +441,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-!LearnOpenGL\data\obj\*
+# Self exceptions
+# ----------------------------------------------------------------------------------------
+
+!LearnOpenGL/data/obj/
+!LearnOpenGL/data/obj/*

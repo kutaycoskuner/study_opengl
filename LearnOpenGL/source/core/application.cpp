@@ -147,6 +147,10 @@ void Application::loadSceneData(const k_configType& config)
 {
 	SceneState& ss = scene_state;
 
+	// ----- scene object transforms init
+	// --------------------------------------------------------------------------------------
+	ss.obj_rotation_angle_y = 0.0f;
+
 	// ----- camera
 	// --------------------------------------------------------------------------------------
 	Camera& cam = ss.camera;
@@ -243,13 +247,23 @@ void Application::loadTextures()
 {
 	// texture
 	setVerticalFlipMode(true);
-	texture1 = createTexture("data/textures/container.jpg", 2);
-	texture2 = createTexture("data/textures/awesomeface.png");
-	texture_diffuse = createTexture("data/textures/grass.png");
-	textures_diffuse[0] = createTexture("data/textures/blending_transparent_window.png");
-	textures_diffuse[1] = createTexture("data/textures/blending_transparent_window_blue.png");
-	texture_specular = createTexture("data/textures/2k-uv_specular.jpg");
-	texture_emission = createTexture("data/textures/800_checker_emission.png");
+	
+	//texture1 = createTexture("data/textures/container.jpg", 2);
+	//texture2 = createTexture("data/textures/awesomeface.png");
+	
+	vec_texture_diffuse.push_back(createTexture("data/textures/2k_test_diffuse_mid.jpg"));
+	vec_texture_specular.push_back(createTexture("data/textures/2k_test_specular.jpg"));
+	vec_texture_emission.push_back(createTexture("data/textures/2k_test_emission.jpg"));
+	
+	texture_diffuse = createTexture("data/textures/2k_test_diffuse_mid.jpg");
+	texture_specular = createTexture("data/textures/2k_test_specular.jpg");
+	texture_emission = createTexture("data/textures/2k_test_emission.jpg");
+	
+	//textures_diffuse[0] = createTexture("data/textures/2k_test_diffuse_mid.jpg");
+	//textures_diffuse[1] = createTexture("data/textures/blending_transparent_window_blue.png");
+	//vec_texture_diffuse.push_back(createTexture("data/textures/container2_diffuse.png"));
+	//vec_texture_specular.push_back(createTexture("data/textures/container2_specular.png"));
+
 	texture_ground_diffuse = createTexture("data/textures/800_blackchecker.png");
 	texture_ground_specular = createTexture("data/textures/800_checker_specular_regions.png");
 	texture_ground_emission = createTexture("data/textures/800_checker_emission_regions.png");
@@ -288,7 +302,7 @@ void Application::loadMeshData()
 	// binding buffers
 	glBindVertexArray(vaos[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cube_vrts), ObjToDraw::cube_vrts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cube_vrts__pos_uv), ObjToDraw::cube_vrts__pos_uv, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebos[0]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::square_inds), ObjToDraw::square_inds, GL_STATIC_DRAW);
@@ -317,10 +331,12 @@ void Application::loadMeshData()
 	glGenVertexArrays(1, &lit_vao);
 	glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
 	glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
+
+	
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
 	glBindVertexArray(lit_vao);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::light_cube_vrts), ObjToDraw::light_cube_vrts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cube_vrts__pos_norm_uv), ObjToDraw::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
 	stride = 8;
 	// set the vertex attribute 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
@@ -331,7 +347,11 @@ void Application::loadMeshData()
 	// att: texture
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	//generateBuffer(lit_vao, lit_vbo, ObjToDraw::cube_vrts, 5, 1, 0);
+	//generateBuffer(lit_vao, lit_vbo, ObjToDraw::cube_vrts__pos_uv, 5, 1, 0);
+
+	glGenBuffers(1, &lit_ebo); // :: ebo icin memory
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lit_ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::cube_inds__pos_norm_uv), ObjToDraw::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
 
 
 	// clean new_up
@@ -507,8 +527,10 @@ void Application::updateUI()
 		ImGui::SliderFloat("Camera Yaw  ", &this->scene_state.camera.yaw_rad	, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Camera Pitch", &this->scene_state.camera.pitch_rad	, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
-		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-		//	counter++;
+		const char* animate_button_name =
+				this->scene_state.animate ? "Stop" : "Play";
+		if (ImGui::Button(animate_button_name))                    
+			this->scene_state.animate = !this->scene_state.animate;
 		//ImGui::SameLine();
 		//ImGui::Text("counter = %d", counter);
 
@@ -537,12 +559,17 @@ void Application::drawScene(Uniforms& uni)
 
 	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
+	
 	// enable stencil test
 	glEnable(GL_STENCIL_TEST);
+	
 	// enable blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	
+	// enable face culling 
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 
 	// https://learnopengl.com/Advanced-OpenGL/Stencil-testing
 	// both the depth and stencil test pass, we will use the reference value
@@ -566,7 +593,7 @@ void Application::drawScene(Uniforms& uni)
 	//multipleLightsScene(uni);
 	//importModelScene(uni);
 	//testObjectsScene(uni);
-	blendingTestScene(uni);
+	faceCullingTestScene(uni);
 
 }
 
@@ -610,26 +637,40 @@ void Application::updateScene()
 	//	scene_state.animation_time = 0.0f;
 	//}
 
+	// camera position
+	// --------------------------------------------------------------------------------------
+	//float camera_multiplier = 16.0f;
+	//ss.camera.position.x = -camera_multiplier * sin(ss.time);
+	//ss.camera.position.z =  camera_multiplier  * cos(ss.time);
+	//ss.camera.lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 
+	// rotate obj
+	// --------------------------------------------------------------------------------------
+	ss.obj_rotation_angle_y = fmod(ss.time * 50.0f, 360.0f);
+
+	// shifting lights
+	// --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
 	for (int ii = 0; ii < ss.point_lights.size(); ii++)
 	{
 		// change light position
 		ss.point_lights[ii].position = Vec3(
-			distance_multiplier * sin(ss.time + 2 * PI / 3.0f * ii),
+			distance_multiplier * cos(ss.time + 2 * PI / 3.0f * ii),
 			4.0f,
-			distance_multiplier * cos(ss.time + 2 * PI / 3.0f * ii))
+			distance_multiplier * sin(ss.time + 2 * PI / 3.0f * ii))
 			;
 
 		// change light color
 		float change_key = ss.time + ii;
-		setTriangleLightColorShiftByTime(ss.point_lights[ii].diffuse, change_key);
+		setTriangleLightColorShiftByTime(ss.point_lights[ii].diffuse, ss.point_lights[ii].specular, change_key);
 	}
 
-	// emission breath
-	ss.emission_factor = 5.0f * sin(ss.time);
+	// emission pulse/breath
+	// --------------------------------------------------------------------------------------
+	ss.emission_factor = (sin(ss.time) + -2) * 0.5;
 
 	// ui changes
+	// --------------------------------------------------------------------------------------
 	//ss.light.direction = ui_state.spotlight_dir;
 
 }
@@ -642,7 +683,7 @@ void Application::resetCamera(Camera& camera)
 	camera.lookAtTarget(k_camera_target_point);
 }
 
-void setTriangleLightColorShiftByTime(Vec3& light_color, const float& time)
+void setTriangleLightColorShiftByTime(Vec3& light_color, Vec3& light_specular, const float& time)
 {
 	float color_state = ((sin(time * 0.5f) + 1.0f) * 0.5f) * 6.0f;
 	float r, g, b;
@@ -684,6 +725,7 @@ void setTriangleLightColorShiftByTime(Vec3& light_color, const float& time)
 		b = 6.0f - color_state;
 	}
 	light_color = Vec3(r, g, b);
+	light_specular = light_color * 0.5f;
 }
 
 void drawObjToScr(const unsigned int& shader, const unsigned int& vao)
