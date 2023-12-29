@@ -314,6 +314,21 @@
 
 
 # How to
+- <change file an folder name of project>
+    - change folder name
+    - change .sln, .user, .vcxproj, .filters files name
+    - open .sln file change name and .vcxproj name
+    - open .vcxproj change rootnamespace, projectname
+    - test if working
+    - change github folder 
+
+- <common bugs>
+    - floating point precision
+    - null pointer dereference
+    - unhandled exception
+    - buffer overflow 
+    - link error
+
 - <git dosya gormeme>
     - obj dosyayi gormuyor bu durumda hem dosya adi hem de icerigini ayri ayri git ignore a eklemek gerekiyor
     - bkz. gitignore

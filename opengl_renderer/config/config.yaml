@@ -3,7 +3,7 @@ test:
   is_testing: false
 
 scr:
-  wndw_name: Learn OpenGL
+  wndw_name: OpenGL Renderer
   width: 800
   height: 600
 

@@ -6,6 +6,7 @@
 	...
 */
 #if 1
+// ------------------------------------------------------------------------------------------------
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 // imgui
@@ -36,6 +37,7 @@
 #include <memory>
 #include <filesystem>
 
+// ------------------------------------------------------------------------------------------------
 // self keywords
 // ------------------------------------------------------------------------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
@@ -43,7 +45,7 @@ using namespace math_utils;
 using namespace str_utils;
 using namespace file_utils;
 using namespace img_utils;
-
+// -----------------------------------
 // global, constant variables
 // -----------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
@@ -52,6 +54,7 @@ const Vec3	Application::world_up = Vec3(0.0f, 1.0f, 0.0f);
 const Vec3	Application::world_origin = Vec3(0.0f, 0.0f, 0.0f);
 bool		Application::toggle_mouselock = true;
 
+// ------------------------------------------------------------------------------------------------
 // ----- Functions Definitions
 // ------------------------------------------------------------------------------------------------
 void Application::disableStencil()
@@ -207,10 +210,10 @@ void Application::loadSceneData(const k_configType& config)
 	}
 
 	// animation
-	ss.animate = true;
+	ss.animate = false;
 	ss.angle_multiplier = 0.0f;
 	ss.last_frame_time = 0.0f;
-	ss.emission_factor = 5.0f;
+	ss.emission_factor = 0.0f;
 
 	// ui
 	ss.b_toggleui = false;
@@ -251,13 +254,18 @@ void Application::loadTextures()
 	//texture1 = createTexture("data/textures/container.jpg", 2);
 	//texture2 = createTexture("data/textures/awesomeface.png");
 	
-	vec_texture_diffuse.push_back(createTexture("data/textures/2k_test_diffuse_mid.jpg"));
+	vec_texture_diffuse.push_back(createTexture("data/textures/2k_test_diffuse_mid.jpg"));	// 0
 	vec_texture_specular.push_back(createTexture("data/textures/2k_test_specular.jpg"));
 	vec_texture_emission.push_back(createTexture("data/textures/2k_test_emission.jpg"));
+
+	vec_texture_diffuse.push_back(createTexture("data/textures/container.jpg"));	// 1
+
 	
 	texture_diffuse = createTexture("data/textures/2k_test_diffuse_mid.jpg");
 	texture_specular = createTexture("data/textures/2k_test_specular.jpg");
 	texture_emission = createTexture("data/textures/2k_test_emission.jpg");
+
+
 	
 	//textures_diffuse[0] = createTexture("data/textures/2k_test_diffuse_mid.jpg");
 	//textures_diffuse[1] = createTexture("data/textures/blending_transparent_window_blue.png");
@@ -568,8 +576,8 @@ void Application::drawScene(Uniforms& uni)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	// enable face culling 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_FRONT);
 
 	// https://learnopengl.com/Advanced-OpenGL/Stencil-testing
 	// both the depth and stencil test pass, we will use the reference value
@@ -593,8 +601,8 @@ void Application::drawScene(Uniforms& uni)
 	//multipleLightsScene(uni);
 	//importModelScene(uni);
 	//testObjectsScene(uni);
-	faceCullingTestScene(uni);
-
+	//faceCullingTestScene(uni);
+	frameBuffersTestScene(uni);
 }
 
 void Application::setPresetMaterial(const Material& material)
@@ -667,7 +675,7 @@ void Application::updateScene()
 
 	// emission pulse/breath
 	// --------------------------------------------------------------------------------------
-	ss.emission_factor = (sin(ss.time) + -2) * 0.5;
+	ss.emission_factor = (sin(ss.time) + 1) * 0.5;
 
 	// ui changes
 	// --------------------------------------------------------------------------------------

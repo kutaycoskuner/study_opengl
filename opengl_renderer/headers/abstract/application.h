@@ -113,6 +113,7 @@ private:
     void drawObj(int vao, const char* shader_name, Uniforms& uni);
     void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawSingleCube(int vao, const char* shader_name, Uniforms& uni);
+    void drawTwoCubes(int vao, const char* shader_name, Uniforms& uni);
     void drawModel(Model model, int vao, const char* shader_name, Uniforms& uni);
     void drawOverlappingCubes(int vao, const char* shader_name, Uniforms& uni);
 
@@ -125,6 +126,7 @@ private:
     void testObjectsScene(Uniforms& uni);
     void blendingTestScene(Uniforms& uni);
     void faceCullingTestScene(Uniforms& uni);
+    void frameBuffersTestScene(Uniforms& uni);
 
     // custom functions
     void setPointLightParameters(Uniforms& uni);

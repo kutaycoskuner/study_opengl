@@ -5,26 +5,35 @@
 - [logging actions](#logging-actions)
 - [log](#log)
 
-
-# Logging Actions
-- 1.6
-    - org: organization, decisions, notebook changes
+# Keys - Discretized Actions 2.0
+- org: organization, decisions, notebook changes
+    - org: general
+    - ins: instructional / documentation
+    - abs: upper scale system report
     - arch: architectural, framework change, tryout
 
-    - com: installation, compatibility update
-    - add: add, insert, data content
+- addition: new feature, function, data
+    - add: general
+    - fun: function, feature
+    - dat: content / data
+    - lib: adding new third party library
 
+- change: change on existing code
+    - chg: general
+    - ref: refactoring / modular architecture
+    - upg: upgrade, progress
+    - set: settings change
+    - sty: stylistic change
+    - tun: tuning on values
+    - fix: fix a bug or problem | compatibility
     - del: deleted
-    - fix: fix a bug or problem
-    - upg: update, upgraded, progressed, optimize
-    - chg: stylistic change, typo
 
+- other
+    - oth: general
     - std: study, learn, test
-    - wip: work in progress
+    - wip: work in progress / unfinished work
     - mix: multiple additions
-
-    + versiyon sonunda ! varsa repository push yok
-
+    - test: testing
 
 # Todo
 - [x] 05-Apr-2023 24-Aug-2022 utility yi ayir
@@ -76,16 +85,24 @@
 - 03-Aug-2023 fix: optimization model loading
 - 03-Aug-2023 learn: profiler kullanma
 - 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
+- 14-Sep-2023 ref: data ayirma light / camera / scene settings
 
 # Push procedure checklist 1.4
-- add log
+- add log name
 - check todo
-- change readme version and date
 - change time log
 - push
 
 # Log
                                                                                |
+- [0.50] chg: renaming project
+    - 29-Dec-2023
+        - rename project file from learnopengl to opengl_renderer check how to
+    - 15-Sep-2023 
+        - add: new scene
+    - 14-Sep-2023 
+        - ins: new discrete actions set 2.0
+
 - [0.49] add: Face culling
     - 13-Sep-2023
         - add: display face culling
