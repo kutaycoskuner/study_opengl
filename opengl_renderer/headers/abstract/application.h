@@ -176,6 +176,6 @@ private:
     UIState     ui_state;
 
     // config
-    bool        b_wireframe_mode;
+    bool        b_wireframe_mode = false;
     Vec4        clear_color;
 };

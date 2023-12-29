@@ -5,6 +5,7 @@
 #include "../../headers/utils/utilities.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -213,4 +214,41 @@ std::unordered_map<std::string, std::unordered_map<std::string, std::string>> fi
 
 	return config;
 
+}
+
+namespace color_utils
+{
+	unsigned int hexToUInt(const std::string& hex) {
+		std::istringstream stream(hex);
+		unsigned int intValue;
+		stream >> std::hex >> intValue;
+		return intValue;
+	}
+
+	std::vector<unsigned int> hexToRGB(const std::string& hexColor) {
+		std::vector<unsigned int> result;
+
+		// test #121212 to 18, 18, 18
+		// test #a153bb to 161, 83, 187
+
+		// Remove '#' if present
+		std::string color = (hexColor[0] == '#') ? hexColor.substr(1) : hexColor;
+
+		// Split the hex color code into pairs of characters
+		std::vector<std::string> hexPairs;
+		for (size_t i = 0; i < color.length(); i += 2) {
+			hexPairs.push_back(color.substr(i, 2));
+		}
+
+		// Convert each pair to byte values
+	// Convert each pair to byte values
+		for (const std::string& hexPair : hexPairs) {
+			result.push_back(hexToUInt(hexPair));
+		}
+
+
+		return result;
+	}
+
+	//std::vector<unsigned int> hexToFloatRGB(const std::string& hexColor)
 }

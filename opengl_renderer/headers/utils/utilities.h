@@ -81,3 +81,9 @@ namespace img_utils
 	unsigned int createTexture(const std::string& path, const int& wrapping = 0);
 	void setVerticalFlipMode(bool flipMode);
 }
+
+namespace color_utils
+{
+	unsigned int hexToUInt(const std::string& hex);
+	std::vector<unsigned int> hexToRGB(const std::string& hexColor);
+}

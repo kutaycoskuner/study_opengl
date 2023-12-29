@@ -116,10 +116,13 @@ bool Application::initialize(k_configType& config)
 	}
 
 	// our state
+	std::vector<unsigned int> bg_rgb = color_utils::hexToRGB(config.at("colors").at("bg"));
+	
+	
 	this->clear_color = Vec4(
-		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
-		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
-		scaleByteToZeroOne(float(std::stoul(config.at("colors").at("bg")))),
+		scaleByteToZeroOne(float(bg_rgb[0])),
+		scaleByteToZeroOne(float(bg_rgb[1])),
+		scaleByteToZeroOne(float(bg_rgb[2])),
 		1.00f
 	);
 	return 0;

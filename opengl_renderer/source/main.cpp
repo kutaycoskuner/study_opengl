@@ -9,12 +9,19 @@
 #include <unordered_map>
 
 // ------------------------------------------------------------------------------------------------
-// ==== Main
+// ----- Main
 // ------------------------------------------------------------------------------------------------
 int main()
 {
 	// get config 
 	Application::k_configType config = file_utils::parseSimple("config/config.yaml");
+	
+	// blackboarding: blank feature teseting
+	if (config.at("blackboard").at("is_blackboard") == "true")
+	{
+		blackboard();
+		return 0;
+	}
 
 	// unit, integration test
 	test();

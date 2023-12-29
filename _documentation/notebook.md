@@ -314,6 +314,9 @@
 
 
 # How to
+- <test basic>
+    - activate on main blackboard -> use blackboard.css as blank page on source/blackboard
+
 - <change file an folder name of project>
     - change folder name
     - change .sln, .user, .vcxproj, .filters files name

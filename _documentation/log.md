@@ -72,6 +72,7 @@
 - [x] 20-Jul-2023 fix: specular texture not working
     - forgot to assign textures to send shader
 - [x] 21-Jul-2023 20-Jul-2023 add: load self model
+- [x] 29-Dec-2023 29-Jul-2023 chg: rename source folder, proj name
 - 12-Apr-2023 add: deserialize config or config struct
 - 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
@@ -81,7 +82,6 @@
 - 24-Jun-2023 add: ui camera, direction, light direction controls
 - 25-Jun-2023 add: documentation: keys, ui controls
 - 11-Jul-2023 add: pitch distortion
-- 29-Jul-2023 chg: rename source folder, proj name
 - 03-Aug-2023 fix: optimization model loading
 - 03-Aug-2023 learn: profiler kullanma
 - 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
@@ -95,6 +95,12 @@
 
 # Log
                                                                                |
+- [0.51] add: hex to rgb conversion
+    - 29-Dec-2023
+        - fix: bg extraction not from single color but hexcolor
+        - add: hex string to rgb / rgb converter
+        - add: main blckboarding setup
+
 - [0.50] chg: renaming project
     - 29-Dec-2023
         - rename project file from learnopengl to opengl_renderer check how to

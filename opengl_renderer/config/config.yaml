@@ -1,6 +1,7 @@
 ---
-test:
+blackboard:
   is_testing: false
+  is_blackboard: false
 
 scr:
   wndw_name: OpenGL Renderer
@@ -11,6 +12,6 @@ settings:
   is_wireframeMode: false
 
 colors:
-   bg: 12
+   bg: #181818
    bg-alter: 0
    bg-second: 0
