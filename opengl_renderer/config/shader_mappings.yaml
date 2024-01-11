@@ -1,8 +1,0 @@
----
-shaders:
-  - vrtxShader:
-    var_name: vertexShaderSource
-    path: shaders/3d_vrtxShader.glsl
-  - fragShader:
-    var_name: fragShaderSource
-    path: shaders/3d_fragShader.glsl

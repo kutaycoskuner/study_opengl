@@ -7,7 +7,7 @@
 #include <map>
 #include <algorithm>
 
-
+// ------------------------------------------------------------------------------------------------
 // self keywords
 // ------------------------------------------------------------------------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
@@ -15,18 +15,18 @@ using namespace math_utils;
 using namespace str_utils;
 using namespace file_utils;
 using namespace img_utils;
-
+	
 
 void Application::drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni)
 {
 
 	// create transformations
-	uni.upo.world_matrix = mat_utils::rotationX(radian(-45.0f))
+	uni.upo.world_matrix = mat_utils::rotationX(toRadian(-45.0f))
 		* mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized())
 		;
 	uni.upv.view_matrix = scene_state.camera.calcViewMatrix(world_up);
 	uni.upv.projection_matrix
-		= mat_utils::projectPerspective(radian(scene_state.camera.fov),
+		= mat_utils::projectPerspective(toRadian(scene_state.camera.fov),
 			scene_state.camera.aspect_ratio,
 			scene_state.camera.near, scene_state.camera.far);
 	uni.upv.view_proj_matrix = uni.upv.projection_matrix * uni.upv.view_matrix;
@@ -62,12 +62,12 @@ void Application::drawLightPlaceholder(int vao, const char* shader_name, Uniform
 void Application::drawAxis(int vao, const char* shader_name, Uniforms& uni)
 {
 	// create transformations
-	uni.upo.world_matrix = mat_utils::rotationX(radian(-45.0f))
+	uni.upo.world_matrix = mat_utils::rotationX(toRadian(-45.0f))
 		* mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized())
 		;
 	uni.upv.view_matrix = scene_state.camera.calcViewMatrix(world_up);
 	uni.upv.projection_matrix
-		= mat_utils::projectPerspective(radian(scene_state.camera.fov),
+		= mat_utils::projectPerspective(toRadian(scene_state.camera.fov),
 			scene_state.camera.aspect_ratio,
 			scene_state.camera.near, scene_state.camera.far);
 	uni.upv.view_proj_matrix = uni.upv.projection_matrix * uni.upv.view_matrix;
@@ -185,7 +185,7 @@ void Application::setSpotLightParameters(Uniforms& uni)
 	active_shader->setFloat("spot_light.outer_cutoff", ss.spot_lights[0].outer_cutoff);
 }
 
-void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
+void Application::drawPredefElementsCube(int vao, const char* shader_name, Uniforms& uni)
 {
 
 	// lit object: ground plane
@@ -244,7 +244,7 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 	float y_position_of_models = 3.0f;
 	model =
 		mat_utils::translation(Vec3(0.0f, y_position_of_models, movement_scale * cos(ss.time)))
-		* mat_utils::rotationY(radian(360.0f) * ss.time)
+		* mat_utils::rotationY(toRadian(360.0f) * ss.time)
 		* mat_utils::rotationX(ss.time)
 		* mat_utils::scale(scale_factor, scale_factor, scale_factor)
 		;
@@ -253,7 +253,7 @@ void Application::drawObj(int vao, const char* shader_name, Uniforms& uni)
 
 	model =
 		mat_utils::translation(Vec3(movement_scale * sin(ss.time), y_position_of_models, 0.0f))
-		* mat_utils::rotationX(radian(360.0f) * ss.time)
+		* mat_utils::rotationX(toRadian(360.0f) * ss.time)
 		* mat_utils::rotationY(ss.time)
 		* mat_utils::scale(scale_factor, scale_factor, scale_factor)
 		;
@@ -311,7 +311,7 @@ void Application::drawGroundPlane(int vao, const char* shader_name, Uniforms& un
 	float scale_factor = 10.0f;
 	model =
 		mat_utils::translation(Vec3(0.0f, 0.0f, 0.0f))
-		//* mat_utils::rotationY(radian(-15.0f))
+		//* mat_utils::rotationY(toRadian(-15.0f))
 		* mat_utils::scale(scale_factor, 0.5f, scale_factor)
 		;
 	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
@@ -375,7 +375,7 @@ void Application::drawSingleCube(int vao, const char* shader_name, Uniforms& uni
 	
 	model =
 		mat_utils::translation(Vec3(0.0f, 2.0f, 0.0f))
-		* mat_utils::rotationY(math_utils::radian(ss.obj_rotation_angle_y))
+		* mat_utils::rotationY(math_utils::toRadian(ss.obj_rotation_angle_y))
 		* mat_utils::scale(scale_factor, scale_factor, scale_factor)
 		;
 	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
@@ -439,7 +439,7 @@ void Application::drawTwoCubes(int vao, const char* shader_name, Uniforms& uni)
 
 	model =
 		mat_utils::translation(Vec3(0.5f, 1.0f, 2.0f))
-		* mat_utils::rotationY(math_utils::radian(ss.obj_rotation_angle_y))
+		* mat_utils::rotationY(math_utils::toRadian(ss.obj_rotation_angle_y))
 		* mat_utils::scale(scale_factor, scale_factor, scale_factor)
 		;
 	float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));

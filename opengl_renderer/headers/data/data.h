@@ -5,6 +5,7 @@
 #include "../abstract/light.h"
 #include <vector>
 #include <string>
+#include <map>
 //
 class StaticLights
 {
@@ -13,10 +14,29 @@ public:
 };
 
 
-class ShaderPaths
+struct ModelPath {
+	std::string model_file;
+};
+
+struct ShaderPaths {
+	std::string vrtx_shader_file;
+	std::string frag_shader_file;
+};
+
+struct TexturePaths {
+	std::string color;
+	std::string roughness;
+	std::string normal;
+	std::string specular;
+	std::string emission;
+};
+
+class RelativePaths
 {
 public:
-	static const std::vector<std::vector<std::string>> shader_paths;
+	static const std::vector<ShaderPaths> shader_paths;
+	static const std::vector<ModelPath> model_paths;
+	static std::map<std::string, TexturePaths> texture_paths;
 };
 
 class OpenGLParams
@@ -25,14 +45,14 @@ public:
 	static float border_color[4];
 };
 
-class ObjToDraw
+class Predef3D
 {
 public:
 	static float		cube_vrts__pos_uv[180];
 
 	static float		cube_vrts__pos_norm_uv[288];
 	static unsigned int cube_inds__pos_norm_uv[36];
-	
+
 	static float		square_vrts[32];
 	static unsigned int square_inds[6];
 
@@ -46,7 +66,7 @@ public:
 	static std::vector<Vec3> obj_world_positions;
 };
 
-class PresetMaterial
+class PredefMaterial
 {
 public:
 	static const Material emerald;

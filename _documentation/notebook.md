@@ -9,6 +9,10 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- mindmap
+    - https://whimsical.com/opengl-renderer-PFm5KunUzHC9KSqtPdo5Ye
+    - https://miro.com/app/board/uXjVN7R_r_E=/
+
 - learnOpenGL
     - https://learnopengl.com/Getting-started/Creating-a-window
 - GLFW 
@@ -50,14 +54,22 @@
 - project
     + config                : degiskenlerin tutuldugu yer
     + data                  : cizim icin kullanilan verinin geldigi yer
+        + paths
+            + shader_paths
+            + model_paths
+        + scenes
+        + models            : imported models with their own textures and definitions imported through assimp
     + headers               : include files function declerations
     + libs                  : outer code
     + shaders               : shader files
     + source                : every logic and data that I wrote
-        - utilities
+        - blackboard
         - main
         - test
         - entry
+    + event_handling
+    + test
+    + utilities
 
 # Formats
 - settings: .ini, .yaml, .xml, .json
@@ -174,9 +186,11 @@
     - integration test
 
 - nomenclature, 
-    - shadderlarda raw girdi in_ / vertex ciktisi v_ / fragment ciktisi f_ premarker
-    - uniforms short
-    - events
+    - normal variables this_is_variable
+    - normal functions thisIsFunction()
+    - shaderlarda  raw girdi in_ / vertex ciktisi v_ / fragment ciktisi f_ premarker
+    - uniforms short uni
+    - events 
 
 - uniform
     - update olma sikligi
@@ -310,12 +324,58 @@
 - added glad.c file to project
 
 # Blackboard
-- <>
+- <scene neleri barindirmali>
+    - scene nasil update edilecek
+    - hangi objeler cizilecek
+        - transformlari
+    - modeller 
+    - materyaller
+    - isiklar
+    - kameralar
+    - game objects
+    - settings: cull var mi, outliner var mi
 
 
 # How to
+- <vs: gorunmeyen dosyayi ekleme>
+    - dosya olustur sag tikla
+    - add
+    - existing file, sec
+
+- <vs: imleci lineardan kare yap karakter degistiriyor>
+    - num lock > insert (0 on laptop)
+
+- <vs: linking library>
+    - right click on project name on solution explorer > properties
+    - configuration > vc++ directories > 
+    - click expand arrow then <edit>
+    - library directories > <library>/build/src/debug         | .lib files
+    - include directories > <library>/include                 | include folder
+    - linking
+        - linker > input > additional dependencies
+        - add glfw3.lib;opengl32.lib
+
+- <linear algebra: transformation application order>
+    - ilk scale,
+    - sonra rotate
+    - sonra transform
+
+- <cpp: string to const char*>
+    .c_str()
+
+- <yeni class olusturma proseduru>
+    - once headeri olustur. Arayuzu ve memberlari belirle
+    - .cpp dosyasini olusturup memberlari yazmay basla
+
 - <test basic>
     - activate on main blackboard -> use blackboard.css as blank page on source/blackboard
+
+- <test unit>
+    - test/test.h uzerinde yeni unit test dosyasinin ana fonksiyonunu yaz
+    - uTest_ClassName.cpp (example: transform)
+    - constructor ve fonksiyonlar icin teker teker test yaz
+    - her test icin parametreleri degistir
+    - calistigini kontrol etmek icin bir kere fail, bir kere pass yaptir
 
 - <change file an folder name of project>
     - change folder name
@@ -424,16 +484,6 @@
     2. buffer dataya cizilecek objeyi ver / her bir obje icin yeni bir vao ve vbo
     3. glVertexAttribPointer, glEnableVertexAttribArray uzerinde stride ve ilgili verinin boyunu goster
     4. glDraw elements uzerinde cizim tipi, stride ve int
-
-- <visual studio: linking library>
-    - right click on project name on solution explorer > properties
-    - configuration > vc++ directories > 
-    - click expand arrow then <edit>
-    - library directories > <library>/build/src/debug         | .lib files
-    - include directories > <library>/include                 | include folder
-    - linking
-        - linker > input > additional dependencies
-        - add glfw3.lib;opengl32.lib
 
 - <linker error>
     - case 1:

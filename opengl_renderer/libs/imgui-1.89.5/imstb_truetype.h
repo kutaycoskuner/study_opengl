@@ -4693,7 +4693,7 @@ STBTT_DEF unsigned char * stbtt_GetGlyphSDF(const stbtt_fontinfo *info, float sc
                      float res[3] = {0.f,0.f,0.f};
                      float px,py,t,it,dist2;
                      float a_inv = precompute[i];
-                     if (a_inv == 0.0) { // if a_inv is 0, it's 2nd degree so use quadratic formula
+                     if (a_inv == 0.0) { // if a_inv is 0, it's 2nd toDegree so use quadratic formula
                         float a = 3*(ax*bx + ay*by);
                         float b = 2*(ax*ax + ay*ay) + (mx*bx+my*by);
                         float c = mx*ax+my*ay;

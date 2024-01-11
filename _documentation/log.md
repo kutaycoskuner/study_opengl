@@ -95,6 +95,17 @@
 
 # Log
                                                                                |
+- [0.52] refactoring: path separation
+    - 11-Jan-2024
+        - ref: texture paths separation, parametrize
+        - wip: transform unit test
+
+    - 10-Jan-2024
+        - ref: name refactoring
+        - ref: model paths separation
+        - add: transform class
+        - add: project mapping
+
 - [0.51] add: hex to rgb conversion
     - 29-Dec-2023
         - fix: bg extraction not from single color but hexcolor

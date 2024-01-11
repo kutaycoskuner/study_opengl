@@ -28,12 +28,12 @@ void Application::testObjectsScene(Uniforms& uni)
 	UniformsPerView& uni_view = uni.upv;
 	UniformsPerFrame& uni_frame = uni.upf;
 	// create transformations
-	uni_obj.world_matrix = mat_utils::rotationX(radian(-45.0f))
+	uni_obj.world_matrix = mat_utils::rotationX(toRadian(-45.0f))
 		* mat_utils::rotationXYZ(ss.time, Vec3(1.0f, 1.0f, 1.0f).normalized())
 		;
 	uni_view.view_matrix = ss.camera.calcViewMatrix(world_up);
 	uni_view.projection_matrix
-		= mat_utils::projectPerspective(radian(ss.camera.fov), ss.camera.aspect_ratio, ss.camera.near, ss.camera.far);
+		= mat_utils::projectPerspective(toRadian(ss.camera.fov), ss.camera.aspect_ratio, ss.camera.near, ss.camera.far);
 	uni_view.view_proj_matrix = uni_view.projection_matrix * uni_view.view_matrix;
 
 	drawLightPlaceholder(vaos[0], "3d", uni);

@@ -27,10 +27,10 @@ namespace math_utils
 	float scaleByteToZeroOne(unsigned int byte);
 	float scaleByteToZeroOne(float byte);
 	Vec3 scaleByteToZeroOne(float a, float b, float c);
-	Vec3 ByteToZeroOne(unsigned int a, unsigned int b, unsigned int c);
+	Vec3 scaleByteToZeroOne(unsigned int a, unsigned int b, unsigned int c);
 	// trigonometri
-	float radian(float degree);
-	float degree(float radian);
+	float toRadian(float degree);
+	float toDegree(float radian);
 	// float
 	bool compareApprox(const float& a, const float& b);
 	// vector

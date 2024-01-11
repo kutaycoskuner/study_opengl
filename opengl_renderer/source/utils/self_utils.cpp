@@ -38,19 +38,19 @@ namespace math_utils
 		);
 	}
 
-	Vec3 ByteToZeroOne(unsigned int a, unsigned int b, unsigned int c)
+	Vec3 scaleByteToZeroOne(unsigned int a, unsigned int b, unsigned int c)
 	{
 		return scaleByteToZeroOne(float(a), float(b), float(c));
 	}
 
 
 	// trigonometry
-	float radian(float degree)
+	float toRadian(float degree)
 	{
 		return degree * PI / 180.0f;
 	}
 
-	float degree(float radian)
+	float toDegree(float radian)
 	{
 		return radian * 180.0f / PI;
 	}

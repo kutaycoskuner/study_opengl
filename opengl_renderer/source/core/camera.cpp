@@ -10,11 +10,11 @@
 // ----------------------------------------------------------------------------
 static Vec3 yawPitchToDirection(float yaw_rad, float pitch_rad)
 {
-	float yaw_deg = math_utils::degree(yaw_rad);
-	float pitch_deg = math_utils::degree(pitch_rad);
+	float yaw_deg = math_utils::toDegree(yaw_rad);
+	float pitch_deg = math_utils::toDegree(pitch_rad);
 
 	// in default (yaw=0, pitch=0) we are looking to		(1, 0, 0)
-	// we need to rotate default view 90 degree to see	(0, 0, -1)
+	// we need to rotate default view 90 toDegree to see	(0, 0, -1)
 
 	/*
 	In a right-handed 3D system, "yaw" typically refers to rotation around 
@@ -29,7 +29,7 @@ static Vec3 yawPitchToDirection(float yaw_rad, float pitch_rad)
 	// yaw 0, pitch 0
 	// expected: x = 0, y = 0, z = -1
 	//	
-	// yaw 90, pitch 0 (turning around y axis 90 degree to right due to right hand rule)		
+	// yaw 90, pitch 0 (turning around y axis 90 toDegree to right due to right hand rule)		
 	// expected: x = 1, y = 0, z = 0
 	// 
 	// yaw 90, pitch 90
@@ -62,8 +62,8 @@ static Vec3 yawPitchToDirection(float yaw_rad, float pitch_rad)
 
 
 	// ----- uncomment to test below
-	//float yaw_static = math_utils::radian(180.0f);
-	//float pitch_static = math_utils::radian(180.0f);
+	//float yaw_static = math_utils::toRadian(180.0f);
+	//float pitch_static = math_utils::toRadian(180.0f);
 	//x = sin(yaw_static) * cos(pitch_static);
 	//y = -sin(pitch_static);
 	//z = -cos(yaw_static) * cos(pitch_static);
@@ -85,8 +85,8 @@ static void directionToYawPitch(const Vec3& direction, float& yaw_rad, float& pi
 	// acos(direction.y)	= pitch_rad
 	// testing
 	//Vec3 norm = direction.normalized();
-	//float pitch_deg = math_utils::degree(pitch_rad);
-	//float yaw_deg	= math_utils::degree(yaw_rad);
+	//float pitch_deg = math_utils::toDegree(pitch_rad);
+	//float yaw_deg	= math_utils::toDegree(yaw_rad);
 
 }
 
@@ -152,10 +152,10 @@ void Camera::rotate(float x_offset, float y_offset)
 
 	// limiter
 	float limit_deg = 60.0f;
-	if (math_utils::degree(pitch_rad) > limit_deg)
-		pitch_rad  = math_utils::radian(limit_deg);
-	if (math_utils::degree(pitch_rad) < -limit_deg)
-		pitch_rad = math_utils::radian(-limit_deg);
+	if (math_utils::toDegree(pitch_rad) > limit_deg)
+		pitch_rad  = math_utils::toRadian(limit_deg);
+	if (math_utils::toDegree(pitch_rad) < -limit_deg)
+		pitch_rad = math_utils::toRadian(-limit_deg);
 }
 
 

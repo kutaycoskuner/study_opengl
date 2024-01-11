@@ -17,7 +17,7 @@ public:
 	Vec3 position;
 
 
-	// angles from the world in radian
+	// angles from the world in toRadian
 	float yaw_rad;
 	float pitch_rad;
 

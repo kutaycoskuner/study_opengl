@@ -1,16 +1,12 @@
 #include "../headers/utils/utilities.h"				// self written utilities
-
+#include <iostream>
 
 
 void blackboard()
 {
 
     // Example hex color code
-    std::string hexColor = "#a153bb";
-
-    // Convert hex to RGB
-    color_utils::hexToRGB(hexColor);
-
+    std::cout << "Hello world";
 
 
 }

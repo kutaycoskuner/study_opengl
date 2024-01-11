@@ -88,6 +88,7 @@ private:
     void loadSceneData(const k_configType& config);
     void loadTextures();
     void loadShaders();
+    std::vector<const char*> loadModels();
     void loadMeshData();
     void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
     
@@ -110,7 +111,7 @@ private:
     void drawAxis(int vao, const char* shader_name, Uniforms& uni);
     void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
     //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
-    void drawObj(int vao, const char* shader_name, Uniforms& uni);
+    void drawPredefElementsCube(int vao, const char* shader_name, Uniforms& uni);
     void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
     void drawSingleCube(int vao, const char* shader_name, Uniforms& uni);
     void drawTwoCubes(int vao, const char* shader_name, Uniforms& uni);

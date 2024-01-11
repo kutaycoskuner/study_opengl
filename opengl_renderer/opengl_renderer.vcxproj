@@ -138,14 +138,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="data\maps\shader_paths.cpp" />
-    <ClCompile Include="data\material\colors.cpp" />
-    <ClCompile Include="data\material\material.cpp" />
-    <ClCompile Include="data\obj\obj_data.cpp" />
+    <ClCompile Include="data\paths\model_paths.cpp" />
+    <ClCompile Include="data\paths\shader_paths.cpp" />
+    <ClCompile Include="data\paths\texture_paths.cpp" />
+    <ClCompile Include="data\predefs\predef_materials.cpp" />
+    <ClCompile Include="data\predefs\predef_3d_objects.cpp" />
     <ClCompile Include="data\scenes\3.3_faceculling_testscene.cpp" />
     <ClCompile Include="data\scenes\3.4_framebuffers_testscene.cpp" />
     <ClCompile Include="source\blackboard\blackboard.cpp" />
+    <ClCompile Include="source\test\utest_transform.cpp" />
     <ClCompile Include="source\utils\vector_utils.cpp" />
+    <None Include="data\scene_state\1.0_basic_test_scene.yaml" />
     <None Include="x64\Debug\assimp-vc143-mtd.dll" />
     <None Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.exp" />
     <None Include="shaders\2.3.multiplelights_lit_frag_shader.glsl">
@@ -182,13 +185,12 @@
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="data\obj\obj_world_positions.cpp" />
-    <ClCompile Include="data\obj\predefined_lights.cpp" />
+    <ClCompile Include="data\predefs\predef_world_positions.cpp" />
     <ClCompile Include="data\scenes\2.0_multiplelights_scene.cpp" />
     <ClCompile Include="data\scenes\2.3_importmodel_scene.cpp" />
     <ClCompile Include="data\scenes\3.0_testobjects_scene.cpp" />
     <ClCompile Include="data\scenes\3.2_blending_testscene.cpp" />
-    <ClCompile Include="data\scenes\draw_obj.cpp" />
+    <ClCompile Include="data\scenes\predef_scene_elements.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
     <ClCompile Include="headers\abstract\vector2.h" />
     <ClCompile Include="headers\templates\header_template_1.0.h" />
@@ -244,6 +246,7 @@
     <ClInclude Include="headers\abstract\light.h" />
     <ClInclude Include="headers\abstract\material.h" />
     <ClInclude Include="headers\abstract\model.h" />
+    <ClInclude Include="headers\abstract\transform.h" />
     <ClInclude Include="headers\abstract\scene_state.h" />
     <ClInclude Include="headers\abstract\ui.h" />
     <ClInclude Include="headers\abstract\uniforms.h" />

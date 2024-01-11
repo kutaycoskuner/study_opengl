@@ -1,12 +1,9 @@
 // libraries
 // ---------------------------------------------------------------------------------------
 #include "../headers/data/data.h"     
-#include <vector>
-#include <string>
-#include <map>
 // 
 
-const std::vector<std::vector<std::string>> ShaderPaths::shader_paths =
+const std::vector<ShaderPaths> RelativePaths::shader_paths =
 {
 	{
 		"shaders/2.0.phong_lit_vrtx_shader.glsl",

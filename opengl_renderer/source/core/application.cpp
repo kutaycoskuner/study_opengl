@@ -45,9 +45,10 @@ using namespace math_utils;
 using namespace str_utils;
 using namespace file_utils;
 using namespace img_utils;
-// -----------------------------------
+
+// ------------------------------------------------------------------------------------------------
 // global, constant variables
-// -----------------------------------
+// ------------------------------------------------------------------------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
 const Vec3	Application::world_up = Vec3(0.0f, 1.0f, 0.0f);
@@ -161,20 +162,20 @@ void Application::loadSceneData(const k_configType& config)
 	// --------------------------------------------------------------------------------------
 	Camera& cam = ss.camera;
 
-	ss.camera.near = 1.0f;
-	ss.camera.far = 100.0f;
-	ss.camera.fov = 45.0f;
-	
-	ss.camera.rotation_sensitivity = 0.02f;
+	ss.camera.near					= std::stof(config.at("default_camera").at("near"));
+	ss.camera.far					= std::stof(config.at("default_camera").at("far"));
+	ss.camera.fov					= std::stof(config.at("default_camera").at("fov"));
+	ss.camera.rotation_sensitivity  = std::stof(config.at("default_camera").at("rotation_sensitivity"));
 
 	resetCamera(ss.camera);
 
 	// ----- lights
 	// --------------------------------------------------------------------------------------
 	// directional
-	int num_dlights = 1;
-	int num_plights = 3;
-	int num_slights = 1;
+	int num_dlights = std::stoi(config.at("default_lights").at("num_directional"));
+	int num_plights = std::stoi(config.at("default_lights").at("num_point"));
+	int num_slights = std::stoi(config.at("default_lights").at("num_spot"));
+
 	for (int ii = 0; ii < num_dlights; ii++)
 	{
 		ss.directional_lights.emplace_back();
@@ -184,6 +185,7 @@ void Application::loadSceneData(const k_configType& config)
 		ss.directional_lights[ii].ambient = Vec3(0.08f, .08f, 0.08f);
 		ss.directional_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
 	}
+
 	// point
 	for (int ii = 0; ii < num_plights; ii++)
 	{
@@ -196,6 +198,7 @@ void Application::loadSceneData(const k_configType& config)
 		ss.point_lights[ii].linear = 0.09f;
 		ss.point_lights[ii].quadratic = 0.032f;
 	}
+
 	// spot
 	for (int ii = 0; ii < num_slights; ii++)
 	{
@@ -208,42 +211,21 @@ void Application::loadSceneData(const k_configType& config)
 		ss.spot_lights[ii].constant = 1.0f;
 		ss.spot_lights[ii].linear = 0.09f;
 		ss.spot_lights[ii].quadratic = 0.032f;
-		ss.spot_lights[ii].cutoff = cos(radian(27.5f));
-		ss.spot_lights[ii].outer_cutoff = cos(radian(30.0f));
+		ss.spot_lights[ii].cutoff = cos(toRadian(27.5f));
+		ss.spot_lights[ii].outer_cutoff = cos(toRadian(30.0f));
 	}
 
 	// animation
-	ss.animate = false;
-	ss.angle_multiplier = 0.0f;
-	ss.last_frame_time = 0.0f;
-	ss.emission_factor = 0.0f;
+	ss.animate = (config.at("default_animation").at("animate") == "true");
+	ss.angle_multiplier = std::stof(config.at("default_animation").at("angle_multiplier"));
+	ss.last_frame_time = std::stof(config.at("default_animation").at("last_frame_time"));
+	ss.emission_factor = std::stof(config.at("default_animation").at("emission_factor"));
 
 	// ui
 	ss.b_toggleui = false;
 
-	// ----- models
-	std::vector<const char*> model_paths = {
-		"data/models/testobject0_frustum/testobject.obj",
-		"data/models/testobject1_dodecahedron/testobject.obj",
-		"data/models/testobject2_sphere/testobject.obj",
-		"data/models/testobject3_cube0/testobject.obj",
-		"data/models/testobject4_cube1/testobject.obj",
-		"data/models/testobject5_cube2/testobject.obj",
-		"data/models/testobject6_cube3/testobject.obj",
-		"data/models/testobject7_torus/testobject.obj",
-		"data/models/testobject8_mine/testobject.obj",
-		"data/models/testobject9_cylinder/testobject.obj",
-		"data/models/testobject10_suzanne/testobject.obj",
-		"data/models/testobject11_cone/testobject.obj"
-		//"data/models/testobjects_by_kutaycoskuner/testobjects.obj"
-	};
-
-	//for (int ii = 0; ii < model_paths.size(); ii++)
-	//{
-	//	Model ourModel(model_paths[ii]);
-	//	ss.models.push_back(Model(ourModel));
-	//}
-
+	// models
+	std::vector<const char*> model_paths = loadModels();
 
 	// cube positions 
 	ss.obj_positions = ObjWorldPositions::obj_world_positions;
@@ -256,40 +238,36 @@ void Application::loadTextures()
 	
 	//texture1 = createTexture("data/textures/container.jpg", 2);
 	//texture2 = createTexture("data/textures/awesomeface.png");
-	
-	vec_texture_diffuse.push_back(createTexture("data/textures/2k_test_diffuse_mid.jpg"));	// 0
-	vec_texture_specular.push_back(createTexture("data/textures/2k_test_specular.jpg"));
-	vec_texture_emission.push_back(createTexture("data/textures/2k_test_emission.jpg"));
+
+	vec_texture_diffuse.push_back(createTexture(RelativePaths::texture_paths["test_2k"].color));	// 0
+	vec_texture_specular.push_back(createTexture(RelativePaths::texture_paths["test_2k"].specular));
+	vec_texture_emission.push_back(createTexture(RelativePaths::texture_paths["test_2k"].emission));
 
 	vec_texture_diffuse.push_back(createTexture("data/textures/container.jpg"));	// 1
 
 	
-	texture_diffuse = createTexture("data/textures/2k_test_diffuse_mid.jpg");
-	texture_specular = createTexture("data/textures/2k_test_specular.jpg");
-	texture_emission = createTexture("data/textures/2k_test_emission.jpg");
+	texture_diffuse = createTexture(RelativePaths::texture_paths["test_2k"].color);
+	texture_specular = createTexture(RelativePaths::texture_paths["test_2k"].specular);
+	texture_emission = createTexture(RelativePaths::texture_paths["test_2k"].emission);
 
-
-	
 	//textures_diffuse[0] = createTexture("data/textures/2k_test_diffuse_mid.jpg");
 	//textures_diffuse[1] = createTexture("data/textures/blending_transparent_window_blue.png");
 	//vec_texture_diffuse.push_back(createTexture("data/textures/container2_diffuse.png"));
 	//vec_texture_specular.push_back(createTexture("data/textures/container2_specular.png"));
 
-	texture_ground_diffuse = createTexture("data/textures/800_blackchecker.png");
-	texture_ground_specular = createTexture("data/textures/800_checker_specular_regions.png");
-	texture_ground_emission = createTexture("data/textures/800_checker_emission_regions.png");
+	texture_ground_diffuse = createTexture(RelativePaths::texture_paths["checker_800"].color);
+	texture_ground_specular = createTexture(RelativePaths::texture_paths["checker_800"].specular);
+	texture_ground_emission = createTexture(RelativePaths::texture_paths["checker_800"].emission);
 }
 
 void Application::loadShaders()
 {
 	// build and compile our shader program
 	// todo: butun shaderlari yukle daha sonra aktifi sec | bu 3d pipeline ini bozuyor
-	const std::vector<std::vector<std::string>> shader_paths = ShaderPaths::shader_paths;
-
-	for (const std::vector<std::string>& path_pair : shader_paths)
+	for (const ShaderPaths& path_struct : RelativePaths::shader_paths)
 	{
-		const std::string vrtx = path_pair[0];
-		const std::string frag = path_pair[1];
+		const std::string vrtx = path_struct.vrtx_shader_file;
+		const std::string frag = path_struct.frag_shader_file;
 		// get between / and _ for key
 		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
 		std::string left_trimmed_key = path_parts[0];
@@ -299,8 +277,18 @@ void Application::loadShaders()
 		//
 		shaders[name] = std::make_shared<Shader>(vrtx, frag);
 	}
-
 }
+
+std::vector<const char*> Application::loadModels()
+{
+	std::vector<const char*> model_paths;
+	for (const ModelPath path : RelativePaths::model_paths)
+	{
+		model_paths.push_back(path.model_file.c_str());
+	}
+	return model_paths;
+}
+
 
 void Application::loadMeshData()
 {
@@ -313,10 +301,10 @@ void Application::loadMeshData()
 	// binding buffers
 	glBindVertexArray(vaos[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cube_vrts__pos_uv), ObjToDraw::cube_vrts__pos_uv, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_uv), Predef3D::cube_vrts__pos_uv, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebos[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::square_inds), ObjToDraw::square_inds, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::square_inds), Predef3D::square_inds, GL_STATIC_DRAW);
 
 	// linking vertex attributes
 	// --------------------------       
@@ -347,7 +335,7 @@ void Application::loadMeshData()
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
 	glBindVertexArray(lit_vao);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ObjToDraw::cube_vrts__pos_norm_uv), ObjToDraw::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_norm_uv), Predef3D::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
 	stride = 8;
 	// set the vertex attribute 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
@@ -358,11 +346,11 @@ void Application::loadMeshData()
 	// att: texture
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	//generateBuffer(lit_vao, lit_vbo, ObjToDraw::cube_vrts__pos_uv, 5, 1, 0);
+	//generateBuffer(lit_vao, lit_vbo, Predef3D::cube_vrts__pos_uv, 5, 1, 0);
 
 	glGenBuffers(1, &lit_ebo); // :: ebo icin memory
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lit_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ObjToDraw::cube_inds__pos_norm_uv), ObjToDraw::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::cube_inds__pos_norm_uv), Predef3D::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
 
 
 	// clean new_up
@@ -601,11 +589,11 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
-	//multipleLightsScene(uni);
+	multipleLightsScene(uni);
 	//importModelScene(uni);
 	//testObjectsScene(uni);
 	//faceCullingTestScene(uni);
-	frameBuffersTestScene(uni);
+	//frameBuffersTestScene(uni);
 }
 
 void Application::setPresetMaterial(const Material& material)

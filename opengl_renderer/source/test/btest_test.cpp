@@ -37,6 +37,7 @@ void runUnitTests()
 	unitTest_Vec3();
 	unitTest_Vec4();
 	unitTest_Mat4();
+	unitTest_Transform();
 }
 
 void runIntegrationTests()
