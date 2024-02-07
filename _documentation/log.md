@@ -73,19 +73,25 @@
     - forgot to assign textures to send shader
 - [x] 21-Jul-2023 20-Jul-2023 add: load self model
 - [x] 29-Dec-2023 29-Jul-2023 chg: rename source folder, proj name
+- [x] 27-Jan-2024 14-Sep-2023 ref: data ayirma light / camera / scene settings
+- [x] xx-xxx-xxxx 25-Jun-2023 add: documentation: keys, ui controls
+- [x] xx-xxx-xxxx 03-Aug-2023 fix: optimization model loading
+- [x] 31-Jan-2024 31-Jan-2024 fix: isiklara brightness ekle 
+- [x] xx-xxx-xxxx 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
+- [c] 31-Jan-2024 02-May-2023 add: struct VecN
 - 12-Apr-2023 add: deserialize config or config struct
-- 02-May-2023 add: struct VecN
 - 28-May-2023 add: Edge detection / outlines
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
 - 24-Jun-2023 add: ui camera, direction, light direction controls
-- 25-Jun-2023 add: documentation: keys, ui controls
-- 11-Jul-2023 add: pitch distortion
-- 03-Aug-2023 fix: optimization model loading
+- 11-Jul-2023 fix: pitch distortion
 - 03-Aug-2023 learn: profiler kullanma
-- 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
-- 14-Sep-2023 ref: data ayirma light / camera / scene settings
+- 15-Jan-2024 !!!: her new icin bir delete yaz yeni yartailan classlar gitmiyor.
+- 31-Jan-2024 add: light placeholders: point, spot, directional
+- 02-Feb-2024 add: scene changer on gui or with key
+- 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
+
 
 # Push procedure checklist 1.4
 - add log name
@@ -95,6 +101,62 @@
 
 # Log
                                                                                |
+- [0.60] ref: scene abstraction
+    - 07-Feb-2024
+        - add: 3.4. framebuffer test scene
+        - add: predef scene elements: x,z axis
+        - fix: adapt scenes to latest
+        - add: stencilshader method 2.1 / 1.1
+    - 06-Feb-2024 
+        - wip: 3.4 framebuffer testscene
+        - add: 3.3 faceculling scene
+    - 04-Feb-2024
+        - wip: 3.3 faceculling scene
+        - add: 3.2 blending scene
+        - wip: 3.2 blending sorting objects
+        - fix: 3.2 blending: alpha
+        - fix: 3.2 blending: blending
+    - 03-Feb-2024 
+        - wip: 3.2 blending test scene
+        - fix: texture assignments
+        - fix: draw function generalization
+    - 02-Feb-2024
+        - wip: blending scene
+        - ref: lights abstracted to scene on scene 3.0
+        - add: predef lights
+        - ref: 3.0 outliner test scene
+        - ref: 2.3 importobjects test scene
+    - 31-Jan-2024
+        - fix: model paths load pass by reference 
+        - add: light placeholder for spotlight
+        - wip: importmodels test scene
+        - ref: multiple lights scene
+        - add: brightness parameter to lights
+        - fix: spotlight calculation
+    - 28-Jan-2024 
+        - add: light placeholder rendering
+        - chg: scene texture_names from vector to set
+    - 27-Jan-2024 
+        - fix: too fast bool switch problem for z and g keys
+        - fix: multiple key press problem
+    - 20-Jan-2024
+        - fix camera back bug
+        - debug: backward acceleration problem with camera
+        - camera input enums, scene input handler function
+        - wip: event handler observer pattern
+    - 16-Jan-2024
+        - wip events
+        - ref: updateScene parametrization
+    - 14-Jan-2024
+        - add: texture parametrization
+        - wip: scene refactoring
+        - wip: Scene state moved under scene
+    - 13-Jan-2024
+        - wip: scene class separation and refactoring
+        - arch: change folder relationship, document
+    - 11-Jan-2024
+        - separate draw and update on scene 2.0
+
 - [0.52] refactoring: path separation
     - 11-Jan-2024
         - ref: texture paths separation, parametrize

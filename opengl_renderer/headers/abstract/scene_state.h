@@ -4,27 +4,30 @@
 #include "../abstract/camera.h"
 #include "../abstract/light.h"
 #include "../abstract/model.h"
+#include "../abstract/transform.h"
+#include "../data/data.h"
 #include <vector>
+
 
 struct SceneState
 {
-    // camera 
-    Camera camera;
-
-    // light
-    std::vector<DirectionalLight> directional_lights;
-    std::vector<PointLight> point_lights;
-    std::vector<SpotLight> spot_lights;
+    // primes
+    Vec3 world_up;
 
     // animation
     float time;
     float delta_time;
     float last_frame_time;
 
-    float angle_multiplier;
     bool animate;
     float animation_time;
+
+    // 
+    float vertex_divider; // sadece belli yuzleri cizdirmek icin
+
+    // material
     float emission_factor;
+    float shininess;
 
     Vec3  obj_position;
     float obj_rotation_angle_y;
@@ -34,9 +37,12 @@ struct SceneState
     std::vector<Vec3> obj_positions;
     std::vector<Vec3> obj_colors;
 
-    // models
-    std::vector<Model> models;
+    // predefined_scene_element_transforms
+    std::vector<Transform> transforms;
+    // techniques
+    std::vector<ElementBools> model_element_bools;
 
     // ui
     bool b_toggleui;
+
 };

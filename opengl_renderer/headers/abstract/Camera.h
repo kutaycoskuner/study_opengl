@@ -42,4 +42,8 @@ public:
 	Vec3 getUp(const Vec3& world_up) const;
 
 	Mat4 getVectors(const Vec3& world_up) const;
+
+	Camera()
+		:rotation_sensitivity(0.002f) 
+		{}
 };

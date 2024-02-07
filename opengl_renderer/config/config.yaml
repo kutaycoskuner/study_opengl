@@ -22,13 +22,12 @@ default_camera:
   fov: 45.0
   rotation_sensitivity: 0.02
 
-default_lights:
-  num_directional: 1
-  num_point: 3
-  num_spot: 1
-
 default_animation:
   animate: false
   angle_multiplier: 0.0
   last_frame_time: 0.0
   emission_factor: 0.0
+
+scene:
+    active_scene: 6
+    

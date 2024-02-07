@@ -51,25 +51,33 @@
     - https://omar-shehata.medium.com/how-to-render-outlines-in-webgl-8253c14724f9
 
 # Structure
-- project
-    + config                : degiskenlerin tutuldugu yer
-    + data                  : cizim icin kullanilan verinin geldigi yer
-        + paths
-            + shader_paths
-            + model_paths
-        + scenes
-        + models            : imported models with their own textures and definitions imported through assimp
++ root
+    + config                : variables for program
+    + data                  : data entry for program. coordinates, textures, models, scenes etc.
+        + paths            (t0) : data path info for data files
+            - shader_paths
+            - model_paths
+        + scenes           (t2) : scene info
+        + models           (t2) : imported models with their own textures and definitions imported through assimp
     + headers               : include files function declerations
+        + abstract          : base classes
     + libs                  : outer code
-    + shaders               : shader files
-    + source                : every logic and data that I wrote
-        - blackboard
-        - main
-        - test
-        - entry
-    + event_handling
-    + test
-    + utilities
+    + source                : every logic core logic
+        + blackboard        : testing new things 
+        + core              : 
+        + event_handling    :
+        + shaders           :
+        + test              :
+        + utils             :
+        - main.cpp          : entry point of the program
+
+
+- if data is set of similar things  : ex. only coordinates                 - t0: raw
+    - textures, paths, vertex coordinates
+- if data is set of multiple things : coords + position + rotation + scale - t1: basic
+    - game object with world coords takes coords + paths + textuers
+- if data is set of multiple t1     : scene lights, cameras, objects etc   - t2: complex
+    - models, scenes
 
 # Formats
 - settings: .ini, .yaml, .xml, .json
@@ -114,7 +122,16 @@
     - OpenGL shading language
 
 
-# Blackboard
+# 
+- memory
+    - stack
+    - heap
+    - string fonksiyonu referans olarak gonderilmediginde c_str() lokal degiskenin adresini tuttugu icin yenisini yazdginida patliyor. veya scope bittiginde
+
+- arch
+    - polling
+    - event based
+
 - effects
     - dithering
     - outline
@@ -336,6 +353,14 @@
     - settings: cull var mi, outliner var mi
 
 
+# Problem definitions prompt
+- <scene class>
+    - I want application to call scene to get which models, textures and shaders to load
+    - then it loads the data 
+    - Scene also has two functions those are draw and update. These functions going to be implemented by specific scenes
+    - For instance outliner scene will have specific draw and update function as well as its own model and data set.
+    - could you give me an example class and architecture for this?
+
 # How to
 - <vs: gorunmeyen dosyayi ekleme>
     - dosya olustur sag tikla
@@ -362,6 +387,20 @@
 
 - <cpp: string to const char*>
     .c_str()
+
+- <cpp: function wrapper>
+    -   // Create a std::function wrapper for the 'add' function
+        std::function<int(int, int)> addFunction = add;
+        // Use the wrapper as if it were a regular function
+        int result = addFunction(3, 4);
+        std::cout << "Result: " << result << std::endl;
+
+- <cpp: lambda function>
+    - A lambda function, also known as an anonymous function or a lambda expression, is a concise way to define small, unnamed functions in programming languages. Lambda functions are particularly common in languages that support functional programming paradigms, and C++ is one such language.
+    In C++, a lambda function is defined using the following syntax:
+    [capture](parameters) -> return_type {
+    // function body
+    }
 
 - <yeni class olusturma proseduru>
     - once headeri olustur. Arayuzu ve memberlari belirle
@@ -513,6 +552,16 @@
     - naming
     - responsiibility, ownership dagilimlari
     - const refler
+
+- <errors>
+    - error c2243: exists, but is inaccessible
+        - derived class private : classname to : public classname
+    - error e0349: no operator "[]" matches these operand
+        - unordered map e erisme seklin probemli map[key] degil map.at(key)
+    - error C2664: 'void Application::drawModel(Model &,int &,const char *,Uniforms &)': cannot convert argument 2 from     'unsigned int' to 'int &'
+        - signature tutmuyor
+    - LNK2019: unresolved external symbol "private: void __cdecl Application::drawModel(class Model &,unsigned int &,char const *,struct Uniforms &)" (?drawModel@Application@@AEAAXAEAVModel@@AEAIPEBDAEAUUniforms@@@Z) referenced in function "private: void __cdecl Application::drawScene(struct Uniforms &)" (?drawScene@Application@@AEAAXAEAUUniforms@@@Z)
+1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
 
 - <warnings>
     - warning C4715: 'Application::initialize': not all control paths return a value

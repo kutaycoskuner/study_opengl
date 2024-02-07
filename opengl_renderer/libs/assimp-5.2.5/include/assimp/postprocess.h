@@ -206,7 +206,7 @@ enum aiPostProcessSteps
     aiProcess_SplitLargeMeshes = 0x80,
 
     // -------------------------------------------------------------------------
-    /** <hr>Removes the node graph and pre-transforms all vertices with
+    /** <hr>Removes the node graph and pre-predefined_scene_element_transforms all vertices with
     * the local transformation matrices of their nodes.
     *
     * If the resulting scene can be reduced to a single mesh, with a single

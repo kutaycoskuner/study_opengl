@@ -9,6 +9,7 @@ struct DirectionalLight {
     vec3 ambient;
     vec3 diffuse; 
     vec3 specular;
+    float brightness;
 };
 
 struct PointLight {    
@@ -21,7 +22,8 @@ struct PointLight {
     
     float constant;
     float linear;
-    float quadratic;  
+    float quadratic;
+    float brightness;
 };  
 
 struct SpotLight {
@@ -39,6 +41,7 @@ struct SpotLight {
 
     float cutoff;
     float outer_cutoff;
+    float brightness;
 };
 
 struct Material {
@@ -52,7 +55,6 @@ struct Material {
 };
 
 struct Surface {
-
     vec3 normal;
     vec3 diffuse;
     vec3 specular;
@@ -95,7 +97,7 @@ vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir
     vec3 ambient  = light.ambient  * surface.diffuse;
     vec3 diffuse  = light.diffuse  * diff * surface.diffuse;
     vec3 specular = light.specular * spec * surface.specular;
-    return (ambient + specular + diffuse);
+    return (ambient + specular + diffuse) * light.brightness;
 }  
 
 vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_dir)
@@ -108,7 +110,7 @@ vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_
     float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), material.shininess);
     // attenuation
     float distance = length(light.position - frag_pos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     // combine results
     vec3 ambient  = light.ambient  * surface.diffuse;
     vec3 diffuse  = light.diffuse  * diff * surface.diffuse;
@@ -116,7 +118,7 @@ vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    return (ambient + diffuse + specular);
+    return (ambient + diffuse + specular)  * light.brightness;
 }
 
 vec3 calcSpotLight(SpotLight light, Surface surface, vec3 frag_pos, vec3 view_dir)
@@ -131,7 +133,7 @@ vec3 calcSpotLight(SpotLight light, Surface surface, vec3 frag_pos, vec3 view_di
     float distance = length(light.position - frag_pos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     // spotlight intensity
-    float theta = dot(light_dir, normalize(-light.direction)); 
+    float theta = dot(light_dir, normalize(light.direction)); 
     float epsilon = light.cutoff - light.outer_cutoff;
     float intensity = clamp((theta - light.outer_cutoff) / epsilon, 0.0, 1.0);
     // combine results
@@ -141,7 +143,7 @@ vec3 calcSpotLight(SpotLight light, Surface surface, vec3 frag_pos, vec3 view_di
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
-    return (ambient + diffuse + specular);
+    return (ambient + diffuse + specular) * light.brightness;
 }
 
 // main
@@ -159,10 +161,6 @@ void main()
     surface.specular    = vec3(texture(material.specular_map1, v_tex_coords));
     surface.emission    = vec3(texture(material.emission_map1, v_tex_coords));
    
-   
-//    surface.diffuse     = vec3(texture(material.diffuse_map, v_tex_coords));
-//    surface.specular    = vec3(texture(texture2, v_tex_coords));
-//    surface.emission    = vec3(texture(material.emission_map, v_tex_coords));
 
     // calculate properties
     vec3 view_dir = normalize(view_pos - v_world_pos);
@@ -173,7 +171,7 @@ void main()
      // add point light
      for(int ii = 0; ii < NR_POINT_LIGHTS; ii++)
      {
-        illumination += calcPointLight(point_lights[ii], surface, v_world_pos, view_dir);    
+      illumination += calcPointLight(point_lights[ii], surface, v_world_pos, view_dir);    
      }
 
     // add spot light

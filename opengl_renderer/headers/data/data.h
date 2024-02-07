@@ -3,6 +3,7 @@
 #define D_DATA
 #include "../abstract/material.h"
 #include "../abstract/light.h"
+#include "../abstract/transform.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -29,6 +30,15 @@ struct TexturePaths {
 	std::string normal;
 	std::string specular;
 	std::string emission;
+};
+
+struct TextureSet
+{
+	unsigned int color;
+	unsigned int roughness;
+	unsigned int normal;
+	unsigned int specular;
+	unsigned int emission;
 };
 
 class RelativePaths
@@ -58,6 +68,54 @@ public:
 
 	static float		x_axis[12];
 	static float		y_axis[12];
+};
+
+struct ElementBools {
+	// techniques
+	bool wireframe_mode;
+	bool depth_testing;
+	bool stencil_testing;
+	bool blending;
+	bool partial_render;
+	bool indexed;
+};
+
+struct PredefSceneElement
+{
+	std::string		name;
+	float*			mesh;
+	Transform		transform;
+	std::string		shader_name;
+	std::string		texture_name;
+	Material		material;
+	ElementBools	element_bools;
+};
+
+//
+class PredefSceneElements
+{
+public:
+	static PredefSceneElement big_cube;
+	static PredefSceneElement cube_10_0;
+	static PredefSceneElement cube_0_10;
+	static PredefSceneElement box_10_0;
+	static PredefSceneElement box_0_10;
+	static PredefSceneElement ground_plane;
+	static PredefSceneElement light_placeholder;
+	static PredefSceneElement nobg_grass;
+	static PredefSceneElement transparent_window;
+	static PredefSceneElement paircube1;
+	static PredefSceneElement paircube2;
+	static PredefSceneElement axis_x;
+	static PredefSceneElement axis_z;
+};
+
+class PredefSceneLights
+{
+public:
+	static DirectionalLight d_light;
+	static PointLight p_light;
+	static SpotLight s_light;
 };
 
 class ObjWorldPositions

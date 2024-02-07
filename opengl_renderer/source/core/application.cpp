@@ -1,23 +1,23 @@
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // ----- Notes
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 /*
 	I will write some stuff here someday.
 	...
 */
 #if 1
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // ----- Libraries
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // imgui
 #include "../../libs/imgui-1.89.5/imgui.h"
 #include "../../libs/imgui-1.89.5/imgui_impl_glfw.h"
 #include "../../libs/imgui-1.89.5/imgui_impl_opengl3.h"
 
-#include "../headers/test/basic.h"					// project start basic test
-#include "../headers/utils/utilities.h"				// self written utilities
-#include "../headers/data/data.h"					// data headers ex. model vertices
-#include "../headers/events/events.h"				// window, mouse-, keyboard input events
+#include "../headers/test/basic.h"			// project start basic test
+#include "../headers/utils/utilities.h"		// self written utilities
+#include "../headers/data/data.h"			// data headers ex. model vertices
+#include "../headers/events/events.h"		// window, mouse-, keyboard input events
 #include "../headers/abstract/application.h"	
 #include "../headers/abstract/camera.h"				
 #include "../headers/abstract/shader.h"				
@@ -25,10 +25,12 @@
 #include "../headers/abstract/uniforms.h"	
 #include "../headers/abstract/model.h"		
 #include "../headers/maps/shaders.h"			
-#include "../headers/core/opengl.h"					
+#include "../headers/core/opengl.h"			
 
-#include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
-#include <glad/glad.h>			// opengl hardware adaptor before glfw
+#include "../../headers/data/scenes.h"
+
+#include <GLFW/glfw3.h>  // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
+#include <glad/glad.h>	 // opengl hardware adaptor before glfw
 #include <iostream>				
 #include <string>				
 #include <unordered_map>		
@@ -37,27 +39,27 @@
 #include <memory>
 #include <filesystem>
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // self keywords
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
 using namespace math_utils;
 using namespace str_utils;
 using namespace file_utils;
 using namespace img_utils;
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // global, constant variables
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
 const Vec3	Application::world_up = Vec3(0.0f, 1.0f, 0.0f);
 const Vec3	Application::world_origin = Vec3(0.0f, 0.0f, 0.0f);
 bool		Application::toggle_mouselock = true;
 
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 // ----- Functions Definitions
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------   
 void Application::disableStencil()
 {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -118,8 +120,8 @@ bool Application::initialize(k_configType& config)
 
 	// our state
 	std::vector<unsigned int> bg_rgb = color_utils::hexToRGB(config.at("colors").at("bg"));
-	
-	
+
+
 	this->clear_color = Vec4(
 		scaleByteToZeroOne(float(bg_rgb[0])),
 		scaleByteToZeroOne(float(bg_rgb[1])),
@@ -152,112 +154,95 @@ void Application::loadConfig(const k_configType& config)
 
 void Application::loadSceneData(const k_configType& config)
 {
-	SceneState& ss = scene_state;
 
-	// ----- scene object transforms init
-	// --------------------------------------------------------------------------------------
-	ss.obj_rotation_angle_y = 0.0f;
+	int scene_number = std::stoi(config.at("scene").at("active_scene"));
 
+	if (scene_number == 0)			active_scene = new TestScene;
+	else if (scene_number == 1)		active_scene = new MultipleLightsTestScene;
+	else if (scene_number == 2)		active_scene = new ImportModelTestScene;
+	else if (scene_number == 3)		active_scene = new OutlinerTestScene;
+	else if (scene_number == 4)		active_scene = new BlendingTestScene;
+	else if (scene_number == 5)		active_scene = new FaceCullingTestScene;
+	else if (scene_number == 6)		active_scene = new FrameBufferTestScene;
+	
+	
 	// ----- camera
 	// --------------------------------------------------------------------------------------
-	Camera& cam = ss.camera;
+	active_scene->cameras.push_back(Camera());
+	Camera& cam = active_scene->cameras.back();
 
-	ss.camera.near					= std::stof(config.at("default_camera").at("near"));
-	ss.camera.far					= std::stof(config.at("default_camera").at("far"));
-	ss.camera.fov					= std::stof(config.at("default_camera").at("fov"));
-	ss.camera.rotation_sensitivity  = std::stof(config.at("default_camera").at("rotation_sensitivity"));
+	cam.near = std::stof(config.at("default_camera").at("near"));
+	cam.far = std::stof(config.at("default_camera").at("far"));
+	cam.fov = std::stof(config.at("default_camera").at("fov"));
+	// cam.rotation_sensitivity = std::stof(config.at("default_camera").at("rotation_sensitivity"));
+	resetCamera();
+	active_scene->loadData();
+	SceneState& scene_state = active_scene->scene_state;
 
-	resetCamera(ss.camera);
+	// register listeners
+	input_speaker.addListener(active_scene);
 
-	// ----- lights
+	// ----- scene object predefined_scene_element_transforms init
 	// --------------------------------------------------------------------------------------
-	// directional
-	int num_dlights = std::stoi(config.at("default_lights").at("num_directional"));
-	int num_plights = std::stoi(config.at("default_lights").at("num_point"));
-	int num_slights = std::stoi(config.at("default_lights").at("num_spot"));
-
-	for (int ii = 0; ii < num_dlights; ii++)
-	{
-		ss.directional_lights.emplace_back();
-		//ss.directional_lights[ii].direction	= Vec3(-1.0f, -0.5f, -1.0f);
-		ss.directional_lights[ii].direction = Vec3(-1.0f, -0.8f, -0.2f);
-		ss.directional_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.8f);
-		ss.directional_lights[ii].ambient = Vec3(0.08f, .08f, 0.08f);
-		ss.directional_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
-	}
-
-	// point
-	for (int ii = 0; ii < num_plights; ii++)
-	{
-		ss.point_lights.emplace_back();
-		ss.point_lights[ii].position = Vec3(0.0f, 0.0f, 0.0f);
-		ss.point_lights[ii].ambient = Vec3(0.05f, 0.05f, 0.05f);
-		ss.point_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.8f);
-		ss.point_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
-		ss.point_lights[ii].constant = 1.0f;
-		ss.point_lights[ii].linear = 0.09f;
-		ss.point_lights[ii].quadratic = 0.032f;
-	}
-
-	// spot
-	for (int ii = 0; ii < num_slights; ii++)
-	{
-		ss.spot_lights.emplace_back();
-		ss.spot_lights[ii].position = Vec3(0.0f, 15.0f, 0.0f);
-		ss.spot_lights[ii].direction = Vec3(0.0f, -1.0f, 0.0f);
-		ss.spot_lights[ii].ambient = Vec3(0.02f, 0.02f, 0.02f);
-		ss.spot_lights[ii].diffuse = Vec3(0.8f, 0.8f, 0.0f);
-		ss.spot_lights[ii].specular = Vec3(1.0f, 1.0f, 1.0f);
-		ss.spot_lights[ii].constant = 1.0f;
-		ss.spot_lights[ii].linear = 0.09f;
-		ss.spot_lights[ii].quadratic = 0.032f;
-		ss.spot_lights[ii].cutoff = cos(toRadian(27.5f));
-		ss.spot_lights[ii].outer_cutoff = cos(toRadian(30.0f));
-	}
-
-	// animation
-	ss.animate = (config.at("default_animation").at("animate") == "true");
-	ss.angle_multiplier = std::stof(config.at("default_animation").at("angle_multiplier"));
-	ss.last_frame_time = std::stof(config.at("default_animation").at("last_frame_time"));
-	ss.emission_factor = std::stof(config.at("default_animation").at("emission_factor"));
+	scene_state.obj_rotation_angle_y = 0.0f;
 
 	// ui
-	ss.b_toggleui = false;
+	scene_state.b_toggleui = false;
 
-	// models
-	std::vector<const char*> model_paths = loadModels();
+	// animation
+	scene_state.last_frame_time = std::stof(config.at("default_animation")
+		.at("last_frame_time"));
+
+	// predefined_scene_element_transforms
+	Transform transform;
+	scene_state.transforms.push_back(transform);
 
 	// cube positions 
-	ss.obj_positions = ObjWorldPositions::obj_world_positions;
+	scene_state.obj_positions = ObjWorldPositions::obj_world_positions;
+
+
+	// ----- models
+	// --------------------------------------------------------------------------------------
+	std::vector<const char*> model_paths = loadModelPaths();
+
+	for (int ii = 0; ii < model_paths.size(); ii++)
+	{
+		Model ourModel(model_paths[ii]);
+		active_scene->models.push_back(Model(ourModel));
+	}
 }
 
 void Application::loadTextures()
 {
 	// texture
 	setVerticalFlipMode(true);
-	
-	//texture1 = createTexture("data/textures/container.jpg", 2);
-	//texture2 = createTexture("data/textures/awesomeface.png");
 
-	vec_texture_diffuse.push_back(createTexture(RelativePaths::texture_paths["test_2k"].color));	// 0
-	vec_texture_specular.push_back(createTexture(RelativePaths::texture_paths["test_2k"].specular));
-	vec_texture_emission.push_back(createTexture(RelativePaths::texture_paths["test_2k"].emission));
+	for (auto it = active_scene->texture_names.begin(); it != active_scene->texture_names.end(); ++it)
+	{
+		TextureSet	texture_set;
+		std::string texture_name = *it;
+		RelativePaths::texture_paths[texture_name].color != "" ?
+			texture_set.color = createTexture(RelativePaths::texture_paths[texture_name].color)
+			: texture_set.color = 0;
+		
+		RelativePaths::texture_paths[texture_name].roughness != "" ?
+			texture_set.roughness = createTexture(RelativePaths::texture_paths[texture_name].roughness) 
+			: texture_set.roughness = 0;
+		
+		RelativePaths::texture_paths[texture_name].normal != "" ?
+			texture_set.normal = createTexture(RelativePaths::texture_paths[texture_name].normal)
+			: texture_set.normal = 0;
+		
+		RelativePaths::texture_paths[texture_name].specular != "" ?
+			texture_set.specular = createTexture(RelativePaths::texture_paths[texture_name].specular)
+			: texture_set.specular = 0;
+		
+		RelativePaths::texture_paths[texture_name].emission != "" ?
+			texture_set.emission = createTexture(RelativePaths::texture_paths[texture_name].emission)
+			: texture_set.emission = 0;
+		textures[texture_name] = texture_set;
+	}
 
-	vec_texture_diffuse.push_back(createTexture("data/textures/container.jpg"));	// 1
-
-	
-	texture_diffuse = createTexture(RelativePaths::texture_paths["test_2k"].color);
-	texture_specular = createTexture(RelativePaths::texture_paths["test_2k"].specular);
-	texture_emission = createTexture(RelativePaths::texture_paths["test_2k"].emission);
-
-	//textures_diffuse[0] = createTexture("data/textures/2k_test_diffuse_mid.jpg");
-	//textures_diffuse[1] = createTexture("data/textures/blending_transparent_window_blue.png");
-	//vec_texture_diffuse.push_back(createTexture("data/textures/container2_diffuse.png"));
-	//vec_texture_specular.push_back(createTexture("data/textures/container2_specular.png"));
-
-	texture_ground_diffuse = createTexture(RelativePaths::texture_paths["checker_800"].color);
-	texture_ground_specular = createTexture(RelativePaths::texture_paths["checker_800"].specular);
-	texture_ground_emission = createTexture(RelativePaths::texture_paths["checker_800"].emission);
 }
 
 void Application::loadShaders()
@@ -271,20 +256,19 @@ void Application::loadShaders()
 		// get between / and _ for key
 		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
 		std::string left_trimmed_key = path_parts[0];
-		//path_parts = str_utils::split(left_trimmed_key, "/");
+
 		path_parts = str_utils::split(left_trimmed_key, ".");
 		const std::string name = path_parts.back();
-		//
 		shaders[name] = std::make_shared<Shader>(vrtx, frag);
 	}
 }
 
-std::vector<const char*> Application::loadModels()
+std::vector<const char*> Application::loadModelPaths()
 {
 	std::vector<const char*> model_paths;
-	for (const ModelPath path : RelativePaths::model_paths)
+	for (const std::string& path : active_scene->model_paths)
 	{
-		model_paths.push_back(path.model_file.c_str());
+		model_paths.push_back(path.c_str());
 	}
 	return model_paths;
 }
@@ -331,7 +315,7 @@ void Application::loadMeshData()
 	glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
 	glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
 
-	
+
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
 	glBindVertexArray(lit_vao);
@@ -392,18 +376,15 @@ void Application::mainLoop()
 	uni_view.projection_matrix = mat_utils::identity4();
 	uni_obj.mix_value = 0.2f;
 
-	// render loop 
-	// --------------------------
-
-
-
+	// ----- render loop 
+	// --------------------------------------------------------------------------------------
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window, uni_obj, scene_state);
+		processInput(window, uni_obj);
 		int w, h;
 		glfwGetWindowSize(window, &w, &h);
-		SceneState& ss = scene_state;
-		ss.camera.aspect_ratio = float(w) / float(h);
+		Camera& cam = active_scene->cameras[0];
+		cam.aspect_ratio = float(w) / float(h);
 
 		// Start the Dear ImGui frame
 		updateUI();
@@ -499,7 +480,7 @@ void Application::updateUI()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	// remove this retun to activate ui
-	if (!scene_state.b_toggleui)
+	if (!active_scene->scene_state.b_toggleui)
 		return;
 
 	//2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
@@ -520,16 +501,16 @@ void Application::updateUI()
 		//ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		//ImGui::ColorEdit3("", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
 
-		ImGui::SliderFloat("Camera Pos X", &this->scene_state.camera.position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pos Y", &this->scene_state.camera.position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pos Z", &this->scene_state.camera.position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Yaw  ", &this->scene_state.camera.yaw_rad	, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pitch", &this->scene_state.camera.pitch_rad	, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pos X", &this->active_scene->cameras[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pos Y", &this->active_scene->cameras[0].position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pos Z", &this->active_scene->cameras[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 		const char* animate_button_name =
-				this->scene_state.animate ? "Stop" : "Play";
-		if (ImGui::Button(animate_button_name))                    
-			this->scene_state.animate = !this->scene_state.animate;
+			this->active_scene->scene_state.animate ? "Stop" : "Play";
+		if (ImGui::Button(animate_button_name))
+			this->active_scene->scene_state.animate = !this->active_scene->scene_state.animate;
 		//ImGui::SameLine();
 		//ImGui::Text("counter = %d", counter);
 
@@ -548,6 +529,54 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
 	glBindVertexArray(0);
 }
 
+void Application::setPointLightParameters(Uniforms& uni)
+{
+	// point light
+	const std::vector<PointLight>& point_lights = active_scene->point_lights;
+	if (point_lights.empty()) { return; }
+	float multiplier = 4.0f;
+	for (int ii = 0; ii < 3; ii++)
+	{
+		std::string name = "point_lights[" + std::to_string(ii) + "].";
+		active_shader->setVec3(name + "position", point_lights[ii].position);
+		active_shader->setVec3(name + "ambient", point_lights[ii].ambient);
+		active_shader->setVec3(name + "diffuse", point_lights[ii].diffuse);
+		active_shader->setVec3(name + "specular", point_lights[ii].specular);
+		active_shader->setFloat(name + "constant", point_lights[ii].constant);
+		active_shader->setFloat(name + "linear", point_lights[ii].linear);
+		active_shader->setFloat(name + "quadratic", point_lights[ii].quadratic);
+		active_shader->setFloat(name + "brightness", point_lights[ii].brightness);
+	}
+}
+
+void Application::setDirectionalLightParameters(Uniforms& uni)
+{
+	const std::vector<DirectionalLight>& directional_lights = active_scene->directional_lights;
+	if (directional_lights.empty()) { return; }
+	active_shader->setVec3("directional_light.direction", directional_lights[0].direction);
+	active_shader->setVec3("directional_light.diffuse", directional_lights[0].diffuse); // darken diffuse light a bit
+	active_shader->setVec3("directional_light.ambient", directional_lights[0].ambient);
+	active_shader->setVec3("directional_light.specular", directional_lights[0].specular);
+	active_shader->setFloat("directional_light.brightness", directional_lights[0].brightness);
+}
+
+void Application::setSpotLightParameters(Uniforms& uni)
+{
+	const std::vector<SpotLight>& spot_lights = active_scene->spot_lights;
+	if (spot_lights.empty()) { return; }
+	active_shader->setVec3("spot_light.position", spot_lights[0].position);
+	active_shader->setVec3("spot_light.direction", spot_lights[0].direction);
+	active_shader->setVec3("spot_light.ambient", spot_lights[0].ambient);
+	active_shader->setVec3("spot_light.diffuse", spot_lights[0].diffuse);
+	active_shader->setVec3("spot_light.specular", spot_lights[0].specular);
+	active_shader->setFloat("spot_light.constant", spot_lights[0].constant);
+	active_shader->setFloat("spot_light.linear", spot_lights[0].linear);
+	active_shader->setFloat("spot_light.quadratic", spot_lights[0].quadratic);
+	active_shader->setFloat("spot_light.cutoff", spot_lights[0].cutoff);
+	active_shader->setFloat("spot_light.outer_cutoff", spot_lights[0].outer_cutoff);
+	active_shader->setFloat("spot_light.brightness", spot_lights[0].brightness);
+}
+
 void Application::drawScene(Uniforms& uni)
 {
 	// draw wireframe or not
@@ -558,17 +587,13 @@ void Application::drawScene(Uniforms& uni)
 
 	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
-	
+
 	// enable stencil test
 	glEnable(GL_STENCIL_TEST);
-	
+
 	// enable blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	// enable face culling 
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_FRONT);
 
 	// https://learnopengl.com/Advanced-OpenGL/Stencil-testing
 	// both the depth and stencil test pass, we will use the reference value
@@ -589,11 +614,302 @@ void Application::drawScene(Uniforms& uni)
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
-	multipleLightsScene(uni);
-	//importModelScene(uni);
-	//testObjectsScene(uni);
-	//faceCullingTestScene(uni);
-	//frameBuffersTestScene(uni);
+	disableStencil();
+
+	const SceneState& scene_state = active_scene->scene_state;
+	const Camera& cam = active_scene->cameras[0];
+
+	// setting uniform names
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+	// create transformations
+	//upo.world_matrix = mat_utils::rotationX(toRadian(-45.0f))
+	//	* mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized())
+	//	;
+	upv.view_matrix = cam.calcViewMatrix(world_up);
+	upv.projection_matrix
+		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
+
+	// draw light placeholders
+	// --------------------------------------------------------------------------
+	std::vector<PointLight>& point_lights = active_scene->point_lights;
+	for (int ii = 0; ii < point_lights.size(); ii++)
+	{
+		this->active_shader = shaders.at("3d");
+		(*active_shader).use();
+
+		// assign uniforms
+		active_shader->setVec3("light_color", active_scene->point_lights[ii].diffuse); // light_coloru degistirme
+		active_shader->setMat4("view_matrix", uni.upv.view_matrix);
+		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
+		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
+
+		glBindVertexArray(vaos[0]);
+		active_shader->setVec3("light_color", point_lights[ii].diffuse);
+
+		Mat4 model = mat_utils::translation(point_lights[ii].position)
+			* mat_utils::scale(PredefSceneElements::light_placeholder.transform.scale)
+			;
+		active_shader->setMat4("world_matrix", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	}
+
+	std::vector<SpotLight>& spot_lights = active_scene->spot_lights;
+	for (int ii = 0; ii < spot_lights.size(); ii++)
+	{
+		this->active_shader = shaders.at("3d");
+		(*active_shader).use();
+
+		// assign uniforms
+		active_shader->setVec3("light_color", active_scene->spot_lights[ii].diffuse); // light_coloru degistirme
+		active_shader->setMat4("view_matrix", uni.upv.view_matrix);
+		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
+		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
+
+		glBindVertexArray(vaos[0]);
+		active_shader->setVec3("light_color", spot_lights[ii].diffuse);
+
+		Mat4 model = mat_utils::translation(spot_lights[ii].position)
+			* mat_utils::scale(PredefSceneElements::light_placeholder.transform.scale)
+			;
+		active_shader->setMat4("world_matrix", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	}
+
+	// draw scene objects
+	// --------------------------------------------------------------------------
+	int element_count = active_scene->predefined_scene_elements.size();
+	for (int i = 0; i < element_count; i++)
+	{
+		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		{
+			// enable face culling 
+			glEnable(GL_CULL_FACE);
+			//glCullFace(GL_FRONT);
+			glFrontFace(GL_CW);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+		this->active_shader = shaders.at(active_scene->predefined_scene_elements[i].shader_name);
+		// activate shader
+		(*active_shader).use();
+
+		// assign uniforms
+		active_shader->setFloat("mix_val", upo.mix_value);
+		active_shader->setVec3("view_pos", cam.position);
+		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+		// directional light
+		setDirectionalLightParameters(uni);
+		// point light
+		setPointLightParameters(uni);
+		//// spotLight
+		setSpotLightParameters(uni);
+
+		Mat4 model = mat_utils::identity4();
+		active_shader->setMat4("world_matrix", model);
+
+		// material
+		//active_shader->setInt("texture1", 0);
+		//active_shader->setInt("texture2", 1);
+		active_shader->setVec3("material.diffuse", 0.5f, 0.5f, 0.5f);
+		active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		active_shader->setInt("material.diffuse_map1", 0);
+		active_shader->setInt("material.specular_map1", 1);
+		active_shader->setInt("material.emission_map1", 2);
+		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
+		active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
+		float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
+		active_shader->setFloat("outline_scale", maxObjectScale);
+
+
+		// assign texture
+		std::string texture_name = active_scene->predefined_scene_elements[i].texture_name;
+
+			glActiveTexture(GL_TEXTURE0);
+			textures[texture_name].color != 0 ?
+			glBindTexture(GL_TEXTURE_2D, textures[texture_name].color)
+			: glBindTexture(GL_TEXTURE_2D, 0);
+		
+			glActiveTexture(GL_TEXTURE1);
+			textures[texture_name].specular != 0 ?
+			glBindTexture(GL_TEXTURE_2D, textures[texture_name].specular)
+			: glBindTexture(GL_TEXTURE_2D, 0);
+		
+			glActiveTexture(GL_TEXTURE2);
+			textures[texture_name].color != 0 ? 
+			glBindTexture(GL_TEXTURE_2D, textures[texture_name].emission) 
+			: glBindTexture(GL_TEXTURE_2D, 0);
+
+
+		// ----- draw element
+		// -------------------------------------------------------------------------------------
+		glBindVertexArray(lit_vao);
+		Transform transform = active_scene->predefined_scene_elements[i].transform;
+		model =
+			mat_utils::translation(Vec3(transform.position.x, transform.position.y, transform.position.z))  // 0, 3, 10 * cos(ss.time)
+			* mat_utils::rotateX(toRadian(transform.rotation.x))
+			* mat_utils::rotateY(toRadian(transform.rotation.y))
+			* mat_utils::rotateZ(toRadian(transform.rotation.z))
+			* mat_utils::scale(transform.scale.x, transform.scale.y, transform.scale.z)
+			;
+		active_shader->setMat4("world_matrix", model);
+		if (active_scene->predefined_scene_elements[i].element_bools.stencil_testing) { disableStencil(); }
+
+		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		{
+			// Bind the index buffer
+			glBindBuffer(lit_vao, lit_ebo);
+			glDrawElements(GL_TRIANGLES, sizeof(Predef3D::cube_inds__pos_norm_uv), GL_UNSIGNED_INT, 0);
+		}
+		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
+		{
+			glDrawArrays(GL_TRIANGLES, 0, 36 / active_scene->scene_state.vertex_divider);
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
+		if (active_scene->predefined_scene_elements[i].element_bools.stencil_testing) {
+			enableStencil();
+			this->active_shader = shaders.at("stenciltesting");
+			(*active_shader).use();
+			// light uniforms
+			const SceneState& ss = active_scene->scene_state;
+			UniformsPerObject& upo = uni.upo;
+			UniformsPerView& upv = uni.upv;
+			UniformsPerFrame& upf = uni.upf;
+
+			// assign textures and uniforms
+			active_shader->setVec3("view_pos", active_scene->cameras[0].position);
+			active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+			active_shader->setInt("material.texture_diffuse1", 0);
+			active_shader->setInt("material.texture_specular1", 1);
+			active_shader->setInt("material.texture_emissive1", 2);
+			active_shader->setFloat("material.emission_factor", ss.emission_factor);
+
+			// set ligt parameters
+			setDirectionalLightParameters(uni);
+			setPointLightParameters(uni);
+			setSpotLightParameters(uni);
+
+			Mat4 world = model;
+			active_shader->setMat4("world_matrix", world);
+
+			float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
+			active_shader->setFloat("outline_scale", maxObjectScale);
+			if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+			{
+				// Bind the index buffer
+				glBindBuffer(lit_vao, lit_ebo);
+				glDrawElements(GL_TRIANGLES, sizeof(Predef3D::cube_inds__pos_norm_uv), GL_UNSIGNED_INT, 0);
+			}
+			else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
+			{
+				glDrawArrays(GL_TRIANGLES, 0, 36 / active_scene->scene_state.vertex_divider);
+			}
+			else
+			{
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+			}
+			clearStencil();
+			glClear(GL_STENCIL_BUFFER_BIT);
+		}
+
+	}
+	// ---- draw models
+	// -------------------------------------------------------------------------------------
+	for (int i = 0; i < active_scene->models.size(); i++)
+	{
+		if (active_scene->scene_state.model_element_bools[i].indexed)
+		{
+			// enable face culling 
+			glEnable(GL_CULL_FACE);
+			//glCullFace(GL_FRONT);
+			glFrontFace(GL_CW);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+
+		std::string shader_name = "multiplelights";
+		this->active_shader = shaders.at(shader_name);
+		// activate shader
+		(*active_shader).use();
+		// light uniforms
+		const SceneState& ss = active_scene->scene_state;
+		UniformsPerObject& upo = uni.upo;
+		UniformsPerView& upv = uni.upv;
+		UniformsPerFrame& upf = uni.upf;
+
+		// assign textures and uniforms
+		active_shader->setVec3("view_pos", active_scene->cameras[0].position);
+		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+		active_shader->setInt("material.texture_diffuse1", 0);
+		active_shader->setInt("material.texture_specular1", 1);
+		active_shader->setInt("material.texture_emissive1", 2);
+		active_shader->setFloat("material.emission_factor", ss.emission_factor);
+
+		// set ligt parameters
+		setDirectionalLightParameters(uni);
+		setPointLightParameters(uni);
+		setSpotLightParameters(uni);
+
+		Mat4 world = mat_utils::identity4();
+		active_shader->setMat4("world_matrix", world);
+
+		float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
+		active_shader->setFloat("outline_scale", maxObjectScale);
+
+		std::vector<ElementBools> bools = active_scene->scene_state.model_element_bools;
+		if (bools[i].stencil_testing) { disableStencil(); }
+		active_scene->models[i].draw(*active_shader);
+		if (bools[i].stencil_testing) { 
+			enableStencil(); 
+			this->active_shader = shaders.at("stenciltesting02");
+			(*active_shader).use();
+			// light uniforms
+			const SceneState& ss = active_scene->scene_state;
+			UniformsPerObject& upo = uni.upo;
+			UniformsPerView& upv = uni.upv;
+			UniformsPerFrame& upf = uni.upf;
+
+			// assign textures and uniforms
+			active_shader->setVec3("view_pos", active_scene->cameras[0].position);
+			active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+
+			active_shader->setInt("material.texture_diffuse1", 0);
+			active_shader->setInt("material.texture_specular1", 1);
+			active_shader->setInt("material.texture_emissive1", 2);
+			active_shader->setFloat("material.emission_factor", ss.emission_factor);
+
+			// set ligt parameters
+			setDirectionalLightParameters(uni);
+			setPointLightParameters(uni);
+			setSpotLightParameters(uni);
+
+			Mat4 world = mat_utils::identity4();
+			active_shader->setMat4("world_matrix", world);
+
+			float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
+			active_shader->setFloat("outline_scale", maxObjectScale);
+			active_scene->models[i].draw(*active_shader);
+			clearStencil();
+			glClear(GL_STENCIL_BUFFER_BIT);
+		}
+	}
 }
 
 void Application::setPresetMaterial(const Material& material)
@@ -617,65 +933,19 @@ void Application::setMaterial(const Material& material)
 void Application::updateScene()
 {
 	// update time
-	SceneState& ss = scene_state;
+	SceneState& scene_state = active_scene->scene_state;
 	scene_state.time = (float)glfwGetTime();
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;
 	scene_state.last_frame_time = scene_state.time;
-
 	// animate?
 	if (!scene_state.animate)
 		return;
-
-	//// animation
-	//if (scene_state.b_animate)
-	//{
-	//	scene_state.animation_time = scene_state.time;
-	//}
-	//else
-	//{
-	//	scene_state.animation_time = 0.0f;
-	//}
-
-	// camera position
-	// --------------------------------------------------------------------------------------
-	//float camera_multiplier = 16.0f;
-	//ss.camera.position.x = -camera_multiplier * sin(ss.time);
-	//ss.camera.position.z =  camera_multiplier  * cos(ss.time);
-	//ss.camera.lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
-
-	// rotate obj
-	// --------------------------------------------------------------------------------------
-	ss.obj_rotation_angle_y = fmod(ss.time * 50.0f, 360.0f);
-
-	// shifting lights
-	// --------------------------------------------------------------------------------------
-	float distance_multiplier = 3.0f;
-	for (int ii = 0; ii < ss.point_lights.size(); ii++)
-	{
-		// change light position
-		ss.point_lights[ii].position = Vec3(
-			distance_multiplier * cos(ss.time + 2 * PI / 3.0f * ii),
-			4.0f,
-			distance_multiplier * sin(ss.time + 2 * PI / 3.0f * ii))
-			;
-
-		// change light color
-		float change_key = ss.time + ii;
-		setTriangleLightColorShiftByTime(ss.point_lights[ii].diffuse, ss.point_lights[ii].specular, change_key);
-	}
-
-	// emission pulse/breath
-	// --------------------------------------------------------------------------------------
-	ss.emission_factor = (sin(ss.time) + 1) * 0.5;
-
-	// ui changes
-	// --------------------------------------------------------------------------------------
-	//ss.light.direction = ui_state.spotlight_dir;
-
+	active_scene->update();
 }
 
-void Application::resetCamera(Camera& camera)
+void Application::resetCamera()
 {
+	Camera& camera = active_scene->cameras[0];
 	//camera.position = Vec3(0.0f, 0.0f, 5.0f);
 	camera.position = Vec3(-12.0f, 10.0f, 12.0f);
 	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);

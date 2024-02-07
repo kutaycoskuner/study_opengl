@@ -2,6 +2,8 @@
 # ------------------------------
 enc_temp_folder
 _workshop/
+.ref/
+.workshop/
 
 # ------------------------------
 # Prerequisites

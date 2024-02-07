@@ -281,7 +281,7 @@ struct aiBone {
     //! The influence weights of this bone, by vertex index.
     C_STRUCT aiVertexWeight *mWeights;
 
-    /** Matrix that transforms from mesh space to bone space in bind pose.
+    /** Matrix that predefined_scene_element_transforms from mesh space to bone space in bind pose.
      *
      * This matrix describes the position of the mesh
      * in the local space of this bone when the skeleton was bound.
@@ -966,7 +966,7 @@ struct aiSkeletonBone {
     /// The influence weights of this bone, by vertex index.
     C_STRUCT aiVertexWeight *mWeights;
 
-    /** Matrix that transforms from bone space to mesh space in bind pose.
+    /** Matrix that predefined_scene_element_transforms from bone space to mesh space in bind pose.
      *
      * This matrix describes the position of the mesh
      * in the local space of this bone when the skeleton was bound.
@@ -979,7 +979,7 @@ struct aiSkeletonBone {
      */
     C_STRUCT aiMatrix4x4 mOffsetMatrix;
 
-    /// Matrix that transforms the locale bone in bind pose.
+    /// Matrix that predefined_scene_element_transforms the locale bone in bind pose.
     C_STRUCT aiMatrix4x4 mLocalMatrix;
 
 #ifdef __cplusplus

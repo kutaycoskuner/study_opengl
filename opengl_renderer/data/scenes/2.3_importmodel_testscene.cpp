@@ -3,7 +3,6 @@
 // ----- libraries
 // ----------------------------------------------------------------------------
 #include "../../headers/data/scenes.h"
-#include "../../headers/utils/utilities.h"
 
 // ----------------------------------------------------------------------------
 // ----- forward declarations
@@ -12,19 +11,14 @@
 // ----------------------------------------------------------------------------
 // ----- abstract
 // ----------------------------------------------------------------------------
-void FrameBufferTestScene::loadData()
+void ImportModelTestScene::loadData()
 {
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
-	scene_state.vertex_divider = 6.0f;
 
-	// ----- camera position
-	Camera& cam = cameras[0];
-	cam.position = Vec3(5.5f, 2.0f, 3.0f);
-	cam.lookAtTarget(Vec3(0.2f, 2.0f, 0.0f));
 
-	// ----- define lights
+	// --- define lights
 	// directional
 	directional_lights.push_back(PredefSceneLights::d_light);
 	// point
@@ -33,43 +27,37 @@ void FrameBufferTestScene::loadData()
 	point_lights.push_back(PredefSceneLights::p_light);
 	// spot
 	spot_lights.push_back(PredefSceneLights::s_light);
-	//spot_lights[0].brightness = 10.0f;
 
-	// ----- define predefined elements
 	predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
-	//predefined_scene_elements.push_back(PredefSceneElements::axis_x);
-	//predefined_scene_elements.push_back(PredefSceneElements::axis_z);
-	predefined_scene_elements.push_back(PredefSceneElements::paircube1);
-	predefined_scene_elements.push_back(PredefSceneElements::paircube2);
+	texture_names = { "test_2k", "checker_800", "out_container2" }; 
 
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		Transform transform;
+		predefined_scene_element_transforms.push_back(transform);
+		predefined_scene_element_transforms[i].position = predefined_scene_elements[i].transform.position;
+	}
 
+	model_paths = {
+		"data/models/testobject0_frustum/testobject.obj",
+		"data/models/testobject1_dodecahedron/testobject.obj",
+	};
 
-
-	// ----- define model paths
-	model_paths = {};
-
-	// ----- create bools for each imported model
+	// ---- create bools for each imported model
 	for (int i = 0; i < model_paths.size(); i++) {
 		scene_state.model_element_bools.push_back(
 			ElementBools(
 				false,		// wireframe_mode
-				true,		// depth testing
-				true,		// stencil testing
+				false,		// depth testing
+				false,		// stencil testing
 				false		// blending
 			)
 		);
 	}
 
-	// ----- define texture names
-	texture_names = { "checker_800", "out_container2" };
-
-
-	// ----- specific position
-
 }
 
-void FrameBufferTestScene::update() {
-
+void ImportModelTestScene::update() {
 	// emission pulse/breath
 	// --------------------------------------------------------------------------------------
 	float time = scene_state.time;
@@ -78,14 +66,9 @@ void FrameBufferTestScene::update() {
 	float sint10 = sin(scene_state.time + 1.0f) * .5f;
 
 	//scene_state.emission_factor = sint10;
-		// move camera
-	// --------------------------------------------------------------------------------------
-	//float camera_pos_multiplier = 8.0f;
-	//cameras[0].position = Vec3(camera_pos_multiplier * cost, 2.0f, camera_pos_multiplier * sint);
-	//cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 
 	// move lights radial
-	// --------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
 	const int pi = 3.141592f;
 	for (int ii = 0; ii < point_lights.size(); ii++)
@@ -105,17 +88,41 @@ void FrameBufferTestScene::update() {
 
 	// rotate obj x z 
 	// --------------------------------------------------------------------------------------
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		if (predefined_scene_elements[i].name == "ground_plane")
+			continue;
+		if (predefined_scene_elements[i].name == "light_placeholder")
+			continue;
+		float x = predefined_scene_elements[i].transform.rotation.x;
+		float y = predefined_scene_elements[i].transform.rotation.y;
+		float z = predefined_scene_elements[i].transform.rotation.z;
+		predefined_scene_elements[i].transform.rotation
+			= Vec3(fmod(time * 40.0f, 360.0f), y, fmod(time * 40.0f, 360.0f));
+	}
 
 	// move objects
 	// --------------------------------------------------------------------------------------
-
-	// sort objects
-	// --------------------------------------------------------------------------------------
-
-
+	bool b_offset = false;
+	float time_offset = sint;
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		if (predefined_scene_elements[i].name == "ground_plane")
+			continue;
+		if (predefined_scene_elements[i].name == "light_placeholder")
+			continue;
+		b_offset = !b_offset;
+		time_offset = sint;
+		if (b_offset) time_offset = sin(time + 3.14f / 2.0f);
+		float x = predefined_scene_element_transforms[i].position.x;
+		float y = predefined_scene_elements[i].transform.position.y;
+		float z = predefined_scene_element_transforms[i].position.z;
+		predefined_scene_elements[i].transform.position
+			= Vec3(time_offset * x, y, time_offset * z);
+	}
 }
 
-FrameBufferTestScene::FrameBufferTestScene() {
+ImportModelTestScene::ImportModelTestScene() {
 }
 
 

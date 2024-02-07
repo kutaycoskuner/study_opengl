@@ -24,15 +24,17 @@ void main()
 	// vec3 current_pos = in_pos * (1.0f + base_outline_scale);
 	
 	// method 1.1: direct outline normalized thickness
-	float test = pow(outline_scale, 0.6f);
-	vec3 current_pos = in_pos * (1.0f + (base_outline_scale / test));
+	// float test = pow(outline_scale, 0.6f);
+	// vec3 current_pos = in_pos * (1.0f + (base_outline_scale / test));
 	
 	// method 2.0: normal exposition
-//	vec3 current_pos = in_pos + (in_norm * base_outline_scale); 
+	//	vec3 current_pos = in_pos + (in_norm * base_outline_scale); 
 
 	// method 2.1: normal exposition normalized thickness
-	// float scale_factor = pow(outline_scale, 0.6f);
-	// vec3 current_pos = in_pos + (in_norm * (base_outline_scale / scale_factor)); 
+	float scale_factor = pow(outline_scale, 0.6f);
+	vec3 current_pos = in_pos + (in_norm * (base_outline_scale / scale_factor)); 
+
+	// output
 	gl_Position = view_proj_matrix * world_matrix * vec4(current_pos, 1.0f);
 }
 #endif
@@ -40,9 +42,9 @@ void main()
 /*
 
 scale: x: 100		y: 10	z: 1
-after: x: 100.1   y. 10.1  z: 1.1
+after: x: 100.0   y. 10.0  z: 1.0
 
 scale: x: 1		y: 1		z: 1
-scale: x: 1.1     y: 1.1   z: 1.1
+after: x: 1.0     y: 1.0   z: 1.0
 
 */

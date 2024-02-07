@@ -3,7 +3,6 @@
 // ----- libraries
 // ----------------------------------------------------------------------------
 #include "../../headers/data/scenes.h"
-#include "../../headers/utils/utilities.h"
 
 // ----------------------------------------------------------------------------
 // ----- forward declarations
@@ -12,17 +11,13 @@
 // ----------------------------------------------------------------------------
 // ----- abstract
 // ----------------------------------------------------------------------------
-void FaceCullingTestScene::loadData()
+void OutlinerTestScene::loadData()
 {
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
-	scene_state.vertex_divider = 6.0f;
 
-	// ----- camera position
-	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
-
-	// ----- define lights
+	// --- define lights
 	// directional
 	directional_lights.push_back(PredefSceneLights::d_light);
 	// point
@@ -31,18 +26,35 @@ void FaceCullingTestScene::loadData()
 	point_lights.push_back(PredefSceneLights::p_light);
 	// spot
 	spot_lights.push_back(PredefSceneLights::s_light);
-	//spot_lights[0].brightness = 10.0f;
 
-	// ----- define predefined elements
-	predefined_scene_elements.push_back(PredefSceneElements::big_cube);
-	predefined_scene_elements.back().transform.position.y = 2.0f;
+	// ---- define predefined elements
+	//predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
 
+	// ---- define predefined_scene_element_transforms for predefined elements
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		Transform transform;
+		predefined_scene_element_transforms.push_back(transform);
+		predefined_scene_element_transforms[i].position = predefined_scene_elements[i].transform.position;
+	}
 
+	// ---- define model paths
+	model_paths = {
+		"data/models/testobject0_frustum/testobject.obj",
+		"data/models/testobject1_dodecahedron/testobject.obj",
+		"data/models/testobject2_sphere/testobject.obj",
+		"data/models/testobject3_cube0/testobject.obj",
+		"data/models/testobject4_cube1/testobject.obj",
+		"data/models/testobject5_cube2/testobject.obj",
+		"data/models/testobject6_cube3/testobject.obj",
+		"data/models/testobject7_torus/testobject.obj",
+		"data/models/testobject8_mine/testobject.obj",
+		"data/models/testobject9_cylinder/testobject.obj",
+		"data/models/testobject10_suzanne/testobject.obj",
+		"data/models/testobject11_cone/testobject.obj"
+	};
 
-	// ----- define model paths
-	model_paths = {};
-
-	// ----- create bools for each imported model
+	// ---- create bools for each imported model
 	for (int i = 0; i < model_paths.size(); i++) {
 		scene_state.model_element_bools.push_back(
 			ElementBools(
@@ -54,16 +66,12 @@ void FaceCullingTestScene::loadData()
 		);
 	}
 
-	// ----- define texture names
-	texture_names = { "checker_800", "test_2k" };
-
-
-	// ----- specific position
+	// ---- define texture names
+	texture_names = { "test_2k", "checker_800", "out_container2" };
 
 }
 
-void FaceCullingTestScene::update() {
-
+void OutlinerTestScene::update() {
 	// emission pulse/breath
 	// --------------------------------------------------------------------------------------
 	float time = scene_state.time;
@@ -72,14 +80,9 @@ void FaceCullingTestScene::update() {
 	float sint10 = sin(scene_state.time + 1.0f) * .5f;
 
 	//scene_state.emission_factor = sint10;
-		// move camera
-	// --------------------------------------------------------------------------------------
-	//float camera_pos_multiplier = 8.0f;
-	//cameras[0].position = Vec3(camera_pos_multiplier * cost, 2.0f, camera_pos_multiplier * sint);
-	//cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 
 	// move lights radial
-	// --------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
 	const int pi = 3.141592f;
 	for (int ii = 0; ii < point_lights.size(); ii++)
@@ -109,19 +112,31 @@ void FaceCullingTestScene::update() {
 		float y = predefined_scene_elements[i].transform.rotation.y;
 		float z = predefined_scene_elements[i].transform.rotation.z;
 		predefined_scene_elements[i].transform.rotation
-			= Vec3(x, fmod(time * 40.0f, 360.0f), z);
+			= Vec3(fmod(time * 40.0f, 360.0f), y, fmod(time * 40.0f, 360.0f));
 	}
 
 	// move objects
 	// --------------------------------------------------------------------------------------
-
-	// sort objects
-	// --------------------------------------------------------------------------------------
-
-
+	bool b_offset = false;
+	float time_offset = sint;
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		if (predefined_scene_elements[i].name == "ground_plane")
+			continue;
+		if (predefined_scene_elements[i].name == "light_placeholder")
+			continue;
+		b_offset = !b_offset;
+		time_offset = sint;
+		if (b_offset) time_offset = sin(time + 3.14f / 2.0f);
+		float x = predefined_scene_element_transforms[i].position.x;
+		float y = predefined_scene_elements[i].transform.position.y;
+		float z = predefined_scene_element_transforms[i].position.z;
+		predefined_scene_elements[i].transform.position
+			= Vec3(time_offset * x, y, time_offset * z);
+	}
 }
 
-FaceCullingTestScene::FaceCullingTestScene() {
+OutlinerTestScene::OutlinerTestScene() {
 }
 
 

@@ -3,9 +3,12 @@
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/vector4.h"
 #include "../abstract/ui.h"
+#include "../abstract/scene.h"
 #include "../abstract/scene_state.h"
-#include "../abstract/camera.h"
 #include "../abstract/window_state.h"
+#include "../abstract/camera.h"
+#include "../events/input_observer.h"
+#include "../data/data.h"
 #include <unordered_map>
 #include <string>
 #include <memory>
@@ -36,9 +39,12 @@ public:
 
     static bool toggle_mouselock;
 
-    static void resetCamera(Camera& camera);
+    void resetCamera();
 
-    Application() : window(nullptr), active_shader(nullptr) {}
+    // handlers
+    InputSpeaker input_speaker;
+
+    Application() : window(nullptr), active_shader(nullptr), active_scene(nullptr) {}
     // - ask memory from operating system
     // - preapre libraries
     bool initialize(k_configType& config);
@@ -88,7 +94,7 @@ private:
     void loadSceneData(const k_configType& config);
     void loadTextures();
     void loadShaders();
-    std::vector<const char*> loadModels();
+    std::vector<const char*> loadModelPaths();
     void loadMeshData();
     void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
     
@@ -107,34 +113,13 @@ private:
     void enableStencil();
     void clearStencil();
 
-    // draw objects
-    void drawAxis(int vao, const char* shader_name, Uniforms& uni);
-    void drawLightPlaceholder(int vao, const char* shader_name, Uniforms& uni);
-    //void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
-    void drawPredefElementsCube(int vao, const char* shader_name, Uniforms& uni);
-    void drawGroundPlane(int vao, const char* shader_name, Uniforms& uni);
-    void drawSingleCube(int vao, const char* shader_name, Uniforms& uni);
-    void drawTwoCubes(int vao, const char* shader_name, Uniforms& uni);
-    void drawModel(Model model, int vao, const char* shader_name, Uniforms& uni);
-    void drawOverlappingCubes(int vao, const char* shader_name, Uniforms& uni);
-
-    // specific scenes
-    void phongScene(Uniforms& uni);
-    void lightMapScene(Uniforms& uni);
-    void lightCasterScene(Uniforms& uni);
-    void multipleLightsScene(Uniforms& uni);
-    void importModelScene(Uniforms& uni);
-    void testObjectsScene(Uniforms& uni);
-    void blendingTestScene(Uniforms& uni);
-    void faceCullingTestScene(Uniforms& uni);
-    void frameBuffersTestScene(Uniforms& uni);
-
     // custom functions
     void setPointLightParameters(Uniforms& uni);
     void setSpotLightParameters(Uniforms& uni);
     void setDirectionalLightParameters(Uniforms& uni);
 
     // reset
+
 
 private:
     const static unsigned int buffer_count = 2;
@@ -145,38 +130,23 @@ private:
     std::shared_ptr<Shader> active_shader;
     std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
     
-    unsigned int texture1;
-    unsigned int texture2;
-
-    unsigned int texture_diffuse;
-    unsigned int texture_specular;
-    unsigned int texture_emission;
-    
-    unsigned int texture_ground_diffuse;
-    unsigned int texture_ground_specular;
-    unsigned int texture_ground_emission;
-    
     unsigned int lit_vao;
     unsigned int lit_vbo;
     unsigned int lit_ebo;
-    
-    unsigned int textures_diffuse[buffer_count];
-    unsigned int textures_specular[buffer_count];
-    unsigned int textures_emission[buffer_count];
-    
-    std::vector<unsigned int> vec_texture_diffuse;
-    std::vector<unsigned int> vec_texture_specular;
-    std::vector<unsigned int> vec_texture_emission;
-    
+
     unsigned int vaos[buffer_count];
     unsigned int vbos[buffer_count];
     unsigned int ebos[buffer_count];
-
-    SceneState  scene_state;
+    
+    std::unordered_map<std::string, TextureSet> textures;
+    
+    // Scene scene;
+    Scene*      active_scene;
     WindowState window_state;
     UIState     ui_state;
 
     // config
     bool        b_wireframe_mode = false;
     Vec4        clear_color;
+
 };
