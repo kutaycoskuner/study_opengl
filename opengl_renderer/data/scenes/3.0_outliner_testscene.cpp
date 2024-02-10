@@ -28,7 +28,7 @@ void OutlinerTestScene::loadData()
 	spot_lights.push_back(PredefSceneLights::s_light);
 
 	// ---- define predefined elements
-	//predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
+	predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
 
 	// ---- define predefined_scene_element_transforms for predefined elements
 	for (int i = 0; i < predefined_scene_elements.size(); i++)
@@ -67,7 +67,7 @@ void OutlinerTestScene::loadData()
 	}
 
 	// ---- define texture names
-	texture_names = { "test_2k", "checker_800", "out_container2" };
+	texture_names = { "test_2k", "linegrid_2k_darkgray" };
 
 }
 

@@ -55,7 +55,7 @@ void FaceCullingTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "checker_800", "test_2k" };
+	texture_names = { "linegrid_2k_darkgray", "test_2k" };
 
 
 	// ----- specific position

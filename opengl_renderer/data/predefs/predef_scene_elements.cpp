@@ -75,7 +75,7 @@ PredefSceneElement PredefSceneElements::paircube1 = {
 			Vec3(1.0f, 1.0f, 1.0f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "out_container2"
+	,.texture_name = "grid_2k_white"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing
@@ -95,7 +95,7 @@ PredefSceneElement PredefSceneElements::paircube2 = {
 			Vec3(1.0f, 1.0f, 1.0f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "out_container2"
+	,.texture_name = "grid_2k_white"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing
@@ -156,7 +156,7 @@ PredefSceneElement PredefSceneElements::ground_plane = {
 			Vec3(14.0f, 0.2f, 14.0f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "checker_800"
+	,.texture_name = "linegrid_2k_darkgray"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing

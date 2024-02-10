@@ -32,7 +32,7 @@ void MultipleLightsTestScene::loadData()
 	spot_lights.push_back(PredefSceneLights::s_light);
 
 
-	texture_names = { "test_2k", "checker_800", "out_container2"}; // todo sete cvir bir kere yuklensin
+	texture_names = { "test_2k", "linegrid_2k_darkgray", "out_container2"}; // todo sete cvir bir kere yuklensin
 
 	for (int i = 0; i < predefined_scene_elements.size(); i++)
 	{

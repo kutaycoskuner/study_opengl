@@ -79,6 +79,7 @@
 - [x] 31-Jan-2024 31-Jan-2024 fix: isiklara brightness ekle 
 - [x] xx-xxx-xxxx 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
 - [c] 31-Jan-2024 02-May-2023 add: struct VecN
+- [x] 10-Feb-2024 08-Feb-2024 add: add your own created test textures
 - 12-Apr-2023 add: deserialize config or config struct
 - 28-May-2023 add: Edge detection / outlines
 - 04-Jun-2023 arch: Comment standard
@@ -91,6 +92,8 @@
 - 31-Jan-2024 add: light placeholders: point, spot, directional
 - 02-Feb-2024 add: scene changer on gui or with key
 - 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
+- 08-Feb-2024 add: sahne reload, change, shader hotreload
+
 
 
 # Push procedure checklist 1.4
@@ -101,6 +104,10 @@
 
 # Log
                                                                                |
+- [0.60.1] add: self created textures
+    - 10-Feb-2024
+        - add: new blockout textures parametric generated
+
 - [0.60] ref: scene abstraction
     - 07-Feb-2024
         - add: 3.4. framebuffer test scene

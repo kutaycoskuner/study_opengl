@@ -61,7 +61,7 @@ void FrameBufferTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "checker_800", "out_container2" };
+	texture_names = { "linegrid_2k_darkgray", "grid_2k_white"};
 
 
 	// ----- specific position
@@ -77,7 +77,7 @@ void FrameBufferTestScene::update() {
 	float cost = cos(scene_state.time);
 	float sint10 = sin(scene_state.time + 1.0f) * .5f;
 
-	//scene_state.emission_factor = sint10;
+	scene_state.emission_factor = sint10 * 0.4f;
 		// move camera
 	// --------------------------------------------------------------------------------------
 	//float camera_pos_multiplier = 8.0f;

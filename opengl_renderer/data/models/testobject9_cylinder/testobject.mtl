@@ -9,6 +9,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd ../../textures/2k_test_diffuse_mid.jpg
-map_Ks ../../textures/2k_test_specular.jpg
-map_Ke ../../textures/2k_test_emission.jpg
+map_Kd ../../textures/test_2k_mid_color.jpg
+map_Ks ../../textures/test_2k_specular.jpg
+map_Ke ../../textures/test_2k_emission.jpg

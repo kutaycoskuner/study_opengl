@@ -30,7 +30,7 @@ void TestScene::loadData()
 	predefined_scene_elements.push_back(PredefSceneElements::cube_0_10);
 	predefined_scene_elements.push_back(PredefSceneElements::cube_10_0);
 	predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
-	texture_names = { "test_2k", "checker_800" }; // todo sete cvir bir kere yuklensin
+	texture_names = { "test_2k", "linegrid_2k_darkgray" }; // todo sete cvir bir kere yuklensin
 
 	for (int i = 0; i < predefined_scene_elements.size(); i++)
 	{
