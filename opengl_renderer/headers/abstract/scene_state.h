@@ -29,14 +29,6 @@ struct SceneState
     float emission_factor;
     float shininess;
 
-    Vec3  obj_position;
-    float obj_rotation_angle_y;
-    Vec3  obj_scale;
-
-    // positions
-    std::vector<Vec3> obj_positions;
-    std::vector<Vec3> obj_colors;
-
     // predefined_scene_element_transforms
     std::vector<Transform> transforms;
     // techniques

@@ -71,6 +71,11 @@
         + utils             :
         - main.cpp          : entry point of the program
 
+# Self classes
+- SceneNode | GameObject            : Base container object for scene that holds transform?
+- SceneElements                     : 
+- Predef_3D                         : 
+
 
 - if data is set of similar things  : ex. only coordinates                 - t0: raw
     - textures, paths, vertex coordinates
@@ -362,6 +367,14 @@
     - could you give me an example class and architecture for this?
 
 # How to
+- <loop gif uretme proseduru>
+    - sharex ile loop olusturacak gifi kaydet
+        - tam loop olduguna isiklarin dogru olduguna emin ol
+    - ezgif > split > cut
+    - frames 4, 126
+    - download, yeniden yukle, optimizer
+        - 2mb altina dusur
+
 - <vs: gorunmeyen dosyayi ekleme>
     - dosya olustur sag tikla
     - add
@@ -561,7 +574,11 @@
     - error C2664: 'void Application::drawModel(Model &,int &,const char *,Uniforms &)': cannot convert argument 2 from     'unsigned int' to 'int &'
         - signature tutmuyor
     - LNK2019: unresolved external symbol "private: void __cdecl Application::drawModel(class Model &,unsigned int &,char const *,struct Uniforms &)" (?drawModel@Application@@AEAAXAEAVModel@@AEAIPEBDAEAUUniforms@@@Z) referenced in function "private: void __cdecl Application::drawScene(struct Uniforms &)" (?drawScene@Application@@AEAAXAEAUUniforms@@@Z)
-1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
+    1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
+    - error LNK2001: unresolved external symbol "public: static float * Predef3D::quad_vrts__pos_tex" (?quad_vrts__pos_tex@Predef3D@@2PAMA)
+    1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe : fatal error LNK1120: 1 unresolved externals
+    1>Done building project "opengl_renderer.vcxproj" -- FAILED.
+        - cant find definition
 
 - <warnings>
     - warning C4715: 'Application::initialize': not all control paths return a value

@@ -193,7 +193,6 @@
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="data\predefs\predef_world_positions.cpp" />
     <ClCompile Include="headers\abstract\matrix4.h" />
     <ClCompile Include="headers\abstract\vector2.h" />
     <ClCompile Include="headers\templates\header_template_1.0.h" />

@@ -63,6 +63,9 @@ public:
 	static float		cube_vrts__pos_norm_uv[288];
 	static unsigned int cube_inds__pos_norm_uv[36];
 
+	static float		plane_vrts__pos_tex[30];
+	static float		quad_vrts__pos_tex[24];
+
 	static float		square_vrts[32];
 	static unsigned int square_inds[6];
 
@@ -116,12 +119,6 @@ public:
 	static DirectionalLight d_light;
 	static PointLight p_light;
 	static SpotLight s_light;
-};
-
-class ObjWorldPositions
-{
-public:
-	static std::vector<Vec3> obj_world_positions;
 };
 
 class PredefMaterial

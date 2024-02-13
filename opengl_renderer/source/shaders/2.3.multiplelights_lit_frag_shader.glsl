@@ -178,11 +178,14 @@ void main()
     illumination += calcSpotLight(spot_light, surface, v_world_pos, view_dir);
 
     // add emission
-    illumination += surface.emission * material.emission_factor;
-    
+    if (material.emission_factor > 0)
+    {
+        illumination += surface.emission * material.emission_factor;
+    }
+
     // result
-//    f_frag_color = vec4(surface.diffuse, 1.0f);
-//    f_frag_color = vec4(dark, 1.0f);
+    //    f_frag_color = vec4(surface.diffuse, 1.0f);
+    //    f_frag_color = vec4(dark, 1.0f);
     f_frag_color = vec4(illumination, 1.0f);
 }
 

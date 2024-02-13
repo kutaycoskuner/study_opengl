@@ -80,30 +80,45 @@
 - [x] xx-xxx-xxxx 12-Sep-2023 add: array olan texture parametrelerini vektorlerle degistir
 - [c] 31-Jan-2024 02-May-2023 add: struct VecN
 - [x] 10-Feb-2024 08-Feb-2024 add: add your own created test textures
+- [x] 11-Feb-2024 15-Jan-2024 !!!: her new icin bir delete yaz yeni yartailan classlar gitmiyor.
+- [x] xx-xxx-xxxx 24-Jun-2023 add: ui camera, direction, light direction controls
+- [x] 11-Feb-2024 11-Feb-2024 add: GLFW_CURSOR_DISABLED when mouse cursor disabled
 - 12-Apr-2023 add: deserialize config or config struct
-- 28-May-2023 add: Edge detection / outlines
+- 28-May-2023 add: Edge detection / inner definition lines | normal
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
-- 24-Jun-2023 add: ui camera, direction, light direction controls
 - 11-Jul-2023 fix: pitch distortion
 - 03-Aug-2023 learn: profiler kullanma
-- 15-Jan-2024 !!!: her new icin bir delete yaz yeni yartailan classlar gitmiyor.
 - 31-Jan-2024 add: light placeholders: point, spot, directional
 - 02-Feb-2024 add: scene changer on gui or with key
 - 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
 - 08-Feb-2024 add: sahne reload, change, shader hotreload
+- 13-Feb-2024 learn: convolution
 
 
 
 # Push procedure checklist 1.4
 - add log name
 - check todo
+- change last update
 - change time log
 - push
 
 # Log
                                                                                |
+- [0.61] add: framebuffers
+    - 13-Feb-2024 
+        - add: display framebuffers and push
+        - add: framebuffers chapter
+    - 11-Feb-2024
+        - wip: framebuffers
+        - fix: mouse cursor disable when mouse camera activated
+        - fix: unload: no delete for created scene, deleting buffer objects
+        - del: scene state daha onceden kaldirilmis veriyi sildim. obj_rotation_y, world_positions etc.
+    - 10-Feb-2024
+        - fix: negative emission on multiplelight shader
+
 - [0.60.1] add: self created textures
     - 10-Feb-2024
         - add: new blockout textures parametric generated

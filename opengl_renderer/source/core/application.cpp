@@ -128,6 +128,32 @@ bool Application::initialize(k_configType& config)
 		scaleByteToZeroOne(float(bg_rgb[2])),
 		1.00f
 	);
+
+
+	// 3.4 generate frame buffer object 
+	glGenFramebuffers(1, &lit_fbo);
+	// bunun yerinin dogru olup olmadigina emin degilim
+	glBindFramebuffer(GL_FRAMEBUFFER, lit_fbo);
+	// texture for framebuffer
+	glGenTextures(1, &framebuffer_color_texture);
+	glBindTexture(GL_TEXTURE_2D, framebuffer_color_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, k_scr_width, k_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer_color_texture, 0);
+
+	glGenRenderbuffers(1, &lit_rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, lit_rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, k_scr_width, k_scr_height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, lit_rbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+	// unbind frame buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	return 0;
 }
 
@@ -182,10 +208,6 @@ void Application::loadSceneData(const k_configType& config)
 	// register listeners
 	input_speaker.addListener(active_scene);
 
-	// ----- scene object predefined_scene_element_transforms init
-	// --------------------------------------------------------------------------------------
-	scene_state.obj_rotation_angle_y = 0.0f;
-
 	// ui
 	scene_state.b_toggleui = false;
 
@@ -196,10 +218,6 @@ void Application::loadSceneData(const k_configType& config)
 	// predefined_scene_element_transforms
 	Transform transform;
 	scene_state.transforms.push_back(transform);
-
-	// cube positions 
-	scene_state.obj_positions = ObjWorldPositions::obj_world_positions;
-
 
 	// ----- models
 	// --------------------------------------------------------------------------------------
@@ -277,18 +295,18 @@ std::vector<const char*> Application::loadModelPaths()
 void Application::loadMeshData()
 {
 	// create vertex array object and vertex buffer object
-	glGenVertexArrays(buffer_count, vaos);
-	glGenBuffers(buffer_count, vbos); // :: memory alani olusturuyor
-	glGenBuffers(buffer_count, ebos); // :: ebo icin memory
+	glGenVertexArrays(buffer_count, vertex_arrays);
+	glGenBuffers(buffer_count, vertex_buffers); // :: memory alani olusturuyor
+	glGenBuffers(buffer_count, element_buffers); // :: ebo icin memory
 
 
 	// binding buffers
-	glBindVertexArray(vaos[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_uv), Predef3D::cube_vrts__pos_uv, GL_STATIC_DRAW);
+	//glBindVertexArray(vertex_arrays[0]);
+	//glBindBuffer(GL_ARRAY_BUFFER, vertex_buffers[0]);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_uv), Predef3D::cube_vrts__pos_uv, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebos[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::square_inds), Predef3D::square_inds, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffers[0]);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::square_inds), Predef3D::square_inds, GL_STATIC_DRAW);
 
 	// linking vertex attributes
 	// --------------------------       
@@ -315,7 +333,6 @@ void Application::loadMeshData()
 	glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
 	glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
 
-
 	// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	// todo: vertexbuffer class olustur
 	glBindVertexArray(lit_vao);
@@ -336,6 +353,17 @@ void Application::loadMeshData()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lit_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::cube_inds__pos_norm_uv), Predef3D::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
 
+
+	// screen quad VAO
+	glGenVertexArrays(1, &vertex_arrays[0]);
+	glGenBuffers(1, &vertex_buffers[0]);
+	glBindVertexArray(vertex_arrays[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::quad_vrts__pos_tex), &Predef3D::quad_vrts__pos_tex, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -428,7 +456,6 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwMakeContextCurrent(window);
 	// resize handle
 	glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, callbackMouse);
 	glfwSetScrollCallback(window, callbackScroll);
 	return 0;
@@ -455,8 +482,13 @@ void Application::unload()
 {
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(buffer_count, vaos);
-	glDeleteBuffers(buffer_count, vbos);
+	delete active_scene;
+	glDeleteVertexArrays(1, &lit_vao);
+	glDeleteBuffers(1, &lit_vbo);
+	glDeleteFramebuffers(1, &lit_fbo);
+	glDeleteRenderbuffers(1, &lit_rbo);
+	glDeleteVertexArrays(buffer_count, vertex_arrays);
+	glDeleteBuffers(buffer_count, vertex_buffers);
 }
 
 int Application::exit()
@@ -585,6 +617,11 @@ void Application::drawScene(Uniforms& uni)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
+	// 3.4. framebuffer
+	// bind to framebuffer and draw scene as we normally would to color texture 
+	glBindFramebuffer(GL_FRAMEBUFFER, lit_fbo);
+	
+	
 	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
 
@@ -646,7 +683,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 
-		glBindVertexArray(vaos[0]);
+		glBindVertexArray(lit_vao);
 		active_shader->setVec3("light_color", point_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(point_lights[ii].position)
@@ -670,7 +707,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 
-		glBindVertexArray(vaos[0]);
+		glBindVertexArray(lit_vao);
 		active_shader->setVec3("light_color", spot_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(spot_lights[ii].position)
@@ -827,10 +864,13 @@ void Application::drawScene(Uniforms& uni)
 		}
 
 	}
+
 	// ---- draw models
 	// -------------------------------------------------------------------------------------
 	for (int i = 0; i < active_scene->models.size(); i++)
 	{
+
+		// face culling
 		if (active_scene->scene_state.model_element_bools[i].indexed)
 		{
 			// enable face culling 
@@ -910,6 +950,23 @@ void Application::drawScene(Uniforms& uni)
 			glClear(GL_STENCIL_BUFFER_BIT);
 		}
 	}
+
+	// 3.4. framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	// clear all relevant buffers
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	this->active_shader = shaders.at("framebuffer");
+	(*active_shader).use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(vertex_arrays[0]);
+	glBindTexture(GL_TEXTURE_2D, framebuffer_color_texture);	// use the color attachment texture as the texture of the quad plane
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 }
 
 void Application::setPresetMaterial(const Material& material)

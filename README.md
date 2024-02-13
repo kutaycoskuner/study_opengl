@@ -1,9 +1,9 @@
 # Study-LearnOpenGL-cpp
 Study project for learning OpenGL
 
-| Project Started |
-| :-------------- | 
-| 19-Aug-2022     |
+| Project Started | Last Update     | 
+| :-------------- | :-------------- | 
+| 19-Aug-2022     | 13-Feb-2024     |
 
 # Table of Contents
 1. [Description](#description)
@@ -41,6 +41,11 @@ This is a study repository for learning graphics programming through OpenGL.
 - This section is not yet written.
 
 # Display
+```cpp
+0.61 Framebuffers Implementation: Convolution matrix post processing edge detection
+```  
+![0.61 framebuffers](_display/0.61_framebuffer_2024-02-13.gif)
+
 ```cpp
 0.49 Face culling
 ```  

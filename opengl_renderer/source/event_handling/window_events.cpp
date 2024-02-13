@@ -20,7 +20,7 @@ void callbackFrameBufferSize(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-Vec3 operator*(const float& scalar, const Vec3& vector)	
+Vec3 operator*(const float& scalar, const Vec3& vector)
 {
 	return vector * scalar;
 }
@@ -95,8 +95,13 @@ void callbackScroll(GLFWwindow* window, double xoffset, double yoffset)
 
 void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 {
-	if (toggle_mouselock) return;
+	if (toggle_mouselock)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		return;
+	}
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	WindowState& ws = window_state;
 	const SceneState& ss = active_scene->scene_state;
 	if (ws.b_first_mouse)

@@ -11,6 +11,7 @@
 #include "../../headers/events/events.h"	
 #include "../headers/core/opengl.h"			
 
+//Application::toggle_mouselock = !Application::toggle_mouselock;
 
 
 // ---------------------------------------------------------------------------------------

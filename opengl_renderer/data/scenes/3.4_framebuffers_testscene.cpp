@@ -21,7 +21,7 @@ void FrameBufferTestScene::loadData()
 
 	// ----- camera position
 	Camera& cam = cameras[0];
-	cam.position = Vec3(5.5f, 2.0f, 3.0f);
+	//cam.position = Vec3(5.5f, 2.0f, 3.0f);
 	cam.lookAtTarget(Vec3(0.2f, 2.0f, 0.0f));
 
 	// ----- define lights
@@ -37,25 +37,27 @@ void FrameBufferTestScene::loadData()
 
 	// ----- define predefined elements
 	predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
-	//predefined_scene_elements.push_back(PredefSceneElements::axis_x);
-	//predefined_scene_elements.push_back(PredefSceneElements::axis_z);
-	predefined_scene_elements.push_back(PredefSceneElements::paircube1);
-	predefined_scene_elements.push_back(PredefSceneElements::paircube2);
-
-
-
+	//predefined_scene_elements.push_back(PredefSceneElements::paircube1);
+	//predefined_scene_elements.push_back(PredefSceneElements::paircube2);
 
 	// ----- define model paths
-	model_paths = {};
+	model_paths = {
+		"data/models/testobject0_frustum/testobject.obj",
+		"data/models/testobject1_dodecahedron/testobject.obj",
+		"data/models/testobject2_sphere/testobject.obj",
+		"data/models/testobject3_cube0/testobject.obj",
+	};
 
 	// ----- create bools for each imported model
 	for (int i = 0; i < model_paths.size(); i++) {
 		scene_state.model_element_bools.push_back(
 			ElementBools(
 				false,		// wireframe_mode
-				true,		// depth testing
-				true,		// stencil testing
-				false		// blending
+				false,		// depth testing
+				false,		// stencil testing
+				false,		// blending
+				false,		// partial render
+				false		// is indexed
 			)
 		);
 	}

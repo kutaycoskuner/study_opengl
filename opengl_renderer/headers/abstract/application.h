@@ -130,13 +130,21 @@ private:
     std::shared_ptr<Shader> active_shader;
     std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
     
-    unsigned int lit_vao;
-    unsigned int lit_vbo;
-    unsigned int lit_ebo;
+    unsigned int lit_vao; // vertex array object    || input layout
+    unsigned int lit_vbo; // vertex buffer object   || vertex buffer
+    unsigned int lit_ebo; // element buffer object  || index buffer
 
-    unsigned int vaos[buffer_count];
-    unsigned int vbos[buffer_count];
-    unsigned int ebos[buffer_count];
+    unsigned int lit_fbo; // frame buffer object    || frame buffer
+    unsigned int lit_rbo; // render buffer object   || render buffer
+    
+    unsigned int vertex_arrays[buffer_count];
+    unsigned int vertex_buffers[buffer_count];
+    unsigned int element_buffers[buffer_count];
+    unsigned int frame_buffers[buffer_count];
+    unsigned int render_buffers[buffer_count];
+
+    // 
+    unsigned int framebuffer_color_texture;
     
     std::unordered_map<std::string, TextureSet> textures;
     
