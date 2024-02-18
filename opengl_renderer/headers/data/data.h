@@ -47,6 +47,7 @@ public:
 	static const std::vector<ShaderPaths> shader_paths;
 	static const std::vector<ModelPath> model_paths;
 	static std::map<std::string, TexturePaths> texture_paths;
+	static std::map<std::string, std::vector<std::string>> cubemap_texture_paths;
 };
 
 class OpenGLParams
@@ -58,6 +59,8 @@ public:
 class Predef3D
 {
 public:
+	static float		skybox_vrts__pos[108];
+
 	static float		cube_vrts__pos_uv[180];
 
 	static float		cube_vrts__pos_norm_uv[288];
@@ -98,6 +101,7 @@ struct PredefSceneElement
 class PredefSceneElements
 {
 public:
+	static PredefSceneElement single_cube;
 	static PredefSceneElement big_cube;
 	static PredefSceneElement cube_10_0;
 	static PredefSceneElement cube_0_10;

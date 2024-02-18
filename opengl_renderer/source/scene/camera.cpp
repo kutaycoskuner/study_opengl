@@ -151,11 +151,11 @@ void Camera::rotate(float x_offset, float y_offset)
 	pitch_rad	-= y_offset;
 
 	// limiter
-	float limit_deg = 60.0f;
-	if (math_utils::toDegree(pitch_rad) > limit_deg)
-		pitch_rad  = math_utils::toRadian(limit_deg);
-	if (math_utils::toDegree(pitch_rad) < -limit_deg)
-		pitch_rad = math_utils::toRadian(-limit_deg);
+	//float limit_deg = 60.0f;
+	//if (math_utils::toDegree(pitch_rad) > limit_deg)
+	//	pitch_rad  = math_utils::toRadian(limit_deg);
+	//if (math_utils::toDegree(pitch_rad) < -limit_deg)
+	//	pitch_rad = math_utils::toRadian(-limit_deg);
 }
 
 

@@ -37,4 +37,7 @@ struct SceneState
     // ui
     bool b_toggleui;
 
+    // testing
+    bool        b_model_refraction = false;
+
 };

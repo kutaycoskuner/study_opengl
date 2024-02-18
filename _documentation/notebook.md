@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- texture sources
+    - https://wiki.thedarkmod.com/index.php?title=Texture_Sources
+
 - mindmap
     - https://whimsical.com/opengl-renderer-PFm5KunUzHC9KSqtPdo5Ye
     - https://miro.com/app/board/uXjVN7R_r_E=/
@@ -49,6 +52,9 @@
 
 - outline render webgl
     - https://omar-shehata.medium.com/how-to-render-outlines-in-webgl-8253c14724f9
+
+- snells law (refraction physics)
+    - https://en.wikipedia.org/wiki/Snell%27s_law
 
 # Structure
 + root
@@ -346,6 +352,23 @@
 - added glad.c file to project
 
 # Blackboard
+- <cubemaps skybox>
+    - how to get uv coordinates for sphere cylindrical projection (equirectangular projection)
+        - http://paulbourke.net/miscellaneous/cubemaps/
+https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for-sphere-cylindrical-projection
+    - converting from cubemaps to fisheye
+        - https://web.archive.org/web/20200226035745/https://paulbourke.net/miscellaneous/cubemaps/
+    - eve renderdocs
+        - https://forums.eveonline.com/t/launching-logging-into-eve-from-renderdoc/70680
+    - where eve online skybox images located
+        - https://www.reddit.com/r/Eve/comments/2apv5m/where_are_the_eve_skybox_images_located/
+    - eve online cube maps tut
+        - https://forum.kerbalspaceprogram.com/topic/138036-tutorial-setting-up-eve-cube-maps-24mb-dds-4-texture-maps/
+    - ue4 space scene
+        - https://www.youtube.com/watch?v=euFtUIVEr4A
+    - hdri cubemap converter
+        - https://matheowis.github.io/HDRI-to-CubeMap/
+
 - <scene neleri barindirmali>
     - scene nasil update edilecek
     - hangi objeler cizilecek
@@ -367,11 +390,17 @@
     - could you give me an example class and architecture for this?
 
 # How to
-- <loop gif uretme proseduru>
+- <procedure: yeni shader ekleme>
+
+- <procedure: yeni class olusturma>
+    - once headeri olustur. Arayuzu ve memberlari belirle
+    - .cpp dosyasini olusturup memberlari yazmay basla
+
+- <procedure: loop gif uretme>
     - sharex ile loop olusturacak gifi kaydet
         - tam loop olduguna isiklarin dogru olduguna emin ol
     - ezgif > split > cut
-    - frames 4, 126
+    - frames 6, 100
     - download, yeniden yukle, optimizer
         - 2mb altina dusur
 
@@ -414,10 +443,6 @@
     [capture](parameters) -> return_type {
     // function body
     }
-
-- <yeni class olusturma proseduru>
-    - once headeri olustur. Arayuzu ve memberlari belirle
-    - .cpp dosyasini olusturup memberlari yazmay basla
 
 - <test basic>
     - activate on main blackboard -> use blackboard.css as blank page on source/blackboard
@@ -565,6 +590,10 @@
     - naming
     - responsiibility, ownership dagilimlari
     - const refler
+
+- <problems>
+    - texture is reversed, upside down
+        - try stbi -> image flip
 
 - <errors>
     - error c2243: exists, but is inaccessible

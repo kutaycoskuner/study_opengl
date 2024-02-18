@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update     | 
 | :-------------- | :-------------- | 
-| 19-Aug-2022     | 13-Feb-2024     |
+| 19-Aug-2022     | 18-Feb-2024     |
 
 # Table of Contents
 1. [Description](#description)
@@ -41,6 +41,11 @@ This is a study repository for learning graphics programming through OpenGL.
 - This section is not yet written.
 
 # Display
+```cpp
+0.62 Cubemap: Skybox implementation
+```  
+![0.62 cubemaps](_display/0.62_skybox_2024-02-18.gif)
+
 ```cpp
 0.61 Framebuffers Implementation: Convolution matrix post processing edge detection
 ```  

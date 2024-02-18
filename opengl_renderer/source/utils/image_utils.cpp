@@ -5,6 +5,7 @@
 #include <string>				// standart string kutuphanesi
 #define STB_IMAGE_IMPLEMENTATION
 #include "../libs/stb_image.h"
+#include "../../headers/utils/utilities.h"
 #include <iostream>				// cout / cin icin lazim
 
 
@@ -60,6 +61,7 @@ namespace img_utils
 
 	unsigned int createTexture(const std::string& path, const int& wrapping)
 	{
+		img_utils::setVerticalFlipMode(false);
 		unsigned int texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -103,5 +105,39 @@ namespace img_utils
 		glBindTexture(GL_TEXTURE_2D, 0);
 		stbi_image_free(data);
 		return texture;
+	}
+
+	unsigned int loadCubemap(const std::vector<std::string>& faces)
+	{
+		img_utils::setVerticalFlipMode(false);
+		unsigned int textureID;
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+		int width, height, nrChannels;
+		for (unsigned int i = 0; i < faces.size(); i++)
+		{
+			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+			if (data)
+			{
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+				);
+				//GLenum err = glGetError();
+				stbi_image_free(data);
+			}
+			else
+			{
+				std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+				stbi_image_free(data);
+			}
+		}
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		return textureID;
 	}
 }

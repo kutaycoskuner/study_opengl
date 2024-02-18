@@ -12,13 +12,8 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform float mix_val;
 
-
 void main()
 {
-    vec4 tex_color = texture(texture1, v_tex_coord);
     out_frag_color = mix(texture(texture1, v_tex_coord), texture(texture2, v_tex_coord), mix_val);
-    out_frag_color = vec4(light_color, 1.0f);
-    //    negatif
-    //    FragColor = vec4(vec3(1,1,1)-tex_color.xyz,tex_color.a); 
 }
 #endif

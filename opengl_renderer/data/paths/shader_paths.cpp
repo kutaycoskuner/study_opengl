@@ -6,10 +6,6 @@
 const std::vector<ShaderPaths> RelativePaths::shader_paths =
 {
 	{
-		"source/shaders/2.0.phong_lit_vrtx_shader.glsl",
-		"source/shaders/2.0.phong_lit_frag_shader.glsl",
-	}
-	,{
 		"source/shaders/1.0.3d_vrtx_shader.glsl",
 		"source/shaders/1.0.3d_frag_shader.glsl"
 	}
@@ -22,8 +18,16 @@ const std::vector<ShaderPaths> RelativePaths::shader_paths =
 		"source/shaders/1.1.axis-z_frag_shader.glsl"
 	}
 	,{
+		"source/shaders/1.2.diffuse_vrtx_shader.glsl",
+		"source/shaders/1.2.diffuse_frag_shader.glsl"
+	}
+	,{
 		"source/shaders/2.1.lightmap_lit_vrtx_shader.glsl",
 		"source/shaders/2.1.lightmap_lit_frag_shader.glsl"
+	}
+	,{
+		"source/shaders/2.0.phong_lit_vrtx_shader.glsl",
+		"source/shaders/2.0.phong_lit_frag_shader.glsl",
 	}
 	,{
 		"source/shaders/2.2.lightcaster-directional_lit_vrtx_shader.glsl",
@@ -57,9 +61,17 @@ const std::vector<ShaderPaths> RelativePaths::shader_paths =
 		"source/shaders/3.2.blending_vrtx_shader.glsl",
 		"source/shaders/3.2.blending_frag_shader.glsl"
 	}
-		,{
+	,{
 		"source/shaders/3.4.framebuffer_vrtx_shader.glsl",
 		"source/shaders/3.4.framebuffer_frag_shader.glsl"
+	}
+	,{
+		"source/shaders/3.5.cubemap_vrtx_shader.glsl",
+		"source/shaders/3.5.cubemap_frag_shader.glsl"
+	}
+	,{
+		"source/shaders/3.6.cubemaplit_vrtx_shader.glsl",
+		"source/shaders/3.6.cubemaplit_frag_shader.glsl"
 	}
 };
 

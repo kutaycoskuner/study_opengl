@@ -24,6 +24,26 @@ PredefSceneElement PredefSceneElements::big_cube = {
 				)
 };
 
+PredefSceneElement PredefSceneElements::single_cube = {
+	.name = "cube"
+	,.mesh = Predef3D::cube_vrts__pos_norm_uv
+	,.transform = {
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(1.5f, 1.5f, 1.5f)
+		}
+	,.shader_name = "multiplelights"
+	,.texture_name = "out_container2"
+	,.element_bools = ElementBools(
+					false,		// wireframe_mode
+					false,		// depth testing
+					false,		// stencil testing
+					false,		// blending
+					false,		// partial render
+					false		// is indexed
+				)
+};
+
 
 PredefSceneElement PredefSceneElements::cube_10_0 = {
 	.name = "cube"

@@ -8,6 +8,31 @@
 // ---------------------------------------------------------------------------------------
 
 // ! const olamiyor
+std::map<std::string, std::vector<std::string>> RelativePaths::cubemap_texture_paths =
+{
+	{"skybox01",
+		{
+		"data/textures_cubemap/out_skybox1_right.jpg",
+		"data/textures_cubemap/out_skybox1_left.jpg",
+		"data/textures_cubemap/out_skybox1_top.jpg",
+		"data/textures_cubemap/out_skybox1_bottom.jpg",
+		"data/textures_cubemap/out_skybox1_front.jpg",
+		"data/textures_cubemap/out_skybox1_back.jpg"
+		}
+	}
+	,{"skybox02",
+		{
+		"data/textures_cubemap/out_artistworkshop_2k_right.png",
+		"data/textures_cubemap/out_artistworkshop_2k_left.png",
+		"data/textures_cubemap/out_artistworkshop_2k_top.png",
+		"data/textures_cubemap/out_artistworkshop_2k_bottom.png",
+		"data/textures_cubemap/out_artistworkshop_2k_front.png",
+		"data/textures_cubemap/out_artistworkshop_2k_back.png"
+		}
+	}
+};
+
+
 std::map<std::string, TexturePaths> RelativePaths::texture_paths =
 {
 	{"test_2k",

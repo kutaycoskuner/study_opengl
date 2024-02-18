@@ -10,8 +10,11 @@ float Luma(vec3 color) { return max(dot(color, vec3(0.299, 0.587, 0.114)), 0.001
 
 void main()
 {
+        
 	//   1.0 init
 		out_frag_color = texture(screen_texture, v_tex_coords);
+    //  0.0 disabled
+    return;
 	
 	//   2.0 color inversion
 	//	out_frag_color = vec4(vec3(1.0 - texture(screen_texture, v_tex_coords)), 1.0);

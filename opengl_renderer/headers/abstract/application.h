@@ -97,7 +97,7 @@ private:
     std::vector<const char*> loadModelPaths();
     void loadMeshData();
     void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
-    
+
     // ui
     void drawUI();
     void updateUI();
@@ -129,7 +129,12 @@ private:
     GLFWwindow* window;
     std::shared_ptr<Shader> active_shader;
     std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+
+    unsigned int cubemap_texture;
     
+    unsigned int skybox_vao;
+    unsigned int skybox_vbo;
+
     unsigned int lit_vao; // vertex array object    || input layout
     unsigned int lit_vbo; // vertex buffer object   || vertex buffer
     unsigned int lit_ebo; // element buffer object  || index buffer
@@ -156,5 +161,7 @@ private:
     // config
     bool        b_wireframe_mode = false;
     Vec4        clear_color;
+
+
 
 };

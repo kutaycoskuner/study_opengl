@@ -71,3 +71,12 @@ public:
 	FrameBufferTestScene();
 };
 
+class CubemapTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	CubemapTestScene();
+};
+
+

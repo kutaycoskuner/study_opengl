@@ -95,8 +95,7 @@
 - 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
 - 08-Feb-2024 add: sahne reload, change, shader hotreload
 - 13-Feb-2024 learn: convolution
-
-
+- 18-Feb-2024 learn: blender nebula skybox
 
 # Push procedure checklist 1.4
 - add log name
@@ -107,6 +106,19 @@
 
 # Log
                                                                                |
+- [0.62] add cubemaps
+    - 18-Feb-2024
+        - add: display skybox
+        - wip: nebula shader | skybox creation process
+        - add: environment reflection shader 
+        - add: skybox at background | depth testing pass on shader
+    - 15-Feb-2024
+        - fix: cubemap: camera frustum clipping problem (np: 0.01 from 1.0)
+        - fix: cubemap: texture loading problem (stdbi flip)
+    - 14-Feb-2024
+        - wip: cubemaps | texture to shader problem
+        - add: new scene, shaders for cubemap 
+
 - [0.61] add: framebuffers
     - 13-Feb-2024 
         - add: display framebuffers and push

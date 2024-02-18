@@ -7,12 +7,12 @@ layout (location = 2) in vec2 in_tex_coord;
 out vec2 v_tex_coord;
 
 uniform mat4 world_matrix;
-uniform mat4 view_matrix;
-uniform mat4 projection_matrix;
+uniform mat4 view_proj_matrix;
+
 
 void main()
 {
-    gl_Position = projection_matrix * view_matrix * world_matrix * vec4(in_pos, 1.0);
+    gl_Position = view_proj_matrix * world_matrix * vec4(in_pos, 1.0);
     v_tex_coord = in_tex_coord;
 }
 #endif
