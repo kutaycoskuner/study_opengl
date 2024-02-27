@@ -12,22 +12,20 @@
 // ----------------------------------------------------------------------------
 // ----- abstract
 // ----------------------------------------------------------------------------
-void CubemapTestScene::loadData()
+void AdvancedGLSLTestScene::loadData()
 {
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 6.0f;
-	scene_state.b_model_refraction = true;
-	scene_state.b_skybox = true;
 
 	// ----- camera position
 	Camera& cam = cameras[0];
-	cam.position = Vec3(10.0f, 5.0f, 8.0f);
-	cam.lookAtTarget(Vec3(0.0f, 2.0f, 0.0f));
+	cam.position = Vec3(0.0f, 0.0f, -6.0f);
+	cam.lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 
 	// ----- define lights
-	//// directional
+	// directional
 	//directional_lights.push_back(PredefSceneLights::d_light);
 	//// point
 	//point_lights.push_back(PredefSceneLights::p_light);
@@ -35,18 +33,30 @@ void CubemapTestScene::loadData()
 	//point_lights.push_back(PredefSceneLights::p_light);
 	//// spot
 	//spot_lights.push_back(PredefSceneLights::s_light);
-	////spot_lights[0].brightness = 10.0f;
+	//spot_lights[0].brightness = 10.0f;
 
 	// ----- define predefined elements
-	//predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements[0].transform.position = Vec3(1.0f, 1.0f, 0.0f);
+	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements[1].transform.position = Vec3(-1.0f, 1.0f, 0.0f);
+	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements[2].transform.position = Vec3(1.0f, -1.0f, 0.0f);
+	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements[3].transform.position = Vec3(-1.0f, -1.0f, 0.0f);
+
+	predefined_scene_elements[0].shader_name = "advglsl-red";
+	predefined_scene_elements[1].shader_name = "advglsl-green";
+	predefined_scene_elements[2].shader_name = "advglsl-blue";
+	predefined_scene_elements[3].shader_name = "advglsl-yellow";
 	//predefined_scene_elements[0].shader_name = "cubemaplit";
 	//predefined_scene_elements.push_back(PredefSceneElements::paircube1);
 	//predefined_scene_elements.push_back(PredefSceneElements::paircube2);
 
 	// ----- define model paths
 	model_paths = {
-		"data/models/testobject0_frustum/testobject.obj",
-		"data/models/testobject1_dodecahedron/testobject.obj"
+		//"data/models/testobject0_frustum/testobject.obj",
+		//"data/models/testobject1_dodecahedron/testobject.obj"
 	};
 
 	// ----- create bools for each imported model
@@ -71,7 +81,7 @@ void CubemapTestScene::loadData()
 
 }
 
-void CubemapTestScene::update() {
+void AdvancedGLSLTestScene::update() {
 
 	// emission pulse/breath
 	// --------------------------------------------------------------------------------------
@@ -83,9 +93,9 @@ void CubemapTestScene::update() {
 	scene_state.emission_factor = sint10 * 0.4f;
 	// move camera
 	// --------------------------------------------------------------------------------------
-	float camera_pos_multiplier = 12.0f;
-	cameras[0].position = Vec3(camera_pos_multiplier * cost, cameras[0].position.y, camera_pos_multiplier * sint);
-	cameras[0].lookAtTarget(Vec3(0.0f, 2.0f, 0.0f));
+	//float camera_pos_multiplier = 12.0f;
+	//cameras[0].position = Vec3(camera_pos_multiplier * cost, cameras[0].position.y, camera_pos_multiplier * sint);
+	//cameras[0].lookAtTarget(Vec3(0.0f, 2.0f, 0.0f));
 
 	// move lights radial
 	// --------------------------------------------------------------------------------------
@@ -118,7 +128,7 @@ void CubemapTestScene::update() {
 
 }
 
-CubemapTestScene::CubemapTestScene() {
+AdvancedGLSLTestScene::AdvancedGLSLTestScene() {
 }
 
 

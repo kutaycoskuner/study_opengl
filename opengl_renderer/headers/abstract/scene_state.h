@@ -37,6 +37,9 @@ struct SceneState
     // ui
     bool b_toggleui;
 
+    // cubemap
+    bool        b_skybox = false;
+
     // testing
     bool        b_model_refraction = false;
 

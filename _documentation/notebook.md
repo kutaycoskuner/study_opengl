@@ -390,6 +390,43 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <debugging: tools>
+    - difference checker
+        - https://www.diffchecker.com/
+
+- <knowledge: glsl built in variables>
+    - gl_PointSize
+    - gl_VertexID
+    - gl_FragCoord
+    - gl_FrontFacing
+
+- <knowledge: opengl draw methods>
+    - glDrawArrays
+    - glDrawElements
+
+- <debugging: renderdocs>
+    - C:/Users/kutay/OneDrive/Documents/GitHub/study_opengl/opengl_renderer
+    - C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
+
+- <optimization>
+    - clear 0, 1 
+
+- <theory: debugging>
+    - problemi cozmeden varsayimla ilerleme
+
+- <theory: global illumination>
+    - yuzey sadece gelen isigi dikkate aliyor
+    - gercekte isik sekip yayilmaya devam ediyor
+    - her sey isik kaynagi | isik kac defa sekecek
+    - ambient lighting approximate ediyor
+
+- <theory: tonemapping>
+    - high dynamic range
+        - pixel degerleriyle alakali
+        - 1 i gecenler bembeyaz, low dynamic range
+        - high dynamic range > render / display
+        - 0, 1 
+
 - <procedure: yeni shader ekleme>
 
 - <procedure: yeni class olusturma>

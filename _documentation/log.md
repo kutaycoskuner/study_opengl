@@ -96,6 +96,7 @@
 - 08-Feb-2024 add: sahne reload, change, shader hotreload
 - 13-Feb-2024 learn: convolution
 - 18-Feb-2024 learn: blender nebula skybox
+- 27-Feb-2024 arch: split drawscene functions
 
 # Push procedure checklist 1.4
 - add log name
@@ -106,6 +107,20 @@
 
 # Log
                                                                                |
+- [0.63] add uniform buffer objects
+    - 27-Feb-2024
+        - add uniform buffer objects
+        - add 3.8 problem solution documentation
+        - fix fault ubo matrix assignment
+        - fix shader id access on ubo index binding
+    - 25-Feb-2024
+        - add mat4 value_ptr()
+        - add advanced glsl shaders
+        - add advanced glsl testscene
+    - 20-Feb-2024
+        - add: render skybox option to scene state
+        - fix: face culling scene problem
+
 - [0.62] add cubemaps
     - 18-Feb-2024
         - add: display skybox

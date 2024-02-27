@@ -148,6 +148,8 @@ private:
     unsigned int frame_buffers[buffer_count];
     unsigned int render_buffers[buffer_count];
 
+    unsigned int ubo_matrices;
+
     // 
     unsigned int framebuffer_color_texture;
     

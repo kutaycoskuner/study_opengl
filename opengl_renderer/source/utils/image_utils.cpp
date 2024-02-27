@@ -61,7 +61,7 @@ namespace img_utils
 
 	unsigned int createTexture(const std::string& path, const int& wrapping)
 	{
-		img_utils::setVerticalFlipMode(false);
+		img_utils::setVerticalFlipMode(true);
 		unsigned int texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);

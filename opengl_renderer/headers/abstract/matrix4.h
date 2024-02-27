@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------------------------
 #include "vector3.h"
 #include "vector4.h"
+#include <array>
 
 // ------------------------------------------------------------------------------------------------
 // ----- abstract declarations
@@ -163,6 +164,21 @@ struct Mat4
 			for (int jj = 0; jj < 4; jj++)
 			{
 				result.m[jj][ii] = m[ii][jj];
+			}
+		}
+		return result;
+	}
+
+	const float* value_ptr()
+	{
+		return &m[0][0];
+	}
+
+	std::array<float, 16> copytoFloatArray() const {
+		std::array<float, 16> result;
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				result[i * 4 + j] = m[i][j];
 			}
 		}
 		return result;

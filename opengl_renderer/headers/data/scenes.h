@@ -79,4 +79,13 @@ public:
 	CubemapTestScene();
 };
 
+class AdvancedGLSLTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	AdvancedGLSLTestScene();
+};
+
+
 

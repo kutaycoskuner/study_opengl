@@ -136,7 +136,7 @@ bool Application::initialize(k_configType& config)
 	glGenTextures(1, &framebuffer_color_texture);
 	glBindTexture(GL_TEXTURE_2D, framebuffer_color_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, k_scr_width, k_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -162,6 +162,44 @@ bool Application::load(k_configType& config)
 	loadSceneData(config);
 
 	loadShaders();
+
+	// 3.8 generate uniform buffer object matrices
+	// ----------------------------------------------------------------------------------------------
+	// first. We get the relevant block indices
+	std::vector<std::string> uniform_buffer_array;
+	uniform_buffer_array.push_back("advglsl-red");
+	uniform_buffer_array.push_back("advglsl-green");
+	uniform_buffer_array.push_back("advglsl-blue");
+	uniform_buffer_array.push_back("advglsl-yellow");
+
+
+	for (int ii = 0; ii < uniform_buffer_array.size(); ii++)
+	{
+		std::string shaderName = uniform_buffer_array[ii]; // Replace this with the actual shader name
+
+		auto shaderIter = shaders.find(shaderName);
+		if (shaderIter != shaders.end()) {
+			// The shader with the given name exists in the map
+			// Access the id of the shader through the shared pointer
+			GLuint shaderId = shaderIter->second->ID;
+			unsigned int uniform_block_index1 = glGetUniformBlockIndex(shaderId, "Matrices");
+			glUniformBlockBinding(shaderId, uniform_block_index1, 0);
+
+			// Now you can use the shader id as needed
+		}
+		else {
+			std::cout << "Uniform buffer objects are not loaded" << std::endl;
+		}
+
+	}
+
+	// Now actually create the buffer
+	glGenBuffers(1, &ubo_matrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(Mat4), NULL, GL_STATIC_DRAW); // allocate size of mat4 x2 byte of memory
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	// define the range of the buffer that links to a uniform binding point
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo_matrices, 0, 2 * sizeof(Mat4));
 
 	loadTextures();
 
@@ -189,12 +227,13 @@ void Application::loadSceneData(const k_configType& config)
 	else if (scene_number == 5)		active_scene = new FaceCullingTestScene;
 	else if (scene_number == 6)		active_scene = new FrameBufferTestScene;
 	else if (scene_number == 7)		active_scene = new CubemapTestScene;
+	else if (scene_number == 8)		active_scene = new AdvancedGLSLTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
 	cubemap_texture = img_utils::loadCubemap(RelativePaths::cubemap_texture_paths["skybox01"]);
-	
-	
+
+
 	// ----- camera
 	// --------------------------------------------------------------------------------------
 	active_scene->cameras.push_back(Camera());
@@ -207,7 +246,7 @@ void Application::loadSceneData(const k_configType& config)
 	resetCamera();
 	active_scene->loadData();
 	SceneState& scene_state = active_scene->scene_state;
-	
+
 	// register listeners
 	input_speaker.addListener(active_scene);
 
@@ -245,19 +284,19 @@ void Application::loadTextures()
 		RelativePaths::texture_paths[texture_name].color != "" ?
 			texture_set.color = createTexture(RelativePaths::texture_paths[texture_name].color)
 			: texture_set.color = 0;
-		
+
 		RelativePaths::texture_paths[texture_name].roughness != "" ?
-			texture_set.roughness = createTexture(RelativePaths::texture_paths[texture_name].roughness) 
+			texture_set.roughness = createTexture(RelativePaths::texture_paths[texture_name].roughness)
 			: texture_set.roughness = 0;
-		
+
 		RelativePaths::texture_paths[texture_name].normal != "" ?
 			texture_set.normal = createTexture(RelativePaths::texture_paths[texture_name].normal)
 			: texture_set.normal = 0;
-		
+
 		RelativePaths::texture_paths[texture_name].specular != "" ?
 			texture_set.specular = createTexture(RelativePaths::texture_paths[texture_name].specular)
 			: texture_set.specular = 0;
-		
+
 		RelativePaths::texture_paths[texture_name].emission != "" ?
 			texture_set.emission = createTexture(RelativePaths::texture_paths[texture_name].emission)
 			: texture_set.emission = 0;
@@ -281,6 +320,9 @@ void Application::loadShaders()
 		path_parts = str_utils::split(left_trimmed_key, ".");
 		const std::string name = path_parts.back();
 		shaders[name] = std::make_shared<Shader>(vrtx, frag);
+
+		//unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(name)->ID, "Matrices");
+		//glUniformBlockBinding(shaders.at(name)->ID, uniform_block_index, 0);
 	}
 }
 
@@ -334,7 +376,7 @@ void Application::loadMeshData()
 	// set the vertex attribute 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
-	
+
 	// lit: coord, normal, texture
 	glGenVertexArrays(1, &lit_vao);
 	glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
@@ -629,10 +671,21 @@ void Application::drawScene(Uniforms& uni)
 	//upo.world_matrix = mat_utils::rotationX(toRadian(-45.0f))
 	//	* mat_utils::rotationXYZ(scene_state.time, Vec3(1.0f, 1.0f, 1.0f).normalized())
 	//	;
-	upv.view_matrix = cam.calcViewMatrix(world_up);
+	// calculate matrices
 	upv.projection_matrix
 		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+
+	upv.view_matrix = cam.calcViewMatrix(world_up);
+
 	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
+
+	// 3.8 uniform buffer object set
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mat4), &upv.projection_matrix.transposed().m[0][0]); // const void *
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Mat4), sizeof(Mat4), &upv.view_matrix.transposed().m[0][0]);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 
 
@@ -645,8 +698,8 @@ void Application::drawScene(Uniforms& uni)
 	// 3.4. framebuffer
 	// bind to framebuffer and draw scene as we normally would to color texture 
 	glBindFramebuffer(GL_FRAMEBUFFER, lit_fbo);
-	
-	
+
+
 	// enable this to avoid awkward whatever front rendering
 	glEnable(GL_DEPTH_TEST);
 
@@ -756,6 +809,8 @@ void Application::drawScene(Uniforms& uni)
 		// assign uniforms
 		active_shader->setFloat("mix_val", upo.mix_value);
 		active_shader->setVec3("view_pos", cam.position);
+		active_shader->setMat4("view_matrix", upv.view_matrix);
+		active_shader->setMat4("projection_matrix", upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
 
 		// directional light
@@ -785,26 +840,26 @@ void Application::drawScene(Uniforms& uni)
 		// assign texture
 		std::string texture_name = active_scene->predefined_scene_elements[i].texture_name;
 
-			glActiveTexture(GL_TEXTURE0);
-			textures[texture_name].color != 0 ?
+		glActiveTexture(GL_TEXTURE0);
+		textures[texture_name].color != 0 ?
 			glBindTexture(GL_TEXTURE_2D, textures[texture_name].color)
 			: glBindTexture(GL_TEXTURE_2D, 0);
 
-			if (active_scene->predefined_scene_elements[i].shader_name == "cubemaplit")
-			{
-				active_shader->setInt("skybox", 0);
-				glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
-			}
+		if (active_scene->predefined_scene_elements[i].shader_name == "cubemaplit")
+		{
+			active_shader->setInt("skybox", 0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
+		}
 
 
-			glActiveTexture(GL_TEXTURE1);
-			textures[texture_name].specular != 0 ?
+		glActiveTexture(GL_TEXTURE1);
+		textures[texture_name].specular != 0 ?
 			glBindTexture(GL_TEXTURE_2D, textures[texture_name].specular)
 			: glBindTexture(GL_TEXTURE_2D, 0);
-		
-			glActiveTexture(GL_TEXTURE2);
-			textures[texture_name].color != 0 ? 
-			glBindTexture(GL_TEXTURE_2D, textures[texture_name].emission) 
+
+		glActiveTexture(GL_TEXTURE2);
+		textures[texture_name].color != 0 ?
+			glBindTexture(GL_TEXTURE_2D, textures[texture_name].emission)
 			: glBindTexture(GL_TEXTURE_2D, 0);
 
 
@@ -946,8 +1001,8 @@ void Application::drawScene(Uniforms& uni)
 		std::vector<ElementBools> bools = active_scene->scene_state.model_element_bools;
 		if (bools[i].stencil_testing) { disableStencil(); }
 		active_scene->models[i].draw(*active_shader);
-		if (bools[i].stencil_testing) { 
-			enableStencil(); 
+		if (bools[i].stencil_testing) {
+			enableStencil();
 			this->active_shader = shaders.at("stenciltesting02");
 			(*active_shader).use();
 			// light uniforms
@@ -983,27 +1038,30 @@ void Application::drawScene(Uniforms& uni)
 
 	// 3.5 skybox 
 	// --------------------------------------------------------------------------------------
-	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-	this->active_shader = shaders.at("cubemap");
-	(*active_shader).use();
-	glBindVertexArray(skybox_vao);
-	upv.view_matrix = cam.calcViewMatrix(world_up);
-	upv.view_matrix._14 = 0.0f;
-	upv.view_matrix._24 = 0.0f;
-	upv.view_matrix._34 = 0.0f;
-	upv.projection_matrix
-		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
-	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
-	active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
-	active_shader->setInt("skybox", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-	glDepthFunc(GL_LESS); // set depth function back to default
+	if (active_scene->scene_state.b_skybox) {
+		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+		this->active_shader = shaders.at("cubemap");
+		(*active_shader).use();
+		glBindVertexArray(skybox_vao);
+		upv.view_matrix = cam.calcViewMatrix(world_up);
+		upv.view_matrix._14 = 0.0f;
+		upv.view_matrix._24 = 0.0f;
+		upv.view_matrix._34 = 0.0f;
+		upv.projection_matrix
+			= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+		upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
+		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
+		active_shader->setInt("skybox", 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // set depth function back to default
+	}
 
 	// 3.4. framebuffer
 	// --------------------------------------------------------------------------------------
+	glDisable(GL_CULL_FACE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers

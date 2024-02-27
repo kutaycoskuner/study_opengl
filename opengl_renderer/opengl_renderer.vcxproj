@@ -153,6 +153,7 @@
     <ClCompile Include="data\scenes\3.3_faceculling_testscene.cpp" />
     <ClCompile Include="data\scenes\3.4_framebuffers_testscene.cpp" />
     <ClCompile Include="data\scenes\3.5_cubemap_testscene.cpp" />
+    <ClCompile Include="data\scenes\3.8_advglsl_testscene.cpp" />
     <ClCompile Include="source\blackboard\blackboard.cpp" />
     <ClCompile Include="source\scene\scene.cpp" />
     <ClCompile Include="source\event_handling\input_speaker.cpp" />
