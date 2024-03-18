@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 */
 
-/** @file mesh.h
+/** @file array_name.h
  *  @brief Declares the data structures in which the imported geometry is
     returned by ASSIMP: aiMesh, aiFace and aiBone data structures.
  */
@@ -83,41 +83,41 @@ extern "C" {
 #endif
 
 /** @def AI_MAX_VERTICES
- *  Maximum number of vertices per mesh.  */
+ *  Maximum number of vertices per array_name.  */
 
 #ifndef AI_MAX_VERTICES
 #define AI_MAX_VERTICES 0x7fffffff
 #endif
 
 /** @def AI_MAX_FACES
- *  Maximum number of faces per mesh. */
+ *  Maximum number of faces per array_name. */
 
 #ifndef AI_MAX_FACES
 #define AI_MAX_FACES 0x7fffffff
 #endif
 
 /** @def AI_MAX_NUMBER_OF_COLOR_SETS
- *  Supported number of vertex color sets per mesh. */
+ *  Supported number of vertex color sets per array_name. */
 
 #ifndef AI_MAX_NUMBER_OF_COLOR_SETS
 #define AI_MAX_NUMBER_OF_COLOR_SETS 0x8
 #endif // !! AI_MAX_NUMBER_OF_COLOR_SETS
 
 /** @def AI_MAX_NUMBER_OF_TEXTURECOORDS
- *  Supported number of texture coord sets (UV(W) channels) per mesh */
+ *  Supported number of texture coord sets (UV(W) channels) per array_name */
 
 #ifndef AI_MAX_NUMBER_OF_TEXTURECOORDS
 #define AI_MAX_NUMBER_OF_TEXTURECOORDS 0x8
 #endif // !! AI_MAX_NUMBER_OF_TEXTURECOORDS
 
 // ---------------------------------------------------------------------------
-/** @brief A single face in a mesh, referring to multiple vertices.
+/** @brief A single face in a array_name, referring to multiple vertices.
  *
  * If mNumIndices is 3, we call the face 'triangle', for mNumIndices > 3
  * it's called 'polygon' (hey, that's just a definition!).
  * <br>
  * aiMesh::mPrimitiveTypes can be queried to quickly examine which types of
- * primitive are actually present in a mesh. The #aiProcess_SortByPType flag
+ * primitive are actually present in a array_name. The #aiProcess_SortByPType flag
  * executes a special post-processing algorithm which splits meshes with
  * *different* primitive types mixed up (e.g. lines and triangles) in several
  * 'clean' sub-meshes. Furthermore there is a configuration option (
@@ -253,11 +253,11 @@ struct aiVertexWeight {
 struct aiNode;
 
 // ---------------------------------------------------------------------------
-/** @brief A single bone of a mesh.
+/** @brief A single bone of a array_name.
  *
  *  A bone has a name by which it can be found in the frame hierarchy and by
  *  which it can be addressed by animations. In addition it has a number of
- *  influences on vertices, and a matrix relating the mesh position to the
+ *  influences on vertices, and a matrix relating the array_name position to the
  *  position of the bone at the time of binding.
  */
 struct aiBone {
@@ -281,13 +281,13 @@ struct aiBone {
     //! The influence weights of this bone, by vertex index.
     C_STRUCT aiVertexWeight *mWeights;
 
-    /** Matrix that predefined_scene_element_transforms from mesh space to bone space in bind pose.
+    /** Matrix that predefined_scene_element_transforms from array_name space to bone space in bind pose.
      *
-     * This matrix describes the position of the mesh
+     * This matrix describes the position of the array_name
      * in the local space of this bone when the skeleton was bound.
      * Thus it can be used directly to determine a desired vertex position,
      * given the world-space transform of the bone when animated,
-     * and the position of the vertex in mesh space.
+     * and the position of the vertex in array_name space.
      *
      * It is sometimes called an inverse-bind matrix,
      * or inverse bind pose matrix.
@@ -411,7 +411,7 @@ enum aiPrimitiveType {
     aiPrimitiveType_POLYGON = 0x8,
 
     /**
-     * A flag to determine whether this triangles only mesh is NGON encoded.
+     * A flag to determine whether this triangles only array_name is NGON encoded.
      *
      * NGON encoding is a special encoding that tells whether 2 or more consecutive triangles
      * should be considered as a triangle fan. This is identified by looking at the first vertex index.
@@ -421,7 +421,7 @@ enum aiPrimitiveType {
      * At the moment, only quads (concave or convex) are supported, meaning that polygons are 'seen' as
      * triangles, as usual after a triangulation pass.
      *
-     * To get an NGON encoded mesh, please use the aiProcess_Triangulate post process.
+     * To get an NGON encoded array_name, please use the aiProcess_Triangulate post process.
      *
      * @see aiProcess_Triangulate
      * @link https://github.com/KhronosGroup/glTF/pull/1620
@@ -444,11 +444,11 @@ enum aiPrimitiveType {
 /** @brief An AnimMesh is an attachment to an #aiMesh stores per-vertex
  *  animations for a particular frame.
  *
- *  You may think of an #aiAnimMesh as a `patch` for the host mesh, which
+ *  You may think of an #aiAnimMesh as a `patch` for the host array_name, which
  *  replaces only certain vertex data streams at a particular time.
- *  Each mesh stores n attached attached meshes (#aiMesh::mAnimMeshes).
+ *  Each array_name stores n attached attached meshes (#aiMesh::mAnimMeshes).
  *  The actual relationship between the time line and anim meshes is
- *  established by #aiMeshAnim, which references singular mesh attachments
+ *  established by #aiMeshAnim, which references singular array_name attachments
  *  by their ID and binds them to a time offset.
 */
 struct aiAnimMesh {
@@ -457,7 +457,7 @@ struct aiAnimMesh {
 
     /** Replacement for aiMesh::mVertices. If this array is non-nullptr,
      *  it *must* contain mNumVertices entries. The corresponding
-     *  array in the host mesh must be non-nullptr as well - animation
+     *  array in the host array_name must be non-nullptr as well - animation
      *  meshes may neither add or nor remove vertex components (if
      *  a replacement array is nullptr and the corresponding source
      *  array is not, the source data is taken instead)*/
@@ -526,34 +526,34 @@ struct aiAnimMesh {
         }
     }
 
-    /** Check whether the anim mesh overrides the vertex positions
-     *  of its host mesh*/
+    /** Check whether the anim array_name overrides the vertex positions
+     *  of its host array_name*/
     bool HasPositions() const {
         return mVertices != nullptr;
     }
 
-    /** Check whether the anim mesh overrides the vertex normals
-     *  of its host mesh*/
+    /** Check whether the anim array_name overrides the vertex normals
+     *  of its host array_name*/
     bool HasNormals() const {
         return mNormals != nullptr;
     }
 
-    /** Check whether the anim mesh overrides the vertex tangents
-     *  and bitangents of its host mesh. As for aiMesh,
+    /** Check whether the anim array_name overrides the vertex tangents
+     *  and bitangents of its host array_name. As for aiMesh,
      *  tangents and bitangents always go together. */
     bool HasTangentsAndBitangents() const {
         return mTangents != nullptr;
     }
 
-    /** Check whether the anim mesh overrides a particular
-     * set of vertex colors on his host mesh.
+    /** Check whether the anim array_name overrides a particular
+     * set of vertex colors on his host array_name.
      *  @param pIndex 0<index<AI_MAX_NUMBER_OF_COLOR_SETS */
     bool HasVertexColors(unsigned int pIndex) const {
         return pIndex >= AI_MAX_NUMBER_OF_COLOR_SETS ? false : mColors[pIndex] != nullptr;
     }
 
-    /** Check whether the anim mesh overrides a particular
-     * set of texture coordinates on his host mesh.
+    /** Check whether the anim array_name overrides a particular
+     * set of texture coordinates on his host array_name.
      *  @param pIndex 0<index<AI_MAX_NUMBER_OF_TEXTURECOORDS */
     bool HasTextureCoords(unsigned int pIndex) const {
         return pIndex >= AI_MAX_NUMBER_OF_TEXTURECOORDS ? false : mTextureCoords[pIndex] != nullptr;
@@ -563,7 +563,7 @@ struct aiAnimMesh {
 };
 
 // ---------------------------------------------------------------------------
-/** @brief Enumerates the methods of mesh morphing supported by Assimp.
+/** @brief Enumerates the methods of array_name morphing supported by Assimp.
  */
 enum aiMorphingMethod {
     /** Interpolation between morph targets */
@@ -584,7 +584,7 @@ enum aiMorphingMethod {
 }; //! enum aiMorphingMethod
 
 // ---------------------------------------------------------------------------
-/** @brief A mesh represents a geometry or model with a single material.
+/** @brief A array_name represents a geometry or model with a single material.
 *
 * It usually consists of a number of vertices and a series of primitives/faces
 * referencing the vertices. In addition there might be a series of bones, each
@@ -604,26 +604,26 @@ enum aiMorphingMethod {
 */
 struct aiMesh {
     /** Bitwise combination of the members of the #aiPrimitiveType enum.
-     * This specifies which types of primitives are present in the mesh.
+     * This specifies which types of primitives are present in the array_name.
      * The "SortByPrimitiveType"-Step can be used to make sure the
      * output meshes consist of one primitive type each.
      */
     unsigned int mPrimitiveTypes;
 
-    /** The number of vertices in this mesh.
+    /** The number of vertices in this array_name.
     * This is also the size of all of the per-vertex data arrays.
     * The maximum value for this member is #AI_MAX_VERTICES.
     */
     unsigned int mNumVertices;
 
-    /** The number of primitives (triangles, polygons, lines) in this  mesh.
+    /** The number of primitives (triangles, polygons, lines) in this  array_name.
     * This is also the size of the mFaces array.
     * The maximum value for this member is #AI_MAX_FACES.
     */
     unsigned int mNumFaces;
 
     /** Vertex positions.
-    * This array is always present in a mesh. The array is
+    * This array is always present in a array_name. The array is
     * mNumVertices in size.
     */
     C_STRUCT aiVector3D *mVertices;
@@ -631,7 +631,7 @@ struct aiMesh {
     /** Vertex normals.
     * The array contains normalized vectors, nullptr if not present.
     * The array is mNumVertices in size. Normals are undefined for
-    * point and line primitives. A mesh consisting of points and
+    * point and line primitives. A array_name consisting of points and
     * lines only may not have normal vectors. Meshes with mixed
     * primitive types (i.e. lines and triangles) may have normals,
     * but the normals for vertices that are only referenced by
@@ -653,13 +653,13 @@ struct aiMesh {
     /** Vertex tangents.
     * The tangent of a vertex points in the direction of the positive
     * X texture axis. The array contains normalized vectors, nullptr if
-    * not present. The array is mNumVertices in size. A mesh consisting
+    * not present. The array is mNumVertices in size. A array_name consisting
     * of points and lines only may not have normal vectors. Meshes with
     * mixed primitive types (i.e. lines and triangles) may have
     * normals, but the normals for vertices that are only referenced by
     * point or line primitives are undefined and set to qNaN.  See
     * the #mNormals member for a detailed discussion of qNaNs.
-    * @note If the mesh contains tangents, it automatically also
+    * @note If the array_name contains tangents, it automatically also
     * contains bitangents.
     */
     C_STRUCT aiVector3D *mTangents;
@@ -668,20 +668,20 @@ struct aiMesh {
     * The bitangent of a vertex points in the direction of the positive
     * Y texture axis. The array contains normalized vectors, nullptr if not
     * present. The array is mNumVertices in size.
-    * @note If the mesh contains tangents, it automatically also contains
+    * @note If the array_name contains tangents, it automatically also contains
     * bitangents.
     */
     C_STRUCT aiVector3D *mBitangents;
 
     /** Vertex color sets.
-    * A mesh may contain 0 to #AI_MAX_NUMBER_OF_COLOR_SETS vertex
+    * A array_name may contain 0 to #AI_MAX_NUMBER_OF_COLOR_SETS vertex
     * colors per vertex. nullptr if not present. Each array is
     * mNumVertices in size if present.
     */
     C_STRUCT aiColor4D *mColors[AI_MAX_NUMBER_OF_COLOR_SETS];
 
     /** Vertex texture coordinates, also known as UV channels.
-    * A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per
+    * A array_name may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per
     * vertex. nullptr if not present. The array is mNumVertices in size.
     */
     C_STRUCT aiVector3D *mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
@@ -695,40 +695,40 @@ struct aiMesh {
     */
     unsigned int mNumUVComponents[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 
-    /** The faces the mesh is constructed from.
+    /** The faces the array_name is constructed from.
     * Each face refers to a number of vertices by their indices.
-    * This array is always present in a mesh, its size is given
+    * This array is always present in a array_name, its size is given
     * in mNumFaces. If the #AI_SCENE_FLAGS_NON_VERBOSE_FORMAT
     * is NOT set each face references an unique set of vertices.
     */
     C_STRUCT aiFace *mFaces;
 
-    /** The number of bones this mesh contains.
+    /** The number of bones this array_name contains.
     * Can be 0, in which case the mBones array is nullptr.
     */
     unsigned int mNumBones;
 
-    /** The bones of this mesh.
+    /** The bones of this array_name.
     * A bone consists of a name by which it can be found in the
     * frame hierarchy and a set of vertex weights.
     */
     C_STRUCT aiBone **mBones;
 
-    /** The material used by this mesh.
-     * A mesh uses only a single material. If an imported model uses
-     * multiple materials, the import splits up the mesh. Use this value
+    /** The material used by this array_name.
+     * A array_name uses only a single material. If an imported model uses
+     * multiple materials, the import splits up the array_name. Use this value
      * as index into the scene's material list.
      */
     unsigned int mMaterialIndex;
 
-    /** Name of the mesh. Meshes can be named, but this is not a
+    /** Name of the array_name. Meshes can be named, but this is not a
      *  requirement and leaving this field empty is totally fine.
-     *  There are mainly three uses for mesh names:
+     *  There are mainly three uses for array_name names:
      *   - some formats name nodes and meshes independently.
      *   - importers tend to split meshes up to meet the
-     *      one-material-per-mesh requirement. Assigning
+     *      one-material-per-array_name requirement. Assigning
      *      the same (dummy) name to each of the result meshes
-     *      aids the caller at recovering the original mesh
+     *      aids the caller at recovering the original array_name
      *      partitioning.
      *   - Vertex animations refer to meshes by their names.
      **/
@@ -737,9 +737,9 @@ struct aiMesh {
     /** The number of attachment meshes. Note! Currently only works with Collada loader. */
     unsigned int mNumAnimMeshes;
 
-    /** Attachment meshes for this mesh, for vertex-based animation.
+    /** Attachment meshes for this array_name, for vertex-based animation.
      *  Attachment meshes carry replacement data for some of the
-     *  mesh'es vertex components (usually positions, normals).
+     *  array_name'es vertex components (usually positions, normals).
      *  Note! Currently only works with Collada loader.*/
     C_STRUCT aiAnimMesh **mAnimMeshes;
 
@@ -791,7 +791,7 @@ struct aiMesh {
         }
     }
 
-    //! Deletes all storage allocated for the mesh
+    //! Deletes all storage allocated for the array_name
     ~aiMesh() {
         delete[] mVertices;
         delete[] mNormals;
@@ -832,24 +832,24 @@ struct aiMesh {
         delete[] mFaces;
     }
 
-    //! Check whether the mesh contains positions. Provided no special
+    //! Check whether the array_name contains positions. Provided no special
     //! scene flags are set, this will always be true
     bool HasPositions() const { return mVertices != nullptr && mNumVertices > 0; }
 
-    //! Check whether the mesh contains faces. If no special scene flags
+    //! Check whether the array_name contains faces. If no special scene flags
     //! are set this should always return true
     bool HasFaces() const { return mFaces != nullptr && mNumFaces > 0; }
 
-    //! Check whether the mesh contains normal vectors
+    //! Check whether the array_name contains normal vectors
     bool HasNormals() const { return mNormals != nullptr && mNumVertices > 0; }
 
-    //! Check whether the mesh contains tangent and bitangent vectors
+    //! Check whether the array_name contains tangent and bitangent vectors
     //! It is not possible that it contains tangents and no bitangents
     //! (or the other way round). The existence of one of them
     //! implies that the second is there, too.
     bool HasTangentsAndBitangents() const { return mTangents != nullptr && mBitangents != nullptr && mNumVertices > 0; }
 
-    //! Check whether the mesh contains a vertex color set
+    //! Check whether the array_name contains a vertex color set
     //! \param pIndex Index of the vertex color set
     bool HasVertexColors(unsigned int pIndex) const {
         if (pIndex >= AI_MAX_NUMBER_OF_COLOR_SETS) {
@@ -859,7 +859,7 @@ struct aiMesh {
         }
     }
 
-    //! Check whether the mesh contains a texture coordinate set
+    //! Check whether the array_name contains a texture coordinate set
     //! \param pIndex Index of the texture coordinates set
     bool HasTextureCoords(unsigned int pIndex) const {
         if (pIndex >= AI_MAX_NUMBER_OF_TEXTURECOORDS) {
@@ -869,7 +869,7 @@ struct aiMesh {
         }
     }
 
-    //! Get the number of UV channels the mesh contains
+    //! Get the number of UV channels the array_name contains
     unsigned int GetNumUVChannels() const {
         unsigned int n(0);
         while (n < AI_MAX_NUMBER_OF_TEXTURECOORDS && mTextureCoords[n]) {
@@ -879,7 +879,7 @@ struct aiMesh {
         return n;
     }
 
-    //! Get the number of vertex color channels the mesh contains
+    //! Get the number of vertex color channels the array_name contains
     unsigned int GetNumColorChannels() const {
         unsigned int n(0);
         while (n < AI_MAX_NUMBER_OF_COLOR_SETS && mColors[n]) {
@@ -888,12 +888,12 @@ struct aiMesh {
         return n;
     }
 
-    //! Check whether the mesh contains bones
+    //! Check whether the array_name contains bones
     bool HasBones() const {
         return mBones != nullptr && mNumBones > 0;
     }
 
-    //! Check whether the mesh contains a texture coordinate set name
+    //! Check whether the array_name contains a texture coordinate set name
     //! \param pIndex Index of the texture coordinates set
     bool HasTextureCoordsName(unsigned int pIndex) const {
         if (mTextureCoordsNames == nullptr || pIndex >= AI_MAX_NUMBER_OF_TEXTURECOORDS) {
@@ -960,19 +960,19 @@ struct aiSkeletonBone {
     /// @brief The number of weights
     unsigned int mNumnWeights;
 
-    /// The mesh index, which will get influenced by the weight.
+    /// The array_name index, which will get influenced by the weight.
     C_STRUCT aiMesh *mMeshId;
 
     /// The influence weights of this bone, by vertex index.
     C_STRUCT aiVertexWeight *mWeights;
 
-    /** Matrix that predefined_scene_element_transforms from bone space to mesh space in bind pose.
+    /** Matrix that predefined_scene_element_transforms from bone space to array_name space in bind pose.
      *
-     * This matrix describes the position of the mesh
+     * This matrix describes the position of the array_name
      * in the local space of this bone when the skeleton was bound.
      * Thus it can be used directly to determine a desired vertex position,
      * given the world-space transform of the bone when animated,
-     * and the position of the vertex in mesh space.
+     * and the position of the vertex in array_name space.
      *
      * It is sometimes called an inverse-bind matrix,
      * or inverse bind pose matrix.

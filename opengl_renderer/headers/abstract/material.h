@@ -27,6 +27,11 @@ struct Material
 		diffuse(0.0f, 0.0f, 0.0f),
 		specular(0.0f, 0.0f, 0.0f),
 		shininess(0.0f)
+		,diffuse_map_id(-1)
+		,normal_map_id(-1)
+		,specular_map_id(-1)
+
+
 	{}
 	// parameter constructor
 	Material(
@@ -39,6 +44,9 @@ struct Material
 		diffuse(diffuseX, diffuseY, diffuseZ), 
 		specular(specularX, specularY, specularZ),		
 		shininess(shininess_val)
+		, diffuse_map_id(-1)
+		, normal_map_id(-1)
+		, specular_map_id(-1)
 	{}
 };
 

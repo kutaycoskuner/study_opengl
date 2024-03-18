@@ -12,7 +12,7 @@
 // ------------------------------------------------------------------------------------------------
 struct UniformsPerObject
 {
-	float mix_value;
+	float mix_value = 0.0f;
 	Mat4 world_matrix;
 	Mat4 world_normal_matrix;
 	Material material;

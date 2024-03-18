@@ -21,6 +21,8 @@ namespace img_utils
 
 	unsigned int textureFromFile(const char* path, const std::string& directory, bool gamma)
 	{
+		// model texture
+		img_utils::setVerticalFlipMode(false);
 		std::string filename = std::string(path);
 		filename = directory + '/' + filename;
 

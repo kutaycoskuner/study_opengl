@@ -352,6 +352,11 @@
 - added glad.c file to project
 
 # Blackboard
+- <dll file>
+    - oldugu gibi kopyala,
+    - directory ise vcc > include release mi debug mi kontrol et degistir
+    - 
+
 - <cubemaps skybox>
     - how to get uv coordinates for sphere cylindrical projection (equirectangular projection)
         - http://paulbourke.net/miscellaneous/cubemaps/
@@ -382,7 +387,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 
 
 # Problem definitions prompt
-- <scene class>
+- <arch: scene class>
     - I want application to call scene to get which models, textures and shaders to load
     - then it loads the data 
     - Scene also has two functions those are draw and update. These functions going to be implemented by specific scenes
@@ -390,9 +395,62 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <problem: release not included>
+    - vs den include exclude etmeye calistim olmadi
+    - vsc den hata satirini arattim. vsxproj dosyasinda include edildigi yeri bulup xml de manual olarak exclude ettim
+
+- <vs: release linker error>
+    - release in linkerlarini duzelt
+    - linker > input  release / debug kopyala
+
+- <vs: multithreaded compile>
+    - projeye sag tik props
+    - c++ > general > multiprocessor compiling
+
+- <vs: release>
+    - projeye sag tikla properties'
+    - sol ustten release debug degistirerek degisiklikleri esitle
+    - vc++ include and library directories
+
+- <vs: gorunmeyen dosyayi ekleme>
+    - dosya olustur sag tikla
+    - add
+    - existing file, sec
+
+- <vs: imleci lineardan kare yap karakter degistiriyor>
+    - num lock > insert (0 on laptop)
+
+- <vs: linking library>
+    - right click on project name on solution explorer > properties
+    - configuration > vc++ directories > 
+    - click expand arrow then <edit>
+    - library directories > <library>/build/src/         | .lib files
+    - include directories > <library>/include                 | include folder
+    - linking
+        - linker > input > additional dependencies
+        - add glfw3.lib;opengl32.lib
+
+- <cpp: maps>
+    - okuyacagin zaman .at()
+    - yazacagin zaman []
+    - okuma zamaninda [] kullanirsan yoksa yaratir
+
+- <debugging: >
+    - powershell data visualization 
+    - c# 
+    - time series, x y visualization
+
+- <debugging theory>
+    - problemi cozmeden varsayimla ilerleme
+
 - <debugging: tools>
     - difference checker
         - https://www.diffchecker.com/
+
+- <debugging: renderdocs>
+    - C:/Users/kutay/OneDrive/Documents/GitHub/study_opengl/opengl_renderer
+    - C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
+
 
 - <knowledge: glsl built in variables>
     - gl_PointSize
@@ -404,15 +462,8 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - glDrawArrays
     - glDrawElements
 
-- <debugging: renderdocs>
-    - C:/Users/kutay/OneDrive/Documents/GitHub/study_opengl/opengl_renderer
-    - C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
-
 - <optimization>
     - clear 0, 1 
-
-- <theory: debugging>
-    - problemi cozmeden varsayimla ilerleme
 
 - <theory: global illumination>
     - yuzey sadece gelen isigi dikkate aliyor
@@ -428,6 +479,15 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
         - 0, 1 
 
 - <procedure: yeni shader ekleme>
+    - ilgili shader dosya isimlerini olsutur
+    - ilgili shader dosya isimleri shader mapping e ekle
+    - shaderlari yarat
+    - naming conventionaa adapte et
+
+- <procedure: yeni sahne elemani ekleme>
+    - array i sec veya olustur
+    - array i name map e isim verecek sekilde ekle
+    - predef scene element e once header sonra dosyada ekle ilgili shader ve transformlari olustur
 
 - <procedure: yeni class olusturma>
     - once headeri olustur. Arayuzu ve memberlari belirle
@@ -440,24 +500,6 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - frames 6, 100
     - download, yeniden yukle, optimizer
         - 2mb altina dusur
-
-- <vs: gorunmeyen dosyayi ekleme>
-    - dosya olustur sag tikla
-    - add
-    - existing file, sec
-
-- <vs: imleci lineardan kare yap karakter degistiriyor>
-    - num lock > insert (0 on laptop)
-
-- <vs: linking library>
-    - right click on project name on solution explorer > properties
-    - configuration > vc++ directories > 
-    - click expand arrow then <edit>
-    - library directories > <library>/build/src/debug         | .lib files
-    - include directories > <library>/include                 | include folder
-    - linking
-        - linker > input > additional dependencies
-        - add glfw3.lib;opengl32.lib
 
 - <linear algebra: transformation application order>
     - ilk scale,
@@ -632,21 +674,43 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - texture is reversed, upside down
         - try stbi -> image flip
 
+- <exceptions>
+    - Exception thrown at 0x00007FF870AFCF19 in opengl_renderer.exe: Microsoft C++ exception: std::ios_base::failure at memory location 0x000000ECD359D5C0.
+
 - <errors>
+    - the code xecution cannot proceed because assimp-vc143-mt.dll was not found. Reinstalling the program may fix this problem.
+
     - error c2243: exists, but is inaccessible
         - derived class private : classname to : public classname
+    
     - error e0349: no operator "[]" matches these operand
         - unordered map e erisme seklin probemli map[key] degil map.at(key)
+    
     - error C2664: 'void Application::drawModel(Model &,int &,const char *,Uniforms &)': cannot convert argument 2 from     'unsigned int' to 'int &'
         - signature tutmuyor
+    
     - LNK2019: unresolved external symbol "private: void __cdecl Application::drawModel(class Model &,unsigned int &,char const *,struct Uniforms &)" (?drawModel@Application@@AEAAXAEAVModel@@AEAIPEBDAEAUUniforms@@@Z) referenced in function "private: void __cdecl Application::drawScene(struct Uniforms &)" (?drawScene@Application@@AEAAXAEAUUniforms@@@Z)
     1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe
+    
     - error LNK2001: unresolved external symbol "public: static float * Predef3D::quad_vrts__pos_tex" (?quad_vrts__pos_tex@Predef3D@@2PAMA)
-    1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe : fatal error LNK1120: 1 unresolved externals
+    1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe : fatal error 
+        - This error typically occurs when you declare a static member variable in a class but fail to define it outside the class. In C++, static member variables need to be defined outside the class declaration.
+
+    - error LNK1120: 1 unresolved externals
     1>Done building project "opengl_renderer.vcxproj" -- FAILED.
         - cant find definition
+        - PredefNameMaps:: unutmusum
+    
+    - Unhandled exception at 0x00007FF870AFCF19
+        - callstack e bak
+            - at cagiriyorsan iceride oldugundan emin olman lazim .at("")
 
 - <warnings>
+    - conversation from 'size_t' to 'int' possible loss of data
+        static_cast<int>();
+    - unreferenced local variable
+        - not used in program just delete
+
     - warning C4715: 'Application::initialize': not all control paths return a value
         - return donmesi gereken bir fonksiyon donmuyor?
     - warning STL4038: The contents of <variant> are available only with C++17 or later.

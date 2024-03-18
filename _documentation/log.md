@@ -83,6 +83,7 @@
 - [x] 11-Feb-2024 15-Jan-2024 !!!: her new icin bir delete yaz yeni yartailan classlar gitmiyor.
 - [x] xx-xxx-xxxx 24-Jun-2023 add: ui camera, direction, light direction controls
 - [x] 11-Feb-2024 11-Feb-2024 add: GLFW_CURSOR_DISABLED when mouse cursor disabled
+- [x] 18-Mar-2024 18-Feb-2024 learn: blender nebula skybox
 - 12-Apr-2023 add: deserialize config or config struct
 - 28-May-2023 add: Edge detection / inner definition lines | normal
 - 04-Jun-2023 arch: Comment standard
@@ -95,7 +96,6 @@
 - 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
 - 08-Feb-2024 add: sahne reload, change, shader hotreload
 - 13-Feb-2024 learn: convolution
-- 18-Feb-2024 learn: blender nebula skybox
 - 27-Feb-2024 arch: split drawscene functions
 
 # Push procedure checklist 1.4
@@ -107,6 +107,33 @@
 
 # Log
                                                                                |
+- [0.64] add geometry shaders
+    - 18-Mar-2024 
+        - add: display geometry shaderes | Canakkale
+        - tun: breath algorithm tuning
+        - add: four step animation breath algorithm
+    - 17-Mar-2024 
+        - wip: explosion frekans fonksiyonu
+        - add: scene state axis display option
+        - add: point object lines with geo shader
+    - 11-Mar-2024 add: explode shader
+    - 10-Mar-2024
+        - add: normal display option on scene state
+        - add: normal display shader
+        - fix: geo shader problem
+    - 05-Mar-2024 fix: warnings and errors
+    - 04-Mar-2024 wip: release build configuration
+    - 03-Mar-2024
+        - upg: shader constructor for geometry shader
+        - add: vao, vbo parametrization
+    - 02-Mar-2024
+        - wip: vao, vbo, ebo parametrization
+        - add: self created skyboxes
+        - add: model shader channge on scene state
+        - fix: texture loading problem on model
+        - add: geometry shader test scene
+    - 29-Feb-2024 wip geometry shader scene 
+
 - [0.63] add uniform buffer objects
     - 27-Feb-2024
         - add uniform buffer objects

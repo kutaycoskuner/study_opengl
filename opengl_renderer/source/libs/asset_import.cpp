@@ -15,26 +15,31 @@
 // ---------------------------------------------------------------------------------------
 void Mesh::draw(Shader& shader)
 {
-    unsigned int num_diffuse = 1;
-    unsigned int num_specular = 1;
+    unsigned int num_diffuse = 0;
+    unsigned int num_specular = 0;
     for (int ii = 0; ii < textures.size(); ii++)
     {
         glActiveTexture(GL_TEXTURE0 + ii);
 
         std::string number;
-        std::string name;
+        std::string name = textures[ii].type;
         if (name == "texture_diffuse")
+        {
+            name = "diffuse_map1";
             number = std::to_string(num_diffuse += 1);
+        }
         if (name == "texture_specular")
+        {
+            name = "specular_map1";
             number = std::to_string(num_specular += 1);
-
-        shader.setInt(("material." + name + number).c_str(), ii);
+        }
+        shader.setInt(("material." + name).c_str(), ii);
         glBindTexture(GL_TEXTURE_2D, textures[ii].id);
     }
 
     glActiveTexture(GL_TEXTURE0);
 
-    // draw mesh
+    // draw array_name
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

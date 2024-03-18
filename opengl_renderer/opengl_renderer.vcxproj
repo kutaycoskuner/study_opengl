@@ -75,6 +75,10 @@
     <LibraryPath>$(SolutionDir)\libs\assimp-5.2.5\build\Debug;$(SolutionDir)\libs\glfw-3.3.8\src\Debug;$(SolutionDir)\libs\glad-0.136\src;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\libs\assimp-5.2.5\include;$(SolutionDir)\headers;$(SolutionDir)\libs\glfw-3.3.8\include;$(SolutionDir)\libs\glad-0.136\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)\libs\assimp-5.2.5\include;$(SolutionDir)\headers;$(SolutionDir)\libs\glfw-3.3.8\include;$(SolutionDir)\libs\glad-0.136\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\libs\assimp-5.2.5\build\Release;$(SolutionDir)\libs\glfw-3.3.8\src\Debug;$(SolutionDir)\libs\glad-0.136\src;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -112,6 +116,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\libs\glad-0.136\src;$(SolutionDir)\libs\glm-0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,18 +134,23 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="data\paths\model_paths.cpp" />
-    <ClCompile Include="data\paths\shader_paths.cpp" />
-    <ClCompile Include="data\paths\texture_paths.cpp" />
+    <ClCompile Include="data\maps\model_paths.cpp" />
+    <ClCompile Include="data\maps\predef3d_namemap.cpp" />
+    <ClCompile Include="data\maps\shader_paths.cpp" />
+    <ClCompile Include="data\maps\texture_paths.cpp" />
     <ClCompile Include="data\predefs\predef_materials.cpp" />
     <ClCompile Include="data\predefs\predef_3d_objects.cpp" />
     <ClCompile Include="data\predefs\predef_scene_elements.cpp" />
@@ -154,6 +164,7 @@
     <ClCompile Include="data\scenes\3.4_framebuffers_testscene.cpp" />
     <ClCompile Include="data\scenes\3.5_cubemap_testscene.cpp" />
     <ClCompile Include="data\scenes\3.8_advglsl_testscene.cpp" />
+    <ClCompile Include="data\scenes\3.9_geoshader_testscene.cpp" />
     <ClCompile Include="source\blackboard\blackboard.cpp" />
     <ClCompile Include="source\scene\scene.cpp" />
     <ClCompile Include="source\event_handling\input_speaker.cpp" />
@@ -190,6 +201,9 @@
     <None Include="shaders\2.1.lightmap_lit_frag_shader.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
+    <None Include="shaders\2.1.lightmap_lit_vrtx_shader.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="shaders\lit_vrtxShader.glsl" />
     <None Include="shaders\old\fragShader.glsl" />
     <None Include="shaders\old\v1.1_vrtxShader.glsl">
@@ -209,9 +223,6 @@
     <None Include="shaders\lit_fragShader.glsl">
       <FileType>Document</FileType>
     </None>
-    <ClCompile Include="shaders\2.1.lightmap_lit_vrtx_shader.glsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\scene\camera.cpp" />
     <ClCompile Include="source\libs\asset_import.cpp" />
     <ClCompile Include="source\test\itest_transformations.cpp" />

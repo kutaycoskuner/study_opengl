@@ -19,7 +19,7 @@ void CubemapTestScene::loadData()
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 6.0f;
 	scene_state.b_model_refraction = true;
-	scene_state.b_skybox = true;
+	scene_state.display_skybox = true;
 
 	// ----- camera position
 	Camera& cam = cameras[0];
@@ -90,7 +90,7 @@ void CubemapTestScene::update() {
 	// move lights radial
 	// --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
-	const int pi = 3.141592f;
+	const float pi = 3.141592f;
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		// change light position

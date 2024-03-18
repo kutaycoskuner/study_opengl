@@ -44,7 +44,9 @@ public:
     // handlers
     InputSpeaker input_speaker;
 
-    Application() : window(nullptr), active_shader(nullptr), active_scene(nullptr) {}
+    Application() : window(nullptr), active_shader(nullptr), active_scene(nullptr) 
+        ,vertex_arrays{ 0 }, element_buffers{ 0 }
+    {}
     // - ask memory from operating system
     // - preapre libraries
     bool initialize(k_configType& config);
@@ -122,8 +124,9 @@ private:
 
 
 private:
-    const static unsigned int buffer_count = 2;
+    const static unsigned int buffer_count = 4;
     const float reduction_128f = 0.0078125f;
+    const unsigned int INVALID_ID = 0;
 
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
@@ -132,11 +135,8 @@ private:
 
     unsigned int cubemap_texture;
     
-    unsigned int skybox_vao;
-    unsigned int skybox_vbo;
-
-    unsigned int lit_vao; // vertex array object    || input layout
-    unsigned int lit_vbo; // vertex buffer object   || vertex buffer
+    //unsigned int lit_vao; // vertex array object    || input layout
+    //unsigned int lit_vbo; // vertex buffer object   || vertex buffer
     unsigned int lit_ebo; // element buffer object  || index buffer
 
     unsigned int lit_fbo; // frame buffer object    || frame buffer
@@ -145,8 +145,11 @@ private:
     unsigned int vertex_arrays[buffer_count];
     unsigned int vertex_buffers[buffer_count];
     unsigned int element_buffers[buffer_count];
+
     unsigned int frame_buffers[buffer_count];
     unsigned int render_buffers[buffer_count];
+
+    std::map<std::string, unsigned int> named_arrays;
 
     unsigned int ubo_matrices;
 

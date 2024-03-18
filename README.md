@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update     | 
 | :-------------- | :-------------- | 
-| 19-Aug-2022     | 27-Feb-2024     |
+| 19-Aug-2022     | 18-Mar-2024     |
 
 # Table of Contents
 1. [Description](#description)
@@ -14,6 +14,8 @@ Study project for learning OpenGL
 6. [References](#references)
 
 # Description
+- Last built on `Visual Studio Community 2022 v17.9.2 Debug Mode`
+
 This is a study repository for learning graphics programming through OpenGL.
 
 # Installation and Usage
@@ -41,6 +43,11 @@ This is a study repository for learning graphics programming through OpenGL.
 - This section is not yet written.
 
 # Display
+```cpp
+0.64 Geometry shaders - Normal display, Explode model
+```  
+![0.64 geometry shaders](_display/0.64_geometry-shaders_2024-03-18.gif)
+
 ```cpp
 0.62 Cubemap: Skybox implementation
 ```  

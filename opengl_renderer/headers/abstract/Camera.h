@@ -44,6 +44,13 @@ public:
 	Mat4 getVectors(const Vec3& world_up) const;
 
 	Camera()
-		:rotation_sensitivity(0.002f) 
+		:rotation_sensitivity(0.002f)
+		,aspect_ratio(1)
+		,current_speed(1)
+		,far(100.0f)
+		,near(0.1f)
+		,fov(60.0f)
+		,pitch_rad(0.0f)
+		,yaw_rad(0.0f)
 		{}
 };

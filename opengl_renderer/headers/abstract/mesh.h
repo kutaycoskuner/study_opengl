@@ -20,7 +20,7 @@ struct Vertex
 };
 
 struct Texture {
-	unsigned int id;
+	unsigned int id    = 0;
 	std::string type;
     std::string path;  // store path of the texture to compare with other textures to avoid redundant work
 };
@@ -28,7 +28,7 @@ struct Texture {
 
 class Mesh {
 public:
-    // mesh data
+    // array_name data
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture>      textures;

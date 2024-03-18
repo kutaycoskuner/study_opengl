@@ -7,7 +7,17 @@
 #include <vector>
 #include <string>
 #include <map>
-//
+// ----------------------------------------------------------------------------
+// ----- forward declarations
+// ----------------------------------------------------------------------------
+
+class Predef3D;
+
+
+// ----------------------------------------------------------------------------
+// ----- abstract
+// ----------------------------------------------------------------------------
+
 class StaticLights
 {
 public:
@@ -22,6 +32,7 @@ struct ModelPath {
 struct ShaderPaths {
 	std::string vrtx_shader_file;
 	std::string frag_shader_file;
+	std::string geo_shader_file = "";
 };
 
 struct TexturePaths {
@@ -34,11 +45,11 @@ struct TexturePaths {
 
 struct TextureSet
 {
-	unsigned int color;
-	unsigned int roughness;
-	unsigned int normal;
-	unsigned int specular;
-	unsigned int emission;
+	unsigned int color		= 0;
+	unsigned int roughness	= 0;
+	unsigned int normal		= 0;
+	unsigned int specular	= 0;
+	unsigned int emission	= 0;
 };
 
 class RelativePaths
@@ -59,6 +70,7 @@ public:
 class Predef3D
 {
 public:
+	static float		origin[3];
 	static float		skybox_vrts__pos[108];
 
 	static float		cube_vrts__pos_uv[180];
@@ -74,6 +86,23 @@ public:
 
 	static float		x_axis[12];
 	static float		y_axis[12];
+
+	static float		rectangle__vrts[8]; 
+};
+
+struct Predef3DNode
+{
+public:
+	float*						p_data;
+	unsigned int				num_elements;
+	unsigned int				stride;
+	std::vector<unsigned int>	att_num_elements;
+};
+
+class PredefNameMaps
+{
+public:
+	static std::map<std::string, Predef3DNode> predef3d_namemap;
 };
 
 struct ElementBools {
@@ -84,12 +113,13 @@ struct ElementBools {
 	bool blending;
 	bool partial_render;
 	bool indexed;
+	bool is_triangle = true;
 };
 
 struct PredefSceneElement
 {
 	std::string		name;
-	float*			mesh;
+	std::string		array_name;
 	Transform		transform;
 	std::string		shader_name;
 	std::string		texture_name;
@@ -101,6 +131,8 @@ struct PredefSceneElement
 class PredefSceneElements
 {
 public:
+	static PredefSceneElement origin;
+	static PredefSceneElement points;
 	static PredefSceneElement single_cube;
 	static PredefSceneElement big_cube;
 	static PredefSceneElement cube_10_0;

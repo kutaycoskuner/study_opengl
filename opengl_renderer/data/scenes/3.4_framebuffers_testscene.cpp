@@ -89,7 +89,7 @@ void FrameBufferTestScene::update() {
 	// move lights radial
 	// --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
-	const int pi = 3.141592f;
+	const float pi = 3.141592f;
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		// change light position

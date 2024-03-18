@@ -87,5 +87,12 @@ public:
 	AdvancedGLSLTestScene();
 };
 
+class GeoShaderTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	GeoShaderTestScene();
+};
 
 

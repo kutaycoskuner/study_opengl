@@ -228,10 +228,11 @@ void Application::loadSceneData(const k_configType& config)
 	else if (scene_number == 6)		active_scene = new FrameBufferTestScene;
 	else if (scene_number == 7)		active_scene = new CubemapTestScene;
 	else if (scene_number == 8)		active_scene = new AdvancedGLSLTestScene;
+	else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
-	cubemap_texture = img_utils::loadCubemap(RelativePaths::cubemap_texture_paths["skybox01"]);
+	cubemap_texture = img_utils::loadCubemap(RelativePaths::cubemap_texture_paths["skybox03"]);
 
 
 	// ----- camera
@@ -313,13 +314,20 @@ void Application::loadShaders()
 	{
 		const std::string vrtx = path_struct.vrtx_shader_file;
 		const std::string frag = path_struct.frag_shader_file;
+		const std::string geo  = path_struct.geo_shader_file;
 		// get between / and _ for key
 		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
 		std::string left_trimmed_key = path_parts[0];
 
 		path_parts = str_utils::split(left_trimmed_key, ".");
 		const std::string name = path_parts.back();
-		shaders[name] = std::make_shared<Shader>(vrtx, frag);
+		
+		if (geo == "") {
+			shaders[name] = std::make_shared<Shader>(vrtx, frag);
+		}
+		else {
+			shaders[name] = std::make_shared<Shader>(vrtx, frag, geo);
+		}
 
 		//unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(name)->ID, "Matrices");
 		//glUniformBlockBinding(shaders.at(name)->ID, uniform_block_index, 0);
@@ -363,56 +371,59 @@ void Application::loadMeshData()
 	// 6. void this is the !! offset where the position data begins in the buffer
 
 	// stride
-	unsigned int stride = 5;
-
-	// skybox texture
-	// ----------------------------------------------------------------------------------------------
-	glGenVertexArrays(1, &skybox_vao);
-	glGenBuffers(1, &skybox_vbo); // :: memory alani olusturuyor
-	glBindVertexArray(skybox_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, skybox_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::skybox_vrts__pos), Predef3D::skybox_vrts__pos, GL_STATIC_DRAW);
-	stride = 3;
-	// set the vertex attribute 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
-
 	// lit: coord, normal, texture
-	glGenVertexArrays(1, &lit_vao);
-	glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
-	glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
-
-	// we only need to bind to the VBO, the container's VBO's data already contains the data.
-	// todo: vertexbuffer class olustur
-	glBindVertexArray(lit_vao);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_norm_uv), Predef3D::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
-	stride = 8;
-	// set the vertex attribute 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// att: normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	// att: texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	//glGenVertexArrays(1, &lit_vao);
+	//glGenBuffers(1, &lit_vbo); // :: memory alani olusturuyor
+	//glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
+	//// we only need to bind to the VBO, the container's VBO's data already contains the data.
+	//glBindVertexArray(lit_vao);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_norm_uv), Predef3D::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
+	//stride = 8;
+	//// set the vertex attribute 
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	//// att: normals
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
+	//// att: texture
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
+	//glEnableVertexAttribArray(2);
 	//generateBuffer(lit_vao, lit_vbo, Predef3D::cube_vrts__pos_uv, 5, 1, 0);
 
 	glGenBuffers(1, &lit_ebo); // :: ebo icin memory
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lit_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::cube_inds__pos_norm_uv), Predef3D::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
 
+	// --working
+	//PredefNameMaps::predef3d_namemap;
+	//for (int ii = 0; ii < PredefNameMaps::predef3d_namemap.size(); ii++)
+	unsigned int ii = 0;
+	for (auto it = PredefNameMaps::predef3d_namemap.begin(); it != PredefNameMaps::predef3d_namemap.end(); ++it) {
+		Predef3DNode it_obj = it->second;
+		glGenVertexArrays(1, &vertex_arrays[ii]);
+		glGenBuffers(1, &vertex_buffers[ii]);
+		glBindVertexArray(vertex_arrays[ii]);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffers[ii]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * it_obj.num_elements, it_obj.p_data, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, it_obj.att_num_elements[0], GL_FLOAT, GL_FALSE, it_obj.stride * sizeof(float), (void*)0);
 
-	// screen quad VAO
-	glGenVertexArrays(1, &vertex_arrays[0]);
-	glGenBuffers(1, &vertex_buffers[0]);
-	glBindVertexArray(vertex_arrays[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::quad_vrts__pos_tex), &Predef3D::quad_vrts__pos_tex, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+		if (it_obj.att_num_elements.size() > 1) {
+			glEnableVertexAttribArray(1);
+			unsigned int att_size = it_obj.att_num_elements[0];
+			glVertexAttribPointer(1, it_obj.att_num_elements[1], GL_FLOAT, GL_FALSE, it_obj.stride * sizeof(float), (void*)(att_size * sizeof(float)));
+		}
+
+		if (it_obj.att_num_elements.size() > 2) {
+			glEnableVertexAttribArray(2);
+			unsigned int att_size = it_obj.att_num_elements[0] + it_obj.att_num_elements[1];
+			glVertexAttribPointer(2, it_obj.att_num_elements[2], GL_FLOAT, GL_FALSE, it_obj.stride * sizeof(float), (void*)(att_size * sizeof(float)));
+		}
+
+		// application specific name mapping
+		named_arrays[it->first] = vertex_arrays[ii];
+		ii++;
+	}
 
 	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -532,8 +543,8 @@ void Application::unload()
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
 	delete active_scene;
-	glDeleteVertexArrays(1, &lit_vao);
-	glDeleteBuffers(1, &lit_vbo);
+	//glDeleteVertexArrays(1, &lit_vao);
+	//glDeleteBuffers(1, &lit_vbo);
 	glDeleteFramebuffers(1, &lit_fbo);
 	glDeleteRenderbuffers(1, &lit_rbo);
 	glDeleteVertexArrays(buffer_count, vertex_arrays);
@@ -750,7 +761,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 
-		glBindVertexArray(lit_vao);
+		glBindVertexArray(named_arrays.at("cube"));
 		active_shader->setVec3("light_color", point_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(point_lights[ii].position)
@@ -774,7 +785,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 
-		glBindVertexArray(lit_vao);
+		glBindVertexArray(named_arrays.at("cube"));
 		active_shader->setVec3("light_color", spot_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(spot_lights[ii].position)
@@ -786,9 +797,22 @@ void Application::drawScene(Uniforms& uni)
 
 	}
 
+	// ----- draw 0: draw axes
+	// -------------------------------------------------------------------------------------
+	if (active_scene->scene_state.display_axes)
+	{
+		this->active_shader = shaders.at("axes");
+		(*active_shader).use();
+		active_shader->setMat4("world_mat", mat_utils::identity4());
+		active_shader->setMat4("view_mat", upv.view_matrix);
+		active_shader->setMat4("projection_mat", upv.projection_matrix);
+		glBindVertexArray(named_arrays.at("origin"));
+		glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(4));
+	}
+
 	// draw scene objects
 	// --------------------------------------------------------------------------
-	int element_count = active_scene->predefined_scene_elements.size();
+	int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
 	for (int i = 0; i < element_count; i++)
 	{
 		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
@@ -813,6 +837,10 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setMat4("projection_matrix", upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
 
+		active_shader->setMat4("projection_mat", upv.projection_matrix);
+		active_shader->setMat4("view_mat", upv.view_matrix);
+		active_shader->setFloat("time", active_scene->scene_state.time);
+
 		// directional light
 		setDirectionalLightParameters(uni);
 		// point light
@@ -822,6 +850,7 @@ void Application::drawScene(Uniforms& uni)
 
 		Mat4 model = mat_utils::identity4();
 		active_shader->setMat4("world_matrix", model);
+		active_shader->setMat4("world_mat", model);
 
 		// material
 		//active_shader->setInt("texture1", 0);
@@ -865,7 +894,8 @@ void Application::drawScene(Uniforms& uni)
 
 		// ----- draw 1: draw element
 		// -------------------------------------------------------------------------------------
-		glBindVertexArray(lit_vao);
+		std::string name = active_scene->predefined_scene_elements[i].array_name;
+		glBindVertexArray(named_arrays.at(name));
 		Transform transform = active_scene->predefined_scene_elements[i].transform;
 		model =
 			mat_utils::translation(Vec3(transform.position.x, transform.position.y, transform.position.z))  // 0, 3, 10 * cos(ss.time)
@@ -875,17 +905,23 @@ void Application::drawScene(Uniforms& uni)
 			* mat_utils::scale(transform.scale.x, transform.scale.y, transform.scale.z)
 			;
 		active_shader->setMat4("world_matrix", model);
+		active_shader->setMat4("world_mat", model);
+
 		if (active_scene->predefined_scene_elements[i].element_bools.stencil_testing) { disableStencil(); }
 
-		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		if (!active_scene->predefined_scene_elements[i].element_bools.is_triangle)
+		{
+			glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+		}
+		else if (active_scene->predefined_scene_elements[i].element_bools.indexed)
 		{
 			// Bind the index buffer
-			glBindBuffer(lit_vao, lit_ebo);
-			glDrawElements(GL_TRIANGLES, sizeof(Predef3D::cube_inds__pos_norm_uv), GL_UNSIGNED_INT, 0);
+			glBindBuffer(named_arrays.at(name), lit_ebo);
+			glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
 		}
 		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
 		{
-			glDrawArrays(GL_TRIANGLES, 0, 36 / active_scene->scene_state.vertex_divider);
+			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
 		}
 		else
 		{
@@ -924,12 +960,13 @@ void Application::drawScene(Uniforms& uni)
 			if (active_scene->predefined_scene_elements[i].element_bools.indexed)
 			{
 				// Bind the index buffer
-				glBindBuffer(lit_vao, lit_ebo);
-				glDrawElements(GL_TRIANGLES, sizeof(Predef3D::cube_inds__pos_norm_uv), GL_UNSIGNED_INT, 0);
+				glBindBuffer(named_arrays.at(name), lit_ebo);
+				std::string name = active_scene->predefined_scene_elements[i].array_name;
+				glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
 			}
 			else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
 			{
-				glDrawArrays(GL_TRIANGLES, 0, 36 / active_scene->scene_state.vertex_divider);
+				glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
 			}
 			else
 			{
@@ -941,7 +978,7 @@ void Application::drawScene(Uniforms& uni)
 
 	}
 
-	// ---- draw models
+	// ---- draw 2: models
 	// -------------------------------------------------------------------------------------
 	for (int i = 0; i < active_scene->models.size(); i++)
 	{
@@ -959,10 +996,9 @@ void Application::drawScene(Uniforms& uni)
 			glDisable(GL_CULL_FACE);
 		}
 
-		std::string shader_name = "multiplelights";
-		active_scene->scene_state.b_model_refraction ? shader_name = "cubemaplit" :
-			shader_name = "multiplelights";
-		this->active_shader = shaders.at(shader_name);
+		active_scene->scene_state.b_model_refraction ? active_scene->scene_state.model_shader_name = "cubemaplit" :
+			active_scene->scene_state.model_shader_name = active_scene->scene_state.model_shader_name;
+		this->active_shader = shaders.at(active_scene->scene_state.model_shader_name);
 		// activate shader
 		(*active_shader).use();
 		// light uniforms
@@ -974,6 +1010,11 @@ void Application::drawScene(Uniforms& uni)
 		// assign textures and uniforms
 		active_shader->setVec3("view_pos", active_scene->cameras[0].position);
 		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+		active_shader->setMat4("projection_mat", upv.projection_matrix);
+		active_shader->setMat4("view_mat", upv.view_matrix);
+		active_shader->setFloat("time", active_scene->scene_state.time);
+
+		active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
 
 		active_shader->setInt("material.texture_diffuse1", 0);
 		active_shader->setInt("material.texture_specular1", 1);
@@ -981,7 +1022,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
 
-		if (shader_name == "cubemaplit")
+		if (active_scene->scene_state.b_model_refraction)
 		{
 			active_shader->setInt("skybox", 0);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
@@ -993,7 +1034,7 @@ void Application::drawScene(Uniforms& uni)
 		setSpotLightParameters(uni);
 
 		Mat4 world = mat_utils::identity4();
-		active_shader->setMat4("world_matrix", world);
+		active_shader->setMat4("world_mat", world);
 
 		float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
 		active_shader->setFloat("outline_scale", maxObjectScale);
@@ -1001,6 +1042,20 @@ void Application::drawScene(Uniforms& uni)
 		std::vector<ElementBools> bools = active_scene->scene_state.model_element_bools;
 		if (bools[i].stencil_testing) { disableStencil(); }
 		active_scene->models[i].draw(*active_shader);
+
+		// then draw model with normal visualizing geometry shader
+
+		if (active_scene->scene_state.display_normals)
+		{
+			this->active_shader = shaders.at("normal");
+			(*active_shader).use();
+			active_shader->setMat4("projection_mat", upv.projection_matrix);
+			active_shader->setMat4("view_mat", upv.view_matrix);
+			active_shader->setMat4("world_mat", world);
+			active_scene->models[i].draw(*active_shader);
+		}
+
+
 		if (bools[i].stencil_testing) {
 			enableStencil();
 			this->active_shader = shaders.at("stenciltesting02");
@@ -1015,9 +1070,6 @@ void Application::drawScene(Uniforms& uni)
 			active_shader->setVec3("view_pos", active_scene->cameras[0].position);
 			active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
 
-			active_shader->setInt("material.texture_diffuse1", 0);
-			active_shader->setInt("material.texture_specular1", 1);
-			active_shader->setInt("material.texture_emissive1", 2);
 			active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
 			// set ligt parameters
@@ -1038,11 +1090,11 @@ void Application::drawScene(Uniforms& uni)
 
 	// 3.5 skybox 
 	// --------------------------------------------------------------------------------------
-	if (active_scene->scene_state.b_skybox) {
+	if (active_scene->scene_state.display_skybox) {
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		this->active_shader = shaders.at("cubemap");
 		(*active_shader).use();
-		glBindVertexArray(skybox_vao);
+		glBindVertexArray(named_arrays.at("skybox"));
 		upv.view_matrix = cam.calcViewMatrix(world_up);
 		upv.view_matrix._14 = 0.0f;
 		upv.view_matrix._24 = 0.0f;
@@ -1072,7 +1124,7 @@ void Application::drawScene(Uniforms& uni)
 	this->active_shader = shaders.at("framebuffer");
 	(*active_shader).use();
 	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(vertex_arrays[0]);
+	glBindVertexArray(named_arrays.at("frame"));
 	glBindTexture(GL_TEXTURE_2D, framebuffer_color_texture);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -1116,6 +1168,11 @@ void Application::resetCamera()
 	camera.position = Vec3(-12.0f, 10.0f, 12.0f);
 	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);
 	camera.lookAtTarget(k_camera_target_point);
+}
+
+unsigned int fourStageAnimation(const unsigned int& stage)
+{
+	return stage == 4 ? 1 : stage+1;
 }
 
 void setTriangleLightColorShiftByTime(Vec3& light_color, Vec3& light_specular, const float& time)

@@ -19,7 +19,7 @@ struct DirectionalLight {
     Vec3 diffuse;
     Vec3 specular;
 
-    float brightness;
+    float brightness = 1.0f;
 };
 
 struct PointLight {

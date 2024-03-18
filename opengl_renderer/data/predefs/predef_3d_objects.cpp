@@ -4,6 +4,10 @@
 
 // ----- data
 // ------------------------------------------------------------------------------------------------
+float Predef3D::origin[] = {
+    0.0f, 0.0f, 0.0f
+};
+
 float Predef3D::skybox_vrts__pos[] = {
     // positions          
     -1.0f,  1.0f, -1.0f,
@@ -199,7 +203,12 @@ float Predef3D::y_axis[] = {
 
 };
 
-
+float Predef3D::rectangle__vrts[] = {
+    -0.5f,  0.5f, // top-left
+     0.5f,  0.5f, // top-right
+     0.5f, -0.5f, // bottom-right
+    -0.5f, -0.5f  // bottom-left
+};
 
 //float vertices_v10[] = {
 //	-0.5f, -0.5f, 0.0f,     // left
