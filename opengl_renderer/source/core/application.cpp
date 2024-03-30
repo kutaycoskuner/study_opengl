@@ -229,6 +229,7 @@ void Application::loadSceneData(const k_configType& config)
 	else if (scene_number == 7)		active_scene = new CubemapTestScene;
 	else if (scene_number == 8)		active_scene = new AdvancedGLSLTestScene;
 	else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
+	else if (scene_number == 10)	active_scene = new InstancingTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -314,14 +315,14 @@ void Application::loadShaders()
 	{
 		const std::string vrtx = path_struct.vrtx_shader_file;
 		const std::string frag = path_struct.frag_shader_file;
-		const std::string geo  = path_struct.geo_shader_file;
+		const std::string geo = path_struct.geo_shader_file;
 		// get between / and _ for key
 		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
 		std::string left_trimmed_key = path_parts[0];
 
 		path_parts = str_utils::split(left_trimmed_key, ".");
 		const std::string name = path_parts.back();
-		
+
 		if (geo == "") {
 			shaders[name] = std::make_shared<Shader>(vrtx, frag);
 		}
@@ -356,10 +357,10 @@ void Application::loadMeshData()
 	// binding buffers
 	//glBindVertexArray(vertex_arrays[0]);
 	//glBindBuffer(GL_ARRAY_BUFFER, vertex_buffers[0]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_uv), Predef3D::cube_vrts__pos_uv, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(VertexData::cube_vrts__pos_uv), VertexData::cube_vrts__pos_uv, GL_STATIC_DRAW);
 
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffers[0]);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::square_inds), Predef3D::square_inds, GL_STATIC_DRAW);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(VertexData::square_inds), VertexData::square_inds, GL_STATIC_DRAW);
 
 	// linking vertex attributes
 	// --------------------------       
@@ -377,7 +378,7 @@ void Application::loadMeshData()
 	//glBindBuffer(GL_ARRAY_BUFFER, lit_vbo);
 	//// we only need to bind to the VBO, the container's VBO's data already contains the data.
 	//glBindVertexArray(lit_vao);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Predef3D::cube_vrts__pos_norm_uv), Predef3D::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(VertexData::cube_vrts__pos_norm_uv), VertexData::cube_vrts__pos_norm_uv, GL_STATIC_DRAW);
 	//stride = 8;
 	//// set the vertex attribute 
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
@@ -388,11 +389,11 @@ void Application::loadMeshData()
 	//// att: texture
 	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(6 * sizeof(float)));
 	//glEnableVertexAttribArray(2);
-	//generateBuffer(lit_vao, lit_vbo, Predef3D::cube_vrts__pos_uv, 5, 1, 0);
+	//generateBuffer(lit_vao, lit_vbo, VertexData::cube_vrts__pos_uv, 5, 1, 0);
 
 	glGenBuffers(1, &lit_ebo); // :: ebo icin memory
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lit_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Predef3D::cube_inds__pos_norm_uv), Predef3D::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(VertexData::cube_inds__pos_norm_uv), VertexData::cube_inds__pos_norm_uv, GL_STATIC_DRAW);
 
 	// --working
 	//PredefNameMaps::predef3d_namemap;
@@ -424,6 +425,46 @@ void Application::loadMeshData()
 		named_arrays[it->first] = vertex_arrays[ii];
 		ii++;
 	}
+
+
+	//glGenBuffers(1, &instanced_buffer);
+	////glBindBuffer(GL_ARRAY_BUFFER, instanced_buffer);
+	////glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * 100, &active_scene->computed_data.translations2d[0], GL_STATIC_DRAW);
+	////glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	////glEnableVertexAttribArray(2);
+	////glBindBuffer(GL_ARRAY_BUFFER, instanced_buffer);
+	////glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	////glBindBuffer(GL_ARRAY_BUFFER, 0);
+	////glVertexAttribDivisor(2, 1);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, instanced_buffer);
+	//glBufferData(GL_ARRAY_BUFFER, active_scene->scene_state.instance_count * sizeof(Mat4),
+	//	&active_scene->computed_data.mat4[0], GL_STATIC_DRAW);
+	//for (unsigned int i = 0; i < active_scene->models.size(); i++)
+	//{
+	//	unsigned int VAO = active_scene->models[i].meshes.VAO;
+	//	glBindVertexArray(VAO);
+	//	// vertex attributes
+	//// vertex attributes
+	//	std::size_t vec4Size = sizeof(Vec4);
+	//	glEnableVertexAttribArray(3);
+	//	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+	//	glEnableVertexAttribArray(4);
+	//	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+	//	glEnableVertexAttribArray(5);
+	//	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+	//	glEnableVertexAttribArray(6);
+	//	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+	//	glVertexAttribDivisor(3, 1);
+	//	glVertexAttribDivisor(4, 1);
+	//	glVertexAttribDivisor(5, 1);
+	//	glVertexAttribDivisor(6, 1);
+
+	//	glBindVertexArray(0);
+	//}
+
 
 	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -765,7 +806,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setVec3("light_color", point_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(point_lights[ii].position)
-			* mat_utils::scale(PredefSceneElements::light_placeholder.transform.scale)
+			* mat_utils::scale(PrimitiveSceneNodes::light_placeholder.transform.scale)
 			;
 		active_shader->setMat4("world_matrix", model);
 
@@ -789,7 +830,7 @@ void Application::drawScene(Uniforms& uni)
 		active_shader->setVec3("light_color", spot_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(spot_lights[ii].position)
-			* mat_utils::scale(PredefSceneElements::light_placeholder.transform.scale)
+			* mat_utils::scale(PrimitiveSceneNodes::light_placeholder.transform.scale)
 			;
 		active_shader->setMat4("world_matrix", model);
 
@@ -829,6 +870,16 @@ void Application::drawScene(Uniforms& uni)
 		this->active_shader = shaders.at(active_scene->predefined_scene_elements[i].shader_name);
 		// activate shader
 		(*active_shader).use();
+
+		if (active_scene->scene_state.using_computed_data)
+		{
+			for (unsigned int i = 0; i < 100; i++)
+			{
+				std::string name = "offsets[" + std::to_string(i) + "]";
+				Vec2 translation = active_scene->computed_data.translations2d[i];
+				active_shader->setVec2(name, translation);
+			}
+		}
 
 		// assign uniforms
 		active_shader->setFloat("mix_val", upo.mix_value);
@@ -894,7 +945,7 @@ void Application::drawScene(Uniforms& uni)
 
 		// ----- draw 1: draw element
 		// -------------------------------------------------------------------------------------
-		std::string name = active_scene->predefined_scene_elements[i].array_name;
+		std::string name = active_scene->predefined_scene_elements[i].vertex_array_name;
 		glBindVertexArray(named_arrays.at(name));
 		Transform transform = active_scene->predefined_scene_elements[i].transform;
 		model =
@@ -922,6 +973,10 @@ void Application::drawScene(Uniforms& uni)
 		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
 		{
 			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+		}
+		else if (active_scene->scene_state.draw_instanced)
+		{
+			glDrawArraysInstanced(GL_TRIANGLES, 0, 6, active_scene->scene_state.instance_count);
 		}
 		else
 		{
@@ -961,7 +1016,7 @@ void Application::drawScene(Uniforms& uni)
 			{
 				// Bind the index buffer
 				glBindBuffer(named_arrays.at(name), lit_ebo);
-				std::string name = active_scene->predefined_scene_elements[i].array_name;
+				std::string name = active_scene->predefined_scene_elements[i].vertex_array_name;
 				glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
 			}
 			else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
@@ -1009,7 +1064,6 @@ void Application::drawScene(Uniforms& uni)
 
 		// assign textures and uniforms
 		active_shader->setVec3("view_pos", active_scene->cameras[0].position);
-		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
 		active_shader->setMat4("projection_mat", upv.projection_matrix);
 		active_shader->setMat4("view_mat", upv.view_matrix);
 		active_shader->setFloat("time", active_scene->scene_state.time);
@@ -1078,13 +1132,56 @@ void Application::drawScene(Uniforms& uni)
 			setSpotLightParameters(uni);
 
 			Mat4 world = mat_utils::identity4();
-			active_shader->setMat4("world_matrix", world);
+			active_shader->setMat4("world_mat", world);
 
 			float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
 			active_shader->setFloat("outline_scale", maxObjectScale);
 			active_scene->models[i].draw(*active_shader);
 			clearStencil();
 			glClear(GL_STENCIL_BUFFER_BIT);
+		}
+
+		if (active_scene->scene_state.draw_instanced)
+		{
+			std::string shader = "instance02";
+			this->active_shader = shaders.at(shader);
+			(*active_shader).use();
+			active_shader->setMat4("view_mat", upv.view_matrix);
+			active_shader->setMat4("projection_mat", upv.projection_matrix);
+			//active_shader->setMat4("world_mat", world);
+
+				for (int ii = 0; ii < active_scene->scene_state.instance_count; ii++)
+				{
+					std::string name = "world_mat";
+					active_shader->setMat4(name, active_scene->computed_data.mat4[ii]);
+					active_scene->models[i].draw(*active_shader);
+				}
+
+			//if (active_scene->scene_state.instance_count > 1000)
+			//{
+			//	int loop_count = active_scene->scene_state.instance_count / 1000;
+			//	int remainder = active_scene->scene_state.instance_count % 1000;
+			//	if (remainder > 0) loop_count += 1;
+			//	for (int ii = 0; ii < loop_count; ii++)
+			//	{
+			//	/*	for (int iii = 0; iii < 1000; iii++)
+			//		{
+			//			std::string name = "transformation_mat[" + std::to_string(iii) + "]";
+			//			active_shader->setMat4(name, active_scene->computed_data.mat4[iii+ii^1000]);
+			//		}*/
+			//		active_scene->models[i].drawInstanced(*active_shader, 1000);
+			//	}
+			//}
+			//else
+			//{
+			//	for (int ii = 0; ii < active_scene->scene_state.instance_count; ii++)
+			//	{
+			//		std::string name = "transformation_mat[" + std::to_string(ii) + "]";
+			//		active_shader->setMat4(name, active_scene->computed_data.mat4[ii]);
+			//	}
+			//	active_scene->models[i].drawInstanced(*active_shader, active_scene->scene_state.instance_count);
+			//}
+
 		}
 	}
 
@@ -1172,7 +1269,7 @@ void Application::resetCamera()
 
 unsigned int fourStageAnimation(const unsigned int& stage)
 {
-	return stage == 4 ? 1 : stage+1;
+	return stage == 4 ? 1 : stage + 1;
 }
 
 void setTriangleLightColorShiftByTime(Vec3& light_color, Vec3& light_specular, const float& time)

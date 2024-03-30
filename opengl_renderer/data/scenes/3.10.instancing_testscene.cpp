@@ -14,40 +14,46 @@
 // ----------------------------------------------------------------------------
 // ----- abstract
 // ----------------------------------------------------------------------------
-void GeoShaderTestScene::loadData()
+void InstancingTestScene::loadData()
 {
-	scene_state.animation_stage = 1;
-	scene_state.animate = true;
-	scene_state.emission_factor = 10.0f;
-	scene_state.shininess = 32.0f;
-	scene_state.vertex_divider = 9.0f;
-	//scene_state.b_model_refraction = true;
-	scene_state.display_skybox = true;
-	scene_state.model_shader_name = "explode";
-	scene_state.display_normals = true;
-	scene_state.display_axes = true;
+	scene_state.animation_stage			= 1;
+	scene_state.animate					= true;
+	scene_state.emission_factor			= 10.0f;
+	scene_state.shininess				= 32.0f;
+	scene_state.vertex_divider			= 9.0f;
+	scene_state.display_skybox			= true;
+	scene_state.model_shader_name		= "diffuse";
+	scene_state.display_normals			= false;
+	scene_state.display_axes			= false;
+	scene_state.using_computed_data		= true;
+	scene_state.draw_instanced			= true;
+	//scene_state.b_model_refraction		= true;
+	
 
 	// ----- camera position
-	Camera& cam = cameras[0];
-	cam.position = Vec3(-3.3f, 3.6f, 5.6f);
-	cam.lookAtTarget(Vec3(0.0f, 1.6f, 0.0f));	
+	//Camera& cam = cameras[0];
+	//cam.position = Vec3(-9.4f, 7.3f, 16.0f);
+	//cam.lookAtTarget(Vec3(0.0f, 1.6f, 0.0f));
 	// normal cam
 	//cam.position = Vec3(0.0f, 0.0f, 10.0f);
 	//cam.lookAtTarget(Vec3(.2f, 0.0f, -.2f));
 
 	// ----- define lights
-	// directional
-	directional_lights.push_back(PredefSceneLights::d_light);
-	// point
-	point_lights.push_back(PredefSceneLights::p_light);
-	point_lights.push_back(PredefSceneLights::p_light);
-	point_lights.push_back(PredefSceneLights::p_light);
-	// spot
-	spot_lights.push_back(PredefSceneLights::s_light);
-	spot_lights[0].brightness = 0.4f;
+	//// directional
+	//directional_lights.push_back(PredefSceneLights::d_light);
+	//// point
+	//point_lights.push_back(PredefSceneLights::p_light);
+	//point_lights.push_back(PredefSceneLights::p_light);
+	//point_lights.push_back(PredefSceneLights::p_light);
+	//point_lights[0].brightness = 0.4f;
+	//point_lights[1].brightness = 0.4f;
+	//point_lights[2].brightness = 0.4f;
+	//// spot
+	//spot_lights.push_back(PredefSceneLights::s_light);
+	//spot_lights[0].brightness = 0.1f;
 
 	// ----- define predefined elements
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::origin);
+	//predefined_scene_elements.push_back(PrimitiveSceneNodes::small_plane);
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::points);
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	//predefined_scene_elements[0].shader_name = "cubemaplit";
@@ -56,6 +62,7 @@ void GeoShaderTestScene::loadData()
 
 	// ----- define model paths
 	model_paths = {
+		{ "data/models/out_planet/planet.obj" }
 		//"data/models/testobject0_frustum/testobject.obj"
 		//,"data/models/testobject1_dodecahedron/testobject.obj"
 		//,"data/models/testobject2_sphere/testobject.obj"
@@ -66,10 +73,10 @@ void GeoShaderTestScene::loadData()
 		//,"data/models/testobject7_torus/testobject.obj"
 		//,"data/models/testobject8_mine/testobject.obj"
 		//,"data/models/testobject9_cylinder/testobject.obj"
-		//"data/models/testobject10_suzanne/testobject.obj"
+		//,"data/models/testobject10_suzanne/testobject.obj"
 		//,"data/models/testobject11_cone/testobject.obj"
 		//{"data/models/out_backpack_by_berkgedik/backpack.obj"}
-		{"data/models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik2.obj"}
+		//{"data/models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik2.obj"}
 
 	};
 
@@ -87,6 +94,48 @@ void GeoShaderTestScene::loadData()
 		);
 	}
 
+	// ----- generate computed data
+	int index = 0;
+	float offset = 0.1f;
+	for (int y = -10; y < 10; y += 2)
+	{
+		for (int x = -10; x < 10; x += 2)
+		{
+			Vec2 translation;
+			translation.x = (float)x / 10.0f + offset;
+			translation.y = (float)y / 10.0f + offset;
+			computed_data.translations2d.push_back(translation);
+		}
+	}
+	
+	unsigned int amount = 5000;
+	scene_state.instance_count = amount;
+	srand(scene_state.time); // initialize random seed	
+	float radius = 20.0;
+	offset = 2.5f;
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		Mat4 model = mat_utils::identity4();
+		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+		float angle = (float)i / (float)amount * 360.0f;
+		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float x = sin(angle) * radius + displacement;
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float z = cos(angle) * radius + displacement;
+
+		float scale = (rand() % 20) / 1000.0f + 0.05;
+		float rotAngle = (rand() % 360);
+
+		model = mat_utils::translate(Vec3(x, y, z))
+			* mat_utils::rotateXYZ(rotAngle, Vec3(0.4f, 0.6f, 0.8f).normalized())
+			* mat_utils::scale(scale);
+
+		// 4. now add to list of matrices
+		computed_data.mat4.push_back(model);
+	}
+
 	// ----- define texture names
 	texture_names = { "out_container2", "linegrid_2k_darkgray", "grid_2k_white" };
 
@@ -95,7 +144,7 @@ void GeoShaderTestScene::loadData()
 	scene_state.time_pin = scene_state.time;
 }
 
-void GeoShaderTestScene::update() {
+void InstancingTestScene::update() {
 
 	// emission pulse/breath
 	// --------------------------------------------------------------------------------------
@@ -108,9 +157,9 @@ void GeoShaderTestScene::update() {
 
 	// move camera
 	// --------------------------------------------------------------------------------------
-	//float camera_pos_multiplier = 12.0f;
-	//cameras[0].position = Vec3(camera_pos_multiplier * cost, cameras[0].position.y, camera_pos_multiplier * sint);
-	//cameras[0].lookAtTarget(Vec3(0.0f, 3.0f, 0.0f));
+	float camera_pos_multiplier = 20.0f;
+	cameras[0].position = Vec3(camera_pos_multiplier * cost, cameras[0].position.y, camera_pos_multiplier * sint);
+	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 
 	// move lights radial
 	// --------------------------------------------------------------------------------------
@@ -177,13 +226,14 @@ void GeoShaderTestScene::update() {
 			scene_state.animation_stage = 1;
 		}
 	}
+
 	// sort objects
 	// --------------------------------------------------------------------------------------
 
 
 }
 
-GeoShaderTestScene::GeoShaderTestScene() {
+InstancingTestScene::InstancingTestScene() {
 }
 
 

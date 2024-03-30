@@ -5,6 +5,7 @@
 // ----- libraries
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/matrix4.h"
+#include "../abstract/vector2.h"
 
 #include <glad/glad.h>
 
@@ -168,6 +169,16 @@ public:
     void setMat4(const std::string& name, const Mat4& value) const
     {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_TRUE, &value.m[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setVec2(const std::string& name, const Vec2& value) const
+    {
+        glUniform2f(glGetUniformLocation(ID, name.c_str()), value.x, value.y);
+    }
+    // ------------------------------------------------------------------------
+    void setVec2(const std::string& name, const float& vx, const float& vy) const
+    {
+        glUniform2f(glGetUniformLocation(ID, name.c_str()), vx, vy);
     }
     // ------------------------------------------------------------------------
     void setVec3(const std::string& name, const Vec3& value) const

@@ -23,7 +23,6 @@ const std::vector<ModelPath> RelativePaths::model_paths = {
 		{"data/models/testobject11_cone/testobject.obj"},
 		{"data/models/out_backpack_by_berkgedik/backpack.obj"},
 		{"data/models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"}
-
-
+		,{ "data/models/out_planet/planet.obj" }
 		//{"data/models/testobjects_by_kutaycoskuner/testobjects.obj},
 };

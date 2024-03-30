@@ -352,6 +352,18 @@
 - added glad.c file to project
 
 # Blackboard
+- <instance>
+    - uniform gonderme
+    - buffer olarak gonderme
+    - bining batching birden fazla draw call cagirma
+
+- <pix>
+    - https://devblogs.microsoft.com/pix/download/
+    - https://devblogs.microsoft.com/pix/winpixeventruntime/ | marker
+    - low level profiling tool
+    - frame debugger
+    - nsight nvidia nin
+
 - <dll file>
     - oldugu gibi kopyala,
     - directory ise vcc > include release mi debug mi kontrol et degistir
@@ -395,6 +407,11 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+
+- <cc0>
+    - san miguel
+    - sponza
+
 - <problem: release not included>
     - vs den include exclude etmeye calistim olmadi
     - vsc den hata satirini arattim. vsxproj dosyasinda include edildigi yeri bulup xml de manual olarak exclude ettim
@@ -461,6 +478,8 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - <knowledge: opengl draw methods>
     - glDrawArrays
     - glDrawElements
+    - glDrawArraysInstanced
+    - glDrawElementsInstanced
 
 - <optimization>
     - clear 0, 1 
@@ -484,7 +503,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - shaderlari yarat
     - naming conventionaa adapte et
 
-- <procedure: yeni sahne elemani ekleme>
+- <procedure: new 3d, yeni sahne elemani ekleme>
     - array i sec veya olustur
     - array i name map e isim verecek sekilde ekle
     - predef scene element e once header sonra dosyada ekle ilgili shader ve transformlari olustur

@@ -13,7 +13,7 @@
 
 // function defintions
 // ---------------------------------------------------------------------------------------
-void Mesh::draw(Shader& shader)
+void Mesh::draw(const Shader& shader)
 {
     unsigned int num_diffuse = 0;
     unsigned int num_specular = 0;
@@ -39,9 +39,41 @@ void Mesh::draw(Shader& shader)
 
     glActiveTexture(GL_TEXTURE0);
 
-    // draw array_name
+    // draw vertex_array_name
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void Mesh::drawInstanced(const Shader& shader, const unsigned int count)
+{
+    unsigned int num_diffuse = 0;
+    unsigned int num_specular = 0;
+    for (int ii = 0; ii < textures.size(); ii++)
+    {
+        glActiveTexture(GL_TEXTURE0 + ii);
+
+        std::string number;
+        std::string name = textures[ii].type;
+        if (name == "texture_diffuse")
+        {
+            name = "diffuse_map1";
+            number = std::to_string(num_diffuse += 1);
+        }
+        if (name == "texture_specular")
+        {
+            name = "specular_map1";
+            number = std::to_string(num_specular += 1);
+        }
+        shader.setInt(("material." + name).c_str(), ii);
+        glBindTexture(GL_TEXTURE_2D, textures[ii].id);
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+
+    // draw vertex_array_name
+    glBindVertexArray(vao);
+    glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, count);
     glBindVertexArray(0);
 }
 
@@ -73,10 +105,16 @@ void Mesh::setupMesh()
     glBindVertexArray(0);
 }
 
-void Model::draw(Shader& shader)
+void Model::draw(const Shader& shader)
 {
     for (int ii = 0; ii < meshes.size(); ii++)
         meshes[ii].draw(shader);
+}
+
+void Model::drawInstanced(const Shader& shader, const unsigned int count)
+{
+    for (int ii = 0; ii < meshes.size(); ii++)
+        meshes[ii].drawInstanced(shader, count);
 }
 
 void Model::loadModel(std::string path)

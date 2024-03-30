@@ -36,13 +36,13 @@ void AdvancedGLSLTestScene::loadData()
 	//spot_lights[0].brightness = 10.0f;
 
 	// ----- define predefined elements
-	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements[0].transform.position = Vec3(1.0f, 1.0f, 0.0f);
-	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements[1].transform.position = Vec3(-1.0f, 1.0f, 0.0f);
-	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements[2].transform.position = Vec3(1.0f, -1.0f, 0.0f);
-	predefined_scene_elements.push_back(PredefSceneElements::single_cube);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements[3].transform.position = Vec3(-1.0f, -1.0f, 0.0f);
 
 	predefined_scene_elements[0].shader_name = "advglsl-red";
@@ -50,8 +50,8 @@ void AdvancedGLSLTestScene::loadData()
 	predefined_scene_elements[2].shader_name = "advglsl-blue";
 	predefined_scene_elements[3].shader_name = "advglsl-yellow";
 	//predefined_scene_elements[0].shader_name = "cubemaplit";
-	//predefined_scene_elements.push_back(PredefSceneElements::paircube1);
-	//predefined_scene_elements.push_back(PredefSceneElements::paircube2);
+	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube1);
+	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube2);
 
 	// ----- define model paths
 	model_paths = {

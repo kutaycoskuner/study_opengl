@@ -7,11 +7,14 @@
 #include <vector>
 #include <string>
 #include <map>
+
+#include "../abstract/vector2.h"
+
 // ----------------------------------------------------------------------------
 // ----- forward declarations
 // ----------------------------------------------------------------------------
 
-class Predef3D;
+class VertexData;
 
 
 // ----------------------------------------------------------------------------
@@ -67,7 +70,7 @@ public:
 	static float border_color[4];
 };
 
-class Predef3D
+class VertexData
 {
 public:
 	static float		origin[3];
@@ -80,6 +83,7 @@ public:
 
 	static float		plane_vrts__pos_tex[30];
 	static float		quad_vrts__pos_tex[24];
+	static float		quad_vrts__pos_col[30];
 
 	static float		square_vrts[32];
 	static unsigned int square_inds[6];
@@ -88,6 +92,12 @@ public:
 	static float		y_axis[12];
 
 	static float		rectangle__vrts[8]; 
+};
+
+struct ComputedData
+{
+	std::vector<Vec2> translations2d;
+	std::vector<Mat4> mat4;
 };
 
 struct Predef3DNode
@@ -116,10 +126,10 @@ struct ElementBools {
 	bool is_triangle = true;
 };
 
-struct PredefSceneElement
+struct PrimitiveSceneNode
 {
 	std::string		name;
-	std::string		array_name;
+	std::string		vertex_array_name;
 	Transform		transform;
 	std::string		shader_name;
 	std::string		texture_name;
@@ -128,25 +138,26 @@ struct PredefSceneElement
 };
 
 //
-class PredefSceneElements
+class PrimitiveSceneNodes
 {
 public:
-	static PredefSceneElement origin;
-	static PredefSceneElement points;
-	static PredefSceneElement single_cube;
-	static PredefSceneElement big_cube;
-	static PredefSceneElement cube_10_0;
-	static PredefSceneElement cube_0_10;
-	static PredefSceneElement box_10_0;
-	static PredefSceneElement box_0_10;
-	static PredefSceneElement ground_plane;
-	static PredefSceneElement light_placeholder;
-	static PredefSceneElement nobg_grass;
-	static PredefSceneElement transparent_window;
-	static PredefSceneElement paircube1;
-	static PredefSceneElement paircube2;
-	static PredefSceneElement axis_x;
-	static PredefSceneElement axis_z;
+	static PrimitiveSceneNode origin;
+	static PrimitiveSceneNode points;
+	static PrimitiveSceneNode single_cube;
+	static PrimitiveSceneNode big_cube;
+	static PrimitiveSceneNode cube_10_0;
+	static PrimitiveSceneNode cube_0_10;
+	static PrimitiveSceneNode box_10_0;
+	static PrimitiveSceneNode box_0_10;
+	static PrimitiveSceneNode ground_plane;
+	static PrimitiveSceneNode small_plane;
+	static PrimitiveSceneNode light_placeholder;
+	static PrimitiveSceneNode nobg_grass;
+	static PrimitiveSceneNode transparent_window;
+	static PrimitiveSceneNode paircube1;
+	static PrimitiveSceneNode paircube2;
+	static PrimitiveSceneNode axis_x;
+	static PrimitiveSceneNode axis_z;
 };
 
 class PredefSceneLights

@@ -27,7 +27,7 @@ private:
 	std::unordered_set<InputEvent> active_input_events;
 public:
 	// cameras
-	std::vector<PredefSceneElement> predefined_scene_elements;
+	std::vector<PrimitiveSceneNode> predefined_scene_elements;
 	std::vector<Transform>			predefined_scene_element_transforms;
 	
 	std::vector<std::string>		model_paths;
@@ -44,6 +44,8 @@ public:
 	std::vector<SpotLight>			spot_lights;
 	
 	SceneState						scene_state;
+
+	ComputedData					computed_data;
 	// lights
 
 	// shaders

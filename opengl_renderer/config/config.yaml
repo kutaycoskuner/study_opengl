@@ -18,7 +18,7 @@ colors:
 
 default_camera:
   near: 0.01
-  far: 100
+  far: 1000
   fov: 45.0
   rotation_sensitivity: 0.02
 
@@ -29,5 +29,5 @@ default_animation:
   emission_factor: 0.0
 
 scene:
-    active_scene: 9
+    active_scene: 10
     

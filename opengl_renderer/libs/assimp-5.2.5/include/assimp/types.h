@@ -504,7 +504,7 @@ struct aiMemoryInfo {
     /** Storage allocated for material data  */
     unsigned int materials;
 
-    /** Storage allocated for array_name data */
+    /** Storage allocated for vertex_array_name data */
     unsigned int meshes;
 
     /** Storage allocated for node data */

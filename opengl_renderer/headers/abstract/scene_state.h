@@ -49,6 +49,10 @@ struct SceneState
 
     // bool
     bool model_explosion = false;
+    bool using_computed_data = false;
+
+    unsigned int instance_count = 100;
+    bool draw_instanced = false;
 
 
     // testing

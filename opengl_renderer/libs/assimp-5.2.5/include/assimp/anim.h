@@ -149,14 +149,14 @@ struct aiQuatKey {
 };
 
 // ---------------------------------------------------------------------------
-/** Binds a anim-array_name to a specific point in time. */
+/** Binds a anim-vertex_array_name to a specific point in time. */
 struct aiMeshKey {
     /** The time of this key */
     double mTime;
 
     /** Index into the aiMesh::mAnimMeshes array of the
-     *  array_name corresponding to the #aiMeshAnim hosting this
-     *  key frame. The referenced anim array_name is evaluated
+     *  vertex_array_name corresponding to the #aiMeshAnim hosting this
+     *  key frame. The referenced anim vertex_array_name is evaluated
      *  according to the rules defined in the docs for #aiAnimMesh.*/
     unsigned int mValue;
 
@@ -193,7 +193,7 @@ struct aiMeshKey {
 };
 
 // ---------------------------------------------------------------------------
-/** Binds a morph anim array_name to a specific point in time. */
+/** Binds a morph anim vertex_array_name to a specific point in time. */
 struct aiMeshMorphKey {
     /** The time of this key */
     double mTime;
@@ -336,13 +336,13 @@ struct aiNodeAnim {
 };
 
 // ---------------------------------------------------------------------------
-/** Describes vertex-based animations for a single array_name or a group of
+/** Describes vertex-based animations for a single vertex_array_name or a group of
  *  meshes. Meshes carry the animation data for each frame in their
  *  aiMesh::mAnimMeshes array. The purpose of aiMeshAnim is to
- *  define keyframes linking each array_name attachment to a particular
+ *  define keyframes linking each vertex_array_name attachment to a particular
  *  point in time. */
 struct aiMeshAnim {
-    /** Name of the array_name to be animated. An empty string is not allowed,
+    /** Name of the vertex_array_name to be animated. An empty string is not allowed,
      *  animated meshes need to be named (not necessarily uniquely,
      *  the name can basically serve as wild-card to select a group
      *  of meshes with similar animation setup)*/
@@ -368,9 +368,9 @@ struct aiMeshAnim {
 };
 
 // ---------------------------------------------------------------------------
-/** Describes a morphing animation of a given array_name. */
+/** Describes a morphing animation of a given vertex_array_name. */
 struct aiMeshMorphAnim {
-    /** Name of the array_name to be animated. An empty string is not allowed,
+    /** Name of the vertex_array_name to be animated. An empty string is not allowed,
      *  animated meshes need to be named (not necessarily uniquely,
      *  the name can basically serve as wildcard to select a group
      *  of meshes with similar animation setup)*/
@@ -418,19 +418,19 @@ struct aiAnimation {
      *  The array is mNumChannels in size. */
     C_STRUCT aiNodeAnim **mChannels;
 
-    /** The number of array_name animation channels. Each channel affects
-     *  a single array_name and defines vertex-based animation. */
+    /** The number of vertex_array_name animation channels. Each channel affects
+     *  a single vertex_array_name and defines vertex-based animation. */
     unsigned int mNumMeshChannels;
 
-    /** The array_name animation channels. Each channel affects a single array_name.
+    /** The vertex_array_name animation channels. Each channel affects a single vertex_array_name.
      *  The array is mNumMeshChannels in size. */
     C_STRUCT aiMeshAnim **mMeshChannels;
 
-    /** The number of array_name animation channels. Each channel affects
-     *  a single array_name and defines morphing animation. */
+    /** The number of vertex_array_name animation channels. Each channel affects
+     *  a single vertex_array_name and defines morphing animation. */
     unsigned int mNumMorphMeshChannels;
 
-    /** The morph array_name animation channels. Each channel affects a single array_name.
+    /** The morph vertex_array_name animation channels. Each channel affects a single vertex_array_name.
      *  The array is mNumMorphMeshChannels in size. */
     C_STRUCT aiMeshMorphAnim **mMorphMeshChannels;
 

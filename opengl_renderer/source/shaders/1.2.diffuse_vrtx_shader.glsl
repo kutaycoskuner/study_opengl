@@ -6,13 +6,13 @@ layout (location = 2) in vec2 in_tex_coord;
 
 out vec2 v_tex_coord;
 
-uniform mat4 world_matrix;
-uniform mat4 view_proj_matrix;
-
+uniform mat4 world_mat;
+uniform mat4 view_mat;
+uniform mat4 projection_mat;
 
 void main()
 {
-    gl_Position = view_proj_matrix * world_matrix * vec4(in_pos, 1.0);
+    gl_Position = projection_mat * view_mat * world_mat * vec4(in_pos, 1.0);
     v_tex_coord = in_tex_coord;
 }
 #endif

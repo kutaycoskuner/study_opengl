@@ -107,6 +107,19 @@
 
 # Log
                                                                                |
+- [0.65] wip: pre-instancing performance measure push
+    - 30-Mar-2024
+        - wip: instancing meteor belt
+    - 28-Mar-2024
+        - wip: instancing meteor belt 
+        - add: instancing scene basic 
+        - chg: nomenclature predef_scene_elements -> primitive_scene_node
+        - wip: architecture graph and visualization / how offset and computed data 
+        - add: instancing predef 3d
+    - 24-Mar-2024 
+        - wip: instancing scene
+        - learn: pix profiler
+
 - [0.64] add geometry shaders
     - 18-Mar-2024 
         - add: display geometry shaderes | Canakkale

@@ -4,11 +4,11 @@
 
 // ----- data
 // ------------------------------------------------------------------------------------------------
-float Predef3D::origin[] = {
+float VertexData::origin[] = {
     0.0f, 0.0f, 0.0f
 };
 
-float Predef3D::skybox_vrts__pos[] = {
+float VertexData::skybox_vrts__pos[] = {
     // positions          
     -1.0f,  1.0f, -1.0f,
     -1.0f, -1.0f, -1.0f,
@@ -53,7 +53,7 @@ float Predef3D::skybox_vrts__pos[] = {
      1.0f, -1.0f,  1.0f
 };
 
-float Predef3D::cube_vrts__pos_uv[] = {
+float VertexData::cube_vrts__pos_uv[] = {
     // Back face
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
      0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
@@ -98,7 +98,7 @@ float Predef3D::cube_vrts__pos_uv[] = {
      -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left        
 };
 
-float Predef3D::plane_vrts__pos_tex[] = {
+float VertexData::plane_vrts__pos_tex[] = {
     // positions          // texture Coords 
      5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
     -5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
@@ -108,7 +108,7 @@ float Predef3D::plane_vrts__pos_tex[] = {
     -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
      5.0f, -0.5f, -5.0f,  2.0f, 2.0f
 };
-float Predef3D::quad_vrts__pos_tex[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+float VertexData::quad_vrts__pos_tex[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
     // positions   // texCoords
     -1.0f,  1.0f,  0.0f, 1.0f,
     -1.0f, -1.0f,  0.0f, 0.0f,
@@ -119,7 +119,18 @@ float Predef3D::quad_vrts__pos_tex[] = { // vertex attributes for a quad that fi
      1.0f,  1.0f,  1.0f, 1.0f
 };
 
-float Predef3D::cube_vrts__pos_norm_uv[] = {		  // position, normal, texture coords
+float VertexData::quad_vrts__pos_col[] = {
+    // positions      // colors
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+    -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+     0.05f,  0.05f,  0.0f, 1.0f, 1.0f
+};
+
+float VertexData::cube_vrts__pos_norm_uv[] = {		  // position, normal, texture coords
     // Back face
 	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	0.0f, 0.0f,
 	+0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,	1.0f, 0.0f,
@@ -165,7 +176,7 @@ float Predef3D::cube_vrts__pos_norm_uv[] = {		  // position, normal, texture coo
 
 };
 
-unsigned int Predef3D::cube_inds__pos_norm_uv[] = {
+unsigned int VertexData::cube_inds__pos_norm_uv[] = {
      2,  1,  0,  5,  4,  3,     // back
      6,  7,  8,  9, 10, 11,     // front
     12, 13, 14, 15, 16, 17,     // left
@@ -175,7 +186,7 @@ unsigned int Predef3D::cube_inds__pos_norm_uv[] = {
 };
 
 
-float Predef3D::square_vrts[] = {
+float VertexData::square_vrts[] = {
 	// positions				// colors				// texture coords
 	-0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	0.0f, 1.0f,				// top left 
 	0.5f, 0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 1.0f,				// top right 
@@ -184,26 +195,26 @@ float Predef3D::square_vrts[] = {
 
 };
 
-unsigned int Predef3D::square_inds[] = {
+unsigned int VertexData::square_inds[] = {
 	0, 1, 2,	// first tri
 	1, 2, 3		// second tri
 };
 
-float Predef3D::x_axis[] = {
+float VertexData::x_axis[] = {
 	// positions				// colors			
 	-0.5f, 0.0f, 0.0f,		1.0f, 0.0f, 0.0f,				// - 
 	0.5f, 0.0f, 0.0f,		0.0f, 1.0f, 0.0f				// + 
 
 };
 
-float Predef3D::y_axis[] = {
+float VertexData::y_axis[] = {
 	// positions				// colors			
 	0.0f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,				// -
 	0.0f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f				// + 
 
 };
 
-float Predef3D::rectangle__vrts[] = {
+float VertexData::rectangle__vrts[] = {
     -0.5f,  0.5f, // top-left
      0.5f,  0.5f, // top-right
      0.5f, -0.5f, // bottom-right

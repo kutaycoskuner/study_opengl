@@ -33,25 +33,25 @@ void BlendingTestScene::loadData()
 	spot_lights.push_back(PredefSceneLights::s_light);
 
 	// ----- define predefined elements
-	predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
 
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
-	predefined_scene_elements.push_back(PredefSceneElements::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
 
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
-	predefined_scene_elements.push_back(PredefSceneElements::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::nobg_grass);
 
 	float veg_posy = 0.6f;
 	float pdm = 1.0f; // planar distance multiplier
@@ -179,9 +179,9 @@ void BlendingTestScene::update() {
 	3. Draw all the transparent objects in sorted order.
 	*/
 	// normalde blendingin calismasi icin objeleri arkadan one dogru sort edip cizmek egerekiyor ama su anda garip bir sekilde calisiyor.
-	std::map<float, PredefSceneElement> sorted;
+	std::map<float, PrimitiveSceneNode> sorted;
 	std::sort(predefined_scene_elements.begin(), predefined_scene_elements.end(),
-		[this](const PredefSceneElement& a, const PredefSceneElement& b) {
+		[this](const PrimitiveSceneNode& a, const PrimitiveSceneNode& b) {
 			float distanceA = vec_utils::length(this->cameras[0].position - a.transform.position);
 			float distanceB = vec_utils::length(this->cameras[0].position - b.transform.position);
 			return distanceA > distanceB;

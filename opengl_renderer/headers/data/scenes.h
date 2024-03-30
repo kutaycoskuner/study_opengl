@@ -95,4 +95,12 @@ public:
 	GeoShaderTestScene();
 };
 
+class InstancingTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	InstancingTestScene();
+};
+
 

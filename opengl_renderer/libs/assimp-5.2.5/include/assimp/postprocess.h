@@ -75,7 +75,7 @@ enum aiPostProcessSteps
     // -------------------------------------------------------------------------
     /** <hr>Calculates the tangents and bitangents for the imported meshes.
      *
-     * Does nothing if a array_name does not have normals. You might want this post
+     * Does nothing if a vertex_array_name does not have normals. You might want this post
      * processing step to be executed if you plan to use tangent space calculations
      * such as normal mapping  applied to the meshes. There's an importer property,
      * <tt>#AI_CONFIG_PP_CT_MAX_SMOOTHING_ANGLE</tt>, which allows you to specify
@@ -88,7 +88,7 @@ enum aiPostProcessSteps
     /** <hr>Identifies and joins identical vertex data sets within all
      *  imported meshes.
      *
-     * After this step is run, each array_name contains unique vertices,
+     * After this step is run, each vertex_array_name contains unique vertices,
      * so a vertex may be used by multiple faces. You usually want
      * to use this post processing step. If your application deals with
      * indexed geometry, this step is compulsory or you'll just waste rendering
@@ -116,7 +116,7 @@ enum aiPostProcessSteps
     // -------------------------------------------------------------------------
     /** <hr>Triangulates all faces of all meshes.
      *
-     * By default the imported array_name data might contain faces with more than 3
+     * By default the imported vertex_array_name data might contain faces with more than 3
      * indices. For rendering you'll usually want all faces to be triangles.
      * This post processing step splits up faces with more than 3 indices into
      * triangles. Line and point primitives are *not* modified! If you want
@@ -170,7 +170,7 @@ enum aiPostProcessSteps
     aiProcess_GenNormals = 0x20,
 
     // -------------------------------------------------------------------------
-    /** <hr>Generates smooth normals for all vertices in the array_name.
+    /** <hr>Generates smooth normals for all vertices in the vertex_array_name.
     *
     * This is ignored if normals are already there at the time this flag
     * is evaluated. Model importers try to load them from the source file, so
@@ -193,7 +193,7 @@ enum aiPostProcessSteps
     * which can be maximally processed in a single draw-call is limited
     * by the video driver/hardware. The maximum vertex buffer is usually limited
     * too. Both requirements can be met with this step: you may specify both a
-    * triangle and vertex limit for a single array_name.
+    * triangle and vertex limit for a single vertex_array_name.
     *
     * The split limits can (and should!) be set through the
     * <tt>#AI_CONFIG_PP_SLM_VERTEX_LIMIT</tt> and <tt>#AI_CONFIG_PP_SLM_TRIANGLE_LIMIT</tt>
@@ -209,11 +209,11 @@ enum aiPostProcessSteps
     /** <hr>Removes the node graph and pre-predefined_scene_element_transforms all vertices with
     * the local transformation matrices of their nodes.
     *
-    * If the resulting scene can be reduced to a single array_name, with a single
+    * If the resulting scene can be reduced to a single vertex_array_name, with a single
     * material, no lights, and no cameras, then the output scene will contain
-    * only a root node (with no children) that references the single array_name.
+    * only a root node (with no children) that references the single vertex_array_name.
     * Otherwise, the output scene will be reduced to a root node with a single
-    * level of child nodes, each one referencing one array_name, and each array_name
+    * level of child nodes, each one referencing one vertex_array_name, and each vertex_array_name
     * referencing one material.
     *
     * In either case, for rendering, you can
@@ -221,7 +221,7 @@ enum aiPostProcessSteps
     * attention to local transformations and the node hierarchy.
     * Animations are removed during this step.
     * This step is intended for applications without a scenegraph.
-    * The step CAN cause some problems: if e.g. a array_name of the asset
+    * The step CAN cause some problems: if e.g. a vertex_array_name of the asset
     * contains normals and another, using the same material index, does not,
     * they will be brought together, but the first meshes's part of
     * the normal list is zeroed. However, these artifacts are rare.
@@ -446,7 +446,7 @@ enum aiPostProcessSteps
 
     // -------------------------------------------------------------------------
     /** <hr>This step searches for duplicate meshes and replaces them
-     *  with references to the first array_name.
+     *  with references to the first vertex_array_name.
      *
      *  This step takes a while, so don't use it if speed is a concern.
      *  Its main purpose is to workaround the fact that many export
@@ -536,7 +536,7 @@ enum aiPostProcessSteps
 
     // -------------------------------------------------------------------------
     /** <hr>This step splits meshes with many bones into sub-meshes so that each
-     * sub-array_name has fewer or as many bones as a given limit.
+     * sub-vertex_array_name has fewer or as many bones as a given limit.
     */
     aiProcess_SplitByBoneCount  = 0x2000000,
 

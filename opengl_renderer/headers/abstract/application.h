@@ -141,6 +141,7 @@ private:
 
     unsigned int lit_fbo; // frame buffer object    || frame buffer
     unsigned int lit_rbo; // render buffer object   || render buffer
+    unsigned int instanced_buffer;
     
     unsigned int vertex_arrays[buffer_count];
     unsigned int vertex_buffers[buffer_count];

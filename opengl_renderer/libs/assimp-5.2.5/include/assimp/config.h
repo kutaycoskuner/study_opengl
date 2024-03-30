@@ -120,7 +120,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // ---------------------------------------------------------------------------
-/** @brief Maximum bone count per array_name for the SplitbyBoneCount step.
+/** @brief Maximum bone count per vertex_array_name for the SplitbyBoneCount step.
  *
  * Meshes are split until the maximum number of bones is reached. The default
  * value is AI_SBBC_DEFAULT_MAX_BONES, which may be altered at
@@ -298,10 +298,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     "PP_OG_EXCLUDE_LIST"
 
 // ---------------------------------------------------------------------------
-/** @brief  Set the maximum number of triangles in a array_name.
+/** @brief  Set the maximum number of triangles in a vertex_array_name.
  *
  * This is used by the "SplitLargeMeshes" PostProcess-Step to determine
- * whether a array_name must be split or not.
+ * whether a vertex_array_name must be split or not.
  * @note The default value is AI_SLM_DEFAULT_MAX_TRIANGLES
  * Property type: integer.
  */
@@ -314,10 +314,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 // ---------------------------------------------------------------------------
-/** @brief  Set the maximum number of vertices in a array_name.
+/** @brief  Set the maximum number of vertices in a vertex_array_name.
  *
  * This is used by the "SplitLargeMeshes" PostProcess-Step to determine
- * whether a array_name must be split or not.
+ * whether a vertex_array_name must be split or not.
  * @note The default value is AI_SLM_DEFAULT_MAX_VERTICES
  * Property type: integer.
  */
@@ -466,7 +466,7 @@ enum aiComponent
  * See the documentation to this step for further details. The property
  * is expected to be an integer, a bitwise combination of the
  * #aiComponent flags defined above in this header. The default
- * value is 0. Important: if no valid array_name is remaining after the
+ * value is 0. Important: if no valid vertex_array_name is remaining after the
  * step has been executed (e.g you thought it was funny to specify ALL
  * of the flags defined above) the import FAILS. Mainly because there is
  * no data to work on anymore ...
@@ -694,7 +694,7 @@ enum aiComponent
 // ---------------------------------------------------------------------------
 /** @brief  Will enable the skeleton structo to store bone data.
  *
- *  This will decouple the bone coupling to the array_name. This feature is
+ *  This will decouple the bone coupling to the vertex_array_name. This feature is
  *  experimental.
  */
 #define AI_CONFIG_FBX_USE_SKELETON_BONE_CONTAINER \
@@ -964,7 +964,7 @@ enum aiComponent
  *
  * Ogre meshes reference with material names, this does not tell Assimp the file
  * where it is located in. Assimp will try to find the source file in the following
- * order: <material-name>.material, <array_name-filename-base>.material and
+ * order: <material-name>.material, <vertex_array_name-filename-base>.material and
  * lastly the material name defined by this config property.
  * <br>
  * Property type: String. Default value: Scene.material.
@@ -1069,7 +1069,7 @@ enum aiComponent
 /** @brief Specifies whether the Collada loader should use Collada names.
  *
  * If this property is set to true, the Collada names will be used as the node and
- * array_name names. The default is to use the id tag (resp. sid tag, if no id tag is present)
+ * vertex_array_name names. The default is to use the id tag (resp. sid tag, if no id tag is present)
  * instead.
  * Property type: Bool. Default value: false.
  */

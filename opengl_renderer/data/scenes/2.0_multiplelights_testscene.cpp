@@ -17,9 +17,9 @@ void MultipleLightsTestScene::loadData()
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 128.0f;
 
-	predefined_scene_elements.push_back(PredefSceneElements::box_0_10);
-	predefined_scene_elements.push_back(PredefSceneElements::box_10_0);
-	predefined_scene_elements.push_back(PredefSceneElements::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::box_0_10);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::box_10_0);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
 
 	// --- define lights
 	// directional

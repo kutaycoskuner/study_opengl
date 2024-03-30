@@ -38,7 +38,10 @@ public:
 		loadModel(path);
 	}
 	
-	void draw(Shader& shader);
+	void draw(const Shader& shader);
+
+	void drawInstanced(const Shader& shader, const unsigned int count);
+
 
 private:
 	// model data

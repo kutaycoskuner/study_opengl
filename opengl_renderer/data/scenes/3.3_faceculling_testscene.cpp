@@ -34,7 +34,7 @@ void FaceCullingTestScene::loadData()
 	//spot_lights[0].brightness = 10.0f;
 
 	// ----- define predefined elements
-	predefined_scene_elements.push_back(PredefSceneElements::big_cube);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::big_cube);
 	predefined_scene_elements.back().transform.position.y = 2.0f;
 
 

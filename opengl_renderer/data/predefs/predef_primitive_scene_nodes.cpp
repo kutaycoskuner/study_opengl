@@ -4,9 +4,9 @@
 
 // ----- Data
 // ----------------------------------------------------------------------------
-PredefSceneElement PredefSceneElements::origin = {
+PrimitiveSceneNode PrimitiveSceneNodes::origin = {
 	.name = "origin"
-	,.array_name = "origin"
+	,.vertex_array_name = "origin"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -25,9 +25,9 @@ PredefSceneElement PredefSceneElements::origin = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::points = {
+PrimitiveSceneNode PrimitiveSceneNodes::points = {
 	.name = "points"
-	,.array_name = "plane"
+	,.vertex_array_name = "plane"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -46,9 +46,9 @@ PredefSceneElement PredefSceneElements::points = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::big_cube = {
+PrimitiveSceneNode PrimitiveSceneNodes::big_cube = {
 	.name = "cube"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -67,9 +67,9 @@ PredefSceneElement PredefSceneElements::big_cube = {
 };
 
 
-PredefSceneElement PredefSceneElements::single_cube = {
+PrimitiveSceneNode PrimitiveSceneNodes::single_cube = {
 	.name = "cube"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -88,9 +88,9 @@ PredefSceneElement PredefSceneElements::single_cube = {
 };
 
 
-PredefSceneElement PredefSceneElements::cube_10_0 = {
+PrimitiveSceneNode PrimitiveSceneNodes::cube_10_0 = {
 	.name = "cube"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(8.0f, 2.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -109,9 +109,9 @@ PredefSceneElement PredefSceneElements::cube_10_0 = {
 };
 
 
-PredefSceneElement PredefSceneElements::cube_0_10 = {
+PrimitiveSceneNode PrimitiveSceneNodes::cube_0_10 = {
 	.name = "cube"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 2.0f, 8.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -129,9 +129,9 @@ PredefSceneElement PredefSceneElements::cube_0_10 = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::paircube1 = {
+PrimitiveSceneNode PrimitiveSceneNodes::paircube1 = {
 	.name = "pair cube"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.5f, 1.0f, 1.5f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -149,9 +149,9 @@ PredefSceneElement PredefSceneElements::paircube1 = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::paircube2 = {
+PrimitiveSceneNode PrimitiveSceneNodes::paircube2 = {
 	.name = "pair cube"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.5f, 1.0f, -1.5f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -169,9 +169,9 @@ PredefSceneElement PredefSceneElements::paircube2 = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::box_10_0 = {
+PrimitiveSceneNode PrimitiveSceneNodes::box_10_0 = {
 	.name = "box2"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(8.0f, 2.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -190,9 +190,9 @@ PredefSceneElement PredefSceneElements::box_10_0 = {
 };
 
 
-PredefSceneElement PredefSceneElements::box_0_10 = {
+PrimitiveSceneNode PrimitiveSceneNodes::box_0_10 = {
 	.name = "box2"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 2.0f, 8.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -210,9 +210,29 @@ PredefSceneElement PredefSceneElements::box_0_10 = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::ground_plane = {
+PrimitiveSceneNode PrimitiveSceneNodes::small_plane = {
+	.name = "small_plane"
+	,.vertex_array_name = "small_plane"
+	,.transform = {
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(1.0f, 1.0f, 1.0f)
+		}
+	,.shader_name = "instance"
+	,.texture_name = ""
+	,.element_bools = ElementBools(
+					false,		// wireframe_mode
+					false,		// depth testing
+					false,		// stencil testing
+					false,		// blending
+					false,		// partial render
+					false		// is indexed
+				)
+};
+
+PrimitiveSceneNode PrimitiveSceneNodes::ground_plane = {
 	.name = "ground_plane"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -230,9 +250,9 @@ PredefSceneElement PredefSceneElements::ground_plane = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::axis_x = {
+PrimitiveSceneNode PrimitiveSceneNodes::axis_x = {
 	.name = "axis"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -250,9 +270,9 @@ PredefSceneElement PredefSceneElements::axis_x = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::axis_z = {
+PrimitiveSceneNode PrimitiveSceneNodes::axis_z = {
 	.name = "axis"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -270,9 +290,9 @@ PredefSceneElement PredefSceneElements::axis_z = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::light_placeholder = {
+PrimitiveSceneNode PrimitiveSceneNodes::light_placeholder = {
 	.name = "light_placeholder"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 2.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -290,9 +310,9 @@ PredefSceneElement PredefSceneElements::light_placeholder = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::nobg_grass = {
+PrimitiveSceneNode PrimitiveSceneNodes::nobg_grass = {
 	.name = "grass"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
@@ -310,9 +330,9 @@ PredefSceneElement PredefSceneElements::nobg_grass = {
 				)
 };
 
-PredefSceneElement PredefSceneElements::transparent_window = {
+PrimitiveSceneNode PrimitiveSceneNodes::transparent_window = {
 	.name = "window"
-	,.array_name = "cube"
+	,.vertex_array_name = "cube"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),

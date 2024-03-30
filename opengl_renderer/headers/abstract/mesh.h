@@ -28,13 +28,13 @@ struct Texture {
 
 class Mesh {
 public:
-    // array_name data
+    // vertex_array_name data
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture>      textures;
 
     // parameter constructor
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+    Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures) {
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
@@ -42,7 +42,9 @@ public:
         setupMesh();
     }
 
-    void draw(Shader& shader);
+    void draw(const Shader& shader);
+    void drawInstanced(const Shader& shader, const unsigned int count);
+
 private:
     //  render data
     unsigned int vao, vbo, ebo;
