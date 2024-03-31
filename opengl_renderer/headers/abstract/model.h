@@ -43,9 +43,9 @@ public:
 	void drawInstanced(const Shader& shader, const unsigned int count);
 
 
+	std::vector<Mesh>		meshes;
 private:
 	// model data
-	std::vector<Mesh>		meshes;
 	std::vector<Texture>	textures_loaded;
 	std::string				directory;
 

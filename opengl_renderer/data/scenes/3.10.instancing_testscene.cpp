@@ -62,7 +62,7 @@ void InstancingTestScene::loadData()
 
 	// ----- define model paths
 	model_paths = {
-		{ "data/models/out_planet/planet.obj" }
+		{ "data/models/out_jupiter_by_murilo.kleine/jupiter_self.obj" }
 		//"data/models/testobject0_frustum/testobject.obj"
 		//,"data/models/testobject1_dodecahedron/testobject.obj"
 		//,"data/models/testobject2_sphere/testobject.obj"
@@ -77,7 +77,6 @@ void InstancingTestScene::loadData()
 		//,"data/models/testobject11_cone/testobject.obj"
 		//{"data/models/out_backpack_by_berkgedik/backpack.obj"}
 		//{"data/models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik2.obj"}
-
 	};
 
 	// ----- create bools for each imported model
@@ -108,11 +107,11 @@ void InstancingTestScene::loadData()
 		}
 	}
 	
-	unsigned int amount = 5000;
+	unsigned int amount = 50000;
 	scene_state.instance_count = amount;
 	srand(scene_state.time); // initialize random seed	
-	float radius = 20.0;
-	offset = 2.5f;
+	float radius = 40.0f;
+	offset = 10.0f;
 	for (unsigned int i = 0; i < amount; i++)
 	{
 		Mat4 model = mat_utils::identity4();
@@ -121,7 +120,7 @@ void InstancingTestScene::loadData()
 		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
 		float x = sin(angle) * radius + displacement;
 		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-		float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+		float y = displacement * 0.4f + x / 5.0f; // keep height of field smaller compared to width of x and z
 		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
 		float z = cos(angle) * radius + displacement;
 
@@ -132,6 +131,7 @@ void InstancingTestScene::loadData()
 			* mat_utils::rotateXYZ(rotAngle, Vec3(0.4f, 0.6f, 0.8f).normalized())
 			* mat_utils::scale(scale);
 
+		model = model.transposed();
 		// 4. now add to list of matrices
 		computed_data.mat4.push_back(model);
 	}
@@ -157,9 +157,11 @@ void InstancingTestScene::update() {
 
 	// move camera
 	// --------------------------------------------------------------------------------------
-	float camera_pos_multiplier = 20.0f;
+	float camera_pos_multiplier = 80.0f;
+	cameras[0].position.y = 25.0f;
 	cameras[0].position = Vec3(camera_pos_multiplier * cost, cameras[0].position.y, camera_pos_multiplier * sint);
-	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
+	cameras[0].lookAtTarget(Vec3(0.0f, 4.0f, 0.0f));
+	//cameras[0].yaw_rad = 1.0f;
 
 	// move lights radial
 	// --------------------------------------------------------------------------------------

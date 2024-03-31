@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update     | 
 | :-------------- | :-------------- | 
-| 19-Aug-2022     | 30-Mar-2024     |
+| 19-Aug-2022     | 01-Apr-2024     |
 
 # Table of Contents
 1. [Description](#description)
@@ -44,6 +44,22 @@ This is a study repository for learning graphics programming through OpenGL.
 
 # Display
 ```cpp
+0.66 Instancing, optimization
+- method 1: No instance
+    - 5000 draw | 27 ms | 35 fps
+- method 2: multiple draw call (amount/predetermined cache) + loop transform assignment
+    - 5000 draw | 12 ms | 80 fps
+- method 3: multiple draw call (amount/predetermined cache) + uniform buffer memory link
+    - 5000 draw | 7.5ms | 134 fps
+- method 4: single draw call + uniform buffer memory link
+    - 5000 draw | 7.5ms | 134 fps
+- method 5: mesh count * draw call + data as vbo
+    - 5000 draw | 7.0ms | 140 fps
+(gif is optimized for web preview)
+```  
+![0.66 instancing](_display/0.66_instancing_2024-04-01.gif)
+
+```cpp
 0.64 Geometry shaders - Normal display, Explode model
 ```  
 ![0.64 geometry shaders](_display/0.64_geometry-shaders_2024-03-18.gif)
@@ -74,10 +90,6 @@ This is a study repository for learning graphics programming through OpenGL.
 ```  
 ![0.48 Stencil Testing 2](_display/0.48_stencil-test-outline-per-item_2023-08-03.gif)
 
-```
-0.46 Model import illuminated (diffuse, specular, emission)
-```  
-![0.46 model import illuminated](_display/0.46_shader-specular-fix_2023-07-21.gif)
 
 ```
 0.44 Multiple lights: 1 directional- 3 point- (rgb), 1 spot light
@@ -98,11 +110,6 @@ This is a study repository for learning graphics programming through OpenGL.
 0.39 Phong shading
 ```  
 ![0.39 Phong shading](_display/0.39_phong_shading_2023-06-12.gif)
-
-```
-0.35 Static camera rotation with changing focus by time
-```  
-![0.35 Static camera rotation with changing focus by time](_display/0.35_camera-rotation-focus-time_2023-06-04.gif)
 
 ```
 0.31 Perspective projection
@@ -143,6 +150,8 @@ This is a study repository for learning graphics programming through OpenGL.
         - OpenGL/VRML Materials. [http://devernay.free.fr/cours/opengl/materials.html](http://devernay.free.fr/cours/opengl/materials.html)
     - Models
         - Backpack by Berk Gedik [https://sketchfab.com/3d-models/survival-guitar-backpack-799f8c4511f84fab8c3f12887f7e6b36](https://sketchfab.com/3d-models/survival-guitar-backpack-799f8c4511f84fab8c3f12887f7e6b36)
+        - Kokorec by Berk Gedik [https://sketchfab.com/3d-models/street-food-vendor-challenge-kokorec-141db37d07fc4ccba84ab5f38a8181b5](https://sketchfab.com/3d-models/street-food-vendor-challenge-kokorec-141db37d07fc4ccba84ab5f38a8181b5)
         - Lantern by Rajil Jose Macatangay (polyhaven) [https://polyhaven.com/a/Lantern_01](https://polyhaven.com/a/Lantern_01)
         - Suzanne by Blender [https://docs.blender.org/manual/en/latest/modeling/meshes/primitives.html](https://docs.blender.org/manual/en/latest/modeling/meshes/primitives.html)
         - Test Objects by Kutay Coskuner (inspired by Robin Seibold) 
+        - Jupiter by murilo.kleine in Sketchfab [https://sketchfab.com/3d-models/jupiter-free-downloadable-model-61671f29ca0a4fa39dc9653290282418](https://sketchfab.com/3d-models/jupiter-free-downloadable-model-61671f29ca0a4fa39dc9653290282418)

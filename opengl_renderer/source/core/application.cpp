@@ -194,12 +194,13 @@ bool Application::load(k_configType& config)
 	}
 
 	// Now actually create the buffer
+	int range = 5002;
 	glGenBuffers(1, &ubo_matrices);
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(Mat4), NULL, GL_STATIC_DRAW); // allocate size of mat4 x2 byte of memory
+	glBufferData(GL_UNIFORM_BUFFER, range * sizeof(Mat4), NULL, GL_STATIC_DRAW); // allocate size of mat4 x2 byte of memory
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	// define the range of the buffer that links to a uniform binding point
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo_matrices, 0, 2 * sizeof(Mat4));
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo_matrices, 0, range * sizeof(Mat4));
 
 	loadTextures();
 
@@ -466,6 +467,37 @@ void Application::loadMeshData()
 	//}
 
 
+	// Instancing vbo test 
+	unsigned int amount = active_scene->scene_state.instance_count;
+	glGenBuffers(1, &instanced_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, instanced_buffer);
+	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(Mat4), &active_scene->computed_data.mat4[0], GL_STATIC_DRAW);
+
+	Model rock = active_scene->models[0];
+	for (unsigned int i = 0; i < rock.meshes.size(); i++)
+	{
+		unsigned int VAO = rock.meshes[i].vao;
+		glBindVertexArray(VAO);
+		// vertex attributes
+		GLsizei vec4Size = sizeof(Vec4);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+
+		glBindVertexArray(0);
+	}
+
+
 	// clean new_up
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -622,7 +654,7 @@ void Application::updateUI()
 		static int counter = 0;
 		static const char* txt_aspectRatio = "Aspect Ratio: ";
 
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Begin("Hello world");                          // Create a window called "Hello, world!" and append into it.
 
 		//ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
 		//ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
@@ -648,6 +680,7 @@ void Application::updateUI()
 		//ImGui::Text("counter = %d", counter);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		//ImGui::Text("vertices: %u | tringles: %u", active_scene->scene_state.stats_vrts, active_scene->scene_state.stats_tris);
 		ImGui::End();
 	}
 }
@@ -712,6 +745,9 @@ void Application::setSpotLightParameters(Uniforms& uni)
 
 void Application::drawScene(Uniforms& uni)
 {
+	active_scene->scene_state.stats_vrts = 0;
+	active_scene->scene_state.stats_tris = 0;
+
 	const SceneState& scene_state = active_scene->scene_state;
 	const Camera& cam = active_scene->cameras[0];
 
@@ -1018,14 +1054,20 @@ void Application::drawScene(Uniforms& uni)
 				glBindBuffer(named_arrays.at(name), lit_ebo);
 				std::string name = active_scene->predefined_scene_elements[i].vertex_array_name;
 				glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
+				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
+				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
 			}
 			else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
 			{
 				glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
+				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
 			}
 			else
 			{
 				glDrawArrays(GL_TRIANGLES, 0, 36);
+				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
+				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
 			}
 			clearStencil();
 			glClear(GL_STENCIL_BUFFER_BIT);
@@ -1150,13 +1192,15 @@ void Application::drawScene(Uniforms& uni)
 			active_shader->setMat4("projection_mat", upv.projection_matrix);
 			//active_shader->setMat4("world_mat", world);
 
-				for (int ii = 0; ii < active_scene->scene_state.instance_count; ii++)
-				{
-					std::string name = "world_mat";
-					active_shader->setMat4(name, active_scene->computed_data.mat4[ii]);
-					active_scene->models[i].draw(*active_shader);
-				}
+			// method 1: without instance
+			//for (int ii = 0; ii < active_scene->scene_state.instance_count; ii++)
+			//{
+			//	std::string name = "world_mat";
+			//	active_shader->setMat4(name, active_scene->computed_data.mat4[ii]);
+			//	active_scene->models[i].draw(*active_shader);
+			//}
 
+			// method 2: split instancing with for loop
 			//if (active_scene->scene_state.instance_count > 1000)
 			//{
 			//	int loop_count = active_scene->scene_state.instance_count / 1000;
@@ -1164,11 +1208,11 @@ void Application::drawScene(Uniforms& uni)
 			//	if (remainder > 0) loop_count += 1;
 			//	for (int ii = 0; ii < loop_count; ii++)
 			//	{
-			//	/*	for (int iii = 0; iii < 1000; iii++)
+			//		for (int iii = 0; iii < 1000; iii++)
 			//		{
 			//			std::string name = "transformation_mat[" + std::to_string(iii) + "]";
 			//			active_shader->setMat4(name, active_scene->computed_data.mat4[iii+ii^1000]);
-			//		}*/
+			//		}
 			//		active_scene->models[i].drawInstanced(*active_shader, 1000);
 			//	}
 			//}
@@ -1181,6 +1225,51 @@ void Application::drawScene(Uniforms& uni)
 			//	}
 			//	active_scene->models[i].drawInstanced(*active_shader, active_scene->scene_state.instance_count);
 			//}
+
+			// method 3: split instancing with ubo
+			//int size = 5000;
+			//if (active_scene->scene_state.instance_count > size)
+			//{
+			//	int loop_count = active_scene->scene_state.instance_count / size;
+			//	int remainder = active_scene->scene_state.instance_count % size;
+			//	if (remainder > 0) loop_count += 1;
+			//	for (int ii = 0; ii < loop_count; ii++)
+			//	{
+			//		glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
+			//		glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(Mat4), size*sizeof(Mat4), &active_scene->computed_data.mat4[ii*size].m[0][0]);
+			//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			//		active_scene->models[i].drawInstanced(*active_shader, size);
+			//	}
+			//}
+			//else
+			//{
+			//	for (int ii = 0; ii < active_scene->scene_state.instance_count; ii++)
+			//	{
+			//		std::string name = "transformation_mat[" + std::to_string(ii) + "]";
+			//		active_shader->setMat4(name, active_scene->computed_data.mat4[ii]);
+			//	}
+			//	active_scene->models[i].drawInstanced(*active_shader, active_scene->scene_state.instance_count);
+			//}
+		
+			// method 4: brute force ubo
+			//glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
+			//glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(Mat4), 5000*sizeof(Mat4), &active_scene->computed_data.mat4[0].m[0][0]);
+			//glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			//		active_scene->models[i].drawInstanced(*active_shader, active_scene->scene_state.instance_count);
+		
+			// method 5: brute force vbo
+			for (unsigned int i = 0; i < active_scene->models[0].meshes.size(); i++)
+			{
+
+				glBindVertexArray(active_scene->models[0].meshes[i].vao);
+				glDrawElementsInstanced(
+					GL_TRIANGLES, static_cast<GLsizei>(active_scene->models[0].meshes[i].indices.size()), 
+					GL_UNSIGNED_INT, 0, 
+					static_cast<GLsizei>(active_scene->scene_state.instance_count)
+				);
+				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
+				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
+			}
 
 		}
 	}

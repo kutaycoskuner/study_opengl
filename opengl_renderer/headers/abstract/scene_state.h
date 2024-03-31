@@ -54,6 +54,11 @@ struct SceneState
     unsigned int instance_count = 100;
     bool draw_instanced = false;
 
+    // stats
+    unsigned int stats_vrts = 0;
+    unsigned int stats_tris = 0;
+
+
 
     // testing
     bool        b_model_refraction = false;

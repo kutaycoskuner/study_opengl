@@ -107,6 +107,15 @@
 
 # Log
                                                                                |
+- [0.66] add: gpu instancing
+    - 01-Apr-2024
+        - chg: readme update model references
+        - add: display instancing
+        - add: instancing tests 5 method
+    - 31-Mar-2024
+        - wip: instancing performance test as attribpointer
+        - wip: instancing performance tests with different methods
+
 - [0.65] wip: pre-instancing performance measure push
     - 30-Mar-2024
         - wip: instancing meteor belt

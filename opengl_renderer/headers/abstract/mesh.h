@@ -45,9 +45,9 @@ public:
     void draw(const Shader& shader);
     void drawInstanced(const Shader& shader, const unsigned int count);
 
+    unsigned int vao, vbo, ebo;
 private:
     //  render data
-    unsigned int vao, vbo, ebo;
 
     void setupMesh();
 };
