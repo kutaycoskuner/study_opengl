@@ -28,7 +28,7 @@ void ImportModelTestScene::loadData()
 	// spot
 	spot_lights.push_back(PredefSceneLights::s_light);
 
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
 	texture_names = { "test_2k", "linegrid_2k_darkgray", "out_container2" }; 
 
 	for (int i = 0; i < predefined_scene_elements.size(); i++)

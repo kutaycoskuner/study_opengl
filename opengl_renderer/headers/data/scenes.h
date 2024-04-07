@@ -103,4 +103,11 @@ public:
 	InstancingTestScene();
 };
 
+class AntiAliasingTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	AntiAliasingTestScene();
+};
 

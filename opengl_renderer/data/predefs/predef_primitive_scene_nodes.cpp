@@ -46,6 +46,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::points = {
 				)
 };
 
+
 PrimitiveSceneNode PrimitiveSceneNodes::big_cube = {
 	.name = "cube"
 	,.vertex_array_name = "cube"
@@ -210,6 +211,27 @@ PrimitiveSceneNode PrimitiveSceneNodes::box_0_10 = {
 				)
 };
 
+PrimitiveSceneNode PrimitiveSceneNodes::plane = {
+	.name = "plane"
+	,.vertex_array_name = "small_plane"
+	,.transform = {
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(10.0f, 10.0f, 10.0f)
+		}
+	,.shader_name = "green"
+	,.texture_name = ""
+	,.element_bools = ElementBools(
+					false		// wireframe_mode
+					,false		// depth testing
+					,false		// stencil testing
+					,false		// blending
+					,false		// partial render
+					,false		// is indexed
+					,true		// is triangle
+				)
+};
+
 PrimitiveSceneNode PrimitiveSceneNodes::small_plane = {
 	.name = "small_plane"
 	,.vertex_array_name = "small_plane"
@@ -226,11 +248,11 @@ PrimitiveSceneNode PrimitiveSceneNodes::small_plane = {
 					false,		// stencil testing
 					false,		// blending
 					false,		// partial render
-					false		// is indexed
+					false		// is indexedfp
 				)
 };
 
-PrimitiveSceneNode PrimitiveSceneNodes::ground_plane = {
+PrimitiveSceneNode PrimitiveSceneNodes::ground_platform = {
 	.name = "ground_plane"
 	,.vertex_array_name = "cube"
 	,.transform = {

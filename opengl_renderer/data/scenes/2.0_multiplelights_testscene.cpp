@@ -19,7 +19,7 @@ void MultipleLightsTestScene::loadData()
 
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::box_0_10);
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::box_10_0);
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
 
 	// --- define lights
 	// directional

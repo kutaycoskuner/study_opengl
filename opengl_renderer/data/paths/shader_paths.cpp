@@ -22,6 +22,14 @@ const std::vector<ShaderPaths> RelativePaths::shader_paths =
 		"source/shaders/1.2.diffuse_frag_shader.glsl"
 	}
 	,{
+		"source/shaders/1.3.green_vrtx_shader.glsl",
+		"source/shaders/1.3.green_frag_shader.glsl"
+	}
+	,{
+		"source/shaders/1.4.pink_vrtx_shader.glsl",
+		"source/shaders/1.4.pink_frag_shader.glsl"
+	}
+	,{
 		"source/shaders/2.0.phong_lit_vrtx_shader.glsl",
 		"source/shaders/2.0.phong_lit_frag_shader.glsl"
 	}

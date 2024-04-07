@@ -147,10 +147,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="data\maps\model_paths.cpp" />
+    <ClCompile Include="data\paths\model_paths.cpp" />
     <ClCompile Include="data\maps\predef3d_namemap.cpp" />
-    <ClCompile Include="data\maps\shader_paths.cpp" />
-    <ClCompile Include="data\maps\texture_paths.cpp" />
+    <ClCompile Include="data\paths\shader_paths.cpp" />
+    <ClCompile Include="data\maps\texture_name-pathmap.cpp" />
     <ClCompile Include="data\predefs\predef_materials.cpp" />
     <ClCompile Include="data\predefs\predef_vertex_data.cpp" />
     <ClCompile Include="data\predefs\predef_primitive_scene_nodes.cpp" />
@@ -160,6 +160,7 @@
     <ClCompile Include="data\scenes\2.3_importmodel_testscene.cpp" />
     <ClCompile Include="data\scenes\3.0_outliner_testscene.cpp" />
     <ClCompile Include="data\scenes\3.10.instancing_testscene.cpp" />
+    <ClCompile Include="data\scenes\3.11.antialiasing_testscene.cpp" />
     <ClCompile Include="data\scenes\3.2_blending_testscene.cpp" />
     <ClCompile Include="data\scenes\3.3_faceculling_testscene.cpp" />
     <ClCompile Include="data\scenes\3.4_framebuffers_testscene.cpp" />

@@ -107,6 +107,16 @@
 
 # Log
                                                                                |
+- [0.67] add: anti aliasing
+    - 07-Apr-2024
+        - add: anti-aliasing display
+        - add: offscreen msaa with two planes
+    - 05-Apr-2024
+        - add: implementation off-screen msaa
+    - 04-Apr-2024
+        - wip: multi sample anti-aliasing
+        - add: anti aliasing test scene
+
 - [0.66] add: gpu instancing
     - 01-Apr-2024
         - chg: readme update model references

@@ -149,8 +149,9 @@ public:
 	static PrimitiveSceneNode cube_0_10;
 	static PrimitiveSceneNode box_10_0;
 	static PrimitiveSceneNode box_0_10;
-	static PrimitiveSceneNode ground_plane;
+	static PrimitiveSceneNode ground_platform;
 	static PrimitiveSceneNode small_plane;
+	static PrimitiveSceneNode plane;
 	static PrimitiveSceneNode light_placeholder;
 	static PrimitiveSceneNode nobg_grass;
 	static PrimitiveSceneNode transparent_window;

@@ -28,7 +28,7 @@ void OutlinerTestScene::loadData()
 	spot_lights.push_back(PredefSceneLights::s_light);
 
 	// ---- define predefined elements
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
 
 	// ---- define predefined_scene_element_transforms for predefined elements
 	for (int i = 0; i < predefined_scene_elements.size(); i++)

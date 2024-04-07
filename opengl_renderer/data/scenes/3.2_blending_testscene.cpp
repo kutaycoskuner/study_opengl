@@ -33,7 +33,7 @@ void BlendingTestScene::loadData()
 	spot_lights.push_back(PredefSceneLights::s_light);
 
 	// ----- define predefined elements
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
 
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::transparent_window);
@@ -138,7 +138,7 @@ void BlendingTestScene::update() {
 	// --------------------------------------------------------------------------------------
 	for (int i = 0; i < predefined_scene_elements.size(); i++)
 	{
-		//if (predefined_scene_elements[i].name == "ground_plane")
+		//if (predefined_scene_elements[i].name == "ground_platform")
 		//	continue;
 		if (predefined_scene_elements[i].name == "grass")
 		{
@@ -156,7 +156,7 @@ void BlendingTestScene::update() {
 	float time_offset = sint;
 	for (int i = 0; i < predefined_scene_elements.size(); i++)
 	{
-		//if (predefined_scene_elements[i].name == "ground_plane")
+		//if (predefined_scene_elements[i].name == "ground_platform")
 		//	continue;
 		//if (predefined_scene_elements[i].name == "light_placeholder")
 		//	continue;

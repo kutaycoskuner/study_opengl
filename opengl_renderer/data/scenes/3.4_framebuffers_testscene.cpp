@@ -36,7 +36,7 @@ void FrameBufferTestScene::loadData()
 	//spot_lights[0].brightness = 10.0f;
 
 	// ----- define predefined elements
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_plane);
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube1);
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube2);
 

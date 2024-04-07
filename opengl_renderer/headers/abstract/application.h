@@ -130,17 +130,11 @@ private:
 
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
-    std::shared_ptr<Shader> active_shader;
-    std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
 
+    // skybox
     unsigned int cubemap_texture;
     
-    //unsigned int lit_vao; // vertex array object    || input layout
-    //unsigned int lit_vbo; // vertex buffer object   || vertex buffer
     unsigned int lit_ebo; // element buffer object  || index buffer
-
-    unsigned int lit_fbo; // frame buffer object    || frame buffer
-    unsigned int lit_rbo; // render buffer object   || render buffer
     unsigned int instanced_buffer;
     
     unsigned int vertex_arrays[buffer_count];
@@ -154,9 +148,20 @@ private:
 
     unsigned int ubo_matrices;
 
-    // 
-    unsigned int framebuffer_color_texture;
-    
+    // frame buffer
+    unsigned int fbo; // frame buffer object    || frame buffer
+    unsigned int rbo; // render buffer object   || render buffer
+    unsigned int screen_colortexture;
+
+    // anti-aliasing
+    unsigned int sample_count = 4;
+    unsigned int fbo_msaa;
+    unsigned int rbo_msaa;
+    unsigned int colorbuffer_msaa;
+
+
+    std::shared_ptr<Shader> active_shader;
+    std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
     std::unordered_map<std::string, TextureSet> textures;
     
     // Scene scene;
@@ -167,6 +172,10 @@ private:
     // config
     bool        b_wireframe_mode = false;
     Vec4        clear_color;
+
+    // temporary
+    unsigned int msaa_width     = 800;
+    unsigned int msaa_height    = 600;
 
 
 

@@ -128,24 +128,44 @@ bool Application::initialize(k_configType& config)
 	);
 
 
+	// 3.11 configure MSAA framebuffer
+	// --------------------------
+	glGenFramebuffers(1, &fbo_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_msaa);
+	// create a multisampled color attachment texture
+	glGenTextures(1, &colorbuffer_msaa);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorbuffer_msaa);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample_count, GL_RGB, msaa_width, msaa_height, GL_TRUE);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, colorbuffer_msaa, 0);
+	// create a (also multisampled) renderbuffer object for depth and stencil attachments
+	glGenRenderbuffers(1, &rbo_msaa);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_msaa);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample_count, GL_DEPTH24_STENCIL8, msaa_width, msaa_height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_msaa);
+
+
 	// 3.4 generate frame buffer object 
-	glGenFramebuffers(1, &lit_fbo);
-	// bunun yerinin dogru olup olmadigina emin degilim
-	glBindFramebuffer(GL_FRAMEBUFFER, lit_fbo);
+	// -------------------------
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
 	// texture for framebuffer
-	glGenTextures(1, &framebuffer_color_texture);
-	glBindTexture(GL_TEXTURE_2D, framebuffer_color_texture);
+	glGenTextures(1, &screen_colortexture);
+	glBindTexture(GL_TEXTURE_2D, screen_colortexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, k_scr_width, k_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer_color_texture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screen_colortexture, 0);
 
-	glGenRenderbuffers(1, &lit_rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, lit_rbo);
+	// rbo
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, k_scr_width, k_scr_height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, lit_rbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
@@ -231,6 +251,7 @@ void Application::loadSceneData(const k_configType& config)
 	else if (scene_number == 8)		active_scene = new AdvancedGLSLTestScene;
 	else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
 	else if (scene_number == 10)	active_scene = new InstancingTestScene;
+	else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -468,33 +489,36 @@ void Application::loadMeshData()
 
 
 	// Instancing vbo test 
-	unsigned int amount = active_scene->scene_state.instance_count;
-	glGenBuffers(1, &instanced_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, instanced_buffer);
-	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(Mat4), &active_scene->computed_data.mat4[0], GL_STATIC_DRAW);
-
-	Model rock = active_scene->models[0];
-	for (unsigned int i = 0; i < rock.meshes.size(); i++)
+	if (active_scene->scene_state.using_computed_data)
 	{
-		unsigned int VAO = rock.meshes[i].vao;
-		glBindVertexArray(VAO);
-		// vertex attributes
-		GLsizei vec4Size = sizeof(Vec4);
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+		unsigned int amount = active_scene->scene_state.instance_count;
+		glGenBuffers(1, &instanced_buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, instanced_buffer);
+		glBufferData(GL_ARRAY_BUFFER, amount * sizeof(Mat4), &active_scene->computed_data.mat4[0], GL_STATIC_DRAW);
 
-		glVertexAttribDivisor(3, 1);
-		glVertexAttribDivisor(4, 1);
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
+		Model rock = active_scene->models[0];
+		for (unsigned int i = 0; i < rock.meshes.size(); i++)
+		{
+			unsigned int VAO = rock.meshes[i].vao;
+			glBindVertexArray(VAO);
+			// vertex attributes
+			GLsizei vec4Size = sizeof(Vec4);
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+			glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+			glEnableVertexAttribArray(5);
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+			glEnableVertexAttribArray(6);
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
 
-		glBindVertexArray(0);
+			glVertexAttribDivisor(3, 1);
+			glVertexAttribDivisor(4, 1);
+			glVertexAttribDivisor(5, 1);
+			glVertexAttribDivisor(6, 1);
+
+			glBindVertexArray(0);
+		}
 	}
 
 
@@ -570,6 +594,7 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 	//
 	// if apple
 
@@ -618,8 +643,8 @@ void Application::unload()
 	delete active_scene;
 	//glDeleteVertexArrays(1, &lit_vao);
 	//glDeleteBuffers(1, &lit_vbo);
-	glDeleteFramebuffers(1, &lit_fbo);
-	glDeleteRenderbuffers(1, &lit_rbo);
+	glDeleteFramebuffers(1, &fbo);
+	glDeleteRenderbuffers(1, &rbo);
 	glDeleteVertexArrays(buffer_count, vertex_arrays);
 	glDeleteBuffers(buffer_count, vertex_buffers);
 }
@@ -762,9 +787,7 @@ void Application::drawScene(Uniforms& uni)
 	// calculate matrices
 	upv.projection_matrix
 		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
-
 	upv.view_matrix = cam.calcViewMatrix(world_up);
-
 	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
 
 	// 3.8 uniform buffer object set
@@ -778,14 +801,15 @@ void Application::drawScene(Uniforms& uni)
 
 
 	// draw wireframe or not
-	if (b_wireframe_mode) // todo: deserialize config
+	if (b_wireframe_mode)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	// 3.4. framebuffer
 	// bind to framebuffer and draw scene as we normally would to color texture 
-	glBindFramebuffer(GL_FRAMEBUFFER, lit_fbo);
+	//glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_msaa);
 
 
 	// enable this to avoid awkward whatever front rendering
@@ -797,6 +821,9 @@ void Application::drawScene(Uniforms& uni)
 	// enable blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// anti aliasing
+	glEnable(GL_MULTISAMPLE);
 
 	// https://learnopengl.com/Advanced-OpenGL/Stencil-testing
 	// both the depth and stencil test pass, we will use the reference value
@@ -1250,21 +1277,21 @@ void Application::drawScene(Uniforms& uni)
 			//	}
 			//	active_scene->models[i].drawInstanced(*active_shader, active_scene->scene_state.instance_count);
 			//}
-		
+
 			// method 4: brute force ubo
 			//glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
 			//glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(Mat4), 5000*sizeof(Mat4), &active_scene->computed_data.mat4[0].m[0][0]);
 			//glBindBuffer(GL_UNIFORM_BUFFER, 0);
 			//		active_scene->models[i].drawInstanced(*active_shader, active_scene->scene_state.instance_count);
-		
+
 			// method 5: brute force vbo
 			for (unsigned int i = 0; i < active_scene->models[0].meshes.size(); i++)
 			{
 
 				glBindVertexArray(active_scene->models[0].meshes[i].vao);
 				glDrawElementsInstanced(
-					GL_TRIANGLES, static_cast<GLsizei>(active_scene->models[0].meshes[i].indices.size()), 
-					GL_UNSIGNED_INT, 0, 
+					GL_TRIANGLES, static_cast<GLsizei>(active_scene->models[0].meshes[i].indices.size()),
+					GL_UNSIGNED_INT, 0,
 					static_cast<GLsizei>(active_scene->scene_state.instance_count)
 				);
 				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
@@ -1300,6 +1327,12 @@ void Application::drawScene(Uniforms& uni)
 	// 3.4. framebuffer
 	// --------------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
+
+	// 3.11 anti aliasing
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_msaa);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glBlitFramebuffer(0, 0, msaa_width, msaa_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers
@@ -1311,7 +1344,7 @@ void Application::drawScene(Uniforms& uni)
 	(*active_shader).use();
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(named_arrays.at("frame"));
-	glBindTexture(GL_TEXTURE_2D, framebuffer_color_texture);	// use the color attachment texture as the texture of the quad plane
+	glBindTexture(GL_TEXTURE_2D, screen_colortexture);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 }
