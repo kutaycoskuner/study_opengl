@@ -11,6 +11,12 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni);
 void callbackMouse(GLFWwindow* window, double xpos, double ypos);
 void callbackScroll(GLFWwindow* window, double xoffset, double yoffset);
 
+enum class EventType {
+	KeyPress,
+	Click,
+	UIEvent
+};
+
 enum class InputType {
 	KeyPress,
 	KeyRelease,
@@ -22,6 +28,10 @@ struct InputEventKey {
 	int				key;
 	float			xpos;
 	float			ypos;
+};
+
+enum class UIEvent {
+	SelectScene
 };
 
 enum class InputEvent {
@@ -59,4 +69,3 @@ const std::unordered_map<int, InputEvent> keyboard = {
 	{ GLFW_KEY_F,			InputEvent::RotateDown },
 	{ GLFW_KEY_C,			InputEvent::ResetCamera }
 };
-

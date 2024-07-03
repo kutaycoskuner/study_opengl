@@ -84,19 +84,25 @@
 - [x] xx-xxx-xxxx 24-Jun-2023 add: ui camera, direction, light direction controls
 - [x] 11-Feb-2024 11-Feb-2024 add: GLFW_CURSOR_DISABLED when mouse cursor disabled
 - [x] 18-Mar-2024 18-Feb-2024 learn: blender nebula skybox
+- [x] 09-Apr-2024 27-Feb-2024 arch: split drawscene functions
+- [x] 10-Apr-2024 02-Feb-2024 add: scene changer on gui or with key
+- [x] 10-Apr-2024 09-Apr-2024 add: queuelu event sistemi
+- [x] 10-Apr-2024 08-Feb-2024 add: sahne reload
+- [x] 03-Jul-2024 12-Apr-2024 add: scene automated unit test pixel controller
+- 08-Feb-2024 add shader hotreload
 - 12-Apr-2023 add: deserialize config or config struct
 - 28-May-2023 add: Edge detection / inner definition lines | normal
 - 04-Jun-2023 arch: Comment standard
 - 06-Jun-2023 add: application singleton
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
 - 11-Jul-2023 fix: pitch distortion
-- 03-Aug-2023 learn: profiler kullanma
-- 31-Jan-2024 add: light placeholders: point, spot, directional
-- 02-Feb-2024 add: scene changer on gui or with key
 - 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
-- 08-Feb-2024 add: sahne reload, change, shader hotreload
+
+- 31-Jan-2024 add: light placeholders: point, spot, directional
+- 03-Aug-2023 learn: profiler kullanma
 - 13-Feb-2024 learn: convolution
-- 27-Feb-2024 arch: split drawscene functions
+- 08-Apr-2024 add: magnifier
+
 
 # Push procedure checklist 1.4
 - add log name
@@ -107,6 +113,28 @@
 
 # Log
                                                                                |
+- [0.68] add: scene changer / frame testing
+    - 03-Jul-2024 
+        - add: readme feature list
+        - add: tests for scene and new
+        - fix: blending scene planar objects converted to plane instead of 1/6 cube render
+        - fix: blending scene fix
+        - add: pixel matching on the test frames through toolkit-pixel_matcher
+        - add: first frame save of each scene on frame testing mode
+    - 26-Apr-2024 add: save scene frame as png
+    - 20-Apr-2024 wip: save frame buffer function
+    - 12-Apr-2024 fix: face culling scene
+    - 10-Apr-2024
+        - wip: fixing scene bugs
+        - add: reload scene changer
+        - add: observer on ui events 
+        - add: unittests queue class
+        - add: template queue class
+    - 08-Apr-2024
+        - wip event queue class -> yeni queue icin unittest
+        - wip scene changer
+        - fix typecasting warning 
+
 - [0.67] add: anti aliasing
     - 07-Apr-2024
         - add: anti-aliasing display

@@ -38,6 +38,7 @@ void runUnitTests()
 	unitTest_Vec4();
 	unitTest_Mat4();
 	unitTest_Transform();
+	unitTest_Queue();
 }
 
 void runIntegrationTests()

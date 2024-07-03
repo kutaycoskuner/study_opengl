@@ -8,8 +8,10 @@ out vec3 v_normal;
 out vec3 v_world_pos;
 out vec2 v_tex_coords;
 
-uniform mat4 world_matrix;
-uniform mat4 view_proj_matrix;
+uniform mat4 world_mat;
+uniform mat4 view_mat;
+uniform mat4 projection_mat;
+
 
 uniform float outline_scale;
 float base_outline_scale = 0.05f;
@@ -35,7 +37,7 @@ void main()
 	vec3 current_pos = in_pos + (in_norm * (base_outline_scale / scale_factor)); 
 
 	// output
-	gl_Position = view_proj_matrix * world_matrix * vec4(current_pos, 1.0f);
+	gl_Position = projection_mat * view_mat * world_mat * vec4(current_pos, 1.0f);
 }
 #endif
 

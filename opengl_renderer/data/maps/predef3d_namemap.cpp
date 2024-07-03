@@ -22,15 +22,19 @@ std::map<std::string, Predef3DNode> PredefNameMaps::predef3d_namemap = {
 	}
 	,{
 		"skybox"
-		,Predef3DNode(VertexData::skybox_vrts__pos,		108,	3, { 3 })
+		,Predef3DNode(VertexData::skybox_vrts__pos,			108,	3, { 3 })
 	}
 	,{
 		"cube"
-		,Predef3DNode(VertexData::cube_vrts__pos_norm_uv,	288,	8, { 3,3,2 })
+		,Predef3DNode(VertexData::cube_vrts__pos_norm_uv,	288,	8, { 3, 3, 2 })
 	}
 	,{
 		"plane"
-		,Predef3DNode(VertexData::rectangle__vrts,		8,		2, { 2 })
+		,Predef3DNode(VertexData::rectangle__vrts,			8,		2, { 2 })
+	}
+	,{
+		"plane2"
+		,Predef3DNode(VertexData::quad_vrts__pos_norm_tex,	 42,	7, { 2,3,2 })
 	}
 	,{
 		"small_plane"

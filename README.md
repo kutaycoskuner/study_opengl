@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update     | 
 | :-------------- | :-------------- | 
-| 19-Aug-2022     | 07-Apr-2024     |
+| 19-Aug-2022     | 03-Jul-2024     |
 
 # Table of Contents
 1. [Description](#description)
@@ -40,7 +40,25 @@ This is a study repository for learning graphics programming through OpenGL.
 | `shift`      | If pressed when moving speeds up the camera movement
 
 # Feature List
-- This section is not yet written.
+- [x] Vertex defined shape drawing
+- [x] Texture importing
+- [x] 3D Perspective projection (own 4x4 Matrix and 2D/3D Vector Library)
+- [x] Moveable camera
+- [x] UI Movement controls 
+- [x] Phong illumination
+- [x] Directional, Point, Spot lighting
+- [x] Light maps, emission
+- [x] Model importing (.obj)
+- [x] Outline Shader (Depth-, Stencil test method)
+- [x] Transparency through blending
+- [x] Face culling
+- [x] Frame buffers
+- [x] Uniform buffer object implementation
+- [x] Cubemapped Skybox 
+- [x] GPU instancing
+- [x] Anti Aliasing (MSAA)
+- [x] UI Scene changer
+- [x] Automated frame based scene testing
 
 # Display
 ```cpp
@@ -140,6 +158,7 @@ This is a study repository for learning graphics programming through OpenGL.
         - Asset-Importer-Lib | Importing 3d file formats into a shader, in-memory imediate format [Download](http://assimp.org/)
         - Dear ImGui | C++ gui library [Download](https://github.com/ocornut/imgui/releases/tag/v1.89.5)
         - stb_image.h | Image file load library. [Downlaod](https://github.com/nothings/stb/blob/master/stb_image.h)
+        - stb_image_write.h | Image file write library. | [download](https://github.com/nothings/stb/blob/master/stb_image_write.h)
     - Environment Setup 
         - Visual Studio (Main IDE)
         - Visual Studio Code

@@ -4,9 +4,11 @@
 #include "../abstract/vector4.h"
 #include "../abstract/ui.h"
 #include "../abstract/scene.h"
+#include "../abstract/queue.h"
 #include "../abstract/scene_state.h"
 #include "../abstract/window_state.h"
 #include "../abstract/camera.h"
+#include "../abstract/queue.h"
 #include "../events/input_observer.h"
 #include "../data/data.h"
 #include <unordered_map>
@@ -28,10 +30,18 @@ using uint = unsigned int;
 
 // ----- abstract
 // ------------------------------------------------------------------------------------------------
-class Application
+class Application : public InputListener
 {
 public:
-    using k_configType = const std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
+    using ConfigData = std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
+
+    // state
+    bool reload                     = true;
+    
+    // testing
+    bool save_frame                 = false;
+    bool create_test_scene_frames   = true;
+    unsigned int active_test_scene  = 0;
 
     // standards
     static const Vec3 world_up;
@@ -49,7 +59,7 @@ public:
     {}
     // - ask memory from operating system
     // - preapre libraries
-    bool initialize(k_configType& config);
+    bool initialize(const ConfigData& config);
 
     // Program bellegi hazirlandiktan sonra motorun kullanacagi built-in
     // kaynaklari yuklemek icin izlenen prosedurleri icerir.
@@ -57,7 +67,7 @@ public:
     // - built-in shader compilation
     // - built-in texture loading
     // - built-in asset lfoading
-    bool load(k_configType& config);
+    bool load(const ConfigData& config);
  
     // Program kapanirken izlenen prosedurleri icerir.
     //
@@ -80,7 +90,7 @@ public:
     // - cizim icin gerekli datayi toplama
     // - cizim icin komutlari grafik islemcisine gonderme
     // - uygulama penceresine son resmi aktarma
-    void mainLoop();
+    void mainLoop(ConfigData& config);
 
     // handle
     void handleMouseEvent(GLFWwindow* window, double xpos, double ypos);
@@ -92,8 +102,8 @@ private:
     void initUISystem(const char*& glsl_version);
     
     // load
-    void loadConfig(const k_configType& config);
-    void loadSceneData(const k_configType& config);
+    void loadConfig(const ConfigData& config);
+    void loadSceneData(const ConfigData& config);
     void loadTextures();
     void loadShaders();
     std::vector<const char*> loadModelPaths();
@@ -104,8 +114,21 @@ private:
     void drawUI();
     void updateUI();
 
+    // hooks
+    //void onMultipleKeyPress(std::vector<int> keys);
+    void onUIEvent(const UIEvent& event, const std::vector<int>& params);
+
+
     // draw scene
     void drawScene(Uniforms& uni);
+
+        void drawHelper_axes(Uniforms& uni);
+        void drawHelper_lightPlaceholders(Uniforms& uni);
+        void drawSceneNodes_primitive(Uniforms& uni);
+        void drawSceneNodes_models(Uniforms& uni);
+        void drawScene_skybox(Uniforms& uni);
+        void drawFramebuffer(int display_w, int display_h);
+
     void updateScene();
     void setMaterial(const Material& material);
     void setPresetMaterial(const Material& material);
@@ -131,6 +154,10 @@ private:
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
 
+
+    // event
+    Queue<std::map<UIEvent, std::vector<int>>> ui_events;
+
     // skybox
     unsigned int cubemap_texture;
     
@@ -154,7 +181,7 @@ private:
     unsigned int screen_colortexture;
 
     // anti-aliasing
-    unsigned int sample_count = 4;
+    unsigned int sample_count = 1   ;
     unsigned int fbo_msaa;
     unsigned int rbo_msaa;
     unsigned int colorbuffer_msaa;

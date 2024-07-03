@@ -83,6 +83,7 @@ public:
 
 	static float		plane_vrts__pos_tex[30];
 	static float		quad_vrts__pos_tex[24];
+	static float		quad_vrts__pos_norm_tex[42];
 	static float		quad_vrts__pos_col[30];
 
 	static float		square_vrts[32];
@@ -117,13 +118,14 @@ public:
 
 struct ElementBools {
 	// techniques
-	bool wireframe_mode;
-	bool depth_testing;
-	bool stencil_testing;
-	bool blending;
-	bool partial_render;
-	bool indexed;
-	bool is_triangle = true;
+	bool wireframe_mode		= false;
+	bool depth_testing		= false;
+	bool stencil_testing	= false;
+	bool blending			= false;
+	bool partial_render		= false;
+	bool indexed			= false;
+	bool is_triangle		= true;
+	bool face_culling		= false;
 };
 
 struct PrimitiveSceneNode

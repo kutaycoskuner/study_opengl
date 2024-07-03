@@ -8,15 +8,16 @@
 #include <iostream>
 #include <unordered_map>
 
+
 // ------------------------------------------------------------------------------------------------
 // ----- Main
 // ------------------------------------------------------------------------------------------------
 int main()
 {
 	// get config 
-	Application::k_configType config = file_utils::parseSimple("config/config.yaml");
+	Application::ConfigData config = file_utils::parseSimple("config/config.yaml");
 	
-	// blackboarding: blank feature teseting
+	// blackboarding: blank feature testing
 	if (config.at("blackboard").at("is_blackboard") == "true")
 	{
 		blackboard();
@@ -31,10 +32,16 @@ int main()
 
 	// run program
 	app.initialize(config);
-	app.load(config);
-	app.mainLoop();
-	app.unload();
-	int exit_code = app.exit();
 
+	while (app.reload)
+	{
+		app.reload = false;
+		app.load(config);
+		app.mainLoop(config);
+		app.unload();
+	}
+	
+	// exit the program
+	int exit_code = app.exit();
 	return exit_code;
 }

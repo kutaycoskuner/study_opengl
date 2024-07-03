@@ -64,7 +64,9 @@ PrimitiveSceneNode PrimitiveSceneNodes::big_cube = {
 					false,		// blending
 					false,		// partial render
 					true		// is indexed
-				)
+					,true
+					,true
+	)
 };
 
 
@@ -327,18 +329,18 @@ PrimitiveSceneNode PrimitiveSceneNodes::light_placeholder = {
 					false,		// depth testing
 					false,		// stencil testing
 					false,		// blending
-					true,		// partial render
+					false,		// partial render
 					false		// is indexed
 				)
 };
 
 PrimitiveSceneNode PrimitiveSceneNodes::nobg_grass = {
 	.name = "grass"
-	,.vertex_array_name = "cube"
+	,.vertex_array_name = "plane2"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(1.0f, 1.0f, 1.0f)
+			Vec3(0.5f, 0.5f, 0.5f)
 		}
 	,.shader_name = "blending"
 	,.texture_name = "out_grass"
@@ -347,18 +349,18 @@ PrimitiveSceneNode PrimitiveSceneNodes::nobg_grass = {
 					false,		// depth testing
 					false,		// stencil testing
 					false,		// blending
-					true,		// partial render
+					false,		// partial render
 					false		// is indexed
 				)
 };
 
 PrimitiveSceneNode PrimitiveSceneNodes::transparent_window = {
 	.name = "window"
-	,.vertex_array_name = "cube"
+	,.vertex_array_name = "plane2"
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(1.0f, 1.0f, 1.0f)
+			Vec3(0.5f, 0.5f, 0.5f)
 		}
 	,.shader_name = "blending"
 	,.texture_name = "out_blending_window_blue"

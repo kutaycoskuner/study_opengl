@@ -3,8 +3,14 @@
 // ------------------------------------------------------------------------------------------------
 #include <glad/glad.h>			// opengl hardware adaptor !glfw den once
 #include <string>				// standart string kutuphanesi
+
+
+#define _CRT_SECURE_NO_WARNINGS
 #define STB_IMAGE_IMPLEMENTATION
 #include "../libs/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../libs/stb_image_write.h"
+
 #include "../../headers/utils/utilities.h"
 #include <iostream>				// cout / cin icin lazim
 
@@ -59,6 +65,23 @@ namespace img_utils
 		}
 
 		return textureID;
+	}
+
+	void saveFrameBufferAsPNG(int width, int height, const char* filename) {
+		// Allocate memory for pixel data
+		unsigned char* pixels = new unsigned char[width * height * 3]; // Assuming RGB format
+
+		// Read frame buffer contents into pixels array
+		glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+		// Flip image vertically (OpenGL's origin is bottom-left)
+		stbi_flip_vertically_on_write(1);
+
+		// Write pixel data to PNG file
+		stbi_write_png(filename, width, height, 3, pixels, width * 3);
+
+		// Free allocated memory
+		delete[] pixels;
 	}
 
 	unsigned int createTexture(const std::string& path, const int& wrapping)

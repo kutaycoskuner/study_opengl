@@ -143,10 +143,10 @@ void BlendingTestScene::update() {
 		if (predefined_scene_elements[i].name == "grass")
 		{
 			// align 2d object always perpendicular to camera position
-	/*		predefined_scene_elements[i].transform.rotation.y =
-				math_utils::toDegree(-cameras[0].yaw_rad);*/
-			/*predefined_scene_elements[i].transform.rotation.x =
-				math_utils::toDegree(cameras[0].pitch_rad);*/
+			predefined_scene_elements[i].transform.rotation.y =
+				math_utils::toDegree(-cameras[0].yaw_rad);
+			//predefined_scene_elements[i].transform.rotation.x =
+			//	math_utils::toDegree(cameras[0].pitch_rad);
 		}
 	}
 

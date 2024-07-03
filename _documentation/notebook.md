@@ -13,7 +13,6 @@
     - https://wiki.thedarkmod.com/index.php?title=Texture_Sources
 
 - mindmap
-    - https://whimsical.com/opengl-renderer-PFm5KunUzHC9KSqtPdo5Ye
     - https://miro.com/app/board/uXjVN7R_r_E=/
 
 - learnOpenGL
@@ -266,6 +265,11 @@
     - frag: fragment
     - col: color
 
+- memory
+    - bit  : 0 1
+    - byte : 8 bit 2**8 = 256
+    - 4 byte : 32 bit
+
 - concepts
     - array of structs, struct of arrays
     - spherical harmonics
@@ -301,6 +305,7 @@
     - A fragment in OpenGL is all the data required for OpenGL to render a single pixel.
 
 - cpp
+    - void pointer: type in onemli olmadigi fakat adress in onemli oldugu yerde kullaniyor (memory boyutu) 
     - constexpr
     - &: adress
     - array pointer decay | array in boyu ve kendisini ayri ayri ver
@@ -352,10 +357,14 @@
 - added glad.c file to project
 
 # Blackboard
+- <visual studio vs>
+    - ctrl + shift + t -> accurate search filtreleme
+
 - <instance>
     - uniform gonderme
     - buffer olarak gonderme
     - bining batching birden fazla draw call cagirma
+
 
 - <pix>
     - https://devblogs.microsoft.com/pix/download/
@@ -697,6 +706,17 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - Exception thrown at 0x00007FF870AFCF19 in opengl_renderer.exe: Microsoft C++ exception: std::ios_base::failure at memory location 0x000000ECD359D5C0.
 
 - <errors>
+    - error C2259: 'Application': cannot instantiate abstract class
+        - The error message "error C2259: 'Application': cannot instantiate abstract class" typically occurs when you try to create an instance of a class that has one or more pure virtual functions but has not provided implementations for those functions. In your case, the Application class inherits from InputListener, which is an abstract class due to the presence of pure virtual functions.
+
+    - error C3861: 'stbi_flip_vertically_on_write': identifier not found
+        - include un ustune 
+        - #define STB_IMAGE_WRITE_IMPEMENTATION eklemezsen calismiyor
+
+    - error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead
+        - #define _CRT_SECURE_NO_WARNINGS
+        - alternatif: properties > c/c++ > 
+
     - the code xecution cannot proceed because assimp-vc143-mt.dll was not found. Reinstalling the program may fix this problem.
 
     - error c2243: exists, but is inaccessible
@@ -713,6 +733,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     
     - error LNK2001: unresolved external symbol "public: static float * Predef3D::quad_vrts__pos_tex" (?quad_vrts__pos_tex@Predef3D@@2PAMA)
     1>C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\opengl_renderer\x64\Debug\opengl_renderer.exe : fatal error 
+        - not resolved function / virtual fonksiyonlarda cikti. Adi geciyor ama fonksiyon tanimi yok
         - This error typically occurs when you declare a static member variable in a class but fail to define it outside the class. In C++, static member variables need to be defined outside the class declaration.
 
     - error LNK1120: 1 unresolved externals
@@ -736,6 +757,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
         - project > properties > c/c++ > langugae > c++ langugae standard ayarla
     - warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
     - warning C5105: macro expansion producing 'defined' has undefined behavior
+    - Warning	C4312	'type cast': conversion from 'GLsizei' to 'void *' of greater size
 
 - <depth testing>
     - keep z value of index to determine what is front what is back to avoid unnecessary calculation

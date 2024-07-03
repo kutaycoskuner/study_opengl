@@ -168,8 +168,10 @@
     <ClCompile Include="data\scenes\3.8_advglsl_testscene.cpp" />
     <ClCompile Include="data\scenes\3.9_geoshader_testscene.cpp" />
     <ClCompile Include="source\blackboard\blackboard.cpp" />
+    <ClCompile Include="source\event_handling\ui_events.cpp" />
     <ClCompile Include="source\scene\scene.cpp" />
     <ClCompile Include="source\event_handling\input_speaker.cpp" />
+    <ClCompile Include="source\test\utest_queue.cpp" />
     <ClCompile Include="source\test\utest_transform.cpp" />
     <ClCompile Include="source\utils\vector_utils.cpp" />
     <None Include="x64\Debug\assimp-vc143-mtd.dll" />
@@ -263,6 +265,7 @@
     <ClInclude Include="headers\abstract\light.h" />
     <ClInclude Include="headers\abstract\material.h" />
     <ClInclude Include="headers\abstract\model.h" />
+    <ClInclude Include="headers\abstract\queue.h" />
     <ClInclude Include="headers\abstract\scene.h" />
     <ClInclude Include="headers\abstract\transform.h" />
     <ClInclude Include="headers\abstract\scene_state.h" />
@@ -292,6 +295,7 @@
     <ClInclude Include="libs\imgui-1.89.5\imstb_textedit.h" />
     <ClInclude Include="libs\imgui-1.89.5\imstb_truetype.h" />
     <ClInclude Include="libs\stb_image.h" />
+    <ClInclude Include="libs\stb_image_write.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\assimp-5.2.5\build\Debug\assimp-vc143-mtd.lib" />

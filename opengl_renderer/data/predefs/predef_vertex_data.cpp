@@ -119,6 +119,17 @@ float VertexData::quad_vrts__pos_tex[] = { // vertex attributes for a quad that 
      1.0f,  1.0f,  1.0f, 1.0f
 };
 
+float VertexData::quad_vrts__pos_norm_tex[] = { 
+    // positions   // texCoords
+    -1.0f,  1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+     1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+
+    -1.0f,  1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+     1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+     1.0f,  1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f
+};
+
 float VertexData::quad_vrts__pos_col[] = {
     // positions      // colors
     -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,

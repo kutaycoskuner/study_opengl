@@ -17,7 +17,6 @@ void FaceCullingTestScene::loadData()
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
-	scene_state.vertex_divider = 6.0f;
 
 	// ----- camera position
 	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
@@ -35,7 +34,7 @@ void FaceCullingTestScene::loadData()
 
 	// ----- define predefined elements
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::big_cube);
-	predefined_scene_elements.back().transform.position.y = 2.0f;
+	//predefined_scene_elements.back().transform.position.y = 2.0f;
 
 
 
@@ -46,16 +45,19 @@ void FaceCullingTestScene::loadData()
 	for (int i = 0; i < model_paths.size(); i++) {
 		scene_state.model_element_bools.push_back(
 			ElementBools(
-				false,		// wireframe_mode
-				true,		// depth testing
-				true,		// stencil testing
-				false		// blending
+				false		// wireframe_mode
+				, false		// depth testing
+				, false		// stencil testing
+				, false		// blending
+				, false		// partial render
+				, false		// is indexed
+				, true		// is triangle
 			)
 		);
 	}
 
 	// ----- define texture names
-	texture_names = { "linegrid_2k_darkgray", "test_2k" };
+	texture_names = { "linegrid_2k_darkgray", "test_2k", "out_container2" };
 
 
 	// ----- specific position

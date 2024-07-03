@@ -29,3 +29,16 @@ void InputSpeaker::notifyMultipleKeyPress(std::vector<int> keys) {
         observer->onMultipleKeyPress(keys);
     }
 }
+
+void InputSpeaker::notifyUIEvent(const UIEvent& event, const std::vector<int>& params) {
+    for (auto observer : listeners) {
+        observer->onUIEvent(event, params);
+    }
+}
+
+
+void InputListener::onMultipleKeyPress(std::vector<int> keys) {
+}
+
+void InputListener::onUIEvent(const UIEvent& event, const std::vector<int>& params) {
+}

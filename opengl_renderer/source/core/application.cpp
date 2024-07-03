@@ -38,6 +38,7 @@
 
 #include <memory>
 #include <filesystem>
+#include <format>
 
 // ---------------------------------------------------------------------------------------
 // self keywords
@@ -84,7 +85,7 @@ void Application::clearStencil()
 }
 
 
-bool Application::initialize(k_configType& config)
+bool Application::initialize(const ConfigData& config)
 {
 	gp_app = this;
 
@@ -172,10 +173,12 @@ bool Application::initialize(k_configType& config)
 	// unbind frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	input_speaker.addListener(this);
+
 	return 0;
 }
 
-bool Application::load(k_configType& config)
+bool Application::load(const ConfigData& config)
 {
 	loadConfig(config);
 
@@ -229,17 +232,25 @@ bool Application::load(k_configType& config)
 	return 1;
 }
 
-void Application::loadConfig(const k_configType& config)
+void Application::loadConfig(const ConfigData& config)
 {
 	// load config states
 	this->b_wireframe_mode = config.at("settings").at("is_wireframeMode") == "true";
 }
 
-void Application::loadSceneData(const k_configType& config)
+void Application::loadSceneData(const ConfigData& config)
 {
 
 	int scene_number = std::stoi(config.at("scene").at("active_scene"));
-
+	if (active_test_scene > 11) {
+		create_test_scene_frames = false;
+		save_frame = false;
+	}
+	if (create_test_scene_frames) {
+		scene_number = active_test_scene;
+		save_frame = true;
+	}
+		// select scene test scene
 	if (scene_number == 0)			active_scene = new TestScene;
 	else if (scene_number == 1)		active_scene = new MultipleLightsTestScene;
 	else if (scene_number == 2)		active_scene = new ImportModelTestScene;
@@ -252,6 +263,7 @@ void Application::loadSceneData(const k_configType& config)
 	else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
 	else if (scene_number == 10)	active_scene = new InstancingTestScene;
 	else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
+
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -270,10 +282,8 @@ void Application::loadSceneData(const k_configType& config)
 	resetCamera();
 	active_scene->loadData();
 	SceneState& scene_state = active_scene->scene_state;
-
 	// register listeners
 	input_speaker.addListener(active_scene);
-
 	// ui
 	scene_state.b_toggleui = false;
 
@@ -503,14 +513,15 @@ void Application::loadMeshData()
 			glBindVertexArray(VAO);
 			// vertex attributes
 			GLsizei vec4Size = sizeof(Vec4);
+			size_t vec4stride = vec4Size;
 			glEnableVertexAttribArray(3);
 			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
 			glEnableVertexAttribArray(4);
-			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4stride));
 			glEnableVertexAttribArray(5);
-			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4stride));
 			glEnableVertexAttribArray(6);
-			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4stride));
 
 			glVertexAttribDivisor(3, 1);
 			glVertexAttribDivisor(4, 1);
@@ -547,7 +558,7 @@ void Application::generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float ob
 		glEnableVertexAttribArray(2);
 }
 
-void Application::mainLoop()
+void Application::mainLoop(ConfigData& config)
 {
 	// uniform variables according to update frequency
 	Uniforms uni;
@@ -563,7 +574,7 @@ void Application::mainLoop()
 
 	// ----- render loop 
 	// --------------------------------------------------------------------------------------
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) && reload == false)
 	{
 		processInput(window, uni_obj);
 		int w, h;
@@ -582,6 +593,29 @@ void Application::mainLoop()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+
+		if (!ui_events.is_empty())
+		{
+			for (const auto& pair : ui_events.peek()) {
+				if (pair.first == UIEvent::SelectScene)
+				{
+					config["scene"]["active_scene"] = std::to_string(pair.second[0]);
+					ui_events.remove();
+					reload = true;
+				}
+				ui_events.remove();
+				break;
+			}
+		}
+		else if (create_test_scene_frames)
+		{
+			reload				= true;
+			save_frame			= true;
+			active_test_scene	+= 1;
+			break;
+		}
+
 	}
 }
 
@@ -640,13 +674,17 @@ void Application::unload()
 {
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
+	input_speaker.removeListener(active_scene);
 	delete active_scene;
 	//glDeleteVertexArrays(1, &lit_vao);
 	//glDeleteBuffers(1, &lit_vbo);
-	glDeleteFramebuffers(1, &fbo);
-	glDeleteRenderbuffers(1, &rbo);
-	glDeleteVertexArrays(buffer_count, vertex_arrays);
-	glDeleteBuffers(buffer_count, vertex_buffers);
+	if (!reload)
+	{
+		glDeleteFramebuffers(1, &fbo);
+		glDeleteRenderbuffers(1, &rbo);
+		glDeleteVertexArrays(buffer_count, vertex_arrays);
+		glDeleteBuffers(buffer_count, vertex_buffers);
+	}
 }
 
 int Application::exit()
@@ -665,10 +703,82 @@ void Application::drawUI()
 
 void Application::updateUI()
 {
-	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplOpenGL3_NewFrame();
+	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+
+	// ----- test ---------------------------------------------------------------------------
+
+	if (ImGui::BeginMainMenuBar())
+	{
+		//if (ImGui::BeginMenu("File"))
+		//{
+		//	//ImGui::ShowExampleMenuFile();
+		//	if (ImGui::MenuItem("Select Scene", "Shortcut")) {}
+		//	ImGui::EndMenu();
+		//}
+		if (ImGui::BeginMenu("Select Scene"))
+		{
+			//if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+			//if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Multiple Lights", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 1 });
+			}
+			if (ImGui::MenuItem("Import Model", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 2 });
+			}
+			if (ImGui::MenuItem("Outliner", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 3 });
+			}
+			if (ImGui::MenuItem("Blending", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 4 });
+			}
+			if (ImGui::MenuItem("Face Culling", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 5 });
+			}
+			if (ImGui::MenuItem("Frame Buffer", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 6 });
+			}
+			if (ImGui::MenuItem("Cube Map", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 7 });
+			}
+			if (ImGui::MenuItem("Advanced GLSL", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 8 });
+			}
+			if (ImGui::MenuItem("Geometry Shader", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 9 });
+			}
+			if (ImGui::MenuItem("Instancing", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 10 });
+			}
+			if (ImGui::MenuItem("Anti Aliasing", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 11 });
+			}
+			ImGui::EndMenu();
+		}
+
+		//if (scene_number == 0)			active_scene = new TestScene;
+		//else if (scene_number == 1)		active_scene = new MultipleLightsTestScene;
+		//else if (scene_number == 2)		active_scene = new ImportModelTestScene;
+		//else if (scene_number == 3)		active_scene = new OutlinerTestScene;
+		//else if (scene_number == 4)		active_scene = new BlendingTestScene;
+		//else if (scene_number == 5)		active_scene = new FaceCullingTestScene;
+		//else if (scene_number == 6)		active_scene = new FrameBufferTestScene;
+		//else if (scene_number == 7)		active_scene = new CubemapTestScene;
+		//else if (scene_number == 8)		active_scene = new AdvancedGLSLTestScene;
+		//else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
+		//else if (scene_number == 10)	active_scene = new InstancingTestScene;
+		//else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
+
+
+		ImGui::EndMainMenuBar();
+	}
+
+	// ----- test  end ----------------------------------------------------------------------
+
+
 	// remove this retun to activate ui
 	if (!active_scene->scene_state.b_toggleui)
 		return;
@@ -709,6 +819,8 @@ void Application::updateUI()
 		ImGui::End();
 	}
 }
+
+
 
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {
@@ -851,6 +963,21 @@ void Application::drawScene(Uniforms& uni)
 		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
 	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
 
+	drawHelper_lightPlaceholders(uni);
+
+	drawSceneNodes_primitive(uni);
+
+	drawSceneNodes_models(uni);
+
+	drawScene_skybox(uni);
+
+	drawFramebuffer(display_w, display_h);
+
+
+}
+
+void Application::drawHelper_lightPlaceholders(Uniforms& uni)
+{
 	// draw light placeholders
 	// --------------------------------------------------------------------------
 	std::vector<PointLight>& point_lights = active_scene->point_lights;
@@ -900,7 +1027,11 @@ void Application::drawScene(Uniforms& uni)
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	}
+}
 
+
+void Application::drawHelper_axes(Uniforms& uni)
+{
 	// ----- draw 0: draw axes
 	// -------------------------------------------------------------------------------------
 	if (active_scene->scene_state.display_axes)
@@ -908,14 +1039,57 @@ void Application::drawScene(Uniforms& uni)
 		this->active_shader = shaders.at("axes");
 		(*active_shader).use();
 		active_shader->setMat4("world_mat", mat_utils::identity4());
-		active_shader->setMat4("view_mat", upv.view_matrix);
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
+		active_shader->setMat4("view_mat", uni.upv.view_matrix);
+		active_shader->setMat4("projection_mat", uni.upv.projection_matrix);
 		glBindVertexArray(named_arrays.at("origin"));
 		glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(4));
 	}
+}
 
+
+void Application::drawFramebuffer(int display_w, int display_h)
+{
+	// 3.4. framebuffer
+	// --------------------------------------------------------------------------------------
+	glDisable(GL_CULL_FACE);
+
+	// 3.11 anti aliasing
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_msaa);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glBlitFramebuffer(0, 0, msaa_width, msaa_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	// clear all relevant buffers
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	this->active_shader = shaders.at("framebuffer");
+	(*active_shader).use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(named_arrays.at("frame"));
+	glBindTexture(GL_TEXTURE_2D, screen_colortexture);	// use the color attachment texture as the texture of the quad plane
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	if (save_frame)
+	{
+		std::string result = std::format("{}{}{}", "data/test_scene_frames/scene", active_test_scene, "_test.png");
+		img_utils::saveFrameBufferAsPNG(display_w, display_h, result.c_str());
+		save_frame = false;
+	}
+
+}
+
+
+void Application::drawSceneNodes_primitive(Uniforms& uni)
+{
 	// draw scene objects
 	// --------------------------------------------------------------------------
+	Camera cam = active_scene->cameras[0];
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
 	int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
 	for (int i = 0; i < element_count; i++)
 	{
@@ -923,7 +1097,7 @@ void Application::drawScene(Uniforms& uni)
 		{
 			// enable face culling 
 			glEnable(GL_CULL_FACE);
-			//glCullFace(GL_FRONT);
+			//glCullFace(GL_FRONT
 			glFrontFace(GL_CW);
 		}
 		else
@@ -947,12 +1121,8 @@ void Application::drawScene(Uniforms& uni)
 		// assign uniforms
 		active_shader->setFloat("mix_val", upo.mix_value);
 		active_shader->setVec3("view_pos", cam.position);
-		active_shader->setMat4("view_matrix", upv.view_matrix);
-		active_shader->setMat4("projection_matrix", upv.projection_matrix);
-		active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
-
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
 		active_shader->setMat4("view_mat", upv.view_matrix);
+		active_shader->setMat4("projection_mat", upv.projection_matrix);
 		active_shader->setFloat("time", active_scene->scene_state.time);
 
 		// directional light
@@ -963,7 +1133,6 @@ void Application::drawScene(Uniforms& uni)
 		setSpotLightParameters(uni);
 
 		Mat4 model = mat_utils::identity4();
-		active_shader->setMat4("world_matrix", model);
 		active_shader->setMat4("world_mat", model);
 
 		// material
@@ -1027,11 +1196,12 @@ void Application::drawScene(Uniforms& uni)
 		{
 			glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
 		}
-		else if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		else if (active_scene->predefined_scene_elements[i].element_bools.indexed) // face culling
 		{
 			// Bind the index buffer
-			glBindBuffer(named_arrays.at(name), lit_ebo);
-			glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lit_ebo);
+			int count = PredefNameMaps::predef3d_namemap.at(name).num_elements / PredefNameMaps::predef3d_namemap.at(name).stride;
+			glDrawElements(GL_TRIANGLES, sizeof(VertexData::cube_inds__pos_norm_uv), GL_UNSIGNED_INT, 0);
 		}
 		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
 		{
@@ -1101,9 +1271,12 @@ void Application::drawScene(Uniforms& uni)
 		}
 
 	}
+}
 
+void Application::drawSceneNodes_models(Uniforms& uni)
+{
 	// ---- draw 2: models
-	// -------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------
 	for (int i = 0; i < active_scene->models.size(); i++)
 	{
 
@@ -1191,7 +1364,8 @@ void Application::drawScene(Uniforms& uni)
 
 			// assign textures and uniforms
 			active_shader->setVec3("view_pos", active_scene->cameras[0].position);
-			active_shader->setMat4("view_proj_matrix", upv.view_proj_matrix);
+			active_shader->setMat4("view_mat", upv.view_matrix);
+			active_shader->setMat4("projection_mat", upv.projection_matrix);
 
 			active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
@@ -1300,9 +1474,16 @@ void Application::drawScene(Uniforms& uni)
 
 		}
 	}
+}
 
+void Application::drawScene_skybox(Uniforms& uni)
+{
 	// 3.5 skybox 
 	// --------------------------------------------------------------------------------------
+	Camera cam = active_scene->cameras[0];
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
 	if (active_scene->scene_state.display_skybox) {
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		this->active_shader = shaders.at("cubemap");
@@ -1323,31 +1504,8 @@ void Application::drawScene(Uniforms& uni)
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS); // set depth function back to default
 	}
-
-	// 3.4. framebuffer
-	// --------------------------------------------------------------------------------------
-	glDisable(GL_CULL_FACE);
-
-	// 3.11 anti aliasing
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_msaa);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glBlitFramebuffer(0, 0, msaa_width, msaa_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-	// clear all relevant buffers
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	this->active_shader = shaders.at("framebuffer");
-	(*active_shader).use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(named_arrays.at("frame"));
-	glBindTexture(GL_TEXTURE_2D, screen_colortexture);	// use the color attachment texture as the texture of the quad plane
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
 }
+
 
 void Application::setPresetMaterial(const Material& material)
 {
@@ -1377,6 +1535,8 @@ void Application::updateScene()
 	// animate?
 	if (!scene_state.animate)
 		return;
+	if (save_frame)
+		scene_state.time = 0.0f;
 	active_scene->update();
 }
 
@@ -1445,4 +1605,7 @@ void drawObjToScr(const unsigned int& shader, const unsigned int& vao)
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
+
+
+
 #endif

@@ -81,6 +81,7 @@ namespace img_utils
 	unsigned int createTexture(const std::string& path, const int& wrapping = 0);
 	void setVerticalFlipMode(bool flipMode);
 	unsigned int loadCubemap(const std::vector<std::string>& faces);
+	void saveFrameBufferAsPNG(int width, int height, const char* filename);
 }
 
 namespace color_utils

@@ -12,7 +12,7 @@ void main()
 {
         
 	//   1.0 init
-		out_frag_color = texture(screen_texture, v_tex_coords);
+	out_frag_color = texture(screen_texture, v_tex_coords);
     //  0.0 disabled
     return;
 	
@@ -57,11 +57,19 @@ void main()
     
 
 //    // 5.3 edge detection kernel
+//    float kernel[9] = float[](
+//    1.0, 1.0,   1.0,
+//    1.0, -8.0,  1.0,
+//    1.0, 1.0,   1.0
+//    );
+//
+//    // 5.3 edge detection kernel
     float kernel[9] = float[](
     1.0, 1.0,   1.0,
     1.0, -8.0,  1.0,
     1.0, 1.0,   1.0
     );
+
 
     // 5.4 edge detection from gimp kernel
 //    float kernel[9] = float[](
