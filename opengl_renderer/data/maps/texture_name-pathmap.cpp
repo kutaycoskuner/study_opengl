@@ -83,6 +83,13 @@ std::map<std::string, TexturePaths> RelativePaths::texture_paths =
 	,.emission = "data/textures/out_container2_emission.jpg"
 	}
 },
+{"out_planks023b",
+	{
+	.color 		= "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Color.jpg"
+	//,.roughness = "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg"
+	,.normal 	= "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg"
+	}
+},
 {"out_grass",
 	{
 	.color = "data/textures/out_blending_grass.png"

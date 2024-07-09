@@ -40,7 +40,7 @@ public:
     
     // testing
     bool save_frame                 = false;
-    bool create_test_scene_frames   = true;
+    bool create_test_scene_frames   = false;
     unsigned int active_test_scene  = 0;
 
     // standards

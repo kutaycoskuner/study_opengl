@@ -111,3 +111,11 @@ public:
 	AntiAliasingTestScene();
 };
 
+class BlinnPhongTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	BlinnPhongTestScene();
+};
+

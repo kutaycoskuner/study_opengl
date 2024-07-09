@@ -167,6 +167,7 @@
     <ClCompile Include="data\scenes\3.5_cubemap_testscene.cpp" />
     <ClCompile Include="data\scenes\3.8_advglsl_testscene.cpp" />
     <ClCompile Include="data\scenes\3.9_geoshader_testscene.cpp" />
+    <ClCompile Include="data\scenes\4.1.blinnphong_testscene.cpp" />
     <ClCompile Include="source\blackboard\blackboard.cpp" />
     <ClCompile Include="source\event_handling\ui_events.cpp" />
     <ClCompile Include="source\scene\scene.cpp" />

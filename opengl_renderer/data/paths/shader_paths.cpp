@@ -125,6 +125,14 @@ const std::vector<ShaderPaths> RelativePaths::shader_paths =
 		"source/shaders/3.10.instance02_vrtx_shader.glsl"
 		,"source/shaders/3.10.instance02_frag_shader.glsl"
 	}
+	,{
+		"source/shaders/4.1.blinnphong_vrtx_shader.glsl"
+		,"source/shaders/4.1.blinnphong_frag_shader.glsl"
+	}
+	,{
+		"source/shaders/4.1.blinnphong2_vrtx_shader.glsl"
+		,"source/shaders/4.1.blinnphong2_frag_shader.glsl"
+	}
 };
 
 // another model try with keys. this approach is abstracting the identifier from file names.

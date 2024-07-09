@@ -416,6 +416,28 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <testing frames>
+    - header > create_test_scene_frames   = true;
+    - produce frames
+    - go to toolkit open pixel_matcher and run the tests
+    - if all true make create_test_scene_frames   = false
+
+
+- <adding new scene yeni sahne ekleme>
+    - headers/scenes.h uzerinde yeni sahneyi ekle
+    - data/scenes/<scene>.cpp uzerinde yeni sahneyi yarat
+    - application da loadscene daa fonksiyonuna scene i numarasiyla ekle
+    - ui a da ekle
+
+- <adding new shader>
+    - shaders/<new>.glsl yeni shader ekle
+    - data/paths/shader_paths.cpp -> shader pathleri ekle
+    - change element shader name 
+
+- <adding new texture>
+    - add textures to data/textures
+    - add paths to maps > texture_name-pathmap.cpp
+    - add scene texture names
 
 - <cc0>
     - san miguel
@@ -699,6 +721,8 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - const refler
 
 - <problems>
+    - float modulus
+        - fmod(x, y)
     - texture is reversed, upside down
         - try stbi -> image flip
 

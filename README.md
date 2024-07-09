@@ -3,7 +3,7 @@ Study project for learning OpenGL
 
 | Project Started | Last Update     | 
 | :-------------- | :-------------- | 
-| 19-Aug-2022     | 03-Jul-2024     |
+| 19-Aug-2022     | 09-Jul-2024     |
 
 # Table of Contents
 1. [Description](#description)
@@ -46,6 +46,7 @@ This is a study repository for learning graphics programming through OpenGL.
 - [x] Moveable camera
 - [x] UI Movement controls 
 - [x] Phong illumination
+- [x] Blinn-Phong illumination
 - [x] Directional, Point, Spot lighting
 - [x] Light maps, emission
 - [x] Model importing (.obj)
@@ -61,6 +62,11 @@ This is a study repository for learning graphics programming through OpenGL.
 - [x] Automated frame based scene testing
 
 # Display
+```cpp
+0.69 Blinn-Phong / Phong Illumination comparison
+```  
+![0.69 Blinn-Phong / Phong Illumination comparison](_display/0.69_phong-shading-problem.png)
+
 ```cpp
 0.66 Instancing, optimization
 - method 1: No instance

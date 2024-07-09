@@ -113,6 +113,14 @@
 
 # Log
                                                                                |
+- [0.69] add blinn-phong illumination
+    - 09-Jul-2024
+        - test: frame test pass
+        - add: readme display updaate blinn phong
+        - add: ui blinn phong pulse scene
+        - add: blinn phong shading
+    - 05-Jul-2024 add: test scene for blinn phong shading model
+
 - [0.68] add: scene changer / frame testing
     - 03-Jul-2024 
         - add: readme feature list

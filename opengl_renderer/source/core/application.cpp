@@ -242,7 +242,7 @@ void Application::loadSceneData(const ConfigData& config)
 {
 
 	int scene_number = std::stoi(config.at("scene").at("active_scene"));
-	if (active_test_scene > 11) {
+	if (active_test_scene > 12) {
 		create_test_scene_frames = false;
 		save_frame = false;
 	}
@@ -263,6 +263,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
 	else if (scene_number == 10)	active_scene = new InstancingTestScene;
 	else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
+	else if (scene_number == 12)	active_scene = new BlinnPhongTestScene;
 
 
 	// ----- set cubemap
@@ -756,6 +757,10 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Anti Aliasing", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 11 });
 			}
+			if (ImGui::MenuItem("Blinn-Phong / Phong", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 12 });
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -838,7 +843,7 @@ void Application::setPointLightParameters(Uniforms& uni)
 	const std::vector<PointLight>& point_lights = active_scene->point_lights;
 	if (point_lights.empty()) { return; }
 	float multiplier = 4.0f;
-	for (int ii = 0; ii < 3; ii++)
+	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		std::string name = "point_lights[" + std::to_string(ii) + "].";
 		active_shader->setVec3(name + "position", point_lights[ii].position);
