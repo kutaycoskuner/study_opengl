@@ -126,6 +126,7 @@ struct ElementBools {
 	bool indexed			= false;
 	bool is_triangle		= true;
 	bool face_culling		= false;
+	bool gamma				= false;
 };
 
 struct PrimitiveSceneNode

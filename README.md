@@ -1,22 +1,37 @@
-# Study-LearnOpenGL-cpp
-Study project for learning OpenGL
+<h1 align="center">
+    OpenGL Renderer
+</h1>
 
-| Project Started | Last Update     | 
-| :-------------- | :-------------- | 
-| 19-Aug-2022     | 09-Jul-2024     |
+<p align="center">
+    A study project to learn computer graphics and software design principles/patterns through OpenGL API.
+</p>
+
+<p align="center">
+    <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.70-blue" />
+    <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
+    <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
+</p>
+
+<p align="center">
+    <img src="_display/0.48_stencil-test-outline-per-item_2023-08-03.gif" />
+    <br>
+    <sub><i></i></sub>
+</p>
+
 
 # Table of Contents
-1. [Description](#description)
+1. [Version Info](#version-info)
 2. [Installation and Usage](#installation-and-usage)
 3. [Controls](#controls)
 4. [Feature List](#feature-list)
 5. [Display](#display)
 6. [References](#references)
 
-# Description
-- Last built on `Visual Studio Community 2022 v17.9.2 Debug Mode`
+# Version Info
+`Environment` &nbsp;&nbsp; Last built on `Visual Studio Community 2022 v17.9.2 Debug Mode`
+`Language`    
 
-This is a study repository for learning graphics programming through OpenGL.
 
 # Installation and Usage
 - This section is not yet written.

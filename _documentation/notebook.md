@@ -75,6 +75,7 @@
         + test              :
         + utils             :
         - main.cpp          : entry point of the program
+- CMakeLists.txt        : cmake build instructions
 
 # Self classes
 - SceneNode | GameObject            : Base container object for scene that holds transform?
@@ -356,7 +357,35 @@
 - downloaded GLAD included file to project
 - added glad.c file to project
 
+
+
 # Blackboard
+- <shields badges>
+    - badges / shields
+        - https://shields.io/badges/static-badge
+        - https://simpleicons.org/?q=discord
+        - https://github.com/simple-icons/simple-icons/blob/master/slugs.md
+
+- <git commitlemeden kaydetme>
+    - git status
+    - git add source    | staged changes
+    - git clean -f      | temizle track etmek istemediklerini
+    - git stash
+    - git stash list
+    - git stash pop
+    - git checkout <sha>
+    - git clean -fdfx ./
+
+- <windows sdk>
+    - vs installer > version > search sdk
+
+- <what is CI/CD>
+    continous integration and continuous deployment
+    is the practice of regularly merging code changes into a shared repository, typically several times a day, and then automatically testing these changes to detect errors early.
+
+- <what is cmake>
+    CMake is an open-source, cross-platform build system and tool designed to control the software build process using simple platform-independent configuration files. It generates native build scripts (such as Makefiles, Visual Studio project files, or Xcode project files) for a variety of operating systems and development environments, allowing developers to write build instructions once and compile their project on different platforms without needing to modify the build configuration for each one.
+    
 - <visual studio vs>
     - ctrl + shift + t -> accurate search filtreleme
 
@@ -416,6 +445,11 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <find cpp standard>
+    - windows:
+    g++ -dM -E -x c++ nul | findstr __cplusplus
+    - #define __cplusplus 201402L 2014 standard
+
 - <testing frames>
     - header > create_test_scene_frames   = true;
     - produce frames
@@ -424,7 +458,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 
 
 - <adding new scene yeni sahne ekleme>
-    - headers/scenes.h uzerinde yeni sahneyi ekle
+    - headers/data/scenes.h uzerinde yeni sahneyi ekle
     - data/scenes/<scene>.cpp uzerinde yeni sahneyi yarat
     - application da loadscene daa fonksiyonuna scene i numarasiyla ekle
     - ui a da ekle

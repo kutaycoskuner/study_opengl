@@ -87,7 +87,16 @@ std::map<std::string, TexturePaths> RelativePaths::texture_paths =
 	{
 	.color 		= "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Color.jpg"
 	//,.roughness = "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg"
-	,.normal 	= "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg"
+	,.specular  = "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Specular.jpg"
+	//,.normal 	= "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg"
+	}
+},
+{"out_pavingstones080_2k",
+	{
+	.color = "data/textures/ambientcg/pavingstones080_2k/PavingStones080_2K-JPG_Color.jpg"
+	//,.roughness = "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg"
+	,.specular = "data/textures/ambientcg/pavingstones080_2k/PavingStones080_2K-JPG_Roughness.jpg"
+	//,.normal 	= "data/textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg"
 	}
 },
 {"out_grass",

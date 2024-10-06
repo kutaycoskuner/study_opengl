@@ -264,6 +264,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 10)	active_scene = new InstancingTestScene;
 	else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
 	else if (scene_number == 12)	active_scene = new BlinnPhongTestScene;
+	else if (scene_number == 13)	active_scene = new GammaCorrectionTestScene;
 
 
 	// ----- set cubemap
@@ -760,6 +761,9 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Blinn-Phong / Phong", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 12 });
 			}
+			if (ImGui::MenuItem("Gamma Correction", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 13 });
+			}
 
 			ImGui::EndMenu();
 		}
@@ -1129,6 +1133,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setMat4("view_mat", upv.view_matrix);
 		active_shader->setMat4("projection_mat", upv.projection_matrix);
 		active_shader->setFloat("time", active_scene->scene_state.time);
+		active_shader->setBool("gamma", active_scene->scene_state.gamma);
 
 		// directional light
 		setDirectionalLightParameters(uni);

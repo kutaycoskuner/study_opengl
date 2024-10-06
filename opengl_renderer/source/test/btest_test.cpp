@@ -28,6 +28,8 @@ int test()
 {
 	runUnitTests();
 	runIntegrationTests();
+
+
 	return EXIT_SUCCESS;
 	// todo fail case gir
 }

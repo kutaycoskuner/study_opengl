@@ -119,3 +119,11 @@ public:
 	BlinnPhongTestScene();
 };
 
+class GammaCorrectionTestScene : public Scene {
+public:
+	void loadData() override;
+	void update() override;
+
+	GammaCorrectionTestScene();
+};
+

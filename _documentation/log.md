@@ -97,7 +97,6 @@
 - 20-Jun-2023 add: obje verisi soyutlama | https://vilbeyli.github.io/C++-Conditional-Compiling-using-constexpr/
 - 11-Jul-2023 fix: pitch distortion
 - 04-Feb-2024 fix: not rotating from origin on partially drawn objects 3.2
-
 - 31-Jan-2024 add: light placeholders: point, spot, directional
 - 03-Aug-2023 learn: profiler kullanma
 - 13-Feb-2024 learn: convolution
@@ -112,7 +111,27 @@
 - push
 
 # Log
-                                                                               |
+- [todo]
+    - readme update
+    - cmake and testing
+    - overlay test
+    - vq engine
+        - script bug
+        - readme GenerateSolutions.bat
+    - bat dosyasini duzelt
+    - cmake yap
+    - fix outliner first element is not outlining
+
+- [0.70] gamma correction scene, cmake preparation
+    - 06-Sep-2024 
+        - add readme key image
+        - preparation cmake test
+    - 28-Sep-2024 add build bat file
+    - 11-Jul-2024
+        - add: display gamma correction
+        - add: gamma correction test scene
+        - add: gamma correction shader
+
 - [0.69] add blinn-phong illumination
     - 09-Jul-2024
         - test: frame test pass
