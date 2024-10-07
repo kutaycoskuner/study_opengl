@@ -122,6 +122,15 @@
     - cmake yap
     - fix outliner first element is not outlining
 
+- [0.80] wip: cmake compile time errors, path parser ...
+    - 06-Oct-2024 
+        - fix: path parser from relative to full path
+        - add: path utility functions
+        - fix: data paths with preprocessor
+        - fix: runtime error import paths
+        - wip: cmake for renderer
+        - chg: comment styling for .bat files (13.31 1.5h)
+
 - [0.70] gamma correction scene, cmake preparation
     - 06-Sep-2024 
         - add readme key image

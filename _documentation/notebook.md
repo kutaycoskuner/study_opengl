@@ -56,6 +56,20 @@
     - https://en.wikipedia.org/wiki/Snell%27s_law
 
 # Structure
+- root/
+    - _display/
+    - _documentation/
+    - config/
+    - data/
+    - headers/
+    - libs/
+    - source/
+    - _generate_binaries.bat
+    - _generate_build.bat
+    - .gitattributes
+    - .gitignore
+    - readme.md
+
 + root
     + config                : variables for program
     + data                  : data entry for program. coordinates, textures, models, scenes etc.
@@ -445,6 +459,22 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <github submodule>
+    - gith submodule add <liknk>
+        - git submodule add https://github.com/glfw/glfw.git
+        - warning: in the working copy of '.gitmodules', LF will be replaced by CRLF the next time Git 
+        - readonly yapiyor git init
+        touches it
+    - to add submodules with your git pull
+        - git config submodule.recurse true
+        - git submodule update --init
+    - updating submodule
+        - baska branch e checkout yapip commitliyorsun.
+        - root commit e donup update ediyorsun.
+    - how to change submodule folder name
+        - rename folder ren old new
+        - go to .gitmodules change name and path
+        
 - <find cpp standard>
     - windows:
     g++ -dM -E -x c++ nul | findstr __cplusplus
