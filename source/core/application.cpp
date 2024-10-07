@@ -358,10 +358,11 @@ void Application::loadShaders()
 		const std::string name = path_parts.back();
 
 		if (geo == "") {
-			shaders[name] = std::make_shared<Shader>(vrtx, frag);
+			shaders[name] = std::make_shared<Shader>(path_struct.vrtx_shader_file, path_struct.frag_shader_file);
 		}
 		else {
-			shaders[name] = std::make_shared<Shader>(vrtx, frag, geo);
+			shaders[name] = std::make_shared<Shader>(path_struct.vrtx_shader_file, path_struct.frag_shader_file, 
+				path_struct.geo_shader_file);
 		}
 
 		//unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(name)->ID, "Matrices");
@@ -1083,7 +1084,7 @@ void Application::drawFramebuffer(int display_w, int display_h)
 
 	if (save_frame)
 	{
-		std::string result = std::format("{}{}{}", "data/test_scene_frames/scene", active_test_scene, "_test.png");
+		std::string result = std::format("{}{}{}", DATA_DIR "test_scene_frames/scene", active_test_scene, "_test.png");
 		img_utils::saveFrameBufferAsPNG(display_w, display_h, result.c_str());
 		save_frame = false;
 	}

@@ -42,10 +42,10 @@ void FrameBufferTestScene::loadData()
 
 	// ----- define model paths
 	model_paths = {
-		"data/models/testobject0_frustum/testobject.obj",
-		"data/models/testobject1_dodecahedron/testobject.obj",
-		"data/models/testobject2_sphere/testobject.obj",
-		"data/models/testobject3_cube0/testobject.obj",
+		DATA_DIR "models/testobject0_frustum/testobject.obj",
+		DATA_DIR "models/testobject1_dodecahedron/testobject.obj",
+		DATA_DIR "models/testobject2_sphere/testobject.obj",
+		DATA_DIR "models/testobject3_cube0/testobject.obj",
 	};
 
 	// ----- create bools for each imported model

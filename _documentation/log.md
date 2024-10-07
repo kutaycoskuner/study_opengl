@@ -122,6 +122,9 @@
     - cmake yap
     - fix outliner first element is not outlining
 
+- [0.81] wip cmake error free runtime
+    - 07-Oct-2024 wip cmake add error free runtime
+
 - [0.80] wip: cmake compile time errors, path parser ...
     - 06-Oct-2024 
         - fix: path parser from relative to full path

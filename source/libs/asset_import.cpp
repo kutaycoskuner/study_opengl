@@ -117,7 +117,7 @@ void Model::drawInstanced(const Shader& shader, const unsigned int count)
         meshes[ii].drawInstanced(shader, count);
 }
 
-void Model::loadModel(std::string path)
+void Model::loadModel(const std::string& path)
 {
     Assimp::Importer importer;
     // ai = asset importer

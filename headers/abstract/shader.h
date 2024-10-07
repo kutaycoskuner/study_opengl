@@ -69,12 +69,12 @@ public:
         vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        try 
+        try
         {
             // open files
             vShaderFile.open(vertexPath);
             fShaderFile.open(fragmentPath);
-            
+
             std::stringstream vShaderStream, fShaderStream;
             // read file's buffer contents into streams
             vShaderStream << vShaderFile.rdbuf();
@@ -83,8 +83,9 @@ public:
             vShaderFile.close();
             fShaderFile.close();
             // convert stream into string
-            vertexCode   = vShaderStream.str();
+            vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
+
             if (geometryPath != nullptr)
             {
                 gShaderFile.open(geometryPath);
@@ -94,10 +95,16 @@ public:
                 geometryCode = gShaderStream.str();
             }
         }
-        catch (std::ifstream::failure& e)
+        catch (const std::ifstream::failure& e)
         {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+            std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n"
+                << "File: " << __FILE__ << "\n"
+                << "Line: " << __LINE__ << "\n"
+                << "Exception Message: " << e.what() << "\n"
+                << "Shader File Path: " << (geometryPath ? geometryPath : (vShaderFile.is_open() ? vertexPath : fragmentPath)) << "\n" 
+                << std::endl;
         }
+
         const char* vShaderCode = vertexCode.c_str();
         const char * fShaderCode = fragmentCode.c_str();
         // 2. compile shader
