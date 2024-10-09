@@ -32,7 +32,7 @@ call :print "running _GenerateBinaries.bat"
 
 
 :: ---------------------------------------------------------------------------------------
-::              check ıf build folder and solution file exist otherwise create
+::              check if build folder and solution file exist otherwise create
 :: ---------------------------------------------------------------------------------------
 if !CALL_PATH! EQU 0 (
     if not exist !SOLUTION_DIRECTORY! (
@@ -42,7 +42,7 @@ if !CALL_PATH! EQU 0 (
     )
     if exist !SOLUTION_DIRECTORY! (
         if not exist !SOLUTION_DIRECTORY!/*.sln (
-            call :print "could not found solution fıle"
+            call :print "could not found solution file"
             call ./_GenerateBuildProject.bat
             exit /b 0
         ) 

@@ -113,14 +113,20 @@
 # Log
 - [todo]
     - readme update
-    - cmake and testing
     - overlay test
     - vq engine
         - script bug
         - readme GenerateSolutions.bat
+    - cmake and testing ci
     - bat dosyasini duzelt
-    - cmake yap
+        - bat python test run
+        - bat packaging
     - fix outliner first element is not outlining
+
+- [0.82] wip cmake directory structure on solution
+    - 08-Oct-2024 
+        - add: header files to solution through cmake
+        - add: cmake folder grouping
 
 - [0.81] wip cmake error free runtime
     - 07-Oct-2024 wip cmake add error free runtime

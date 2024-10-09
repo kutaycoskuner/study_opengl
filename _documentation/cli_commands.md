@@ -26,3 +26,8 @@ $Files = Get-Childitem -Recurse ./ -Filter *.cpp -Name
     - files degiskeni olusturuyor
 
 ./build/project_test.sln
+
+tree ./ 
+    - tree view
+
+tree ./source/ /f

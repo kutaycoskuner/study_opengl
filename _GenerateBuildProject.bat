@@ -10,7 +10,7 @@ setlocal enabledelayedexpansion
 :: ---------------------------------------------------------------------------------------
 set LAUNCH_VS=1
 set SOLUTION_DIRECTORY=build
-set PROJECT_NAME=test_opengl
+set PROJECT_NAME=opengl_renderer
 
 :: TODO Parameter scan
 

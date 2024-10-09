@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <variant>
 #include <filesystem>
+#include <windows.h>
 
 namespace fs = std::filesystem;
 
@@ -145,6 +146,15 @@ namespace str_utils
 // read and deserialize file
 // ------------------------------
 namespace file_utils {
+	std::string getExecutableDir() {
+		char path[MAX_PATH];
+		HMODULE hModule = GetModuleHandle(NULL);
+		if (hModule != NULL) {
+			GetModuleFileName(hModule, path, sizeof(path));
+		}
+		std::filesystem::path exePath(path);
+		return exePath.parent_path().string(); // Get the directory of the executable
+	}
 	// Utility function to return the file name from a path
 	std::string getFileNameWithoutExtension(const std::string& filePath) {
 		return fs::path(filePath).filename().string();

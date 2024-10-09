@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 # Set the project name
-project(project_test)
+project(opengl_renderer)
 
 # multiprocessor compile
 add_compile_options(/MP)
@@ -35,6 +35,13 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # endif()
 
 # ----------------------------------------------------------------------------------------
+#               Adding Required Packages (OpenGL, GLFW, GLEW, etc.)
+# ----------------------------------------------------------------------------------------
+# Find OpenGL
+find_package(OpenGL REQUIRED)
+
+
+# ----------------------------------------------------------------------------------------
 #               Main Directories
 # ----------------------------------------------------------------------------------------
 set(configDir
@@ -64,20 +71,32 @@ set(outputDir
 # ----------------------------------------------------------------------------------------
 set(sourceCode
     "${sourceDir}/main.cpp"
+)
 
+set(blackboardCode
     "${sourceDir}/blackboard/blackboard.cpp"
-    
+)
+
+set(coreCode
     "${sourceDir}/core/application.cpp"
-    
+)
+
+set(eventHandlingCode
     "${sourceDir}/event_handling/input_speaker.cpp"
     "${sourceDir}/event_handling/ui_events.cpp"
     "${sourceDir}/event_handling/window_events.cpp"
-    
+)
+
+set(libsCode
     "${sourceDir}/libs/asset_import.cpp"
-    
+)
+
+set(sceneCode
     "${sourceDir}/scene/camera.cpp"
     "${sourceDir}/scene/scene.cpp"
+)
 
+set(testCode
     "${sourceDir}/test/btest_hello_world.cpp"
     "${sourceDir}/test/btest_test.cpp"
     "${sourceDir}/test/itest_transformations.cpp"
@@ -86,27 +105,39 @@ set(sourceCode
     "${sourceDir}/test/utest_transform.cpp"
     "${sourceDir}/test/utest_vector3.cpp"
     "${sourceDir}/test/utest_vector4.cpp"
+)
 
+set(utilsCode
     "${sourceDir}/utils/common_utils.cpp"
     "${sourceDir}/utils/image_utils.cpp"
     "${sourceDir}/utils/matrix_utils.cpp"
     "${sourceDir}/utils/self_utils.cpp"
     "${sourceDir}/utils/shader_utils.cpp"
     "${sourceDir}/utils/vector_utils.cpp"
+)
 
+set(configFiles
     "${configDir}/config.yaml"
+)
 
+set(dataMaps
     "${dataDir}/_maps/predef3d_namemap.cpp"
     "${dataDir}/_maps/texture_name-pathmap.cpp"
+)
 
+set(dataPaths
     "${dataDir}/_paths/model_paths.cpp"
     "${dataDir}/_paths/shader_paths.cpp"
+)
 
+set(dataPredefs
     "${dataDir}/_predefs/predef_materials.cpp"
     "${dataDir}/_predefs/predef_primitive_scene_nodes.cpp"
     "${dataDir}/_predefs/predef_scene_lights.cpp"
     "${dataDir}/_predefs/predef_vertex_data.cpp"
+)
 
+set(dataScenes
     "${dataDir}/_scenes/1.0_testscene.cpp"
     "${dataDir}/_scenes/2.0_multiplelights_testscene.cpp"
     "${dataDir}/_scenes/2.3_importmodel_testscene.cpp"
@@ -121,8 +152,6 @@ set(sourceCode
     "${dataDir}/_scenes/3.9_geoshader_testscene.cpp"
     "${dataDir}/_scenes/4.1.blinnphong_testscene.cpp"
     "${dataDir}/_scenes/4.2_gammacorrection_testscene.cpp"
-
-
 )
 
 
@@ -147,21 +176,138 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
     "${outputDir}"
 )
 
+# ----------------------------------------------------------------------------------------
+#               Header Files
+# ----------------------------------------------------------------------------------------
+set(abstractHeaders
+    "${CMAKE_SOURCE_DIR}/headers/abstract/application.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/Camera.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/light.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/material.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/matrix4.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/mesh.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/model.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/queue.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/scene.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/scene_state.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/shader.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/transform.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/ui.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/uniforms.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/vector2.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/vector3.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/vector4.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/window_state.h"
+)
+
+set(coreHeaders
+    "${CMAKE_SOURCE_DIR}/headers/core/opengl.h"
+    "${CMAKE_SOURCE_DIR}/headers/core/ui.h"
+)
+
+set(dataHeaders
+    "${CMAKE_SOURCE_DIR}/headers/data/data.h"
+    "${CMAKE_SOURCE_DIR}/headers/data/scenes.h"
+)
+
+set(eventsHeaders
+    "${CMAKE_SOURCE_DIR}/headers/events/events.h"
+    "${CMAKE_SOURCE_DIR}/headers/events/input_observer.h"
+)
+
+set(mapsHeaders
+    "${CMAKE_SOURCE_DIR}/headers/maps/shaders.h"
+)
+
+set(templatesHeaders
+    "${CMAKE_SOURCE_DIR}/headers/templates/header_template_1.0.h"
+)
+
+set(testHeaders
+    "${CMAKE_SOURCE_DIR}/headers/test/basic.h"
+    "${CMAKE_SOURCE_DIR}/headers/test/integration_tests.h"
+    "${CMAKE_SOURCE_DIR}/headers/test/unit_tests.h"
+)
+
+set(utilsHeaders
+    "${CMAKE_SOURCE_DIR}/headers/utils/utilities.h"
+)
 
 # ----------------------------------------------------------------------------------------
-#               Adding Required Packages (OpenGL, GLFW, GLEW, etc.)
+#               All Header Files
 # ----------------------------------------------------------------------------------------
-# Find OpenGL
-find_package(OpenGL REQUIRED)
 
-# Optional: Find other libraries (GLFW, GLEW, etc.)
-# For example, to add GLFW, you can use:
-# find_package(GLFW3 REQUIRED)
+set(allHeaderFiles
+    ${abstractHeaders}
+    ${coreHeaders}
+    ${dataHeaders}
+    ${eventsHeaders}
+    ${mapsHeaders}
+    ${templatesHeaders}
+    ${testHeaders}
+    ${utilsHeaders}
+    
+)
+
+# ----------------------------------------------------------------------------------------
+#               Organize the source structure into folders
+# ----------------------------------------------------------------------------------------
+source_group(TREE ${CMAKE_SOURCE_DIR}/source PREFIX "source" FILES ${sourceCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/blackboard PREFIX "source/blackboard" FILES ${blackboardCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/core PREFIX "source/core" FILES ${coreCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/event_handling PREFIX "source/event_handling" FILES ${eventHandlingCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/libs PREFIX "source/libs" FILES ${libsCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/scene PREFIX "source/scene" FILES ${sceneCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/test PREFIX "source/tests" FILES ${testCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/utils PREFIX "source/utils" FILES ${utilsCode})
+source_group(TREE ${configDir} PREFIX "config" FILES ${configFiles})
+source_group(TREE ${dataDir}/_maps PREFIX "data/_maps" FILES ${dataMaps})
+source_group(TREE ${dataDir}/_paths PREFIX "data/_paths" FILES ${dataPaths})
+source_group(TREE ${dataDir}/_predefs PREFIX "data/_predefs" FILES ${dataPredefs})
+source_group(TREE ${dataDir}/_scenes PREFIX "data/_scenes" FILES ${dataScenes})
+
+# ----------------------------------------------------------------------------------------
+#               Organize Header Files into Folders
+# ----------------------------------------------------------------------------------------
+
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/abstract PREFIX "headers/abstract" FILES ${abstractHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/core PREFIX "headers/core" FILES ${coreHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/data PREFIX "headers/data" FILES ${dataHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/events PREFIX "headers/events" FILES ${eventsHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/maps PREFIX "headers/maps" FILES ${mapsHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/templates PREFIX "headers/templates" FILES ${templatesHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/test PREFIX "headers/test" FILES ${testHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/headers/utils PREFIX "headers/utils" FILES ${utilsHeaders})
+
 
 # ----------------------------------------------------------------------------------------
 #               Include Directories and Executable
 # ----------------------------------------------------------------------------------------
-add_executable(${PROJECT_NAME} ${sourceCode})
+add_executable(
+    ${PROJECT_NAME}
+    ${sourceCode}
+    ${blackboardCode}
+    ${coreCode}
+    ${eventHandlingCode}
+    ${libsCode}
+    ${sceneCode}
+    ${testCode}
+    ${utilsCode}
+    ${configFiles}
+    ${dataMaps}
+    ${dataPaths}
+    ${dataPredefs}
+    ${dataScenes}
+    # Adding headers here doesn't affect compilation, but makes them appear in the solution explorer
+    ${abstractHeaders}
+    ${coreHeaders}
+    ${dataHeaders}
+    ${eventsHeaders}
+    ${mapsHeaders}
+    ${templatesHeaders}
+    ${testHeaders}
+    ${utilsHeaders}
+)
 
 # ----------------------------------------------------------------------------------------
 #               Adding Libraries
@@ -180,7 +326,7 @@ include_directories(
     "${CMAKE_SOURCE_DIR}/headers/templates"
     "${CMAKE_SOURCE_DIR}/headers/test"
     "${CMAKE_SOURCE_DIR}/headers/utils"
-    )
+)
 
 # ----------------------- glad
 include_directories("${CMAKE_SOURCE_DIR}/libs/glad-0.136/include")

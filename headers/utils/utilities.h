@@ -15,6 +15,7 @@ namespace str_utils
 
 namespace file_utils
 {
+	std::string getExecutableDir();
 	std::string getFileNameWithoutExtension(const std::string& filePath);
 	std::string getDirectoryName(const std::string& filePath);
 	std::string getDirectoryPath(const std::string& filePath);
