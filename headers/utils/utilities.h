@@ -84,9 +84,9 @@ namespace vec_utils
 namespace img_utils
 {
 	unsigned int textureFromFile(const char* path, const std::string& directory, bool gamma = false);
-	unsigned int createTexture(const std::string& path, const int& wrapping = 0);
+	unsigned int createTexture(const std::string& data_dir, const std::string& path, const int& wrapping = 0);
 	void setVerticalFlipMode(bool flipMode);
-	unsigned int loadCubemap(const std::vector<std::string>& faces);
+	unsigned int loadCubemap(const std::string& data_dir, const std::vector<std::string>& faces);
 	void saveFrameBufferAsPNG(int width, int height, const char* filename);
 }
 

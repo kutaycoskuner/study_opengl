@@ -37,6 +37,17 @@ public:
 
     // state
     bool reload                     = true;
+
+       // Define the enum for path mode
+    enum class PathMode {
+        RELATIVE,
+        FULL
+    };
+    PathMode path_mode              = Application::PathMode::RELATIVE;
+
+    std::string data_dir_path       = "";
+    std::string config_dir_path     = "";
+    std::string shader_dir_path     = "";
     
     // testing
     bool save_frame                 = false;

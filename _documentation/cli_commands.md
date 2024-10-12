@@ -16,6 +16,8 @@ Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\build" 
 ./_GenerateBinaries.bat
     - run generate binaries
 
+./_PackProgram.bat
+
 Get-ChildItem -Recurse ./ -Filter *.cpp -Name
     - dosyadaki .cpp ile biten dosyalarin isimlerini cikariyor
 
@@ -27,7 +29,10 @@ $Files = Get-Childitem -Recurse ./ -Filter *.cpp -Name
 
 ./build/project_test.sln
 
+./bin/Windows/x64/Release/opengl_renderer.exe
+
 tree ./ 
     - tree view
 
 tree ./source/ /f
+    - tree view all source files 

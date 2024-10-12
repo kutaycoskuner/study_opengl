@@ -84,7 +84,7 @@ namespace img_utils
 		delete[] pixels;
 	}
 
-	unsigned int createTexture(const std::string& path, const int& wrapping)
+	unsigned int createTexture(const std::string& data_dir, const std::string& path, const int& wrapping)
 	{
 		img_utils::setVerticalFlipMode(true);
 		unsigned int texture;
@@ -110,7 +110,7 @@ namespace img_utils
 		int width, height, nr_channels;
 		//int x, y, z, ok;
 		//ok = stbi_info(path.c_str(), &x, &y, &z);
-		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nr_channels, 0);
+		unsigned char* data = stbi_load((data_dir + path).c_str(), &width, &height, &nr_channels, 0);
 		if (data)
 		{
 			if (nr_channels == 3)
@@ -132,7 +132,7 @@ namespace img_utils
 		return texture;
 	}
 
-	unsigned int loadCubemap(const std::vector<std::string>& faces)
+	unsigned int loadCubemap(const std::string& data_dir, const std::vector<std::string>& faces)
 	{
 		img_utils::setVerticalFlipMode(false);
 		unsigned int textureID;
@@ -142,7 +142,7 @@ namespace img_utils
 		int width, height, nrChannels;
 		for (unsigned int i = 0; i < faces.size(); i++)
 		{
-			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+			unsigned char* data = stbi_load((data_dir + faces[i]).c_str(), &width, &height, &nrChannels, 0);
 			if (data)
 			{
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,

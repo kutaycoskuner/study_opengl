@@ -269,7 +269,7 @@ void Application::loadSceneData(const ConfigData& config)
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
-	cubemap_texture = img_utils::loadCubemap(FullPaths::cubemap_texture_paths["skybox03"]);
+	cubemap_texture = img_utils::loadCubemap(data_dir_path, PathAfterDirectory::cubemap_texture_paths["skybox03"]);
 
 
 	// ----- camera
@@ -303,7 +303,7 @@ void Application::loadSceneData(const ConfigData& config)
 
 	for (int ii = 0; ii < model_paths.size(); ii++)
 	{
-		Model ourModel(model_paths[ii]);
+		Model ourModel((data_dir_path + model_paths[ii]).c_str());
 		active_scene->models.push_back(Model(ourModel));
 	}
 }
@@ -317,24 +317,24 @@ void Application::loadTextures()
 	{
 		TextureSet	texture_set;
 		std::string texture_name = *it;
-		FullPaths::texture_paths[texture_name].color != "" ?
-			texture_set.color = createTexture(FullPaths::texture_paths[texture_name].color)
+		PathAfterDirectory::texture_paths[texture_name].color != "" ?
+			texture_set.color = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].color)
 			: texture_set.color = 0;
 
-		FullPaths::texture_paths[texture_name].roughness != "" ?
-			texture_set.roughness = createTexture(FullPaths::texture_paths[texture_name].roughness)
+		PathAfterDirectory::texture_paths[texture_name].roughness != "" ?
+			texture_set.roughness = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].roughness)
 			: texture_set.roughness = 0;
 
-		FullPaths::texture_paths[texture_name].normal != "" ?
-			texture_set.normal = createTexture(FullPaths::texture_paths[texture_name].normal)
+		PathAfterDirectory::texture_paths[texture_name].normal != "" ?
+			texture_set.normal = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].normal)
 			: texture_set.normal = 0;
 
-		FullPaths::texture_paths[texture_name].specular != "" ?
-			texture_set.specular = createTexture(FullPaths::texture_paths[texture_name].specular)
+		PathAfterDirectory::texture_paths[texture_name].specular != "" ?
+			texture_set.specular = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].specular)
 			: texture_set.specular = 0;
 
-		FullPaths::texture_paths[texture_name].emission != "" ?
-			texture_set.emission = createTexture(FullPaths::texture_paths[texture_name].emission)
+		PathAfterDirectory::texture_paths[texture_name].emission != "" ?
+			texture_set.emission = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].emission)
 			: texture_set.emission = 0;
 		textures[texture_name] = texture_set;
 	}
@@ -345,7 +345,7 @@ void Application::loadShaders()
 {
 	// build and compile our shader program
 	// todo: butun shaderlari yukle daha sonra aktifi sec | bu 3d pipeline ini bozuyor
-	for (const ShaderPaths& path_struct : FullPaths::shader_paths)
+	for (const ShaderPaths& path_struct : PathAfterDirectory::shader_paths)
 	{
 		const std::string vrtx	= file_utils::getFileNameWithoutExtension(path_struct.vrtx_shader_file);
 		const std::string frag	= file_utils::getFileNameWithoutExtension(path_struct.frag_shader_file);
@@ -358,11 +358,11 @@ void Application::loadShaders()
 		const std::string name = path_parts.back();
 
 		if (geo == "") {
-			shaders[name] = std::make_shared<Shader>(path_struct.vrtx_shader_file, path_struct.frag_shader_file);
+			shaders[name] = std::make_shared<Shader>(shader_dir_path + path_struct.vrtx_shader_file, shader_dir_path + path_struct.frag_shader_file);
 		}
 		else {
-			shaders[name] = std::make_shared<Shader>(path_struct.vrtx_shader_file, path_struct.frag_shader_file, 
-				path_struct.geo_shader_file);
+			shaders[name] = std::make_shared<Shader>(shader_dir_path + path_struct.vrtx_shader_file, shader_dir_path + path_struct.frag_shader_file,
+				shader_dir_path + path_struct.geo_shader_file);
 		}
 
 		//unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(name)->ID, "Matrices");
@@ -1084,7 +1084,7 @@ void Application::drawFramebuffer(int display_w, int display_h)
 
 	if (save_frame)
 	{
-		std::string result = std::format("{}{}{}", DATA_DIR "test_scene_frames/scene", active_test_scene, "_test.png");
+		std::string result = std::format("{}{}{}", config_dir_path, "test_scene_frames/scene", active_test_scene, "_test.png");
 		img_utils::saveFrameBufferAsPNG(display_w, display_h, result.c_str());
 		save_frame = false;
 	}

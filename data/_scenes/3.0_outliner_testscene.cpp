@@ -40,18 +40,18 @@ void OutlinerTestScene::loadData()
 
 	// ---- define model paths
 	model_paths = {
-		DATA_DIR + std::string("models/testobject0_frustum/testobject.obj"),
-		DATA_DIR + std::string("models/testobject1_dodecahedron/testobject.obj"),
-		DATA_DIR + std::string("models/testobject2_sphere/testobject.obj"),
-		DATA_DIR + std::string("models/testobject3_cube0/testobject.obj"),
-		DATA_DIR + std::string("models/testobject4_cube1/testobject.obj"),
-		DATA_DIR + std::string("models/testobject5_cube2/testobject.obj"),
-		DATA_DIR + std::string("models/testobject6_cube3/testobject.obj"),
-		DATA_DIR + std::string("models/testobject7_torus/testobject.obj"),
-		DATA_DIR + std::string("models/testobject8_mine/testobject.obj"),
-		DATA_DIR + std::string("models/testobject9_cylinder/testobject.obj"),
-		DATA_DIR + std::string("models/testobject10_suzanne/testobject.obj"),
-		DATA_DIR + std::string("models/testobject11_cone/testobject.obj")
+		std::string("models/testobject0_frustum/testobject.obj"),
+		std::string("models/testobject1_dodecahedron/testobject.obj"),
+		std::string("models/testobject2_sphere/testobject.obj"),
+		std::string("models/testobject3_cube0/testobject.obj"),
+		std::string("models/testobject4_cube1/testobject.obj"),
+		std::string("models/testobject5_cube2/testobject.obj"),
+		std::string("models/testobject6_cube3/testobject.obj"),
+		std::string("models/testobject7_torus/testobject.obj"),
+		std::string("models/testobject8_mine/testobject.obj"),
+		std::string("models/testobject9_cylinder/testobject.obj"),
+		std::string("models/testobject10_suzanne/testobject.obj"),
+		std::string("models/testobject11_cone/testobject.obj")
 	};
 
 	// ---- create bools for each imported model

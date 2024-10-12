@@ -55,7 +55,7 @@ struct TextureSet
 	unsigned int emission	= 0;
 };
 
-class FullPaths
+class PathAfterDirectory
 {
 public:
 	static const std::vector<ShaderPaths> shader_paths;

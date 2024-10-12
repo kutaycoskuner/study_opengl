@@ -44,16 +44,25 @@ find_package(OpenGL REQUIRED)
 # ----------------------------------------------------------------------------------------
 #               Main Directories
 # ----------------------------------------------------------------------------------------
-set(configDir
+set(config_dir_full
     "${CMAKE_SOURCE_DIR}/config/" 
 ) 
-
-set(dataDir
-    "${CMAKE_SOURCE_DIR}/data/" 
+set(config_dir_relative
+    "/config/" 
 ) 
 
-set(shaderDir
+set(data_dir_full
+    "${CMAKE_SOURCE_DIR}/data/" 
+) 
+set(data_dir_relative
+    "/data/" 
+) 
+
+set(shader_dir_full
     "${CMAKE_SOURCE_DIR}/shaders/" 
+)
+set(shader_dir_relative
+    "/shader/" 
 ) 
 
 set(sourceDir
@@ -117,46 +126,46 @@ set(utilsCode
 )
 
 set(configFiles
-    "${configDir}/config.yaml"
+    "${config_dir_full}/config.yaml"
 )
 
 set(dataMaps
-    "${dataDir}/_maps/predef3d_namemap.cpp"
-    "${dataDir}/_maps/texture_name-pathmap.cpp"
+    "${data_dir_full}/_maps/predef3d_namemap.cpp"
+    "${data_dir_full}/_maps/texture_name-pathmap.cpp"
 )
 
 set(dataPaths
-    "${dataDir}/_paths/model_paths.cpp"
-    "${dataDir}/_paths/shader_paths.cpp"
+    "${data_dir_full}/_paths/model_paths.cpp"
+    "${data_dir_full}/_paths/shader_paths.cpp"
 )
 
 set(dataPredefs
-    "${dataDir}/_predefs/predef_materials.cpp"
-    "${dataDir}/_predefs/predef_primitive_scene_nodes.cpp"
-    "${dataDir}/_predefs/predef_scene_lights.cpp"
-    "${dataDir}/_predefs/predef_vertex_data.cpp"
+    "${data_dir_full}/_predefs/predef_materials.cpp"
+    "${data_dir_full}/_predefs/predef_primitive_scene_nodes.cpp"
+    "${data_dir_full}/_predefs/predef_scene_lights.cpp"
+    "${data_dir_full}/_predefs/predef_vertex_data.cpp"
 )
 
 set(dataScenes
-    "${dataDir}/_scenes/1.0_testscene.cpp"
-    "${dataDir}/_scenes/2.0_multiplelights_testscene.cpp"
-    "${dataDir}/_scenes/2.3_importmodel_testscene.cpp"
-    "${dataDir}/_scenes/3.0_outliner_testscene.cpp"
-    "${dataDir}/_scenes/3.10.instancing_testscene.cpp"
-    "${dataDir}/_scenes/3.11.antialiasing_testscene.cpp"
-    "${dataDir}/_scenes/3.2_blending_testscene.cpp"
-    "${dataDir}/_scenes/3.3_faceculling_testscene.cpp"
-    "${dataDir}/_scenes/3.4_framebuffers_testscene.cpp"
-    "${dataDir}/_scenes/3.5_cubemap_testscene.cpp"
-    "${dataDir}/_scenes/3.8_advglsl_testscene.cpp"
-    "${dataDir}/_scenes/3.9_geoshader_testscene.cpp"
-    "${dataDir}/_scenes/4.1.blinnphong_testscene.cpp"
-    "${dataDir}/_scenes/4.2_gammacorrection_testscene.cpp"
+    "${data_dir_full}/_scenes/1.0_testscene.cpp"
+    "${data_dir_full}/_scenes/2.0_multiplelights_testscene.cpp"
+    "${data_dir_full}/_scenes/2.3_importmodel_testscene.cpp"
+    "${data_dir_full}/_scenes/3.0_outliner_testscene.cpp"
+    "${data_dir_full}/_scenes/3.10.instancing_testscene.cpp"
+    "${data_dir_full}/_scenes/3.11.antialiasing_testscene.cpp"
+    "${data_dir_full}/_scenes/3.2_blending_testscene.cpp"
+    "${data_dir_full}/_scenes/3.3_faceculling_testscene.cpp"
+    "${data_dir_full}/_scenes/3.4_framebuffers_testscene.cpp"
+    "${data_dir_full}/_scenes/3.5_cubemap_testscene.cpp"
+    "${data_dir_full}/_scenes/3.8_advglsl_testscene.cpp"
+    "${data_dir_full}/_scenes/3.9_geoshader_testscene.cpp"
+    "${data_dir_full}/_scenes/4.1.blinnphong_testscene.cpp"
+    "${data_dir_full}/_scenes/4.2_gammacorrection_testscene.cpp"
 )
 
 
 # set(dataFiles
-#     "${dataDir}/test.stl"
+#     "${data_dir_full}/test.stl"
 # )
 
 
@@ -260,11 +269,11 @@ source_group(TREE ${CMAKE_SOURCE_DIR}/source/libs PREFIX "source/libs" FILES ${l
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/scene PREFIX "source/scene" FILES ${sceneCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/test PREFIX "source/tests" FILES ${testCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/utils PREFIX "source/utils" FILES ${utilsCode})
-source_group(TREE ${configDir} PREFIX "config" FILES ${configFiles})
-source_group(TREE ${dataDir}/_maps PREFIX "data/_maps" FILES ${dataMaps})
-source_group(TREE ${dataDir}/_paths PREFIX "data/_paths" FILES ${dataPaths})
-source_group(TREE ${dataDir}/_predefs PREFIX "data/_predefs" FILES ${dataPredefs})
-source_group(TREE ${dataDir}/_scenes PREFIX "data/_scenes" FILES ${dataScenes})
+source_group(TREE ${config_dir_full} PREFIX "config" FILES ${configFiles})
+source_group(TREE ${data_dir_full}/_maps PREFIX "data/_maps" FILES ${dataMaps})
+source_group(TREE ${data_dir_full}/_paths PREFIX "data/_paths" FILES ${dataPaths})
+source_group(TREE ${data_dir_full}/_predefs PREFIX "data/_predefs" FILES ${dataPredefs})
+source_group(TREE ${data_dir_full}/_scenes PREFIX "data/_scenes" FILES ${dataScenes})
 
 # ----------------------------------------------------------------------------------------
 #               Organize Header Files into Folders
@@ -389,9 +398,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE imgui)
 # Add the executable, linking the project name with the source files
 
 # this definition could be used in code
-add_compile_definitions(CONFIG_DIR="${configDir}")
-add_compile_definitions(DATA_DIR="${dataDir}")
-add_compile_definitions(SHADER_DIR="${shaderDir}")
+add_compile_definitions(CONFIG_DIR_FULL="${config_dir_full}")
+add_compile_definitions(DATA_DIR_FULL="${data_dir_full}")
+add_compile_definitions(SHADER_DIR_FULL="${shader_dir_full}")
+
+add_compile_definitions(CONFIG_DIR_RELATIVE="${config_dir_relative}")
+add_compile_definitions(DATA_DIR_RELATIVE="${data_dir_relative}")
+add_compile_definitions(SHADER_DIR_RELATIVE="${shader_dir_relative}")
 
 
 # ----------------------------------------------------------------------------------------

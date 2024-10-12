@@ -39,8 +39,8 @@ void ImportModelTestScene::loadData()
 	}
 
 	model_paths = {
-		DATA_DIR "models/testobject0_frustum/testobject.obj",
-		DATA_DIR "models/testobject1_dodecahedron/testobject.obj",
+		"models/testobject0_frustum/testobject.obj",
+		"models/testobject1_dodecahedron/testobject.obj",
 	};
 
 	// ---- create bools for each imported model

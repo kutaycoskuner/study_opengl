@@ -118,10 +118,15 @@
         - script bug
         - readme GenerateSolutions.bat
     - cmake and testing ci
-    - bat dosyasini duzelt
-        - bat python test run
-        - bat packaging
     - fix outliner first element is not outlining
+
+- [0.83] pack program configurations
+    - 12-Oct-2024 add packprogram.bat   (21.08, 15m)
+    - 11-Oct-2024
+        - fix: relative / full path problems, decoupling data (16.32 2h15m)
+        - add: shader path isolation and alteration
+        - add: config path isolation and alteration
+        - wip: package program
 
 - [0.82] wip cmake directory structure on solution
     - 08-Oct-2024 

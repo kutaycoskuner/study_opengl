@@ -5,6 +5,7 @@ enc_temp_folder
 _workshop/
 .ref/
 .workshop/
+artifacts/
 bin/
 build/
 

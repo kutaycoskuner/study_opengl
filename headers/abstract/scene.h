@@ -33,7 +33,7 @@ public:
 	std::vector<std::string>		model_paths;
 	std::vector<Model>				models;
 
-	std::vector<FullPaths>		shader_paths;
+	std::vector<PathAfterDirectory>		shader_paths;
 	std::unordered_set<std::string> texture_names;
 	std::vector<Material>			materials;
 

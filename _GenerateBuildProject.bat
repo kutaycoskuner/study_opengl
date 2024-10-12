@@ -92,6 +92,7 @@ if !errorlevel! EQU 0 (
     echo. 
     echo or directly call the executable:
     echo ./bin/Windows/x64/Release/!PROJECT_NAME!.exe
+    echo.
 ) else (
     echo.
     echo encountered problem on building binaries

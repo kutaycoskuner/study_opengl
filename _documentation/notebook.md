@@ -459,6 +459,18 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <packaging>
+    - son kullanicinin tiklayip acacagi paket
+    - exeyi kopyalayarak problemleri giderene kadar kopyalama islemine devam et
+    - son pakette her sey erisilebilir olmali
+
+- <debugger>
+    - f11
+        - step into: fonksiyon cagrisi varsa icine giriyor. 
+        - fonksiyon cogrisi yoksa satiri calistirip gecyior
+    - f10
+        - step over: o satirda olacak butun fonksiyonlari calistirip bir sonrkai satira gecyior
+
 - <github submodule>
     - gith submodule add <liknk>
         - git submodule add https://github.com/glfw/glfw.git
