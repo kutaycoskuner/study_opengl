@@ -121,6 +121,9 @@
     - cmake and testing ci
     - fix outliner first element is not outlining
 
+- [0.86] readme update
+    - 14-Oct-2024 readme update
+
 - [0.85] add test models
     - 13-Oct-2024 add model files
 
