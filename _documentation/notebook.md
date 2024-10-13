@@ -459,6 +459,9 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <git branch>
+    - git checkout <bname>
+
 - <packaging>
     - son kullanicinin tiklayip acacagi paket
     - exeyi kopyalayarak problemleri giderene kadar kopyalama islemine devam et

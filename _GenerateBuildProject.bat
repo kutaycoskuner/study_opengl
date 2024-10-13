@@ -1,5 +1,5 @@
 @echo off
-:: echo off is preventing to print all lines of code 
+:: echo off is preventing printing all lines of code 
 
 setlocal enabledelayedexpansion
 :: What is Delayed Expansion?
@@ -12,19 +12,13 @@ set LAUNCH_VS=1
 set SOLUTION_DIRECTORY=build
 set PROJECT_NAME=opengl_renderer
 
-:: TODO Parameter scan
-
-
-
 :: ---------------------------------------------------------------------------------------
 ::              check if cmake is installed
 :: ---------------------------------------------------------------------------------------
 echo.
-:: echo. -> new line
 echo Checking program prerequisites...
 
-
-:: check if cmake is installed
+:: Check if cmake is installed
 cmake --version > nul 2>&1
 if !errorlevel! NEQ 0 (
     echo [!PROJECT_NAME!] cannot find path to cmake. Please install cmake.
@@ -33,72 +27,71 @@ if !errorlevel! NEQ 0 (
     echo [!PROJECT_NAME!]   CMake            - Ready.
 )
 
-:: Check if submodule is initialized to avoid CMake file not found errors
+:: ---------------------------------------------------------------------------------------
+::              Check if submodules are initialized
+:: ---------------------------------------------------------------------------------------
 call :CheckAndInitializeSubmodules
-
+if !errorlevel! NEQ 0 (
+    echo [!PROJECT_NAME!] Failed to initialize or update submodules.
+    exit /b -1
+)
 
 :: ---------------------------------------------------------------------------------------
-::              clean install if if build already exists
+::              clean install if build already exists
 :: ---------------------------------------------------------------------------------------
 echo.
-echo clean setup initialization
-if exist !SOLUTION_DIRECTORY! (
-    rmdir /s /q !SOLUTION_DIRECTORY!
-    echo .
-    echo removed existing build directory 
+echo Clean setup initialization...
+if exist "!SOLUTION_DIRECTORY!" (
+    rmdir /s /q "!SOLUTION_DIRECTORY!"
+    if !errorlevel! NEQ 0 (
+        echo [!PROJECT_NAME!] Error: Could not remove existing build directory.
+        exit /b -1
+    )
+    echo Removed existing build directory.
 )
 
 :: Generate build directory
-if not exist !SOLUTION_DIRECTORY! (
-    echo [!PROJECT_NAME!] Creating directory !SOLUTION_DIRECTORY!...
-    mkdir !SOLUTION_DIRECTORY!
+if not exist "!SOLUTION_DIRECTORY!" (
+    echo [!PROJECT_NAME!] Creating directory "!SOLUTION_DIRECTORY!"...
+    mkdir "!SOLUTION_DIRECTORY!"
+    if !errorlevel! NEQ 0 (
+        echo [!PROJECT_NAME!] Error: Could not create build directory.
+        exit /b -1
+    )
 )
-
-:: TODO Run cmake
-cd !SOLUTION_DIRECTORY!
-
-
 
 :: ---------------------------------------------------------------------------------------
 ::              generate solution folders in build/
 :: ---------------------------------------------------------------------------------------
 echo.
-echo generataing solution files.
+echo Generating solution files...
 
+cd "!SOLUTION_DIRECTORY!"
 cmake ..
-
-
-::if !LAUNCH_VS! EQU 1 (
-::    start %SOLUTION_FILE%
-::)
-
-if !errorlevel! EQU 0 (
-    echo [!PROJECT_NAME!] Success!
-) else (
-    echo.
+if !errorlevel! NEQ 0 (
     echo [!PROJECT_NAME!] Error with CMake. No solution files generated.
-    echo. 
+    cd ..
     exit /b -1
 )
+echo [!PROJECT_NAME!] Solution files successfully generated.
 
 :: ---------------------------------------------------------------------------------------
 ::              generate binaries
 :: ---------------------------------------------------------------------------------------
-call ../_GenerateBinaries.bat !SOLUTION_DIRECTORY!
-if !errorlevel! EQU 0 (
+call ../_GenerateBinaries.bat "!SOLUTION_DIRECTORY!"
+if !errorlevel! NEQ 0 (
     echo.
-    echo Solution file and binaries are ready. You can try to start solution:
-    echo ./build/!PROJECT_NAME!.sln
-    echo. 
-    echo or directly call the executable:
-    echo ./bin/Windows/x64/Release/!PROJECT_NAME!.exe
-    echo.
-) else (
-    echo.
-    echo encountered problem on building binaries
+    echo [!PROJECT_NAME!] Error: Encountered problem building binaries.
+    cd ..
     exit /b -1
 )
-
+echo.
+echo Solution file and binaries are ready. You can try to start the solution:
+echo ./build/!PROJECT_NAME!.sln
+echo. 
+echo Or directly call the executable:
+echo ./bin/Windows/x64/Release/!PROJECT_NAME!.exe
+echo.
 
 cd ..
 
@@ -108,7 +101,36 @@ exit /b 0
 ::              functions
 :: ---------------------------------------------------------------------------------------
 :CheckAndInitializeSubModules
-:: TODO write this function if necessary
 echo.
-echo checking and initializing submodules.
+echo Checking and initializing submodules...
+
+git submodule status > nul 2>&1
+if !errorlevel! NEQ 0 (
+    echo Git is not installed or this is not a git repository. Skipping submodule check.
+    exit /b 0
+)
+
+:: Check if submodules are already initialized
+git submodule status | find "missing" > nul
+if !errorlevel! EQU 0 (
+    echo Submodules are missing. Initializing submodules...
+    git submodule update --init --recursive
+    if !errorlevel! NEQ 0 (
+        echo Failed to initialize submodules. Please check your repository setup.
+        exit /b -1
+    )
+    echo Submodules initialized successfully.
+) else (
+    echo Submodules are already initialized.
+)
+
+:: Ensure submodules are up to date
+echo Updating submodules...
+git submodule update --recursive --remote
+if !errorlevel! NEQ 0 (
+    echo Failed to update submodules. Please check your repository setup.
+    exit /b -1
+)
+echo Submodules are up to date.
+
 exit /b 0

@@ -4,6 +4,9 @@ git submodule add https://github.com/assimp/assimp.git
 git submodule add https://github.com/ocornut/imgui.git
 
 
+Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\artifacts" -Recurse -Force
+    - removing artifacts directory
+
 Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\bin" -Recurse -Force
     - removing bin directory
 
@@ -36,3 +39,5 @@ tree ./
 
 tree ./source/ /f
     - tree view all source files 
+
+./artifacts/opengl_renderer.exe
