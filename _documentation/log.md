@@ -121,6 +121,9 @@
     - cmake and testing ci
     - fix outliner first element is not outlining
 
+- [0.85] add test models
+    - 13-Oct-2024 add model files
+
 - [0.84] fix submodule importing and gitignore
     - 13-Oct-2024 fix gitignore data/model/.obj ignores
     - 12-Oct-2024 fix submodule importing
