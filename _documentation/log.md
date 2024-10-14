@@ -107,20 +107,57 @@
 - add log name
 - check todo
 - change last update
+- check commits
 - change time log
 - push
 
 # Log
 - [todo]
     - readme update
-    - cmake and testing
     - overlay test
     - vq engine
         - script bug
         - readme GenerateSolutions.bat
-    - bat dosyasini duzelt
-    - cmake yap
+    - cmake and testing ci
     - fix outliner first element is not outlining
+
+- [0.87] fix submodule checking on automated build
+    - 14-Oct-2024 fix submodule check fix on buildproject
+
+- [0.86] readme update
+    - 14-Oct-2024 readme update
+
+- [0.85] add test models
+    - 13-Oct-2024 add model files
+
+- [0.84] fix submodule importing and gitignore
+    - 13-Oct-2024 fix gitignore data/model/.obj ignores
+    - 12-Oct-2024 fix submodule importing
+
+- [0.83] pack program configurations
+    - 12-Oct-2024 add packprogram.bat   (21.08, 15m)
+    - 11-Oct-2024
+        - fix: relative / full path problems, decoupling data (16.32 2h15m)
+        - add: shader path isolation and alteration
+        - add: config path isolation and alteration
+        - wip: package program
+
+- [0.82] wip cmake directory structure on solution
+    - 08-Oct-2024 
+        - add: header files to solution through cmake
+        - add: cmake folder grouping
+
+- [0.81] wip cmake error free runtime
+    - 07-Oct-2024 wip cmake add error free runtime
+
+- [0.80] wip: cmake compile time errors, path parser ...
+    - 06-Oct-2024 
+        - fix: path parser from relative to full path
+        - add: path utility functions
+        - fix: data paths with preprocessor
+        - fix: runtime error import paths
+        - wip: cmake for renderer
+        - chg: comment styling for .bat files (13.31 1.5h)
 
 - [0.70] gamma correction scene, cmake preparation
     - 06-Sep-2024 

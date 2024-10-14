@@ -1,8 +1,0 @@
-{
-    "isTesting": false,
-    "screen": {
-        "width": 800,
-        "height": 600,
-        "wndw_name": "LearnOpenGL"
-    }
-}

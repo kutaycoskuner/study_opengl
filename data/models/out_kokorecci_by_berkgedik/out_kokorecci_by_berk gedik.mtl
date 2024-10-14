@@ -1,0 +1,68 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl Auto_Mid_Tex.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+illum 2
+map_Kd textures/Auto_Mid_Tex_baseColor.png
+map_Ke textures/Auto_Mid_Tex_emissive.jpeg
+map_d textures/Auto_Mid_Tex_baseColor.png
+map_Bump -bm 1.000000 textures/Auto_Mid_Tex_normal.png
+
+newmtl Auto_Mid_Tex_02.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Auto_Mid_Tex_02_baseColor.jpeg
+map_Ke textures/Auto_Mid_Tex_02_emissive.jpeg
+map_Bump -bm 1.000000 textures/Auto_Mid_Tex_02_normal.png
+
+newmtl Ayran.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Ayran_baseColor.jpeg
+map_Bump -bm 1.000000 textures/Ayran_normal.png
+
+newmtl Custom_Tex_01.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Custom_Tex_01_baseColor.jpeg
+map_Bump -bm 1.000000 textures/Custom_Tex_01_normal.png
+
+newmtl Metals.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Metals_baseColor.jpeg
+map_Bump -bm 1.000000 textures/Metals_normal.png
+
+newmtl Tires.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Tires_baseColor.jpeg
+map_Bump -bm 1.000000 textures/Tires_normal.png
