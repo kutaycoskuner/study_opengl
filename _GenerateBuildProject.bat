@@ -110,27 +110,32 @@ if !errorlevel! NEQ 0 (
     exit /b 0
 )
 
-:: Check if submodules are already initialized
-git submodule status | find "missing" > nul
-if !errorlevel! EQU 0 (
-    echo Submodules are missing. Initializing submodules...
-    git submodule update --init --recursive
-    if !errorlevel! NEQ 0 (
-        echo Failed to initialize submodules. Please check your repository setup.
-        exit /b -1
+:: Check if submodules are initialized by looking for a "-" in the status output
+for /f "tokens=1" %%a in ('git submodule status') do (
+    set "line=%%a"
+    set "prefix=!line:~0,1!" 
+    :: first character of each git status message
+    if "!prefix!"=="-" (
+        echo Submodules are missing or uninitialized. Initializing submodules...
+        git submodule update --init --recursive
+        if !errorlevel! NEQ 0 (
+            echo Failed to initialize submodules. Please check your repository setup.
+            exit /b -1
+        )
+        echo Submodules initialized successfully.
+        exit /b 0
     )
-    echo Submodules initialized successfully.
-) else (
-    echo Submodules are already initialized.
 )
+echo.
+echo All submodules are initialized.
 
-:: Ensure submodules are up to date
-echo Updating submodules...
-git submodule update --recursive --remote
-if !errorlevel! NEQ 0 (
-    echo Failed to update submodules. Please check your repository setup.
-    exit /b -1
-)
-echo Submodules are up to date.
+::  :: Ensure submodules are up to date
+::  echo Updating submodules...
+::  git submodule update --recursive --remote
+::  if !errorlevel! NEQ 0 (
+::      echo Failed to update submodules. Please check your repository setup.
+::      exit /b -1
+::  )
+::  echo Submodules are up to date.
 
 exit /b 0

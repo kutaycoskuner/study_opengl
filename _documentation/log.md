@@ -121,6 +121,9 @@
     - cmake and testing ci
     - fix outliner first element is not outlining
 
+- [0.87] fix submodule checking on automated build
+    - 14-Oct-2024 fix submodule check fix on buildproject
+
 - [0.86] readme update
     - 14-Oct-2024 readme update
 
