@@ -4,11 +4,9 @@ on:
   push:
     branches: 
       - main  # Trigger the workflow on pushes to the 'main' branch
-      - cicd  # Trigger the workflow on pushes to the 'cicd' branch
   pull_request:
     branches:
       - main  # Trigger the workflow for pull requests targeting the 'main' branch
-      - cicd  # Trigger the workflow for pull requests targeting the 'cicd' branch
 env:
   # Set the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release

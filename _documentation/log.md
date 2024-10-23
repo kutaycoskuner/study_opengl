@@ -119,6 +119,11 @@
         - readme GenerateSolutions.bat
     - fix outliner first element is not outlining
 
+- [0.89] readme update
+    - 23-Oct-2024
+        - remove cicd repo from workflow
+        - add readme build status shield
+
 - [0.88] ci/cd basic workflow
     - 23-Oct-2024 add github actions ci/cd
 
