@@ -2,10 +2,13 @@ name: CMake on Windows
 
 on:
   push:
-    branches: ["main", "cicd"] 
+    branches: 
+      - main  # Trigger the workflow on pushes to the 'main' branch
+      - cicd  # Trigger the workflow on pushes to the 'cicd' branch
   pull_request:
-    branches: ["main", "cicd"] 
-
+    branches:
+      - main  # Trigger the workflow for pull requests targeting the 'main' branch
+      - cicd  # Trigger the workflow for pull requests targeting the 'cicd' branch
 env:
   # Set the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
@@ -27,11 +30,17 @@ jobs:
         cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       shell: pwsh
 
-    - name: Build
-      # Build your program with the given configuration
+    # - name: Build
+    #   # Build your program with the given configuration
+    #   run: |
+    #     cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
+    #   shell: pwsh
+
+    - name: Build Project with Batch Script
       run: |
-        cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
-      shell: pwsh
+        # Call the batch script to build the project
+        .\_GenerateBuildProject.bat
+      shell: cmd # Use Command Prompt for batch files
 
     - name: Test
       # Execute tests defined by the CMake configuration.
