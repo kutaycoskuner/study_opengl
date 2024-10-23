@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- tut: ci/cd github actions / workflow / events
+    - https://www.youtube.com/watch?v=R8_veQiYBjI&list=PLy7NrYWoggjzSIlwxeBbcgfAdYoxCIrM2
+
 - texture sources
     - https://wiki.thedarkmod.com/index.php?title=Texture_Sources
 

@@ -113,13 +113,14 @@
 
 # Log
 - [todo]
-    - readme update
     - overlay test
     - vq engine
         - script bug
         - readme GenerateSolutions.bat
-    - cmake and testing ci
     - fix outliner first element is not outlining
+
+- [0.88] ci/cd basic workflow
+    - 23-Oct-2024 add github actions ci/cd
 
 - [0.87] fix submodule checking on automated build
     - 14-Oct-2024 fix submodule check fix on buildproject

@@ -23,6 +23,30 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Generate Solution File
+        # Call the batch script to build the project
+      run: |
+        .\_GenerateBuildProject.bat
+      shell: cmd # Use Command Prompt for batch files
+
+# ----------------------------------------------------------------------------------------
+#       steps
+# ----------------------------------------------------------------------------------------
+
+
+    # pre build
+      # pull all necessary 
+
+    # build
+      # compilation
+
+    # post build
+      # tessts
+
+# ----------------------------------------------------------------------------------------
+#       prev
+# ----------------------------------------------------------------------------------------
+
     # - name: Configure CMake
     #   # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     #   # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -36,25 +60,10 @@ jobs:
     #     cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
     #   shell: pwsh
 
-    # pre build
-      # pull all necessary 
-
-    # build
-      # compilation
-
-    # post build
-      # tests
-
-    - name: Generate Solution File
-        # Call the batch script to build the project
-      run: |
-        .\_GenerateBuildProject.bat
-      shell: cmd # Use Command Prompt for batch files
-
-    - name: Test
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      working-directory: ${{github.workspace}}\build
-      run: |
-        ctest -C ${{env.BUILD_TYPE}}
-      shell: pwsh
+    # - name: Test
+    #   # Execute tests defined by the CMake configuration.
+    #   # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+    #   working-directory: ${{github.workspace}}\build
+    #   run: |
+    #     ctest -C ${{env.BUILD_TYPE}}
+    #   shell: pwsh
