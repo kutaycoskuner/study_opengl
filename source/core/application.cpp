@@ -94,7 +94,6 @@ bool Application::initialize(const ConfigData& config)
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
 
 
-
 	initWindowSystem(k_scr_width, k_scr_height, kp_wndw_name);
 	const char* glsl_version = "#version 330";
 	window_state.b_first_mouse = true;
@@ -265,6 +264,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
 	else if (scene_number == 12)	active_scene = new BlinnPhongTestScene;
 	else if (scene_number == 13)	active_scene = new GammaCorrectionTestScene;
+	else if (scene_number == 14)	active_scene = new ShadowsTestScene;
 
 
 	// ----- set cubemap
@@ -765,6 +765,9 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Gamma Correction", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 13 });
 			}
+			if (ImGui::MenuItem("Shadows", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 14 });
+			}
 
 			ImGui::EndMenu();
 		}
@@ -1134,6 +1137,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setMat4("view_mat", upv.view_matrix);
 		active_shader->setMat4("projection_mat", upv.projection_matrix);
 		active_shader->setFloat("time", active_scene->scene_state.time);
+		active_shader->setFloat("tiling_factor", active_scene->predefined_scene_elements[i].tiling_factor);
 		active_shader->setBool("gamma", active_scene->scene_state.gamma);
 
 		// directional light
@@ -1558,6 +1562,23 @@ void Application::resetCamera()
 	camera.position = Vec3(-12.0f, 10.0f, 12.0f);
 	const Vec3 k_camera_target_point = Vec3(0.0f, 0.0f, 0.0f);
 	camera.lookAtTarget(k_camera_target_point);
+}
+
+void Application::setPathType(std::string in_path_mode)
+{
+	if (in_path_mode == "full") path_mode = Application::PathMode::FULL;
+	if (path_mode == Application::PathMode::FULL)
+	{
+		data_dir_path = DATA_DIR_FULL;
+		config_dir_path = CONFIG_DIR_FULL;
+		shader_dir_path = SHADER_DIR_FULL;
+	}
+	else
+	{
+		data_dir_path = file_utils::getExecutableDir() + "\\data\\";
+		config_dir_path = file_utils::getExecutableDir() + "\\config\\";
+		shader_dir_path = file_utils::getExecutableDir() + "\\shaders\\";
+	}
 }
 
 unsigned int fourStageAnimation(const unsigned int& stage)

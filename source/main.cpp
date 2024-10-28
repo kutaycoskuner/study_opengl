@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------------------
-// ----- Libraries
+//				Libraries
 // ------------------------------------------------------------------------------------------------
 #include "../headers/abstract/application.h"
 #include "../headers/core/openGL.h"
@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 // ------------------------------------------------------------------------------------------------
-// ----- Main
+//				Main
 // ------------------------------------------------------------------------------------------------
 int main()
 {
@@ -48,27 +48,12 @@ int main()
 	// instantiate
 	Application app;
 
-	// run program
+	// start program
 	app.initialize(config);
 
-	if (path_mode == "full") app.path_mode = Application::PathMode::FULL;
-	if (app.path_mode == Application::PathMode::FULL)
-	{
-		app.data_dir_path	= DATA_DIR_FULL;
-		app.config_dir_path = CONFIG_DIR_FULL;
-		app.shader_dir_path = SHADER_DIR_FULL;
-	}
-	else
-	{
-		app.data_dir_path	= file_utils::getExecutableDir() + "\\data\\";
-		app.config_dir_path = file_utils::getExecutableDir() + "\\config\\";
-		app.shader_dir_path = file_utils::getExecutableDir() + "\\shaders\\";
-	}
+	app.setPathType(path_mode);
 
-	// std::cout << "Config Path: " << app.config_dir_path << std::endl;
-	// std::cout << "Data Path: "	 << app.data_dir_path	<< std::endl;
-	// std::cout << "Shader Path: " << app.shader_dir_path << std::endl;
-
+	// main application loop
 	while (app.reload)
 	{
 		app.reload = false;

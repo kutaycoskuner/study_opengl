@@ -118,6 +118,19 @@
         - script bug
         - readme GenerateSolutions.bat
     - fix outliner first element is not outlining
+    - shadow
+    - fix readme title consistency
+    - fix readme missing model and sources
+
+
+- [0.90] add shadow test scene, tiling factor, shaders on solution
+    - 28-Oct-2024
+        - add new texture from ambient cg
+        - add test scene shadow casts elemenets added
+        - add tiling factor to predefined scene elements structure
+        - add add shaders to vs on cmake
+        - add shadows test scene (11.58, --)
+        - add encapsulation path selection on application
 
 - [0.89] readme update
     - 23-Oct-2024

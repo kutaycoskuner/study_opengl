@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.89-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.90-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
     <img alt="Build Status Main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-single-platform.yml?branch=main&label=Build Status" />

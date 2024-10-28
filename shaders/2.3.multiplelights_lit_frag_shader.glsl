@@ -154,6 +154,7 @@ void main()
     vec3 illumination = vec3(0.0f);
     vec3 dark = vec3(0.0f);
 
+
     // assign Surface
     Surface surface;
     surface.normal      = normalize(v_normal);

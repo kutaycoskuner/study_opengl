@@ -127,3 +127,11 @@ public:
 	GammaCorrectionTestScene();
 };
 
+class ShadowsTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+	
+	ShadowsTestScene();
+};
+

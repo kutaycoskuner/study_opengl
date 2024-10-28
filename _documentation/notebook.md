@@ -508,8 +508,9 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - <adding new scene yeni sahne ekleme>
     - headers/data/scenes.h uzerinde yeni sahneyi ekle
     - data/scenes/<scene>.cpp uzerinde yeni sahneyi yarat
-    - application da loadscene daa fonksiyonuna scene i numarasiyla ekle
-    - ui a da ekle
+    - application da loadscenedata fonksiyonuna scene i numarasiyla ekle
+    - ui a da ekle (Application::updateUI())
+    - cmake icine de adresi ekle
 
 - <adding new shader>
     - shaders/<new>.glsl yeni shader ekle

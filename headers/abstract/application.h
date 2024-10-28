@@ -1,5 +1,5 @@
 #pragma once
-// ----- libraries
+//              libraries
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/vector4.h"
 #include "../abstract/ui.h"
@@ -16,7 +16,7 @@
 #include <memory>
 
 
-// ----- forward declarations
+//              forward declarations
 // ------------------------------------------------------------------------------------------------
 struct GLFWwindow;
 struct Uniforms;
@@ -25,10 +25,10 @@ class Shader;
 using uint = unsigned int;
 
 
-// ----- function declerations
+//              function declerations
 // ------------------------------------------------------------------------------------------------
 
-// ----- abstract
+//              abstract
 // ------------------------------------------------------------------------------------------------
 class Application : public InputListener
 {
@@ -61,6 +61,8 @@ public:
     static bool toggle_mouselock;
 
     void resetCamera();
+
+    void setPathType(std::string path_mode);
 
     // handlers
     InputSpeaker input_speaker;
