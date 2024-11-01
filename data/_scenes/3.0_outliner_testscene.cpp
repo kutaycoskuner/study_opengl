@@ -16,6 +16,8 @@ void OutlinerTestScene::loadData()
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
+	//scene_state.model_shader_name = "multiplelights";
+
 
 	// --- define lights
 	// directional
@@ -67,7 +69,7 @@ void OutlinerTestScene::loadData()
 	}
 
 	// ---- define texture names
-	texture_names = { "test_2k", "linegrid_2k_darkgray" };
+	texture_names = { "test_2k", "linegrid_2k_darkgray"};
 
 }
 
@@ -134,6 +136,8 @@ void OutlinerTestScene::update() {
 		predefined_scene_elements[i].transform.position
 			= Vec3(time_offset * x, y, time_offset * z);
 	}
+
+	scene_state.emission_factor = sint;
 }
 
 OutlinerTestScene::OutlinerTestScene() {

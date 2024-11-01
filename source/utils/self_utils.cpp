@@ -88,6 +88,7 @@ namespace math_utils
 
 	Vec3 cross3d(const Vec3& v1, const Vec3& v2)
 	{
+		// Standard cross product calculation
 		float x = v1.y * v2.z - v1.z * v2.y;
 		float y = v1.z * v2.x - v1.x * v2.z;
 		float z = v1.x * v2.y - v1.y * v2.x;
@@ -184,7 +185,7 @@ std::string file_utils::readFileContents(const std::string& path)
 
 	// Check if the file was opened successfully
 	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << path << std::endl;
+		std::cerr << "failed to open file: " << path << std::endl;
 		return "";
 	}
 

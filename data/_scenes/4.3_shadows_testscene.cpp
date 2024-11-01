@@ -21,12 +21,21 @@ void ShadowsTestScene::loadData()
 	// --- define lights
 	// directional
 	directional_lights.push_back(PredefSceneLights::d_light);
-	// point
-	point_lights.push_back(PredefSceneLights::p_light);
-	point_lights.push_back(PredefSceneLights::p_light);
-	point_lights.push_back(PredefSceneLights::p_light);
+	//directional_lights[0].brightness = .6f;
+
+
+	// point6
+	//point_lights.push_back(PredefSceneLights::p_light);
+	//point_lights.push_back(PredefSceneLights::p_light);
+	//point_lights.push_back(PredefSceneLights::p_light);
+
+	
+	
 	// spot
 	spot_lights.push_back(PredefSceneLights::s_light);
+	spot_lights[0].position = Vec3(0.0f, 8.0f, 0.0f);
+	spot_lights[0].diffuse  = Vec3(1.0f, 1.0f, 1.0f);
+	spot_lights[0].brightness = 2.0f;
 
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
@@ -48,25 +57,35 @@ void ShadowsTestScene::loadData()
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(50.0f, 0.2f, 50.0f)
 	};
+
+	predefined_scene_elements[0].shader_name = "light-shadow";
+
 	predefined_scene_elements[0].tiling_factor = 4.0f;
 
 	predefined_scene_elements[1].transform = {
-			Vec3(0.0f, 2.0f, 0.0f),
+			Vec3(0.0f, 1.0f, 0.0f),
+			//Vec3(0.0f, 0.0f, -4.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
 	};
+	predefined_scene_elements[1].shader_name = "light-shadow";
 
 	predefined_scene_elements[2].transform = {
 		Vec3(3.0f, 1.0f, 3.0f),
+		//Vec3(0.0f, 0.0f, 4.0f),
 		Vec3(0.0f, -48.0f, 0.0f),
+		//Vec3(0.0f, 0.0f, 0.0f),
 		Vec3(1.5f, 1.5f, 1.5f)
 	};
+	predefined_scene_elements[2].shader_name = "light-shadow";
+
 
 	predefined_scene_elements[3].transform = {
 	Vec3(-2.0f, 1.0f, 4.0f),
 	Vec3(0.0f, -28.0f, 0.0f),
 	Vec3(1.5f, 1.5f, 1.5f)
 	};
+	predefined_scene_elements[3].shader_name = "light-shadow";
 
 	model_paths = {
 		//"models/testobject0_frustum/testobject.obj",

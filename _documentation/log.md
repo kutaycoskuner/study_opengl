@@ -114,14 +114,25 @@
 # Log
 - [todo]
     - overlay test
-    - vq engine
-        - script bug
-        - readme GenerateSolutions.bat
+    - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
     - shadow
-    - fix readme title consistency
-    - fix readme missing model and sources
+    - add light bilboards
+    - debug kodu
 
+- [0.90.1] add shadow depth map
+    - 01-Nov-2024
+        - add first shadow depth map
+        - fix lookattarget matrix problem
+    - 30-Oct-2024
+        - wip shadowpass
+        - add mat utils lookatdirection, lookattarget
+        - add orthographic camera projection on mat utils
+    - 28-Oct-2024 
+        - fix add readme missing model references
+        - fix readme title consistency
+        - add vqengine issue writing
+        - fix add uniform num_point lights to avoid exact 3 light problem
 
 - [0.90] add shadow test scene, tiling factor, shaders on solution
     - 28-Oct-2024

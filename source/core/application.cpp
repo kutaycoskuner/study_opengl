@@ -151,7 +151,35 @@ bool Application::initialize(const ConfigData& config)
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
+
+	// 4.3 shadow fbo
+	// ---------------------------------------------------------
+	unsigned int depthMapFBO;
+	glGenFramebuffers(1, &depthMapFBO);
+	shadow_fbo.push_back(depthMapFBO);  // Store FBO ID
+
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
+	unsigned int depthMap;
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	shadow_maps.push_back(depthMap);
+
+	// Enable drawing to the back buffer
+	//glDrawBuffer(GL_BACK);
+	// Enable reading from the front buffer
+	//glReadBuffer(GL_FRONT);
+
+
+
 	// texture for framebuffer
+	// ---------------------------------------------------------
 	glGenTextures(1, &screen_colortexture);
 	glBindTexture(GL_TEXTURE_2D, screen_colortexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, k_scr_width, k_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -561,6 +589,10 @@ void Application::generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float ob
 		glEnableVertexAttribArray(2);
 }
 
+void Application::generateShadowFBO()
+{
+}
+
 void Application::mainLoop(ConfigData& config)
 {
 	// uniform variables according to update frequency
@@ -819,6 +851,7 @@ void Application::updateUI()
 		ImGui::SliderFloat("Camera Pos Z", &this->active_scene->cameras[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 		const char* animate_button_name =
 			this->active_scene->scene_state.animate ? "Stop" : "Play";
@@ -895,6 +928,9 @@ void Application::setSpotLightParameters(Uniforms& uni)
 
 void Application::drawScene(Uniforms& uni)
 {
+
+
+
 	active_scene->scene_state.stats_vrts = 0;
 	active_scene->scene_state.stats_tris = 0;
 
@@ -912,6 +948,18 @@ void Application::drawScene(Uniforms& uni)
 	// calculate matrices
 	upv.projection_matrix
 		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+
+	int display_w, display_h;
+	glfwGetFramebufferSize(window, &display_w, &display_h);
+	drawShadowMap();
+	glDrawBuffer(GL_BACK);  // Enable drawing to the back buffer
+	glReadBuffer(GL_FRONT);  // Enable reading from the front buffer
+
+	display_width = display_w;
+	//upv.projection_matrix
+	//	= mat_utils::projectOrthographic(display_width / 50.0f, cam.aspect_ratio, cam.near, cam.far);
+	//upv.projection_matrix
+	//	= mat_utils::projectOrthographic(cam.near, cam.far, -10.0f, 10.0f, 10.0f, -10.0f);
 	upv.view_matrix = cam.calcViewMatrix(world_up);
 	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
 
@@ -964,8 +1012,6 @@ void Application::drawScene(Uniforms& uni)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// get width and height
-	int display_w, display_h;
-	glfwGetFramebufferSize(window, &display_w, &display_h);
 	glViewport(0, 0, display_w, display_h);
 
 	// draw scene
@@ -974,6 +1020,8 @@ void Application::drawScene(Uniforms& uni)
 	upv.view_matrix = cam.calcViewMatrix(world_up);
 	upv.projection_matrix
 		= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+	//upv.projection_matrix
+	//	= mat_utils::projectOrthographic(cam.near, cam.far, -10.0f, 10.0f, 10.0f, -10.0f);
 	upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
 
 	drawHelper_lightPlaceholders(uni);
@@ -1059,6 +1107,54 @@ void Application::drawHelper_axes(Uniforms& uni)
 	}
 }
 
+void Application::drawShadowMap()
+{
+	float near_plane = 0.1f, far_plane = 100.0f;
+	float dim = dimension;
+	Mat4 light_projection = mat_utils::projectOrthographic(near_plane, far_plane, -dim, dim, dim, -dim);
+	Camera cam = active_scene->cameras[0];
+	//light_projection = mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+
+	Mat4 light_view = mat_utils::lookAtTarget(
+		Vec3(10.0f, 10.0f, 10.0f),					// position
+		//Vec3(-1.0f, -0.8f, -0.2f),					// direction
+		Vec3(0.0f, 0.0f, 0.0f),						// target
+		world_up									// world up
+	);
+
+	Mat4 light_space_matrix = light_projection * light_view;
+
+	this->active_shader = shaders.at("shadowmap");
+
+	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
+	glEnable(GL_DEPTH_TEST);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+
+	GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
+	GLfloat* ptr_light_space_matrix = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
+	glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_matrix);
+
+
+
+	glViewport(0, 0, 1024, 1024);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
+	glEnable(GL_DEPTH_TEST);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	drawSceneNode_primitive_shadows(light_space_matrix);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//Mat4 light_view		  
+	//glViewport(0, 0, 2048, 2048);
+	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_maps[0]);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//ConfigureShaderAndMatrices();
+	//RenderScene();
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 void Application::drawFramebuffer(int display_w, int display_h)
 {
@@ -1094,6 +1190,40 @@ void Application::drawFramebuffer(int display_w, int display_h)
 
 }
 
+void Application::drawSceneNode_primitive_shadows(const Mat4& model_mat)
+{
+	const int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
+	(*active_shader).use();
+	for (int i = 0; i < element_count; i++)
+	{
+		active_shader->setMat4("lightSpaceMatrix", model_mat);
+		const std::string& name = active_scene->predefined_scene_elements[i].vertex_array_name;
+		glBindVertexArray(named_arrays.at(name));
+		const Transform& transform = active_scene->predefined_scene_elements[i].transform;
+		const Mat4 model =
+			mat_utils::translation(Vec3(transform.position.x, transform.position.y, transform.position.z))  // 0, 3, 10 * cos(ss.time)
+			* mat_utils::rotateX(toRadian(transform.rotation.x))
+			* mat_utils::rotateY(toRadian(transform.rotation.y))
+			* mat_utils::rotateZ(toRadian(transform.rotation.z))
+			* mat_utils::scale(transform.scale.x, transform.scale.y, transform.scale.z)
+			;
+		active_shader->setMat4("model", model);
+		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		{
+			// Bind the index buffer
+			glBindBuffer(named_arrays.at(name), lit_ebo);
+			glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
+		}
+		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
+		{
+			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+	}
+}
 
 void Application::drawSceneNodes_primitive(Uniforms& uni)
 {
@@ -1132,13 +1262,14 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		}
 
 		// assign uniforms
-		active_shader->setFloat("mix_val", upo.mix_value);
 		active_shader->setVec3("view_pos", cam.position);
 		active_shader->setMat4("view_mat", upv.view_matrix);
 		active_shader->setMat4("projection_mat", upv.projection_matrix);
+		active_shader->setFloat("mix_val", upo.mix_value);
 		active_shader->setFloat("time", active_scene->scene_state.time);
 		active_shader->setFloat("tiling_factor", active_scene->predefined_scene_elements[i].tiling_factor);
 		active_shader->setBool("gamma", active_scene->scene_state.gamma);
+		active_shader->setInt("num_point_lights", active_scene->point_lights.size());
 
 		// directional light
 		setDirectionalLightParameters(uni);
@@ -1249,6 +1380,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			active_shader->setInt("material.texture_specular1", 1);
 			active_shader->setInt("material.texture_emissive1", 2);
 			active_shader->setFloat("material.emission_factor", ss.emission_factor);
+			active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 
 			// set ligt parameters
 			setDirectionalLightParameters(uni);
@@ -1321,9 +1453,14 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 
 		// assign textures and uniforms
 		active_shader->setVec3("view_pos", active_scene->cameras[0].position);
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
 		active_shader->setMat4("view_mat", upv.view_matrix);
+		active_shader->setMat4("projection_mat", upv.projection_matrix);
+		active_shader->setFloat("mix_val", upo.mix_value);
 		active_shader->setFloat("time", active_scene->scene_state.time);
+		active_shader->setFloat("tiling_factor", 1.0f);
+		active_shader->setBool("gamma", active_scene->scene_state.gamma);
+		active_shader->setFloat("num_point_lights", active_scene->point_lights.size());
+
 
 		active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
 
@@ -1331,6 +1468,7 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 		active_shader->setInt("material.texture_specular1", 1);
 		active_shader->setInt("material.texture_emissive1", 2);
 		active_shader->setFloat("material.emission_factor", ss.emission_factor);
+
 
 
 		if (active_scene->scene_state.b_model_refraction)
@@ -1510,6 +1648,8 @@ void Application::drawScene_skybox(Uniforms& uni)
 		upv.view_matrix._34 = 0.0f;
 		upv.projection_matrix
 			= mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
+		//upv.projection_matrix
+			//= mat_utils::projectOrthographic(display_width, cam.aspect_ratio, cam.near, cam.far);
 		upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 		active_shader->setInt("skybox", 0);

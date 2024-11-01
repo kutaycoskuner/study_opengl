@@ -124,8 +124,13 @@ struct Vec3
 
 	Vec3 normalized() const
 	{
-		float len = this->length();
+		/*float len = this->length();
 		Vec3 result = { x / len, y / len, z / len };
+		return result;*/
+
+		// optimized version 1 division 3 multiplication instead of 3 division
+		float inverse_len = 1.0f / this->length();
+		Vec3 result = { x * inverse_len, y * inverse_len, z * inverse_len };
 		return result;
 	}
 };

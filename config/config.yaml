@@ -30,4 +30,10 @@ default_animation:
 
 scene:
     active_scene: 14
-    
+
+
+# Right hand major.
+# matrices: column major.    
+# Y up
+# -Z forward direction
+# Naming convention

@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.90-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.90.1-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
     <img alt="Build Status Main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-single-platform.yml?branch=main&label=Build Status" />
@@ -40,7 +40,7 @@ Before setting up and running this project, ensure you have the following instal
 - [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/) (version 10.0.19041.0 or higher)
 - [OpenGL API](https://www.opengl.org/) (usually comes pre-installed with the graphics driver)
 
-## Installation
+### Installation
 To install and set up the repository locally, follow these steps:
 
 1. **Clone the repository**:
@@ -52,13 +52,13 @@ git clone https://github.com/kutaycoskuner/study_opengl.git
 cd study_opengl
 ```
 
-### Automated Setup using `.bat` Script
+#### Automated Setup using `.bat` Script
 2. Run the `_GenerateBuildProject.bat` script to generate the build environment:
 ```bash
 ./_GenerateBuildProject.bat
 ```
 
-### (Alternative) Manual Build with CMake
+#### (Alternative) Manual Build with CMake
 If you prefer a manual setup, follow these steps:
 
 2. **Create and navigate to the `build` directory**:
@@ -72,20 +72,20 @@ cd build
 cmake ..
 ```
 
-## Run
-### Open Solution (.sln) File
+### Run
+#### Open Solution (.sln) File
 To inspect the code in Visual Studio, open the generated solution file:
 ```
 ./build/opengl_renderer.sln
 ```
 
-### Running the Program from the Generated Binaries
+#### Running the Program from the Generated Binaries
 After running `_GenerateBinaries.bat`, you can run the program with:
 ```
 ./bin/Windows/x64/Release/opengl_renderer.exe
 ```
 
-### Running the Isolated Packaged Instance
+#### Running the Isolated Packaged Instance
 If you run `_PackProgram.bat`, an isolated executable instance of the program will be created in the `artifacts` directory. This directory contains all necessary files to run the program independently. You can move the `artifacts` directory anywhere and run `opengl_renderer.exe` directly.
 
 # Controls
@@ -195,6 +195,7 @@ Below are some examples:
   - [OpenGL/VRML Materials](http://devernay.free.fr/cours/opengl/materials.html)
 - **Models**
   - Backpack by Berk Gedik [Sketchfab Link](https://sketchfab.com/3d-models/survival-guitar-backpack-799f8c4511f84fab8c3f12887f7e6b36)
+  - Kokorec by Berk Gedik [Sketchfab Link](https://sketchfab.com/models/141db37d07fc4ccba84ab5f38a8181b5/embed?autostart=1&internal=1&tracking=0&ui_ar=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0)
   - Lantern by Rajil Jose Macatangay [Polyhaven Link](https://polyhaven.com/a/Lantern_01)
   - Suzanne by Blender [Documentation](https://docs.blender.org/manual/en/latest/modeling/meshes/primitives.html)
   - Jupiter by murilo.kleine [Sketchfab Link](https://sketchfab.com/3d-models/jupiter-free-downloadable-model-61671f29ca0a4fa39dc9653290282418)

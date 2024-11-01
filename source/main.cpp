@@ -17,13 +17,13 @@ int main()
 	Application::ConfigData config;
 	std::string path_mode = "relative";
 
-	std::cout << "trying to load config from artifacts path." << std::endl;
+	//std::cout << "trying to load config from artifacts path." << std::endl;
 	config = file_utils::parseSimple(file_utils::getExecutableDir() + std::string("/config/config.yaml"));
 
 	if (config.empty())
 	{
-		std::cout << "failed to open artifacts configurations." << std::endl;
-		std::cout << "trying to load config from preprocessor directive path." << std::endl;
+		//std::cout << "failed to open artifacts configurations." << std::endl;
+		//std::cout << "trying to load config from preprocessor directive path." << std::endl;
 		config = file_utils::parseSimple(CONFIG_DIR_FULL + std::string("config.yaml"));
 		;
 		path_mode = "full";

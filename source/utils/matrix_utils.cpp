@@ -212,6 +212,67 @@ namespace mat_utils
 	//	}
 	//}
 
+	Mat4 lookAtTarget(const Vec3& position, const Vec3& target, const Vec3& world_up)
+	{
+		// Calculate the forward (z) axis of the camera (bastaki eksi sag elden eksinin forward olusundaan geliyor.)
+		Vec3 direction = -(target - position).normalized();
+
+		// Calculate the right (x) axis by taking the cross product of world_up and forward
+		Vec3 right = math_utils::cross3d(direction, world_up);
+
+		// edge case: if two vectors are collinear then use +x as right vector.
+		right = (right.length() == 0.0f)
+			? Vec3(1.0f, 0.0f, 0.0f)
+			: right.normalized();
+
+		// Recalculate the orthogonal up vector (y axis)
+		Vec3 up = math_utils::cross3d(right, direction).normalized();
+
+		//return Mat4(
+		//	right.x,	right.y,	right.z,	-position.x,
+		//	world_up.x, world_up.y, world_up.z, -position.y,
+		//	forward.x,  forward.y,  forward.z,  -position.z,
+		//	0.0f,		0.0f,		0.0f,		1.0f
+		//);
+
+		// column major
+		return Mat4(
+			right.x,	 right.y,		right.z,	 -right.dot(position),
+			up.x,		 up.y,			up.z,		 -up.dot(position),
+			direction.x, direction.y,	direction.z, -direction.dot(position),
+			0.0f,	 0.0f, 0.0f,	    1.0f
+		);
+
+		// row major
+		return Mat4(
+			right.x,			  up.x,				 direction.x,			   0.0f,
+			right.y,			  up.y,				 direction.y,			   0.0f,
+			right.z,			  up.z,				 direction.z,			   0.0f,
+			-right.dot(position), -up.dot(position), -direction.dot(position), 1.0f
+		);
+	}
+
+	Mat4 lookAtDirection(const Vec3& position, const Vec3& direction, const Vec3& world_up)
+	{
+		// Normalize the direction vector to get the forward (z) axis
+		Vec3 forward = direction.normalized();
+
+		// Calculate the right (x) axis as the cross product of world_up and forward
+		Vec3 right = math_utils::cross3d(world_up, forward).normalized();
+
+		// Recalculate the orthogonal up vector (y axis)
+		Vec3 up = math_utils::cross3d(forward, right).normalized();
+
+		// Construct the LookAt view matrix
+		return Mat4(
+			right.x,				up.x,				forward.x,				0.0f,
+			right.y,				up.y,				forward.y,				0.0f,
+			right.z,				up.z,				forward.z,				0.0f,
+			-right.dot(position),	-up.dot(position),  -forward.dot(position), 1.0f
+		);
+	}
+
+
 	Mat4 projectPerspective(float near, float far, float left, float right, float top, float bottom)
 	{
 		const float n = near;
@@ -241,8 +302,40 @@ namespace mat_utils
 			);
 	}
 
-	//Mat4 projectOrthographic()
-	//{}
+	Mat4 projectOrthographic(const float& near, const float& far, const float& left, const float& right, const float& top, const float& bottom)
+	{
+		const float n = near;
+		const float f = far;
+		const float t = top;
+		const float b = bottom;
+		const float l = left;
+		const float r = right;
+		//return Mat4(
+		//	2.0f / (r - l),		0.0f,				0.0f,					0.0f,
+		//	0.0f,				2.0f / (t - b),		0.0f,					0.0f,
+		//	0.0f,				0.0f,			    -2.0f / (f - n),		0.0f,
+		//	-(r + l) / (r - l), -(t + b) / (t - b), -(f + n) / (f - n),     1.0f
+		//);
+		return Mat4(
+			2.0f / (r - l),		0.0f,				0.0f,					-(r + l) / (r - l),
+			0.0f,				2.0f / (t - b),		0.0f,					-(t + b) / (t - b),
+			0.0f,				0.0f,			    -2.0f / (f - n),		-(f + n) / (f - n),
+			0.0f,				0.0f,				0.0f,					1.0f
+		);
+	}
 
+	Mat4 projectOrthographic(const float& vertical_size, const float& aspect_ratio, const float& near, const float& far)
+	{
+		const float n = near;
+		const float f = far;
+		const float h = vertical_size / 2.0f;  // Half height of the orthographic view
+		const float w = h * aspect_ratio;      // Half width based on aspect ratio
+		return Mat4(
+			1.0f / w,			0.0f,				0.0f,					0.0f,
+			0.0f,				1.0f / h,			0.0f,					0.0f,
+			0.0f,				0.0f,				-2.0f / (f - n),		-(f + n) / (f - n),
+			0.0f,				0.0f,				0.0f,					1.0f
+		);
+	}
 
 }

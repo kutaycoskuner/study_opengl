@@ -121,6 +121,8 @@ private:
     void loadShaders();
     std::vector<const char*> loadModelPaths();
     void loadMeshData();
+
+    void generateShadowFBO();
     void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
 
     // ui
@@ -137,9 +139,16 @@ private:
 
         void drawHelper_axes(Uniforms& uni);
         void drawHelper_lightPlaceholders(Uniforms& uni);
+
+        void drawSceneNode_primitive_shadows(const Mat4& model_mat);
+
         void drawSceneNodes_primitive(Uniforms& uni);
         void drawSceneNodes_models(Uniforms& uni);
         void drawScene_skybox(Uniforms& uni);
+
+
+        void drawShadowMap();
+
         void drawFramebuffer(int display_w, int display_h);
 
     void updateScene();
@@ -193,8 +202,12 @@ private:
     unsigned int rbo; // render buffer object   || render buffer
     unsigned int screen_colortexture;
 
+    // shadow fbo
+    std::vector<unsigned int> shadow_fbo;
+    std::vector<unsigned int> shadow_maps;
+
     // anti-aliasing
-    unsigned int sample_count = 1   ;
+    unsigned int sample_count = 1;
     unsigned int fbo_msaa;
     unsigned int rbo_msaa;
     unsigned int colorbuffer_msaa;
@@ -216,7 +229,9 @@ private:
     // temporary
     unsigned int msaa_width     = 800;
     unsigned int msaa_height    = 600;
+    int display_width           = 800;
+    int display_height          = 600;
 
-
+    float dimension = 10.0f;
 
 };

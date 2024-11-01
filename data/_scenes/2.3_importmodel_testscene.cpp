@@ -17,7 +17,6 @@ void ImportModelTestScene::loadData()
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
 
-
 	// --- define lights
 	// directional
 	directional_lights.push_back(PredefSceneLights::d_light);
