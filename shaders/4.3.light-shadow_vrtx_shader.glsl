@@ -1,25 +1,26 @@
 #version 330 core
-layout (location = 0) in vec3 in_pos;
+layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
-layout (location = 2) in vec2 in_texcoords;
+layout (location = 2) in vec2 in_tex_coords;
 
 out VS_OUT {
-    vec3 v_world_pos;
-    vec3 v_normal;
-    vec2 v_texcoords;
-    vec4 v_lightspace_pos;
+    vec3 world_position;
+    vec3 normal;
+    vec2 tex_coords;
+    vec4 light_space_position;
 } vs_out;
 
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 model;
-uniform mat4 lightSpaceMatrix;
+uniform mat4 world_mat;
+uniform mat4 projection_mat;
+uniform mat4 view_mat;
+uniform mat4 light_space_matrix;
 
 void main()
 {    
-    vs_out.v_world_pos = vec3(model * vec4(in_pos, 1.0));
-    vs_out.v_normal = transpose(inverse(mat3(model))) * in_normal;
-    vs_out.v_texcoords = in_texcoords;
-    vs_out.v_lightspace_pos = lightSpaceMatrix * vec4(vs_out.v_world_pos, 1.0);
-    gl_Position = projection * view * vec4(vs_out.v_world_pos, 1.0);
+    vs_out.world_position         = vec3(world_mat * vec4(in_position, 1.0));
+    vs_out.normal                 = transpose(inverse(mat3(world_mat))) * in_normal;
+    vs_out.tex_coords             = in_tex_coords;
+    vs_out.light_space_position   = light_space_matrix * vec4(vs_out.world_position, 1.0);
+    
+    gl_Position                     = projection_mat * view_mat * vec4(vs_out.world_position, 1.0);
 }

@@ -102,7 +102,7 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 	{
 	.color = std::string("textures/ambientcg/planks023a_2k/Planks023a_2K-JPG_Color.jpg")
 	//,.roughness = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg")
-	,.specular = std::string("textures/ambientcg/planks023b_2a/Planks023a_2K-JPG_Roughness.jpg")
+	,.specular = std::string("textures/ambientcg/planks023a_2k/Planks023a_2K-JPG_Roughness.jpg")
 	//,.normal 	= std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg")
 	}
 },

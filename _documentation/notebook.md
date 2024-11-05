@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- graphtoy graphviz tool
+    - https://graphtoy.com/
+
 - tut: ci/cd github actions / workflow / events
     - https://www.youtube.com/watch?v=R8_veQiYBjI&list=PLy7NrYWoggjzSIlwxeBbcgfAdYoxCIrM2
 

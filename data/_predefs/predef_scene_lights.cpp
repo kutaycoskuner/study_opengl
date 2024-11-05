@@ -6,11 +6,12 @@
 // ----- Data
 // ----------------------------------------------------------------------------
 DirectionalLight PredefSceneLights::d_light = {
-	.direction = Vec3(-1.0f, -0.8f, -0.2f)
-	,.ambient = Vec3(0.08f, .08f, 0.08f)
-	,.diffuse = Vec3(0.8f, 0.8f, 0.8f)
-	,.specular = Vec3(1.0f, 1.0f, 1.0f)
-	,.brightness = 0.4f
+	.position		= Vec3(10.0f, 10.0f, 10.0f)
+	,.direction		= Vec3(-1.0f, -0.8f, -0.2f)
+	,.ambient		= Vec3(0.08f, .08f, 0.08f)
+	,.diffuse		= Vec3(0.8f, 0.8f, 0.8f)
+	,.specular		= Vec3(1.0f, 1.0f, 1.0f)
+	,.brightness	= 0.4f
 };
 
 PointLight PredefSceneLights::p_light = {

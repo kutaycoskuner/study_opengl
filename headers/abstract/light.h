@@ -12,7 +12,7 @@
 // ----- abstract
 // ----------------------------------------------------------------------------
 struct DirectionalLight {
-    
+    Vec3 position;
     Vec3 direction;
 
     Vec3 ambient;

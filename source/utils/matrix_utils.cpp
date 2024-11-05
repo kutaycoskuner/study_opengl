@@ -226,7 +226,7 @@ namespace mat_utils
 			: right.normalized();
 
 		// Recalculate the orthogonal up vector (y axis)
-		Vec3 up = math_utils::cross3d(right, direction).normalized();
+		Vec3 up = math_utils::cross3d(right, direction);
 
 		//return Mat4(
 		//	right.x,	right.y,	right.z,	-position.x,
@@ -240,7 +240,7 @@ namespace mat_utils
 			right.x,	 right.y,		right.z,	 -right.dot(position),
 			up.x,		 up.y,			up.z,		 -up.dot(position),
 			direction.x, direction.y,	direction.z, -direction.dot(position),
-			0.0f,	 0.0f, 0.0f,	    1.0f
+			0.0f,		 0.0f,		    0.0f,	     1.0f
 		);
 
 		// row major
@@ -252,23 +252,23 @@ namespace mat_utils
 		);
 	}
 
-	Mat4 lookAtDirection(const Vec3& position, const Vec3& direction, const Vec3& world_up)
+	Mat4 lookAtDirection(const Vec3& position, const Vec3& in_direction, const Vec3& world_up)
 	{
 		// Normalize the direction vector to get the forward (z) axis
-		Vec3 forward = direction.normalized();
+		Vec3 direction = -in_direction.normalized();
 
 		// Calculate the right (x) axis as the cross product of world_up and forward
-		Vec3 right = math_utils::cross3d(world_up, forward).normalized();
+		Vec3 right = math_utils::cross3d(direction, world_up).normalized();
 
 		// Recalculate the orthogonal up vector (y axis)
-		Vec3 up = math_utils::cross3d(forward, right).normalized();
+		Vec3 up = math_utils::cross3d(right, direction);
 
 		// Construct the LookAt view matrix
 		return Mat4(
-			right.x,				up.x,				forward.x,				0.0f,
-			right.y,				up.y,				forward.y,				0.0f,
-			right.z,				up.z,				forward.z,				0.0f,
-			-right.dot(position),	-up.dot(position),  -forward.dot(position), 1.0f
+			right.x,				right.y,			right.z,			-right.dot(position),
+			up.x,					up.y,				up.z,				-up.dot(position),
+			direction.x,			direction.y,		direction.z,		-direction.dot(position),
+			0.0f,					0.0f,				0.0f,				1.0f
 		);
 	}
 

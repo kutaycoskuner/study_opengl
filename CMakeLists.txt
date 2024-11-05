@@ -233,6 +233,10 @@ set(shaderFiles
     "${shader_dir_full}/4.1.blinnphong_vrtx_shader.glsl"
     "${shader_dir_full}/4.2.gamma_frag_shader.glsl"
     "${shader_dir_full}/4.2.gamma_vrtx_shader.glsl"
+    "${shader_dir_full}/4.3.light-shadow_frag_shader.glsl"
+    "${shader_dir_full}/4.3.light-shadow_vrtx_shader.glsl"
+    "${shader_dir_full}/4.3.shadowmap_frag_shader.glsl"
+    "${shader_dir_full}/4.3.shadowmap_vrtx_shader.glsl"
 )
 
 

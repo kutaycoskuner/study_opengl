@@ -116,9 +116,19 @@
     - overlay test
     - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
-    - shadow
     - add light bilboards
     - debug kodu
+
+- [0.90.2] add shadow render, refining
+    - 05-Nov-2024
+        - add displays and problems
+        - pcf on jagged shadow lines
+        - add texture type of depth map from repeat to clamp
+        - add peter panning
+        - add shadow bias
+    - 04-Nov-2024
+        - wip light-shadow shader derviation from multiple lights   
+        - cmake update for new shaders
 
 - [0.90.1] add shadow depth map
     - 01-Nov-2024

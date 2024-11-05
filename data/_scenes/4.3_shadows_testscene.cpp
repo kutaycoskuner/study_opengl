@@ -21,7 +21,7 @@ void ShadowsTestScene::loadData()
 	// --- define lights
 	// directional
 	directional_lights.push_back(PredefSceneLights::d_light);
-	//directional_lights[0].brightness = .6f;
+	directional_lights[0].brightness = 1.0f;
 
 
 	// point6
@@ -53,7 +53,7 @@ void ShadowsTestScene::loadData()
 
 	predefined_scene_elements[0].texture_name	= "out_planks023a";
 	predefined_scene_elements[0].transform		= {
-			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, -0.85f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(50.0f, 0.2f, 50.0f)
 	};
@@ -63,7 +63,7 @@ void ShadowsTestScene::loadData()
 	predefined_scene_elements[0].tiling_factor = 4.0f;
 
 	predefined_scene_elements[1].transform = {
-			Vec3(0.0f, 1.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
 			//Vec3(0.0f, 0.0f, -4.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
@@ -71,7 +71,7 @@ void ShadowsTestScene::loadData()
 	predefined_scene_elements[1].shader_name = "light-shadow";
 
 	predefined_scene_elements[2].transform = {
-		Vec3(3.0f, 1.0f, 3.0f),
+		Vec3(3.0f, 0.0f, 3.0f),
 		//Vec3(0.0f, 0.0f, 4.0f),
 		Vec3(0.0f, -48.0f, 0.0f),
 		//Vec3(0.0f, 0.0f, 0.0f),
@@ -81,7 +81,7 @@ void ShadowsTestScene::loadData()
 
 
 	predefined_scene_elements[3].transform = {
-	Vec3(-2.0f, 1.0f, 4.0f),
+	Vec3(-2.0f, 0.0f, 4.0f),
 	Vec3(0.0f, -28.0f, 0.0f),
 	Vec3(1.5f, 1.5f, 1.5f)
 	};
@@ -127,6 +127,20 @@ void ShadowsTestScene::update() {
 // --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
 	const float pi = 3.141592f;
+
+	//directional_lights[0].position = Vec3(
+	//	10.0f * cos(scene_state.time),
+	//	8.0f,
+	//	//2.0f  * (((sin(scene_state.time) + 1.0f) / 2.0f) + 5.0f),
+	//	10.0f * sin(scene_state.time)
+	//);
+
+
+	//Vec3 origin = (0.0f, 0.0f, 0.0f);
+	//directional_lights[0].direction = (origin - directional_lights[0].position);
+
+	spot_lights[0].position = directional_lights[0].position;
+
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		// change light position

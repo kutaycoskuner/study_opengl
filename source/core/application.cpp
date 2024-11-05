@@ -158,17 +158,21 @@ bool Application::initialize(const ConfigData& config)
 	glGenFramebuffers(1, &depthMapFBO);
 	shadow_fbo.push_back(depthMapFBO);  // Store FBO ID
 
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
 	unsigned int depthMap;
 	glGenTextures(1, &depthMap);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		shadowmap_resolution_x, shadowmap_resolution_y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float border_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+
 	shadow_maps.push_back(depthMap);
 
 	// Enable drawing to the back buffer
@@ -1112,33 +1116,46 @@ void Application::drawShadowMap()
 	float near_plane = 0.1f, far_plane = 100.0f;
 	float dim = dimension;
 	Mat4 light_projection = mat_utils::projectOrthographic(near_plane, far_plane, -dim, dim, dim, -dim);
-	Camera cam = active_scene->cameras[0];
 	//light_projection = mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
 
-	Mat4 light_view = mat_utils::lookAtTarget(
-		Vec3(10.0f, 10.0f, 10.0f),					// position
+	Vec3 p = active_scene->directional_lights[0].position;
+	Vec3 d = active_scene->directional_lights[0].direction;
+	//Mat4 light_view = mat_utils::lookAtTarget(
+	//	Vec3(p.x, p.y, p.z),						// position
+	//	//Vec3(-1.0f, -0.8f, -0.2f),					// direction
+	//	Vec3(0.0f, 0.0f, 0.0f),						// target
+	//	world_up									// world up
+	//);
+	Mat4 light_view = mat_utils::lookAtDirection(
+		Vec3(p.x, p.y, p.z),					    // position
 		//Vec3(-1.0f, -0.8f, -0.2f),					// direction
-		Vec3(0.0f, 0.0f, 0.0f),						// target
+		Vec3(d.x, d.y, d.z),						// target
 		world_up									// world up
 	);
 
+
 	Mat4 light_space_matrix = light_projection * light_view;
+
+	m_light_space_matrix.push_back(light_space_matrix);
 
 	this->active_shader = shaders.at("shadowmap");
 
 	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
+
 	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_FRONT);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 
 	GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
-	GLfloat* ptr_light_space_matrix = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
-	glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_matrix);
+	GLfloat* ptr_light_space_mat    = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
+	ptr_light_space_matrix.push_back(ptr_light_space_mat);
+	glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_mat);
 
 
 
-	glViewport(0, 0, 1024, 1024);
+	glViewport(0, 0, shadowmap_resolution_x, shadowmap_resolution_y);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
 	glEnable(GL_DEPTH_TEST);
@@ -1147,6 +1164,7 @@ void Application::drawShadowMap()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	drawSceneNode_primitive_shadows(light_space_matrix);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glCullFace(GL_BACK);
 	//Mat4 light_view		  
 	//glViewport(0, 0, 2048, 2048);
 	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_maps[0]);
@@ -1271,6 +1289,10 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setBool("gamma", active_scene->scene_state.gamma);
 		active_shader->setInt("num_point_lights", active_scene->point_lights.size());
 
+		// assign shadow
+		active_shader->setMat4("light_space_matrix", m_light_space_matrix[0]);
+
+
 		// directional light
 		setDirectionalLightParameters(uni);
 		// point light
@@ -1289,6 +1311,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setInt("material.diffuse_map1", 0);
 		active_shader->setInt("material.specular_map1", 1);
 		active_shader->setInt("material.emission_map1", 2);
+		active_shader->setInt("shadow_map", 3);
 		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
 		active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 		float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
@@ -1321,6 +1344,12 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			: glBindTexture(GL_TEXTURE_2D, 0);
 
 
+		glActiveTexture(GL_TEXTURE3);
+		shadow_maps.size() > 0 ?
+			glBindTexture(GL_TEXTURE_2D, shadow_maps[0])
+			: glBindTexture(GL_TEXTURE_2D, 0);
+		
+		
 		// ----- draw 1: draw element
 		// -------------------------------------------------------------------------------------
 		std::string name = active_scene->predefined_scene_elements[i].vertex_array_name;
@@ -1379,6 +1408,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			active_shader->setInt("material.texture_diffuse1", 0);
 			active_shader->setInt("material.texture_specular1", 1);
 			active_shader->setInt("material.texture_emissive1", 2);
+			active_shader->setInt("shadow_map", 3);
 			active_shader->setFloat("material.emission_factor", ss.emission_factor);
 			active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 

@@ -205,6 +205,8 @@ private:
     // shadow fbo
     std::vector<unsigned int> shadow_fbo;
     std::vector<unsigned int> shadow_maps;
+    std::vector<GLfloat*>     ptr_light_space_matrix;
+    std::vector<Mat4>         m_light_space_matrix;
 
     // anti-aliasing
     unsigned int sample_count = 1;
@@ -231,6 +233,8 @@ private:
     unsigned int msaa_height    = 600;
     int display_width           = 800;
     int display_height          = 600;
+    int shadowmap_resolution_x  = 1024;
+    int shadowmap_resolution_y  = 1024;
 
     float dimension = 10.0f;
 
