@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- graphtoy graphviz tool
+    - https://graphtoy.com/
+
 - tut: ci/cd github actions / workflow / events
     - https://www.youtube.com/watch?v=R8_veQiYBjI&list=PLy7NrYWoggjzSIlwxeBbcgfAdYoxCIrM2
 
@@ -508,8 +511,9 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - <adding new scene yeni sahne ekleme>
     - headers/data/scenes.h uzerinde yeni sahneyi ekle
     - data/scenes/<scene>.cpp uzerinde yeni sahneyi yarat
-    - application da loadscene daa fonksiyonuna scene i numarasiyla ekle
-    - ui a da ekle
+    - application da loadscenedata fonksiyonuna scene i numarasiyla ekle
+    - ui a da ekle (Application::updateUI())
+    - cmake icine de adresi ekle
 
 - <adding new shader>
     - shaders/<new>.glsl yeni shader ekle

@@ -161,6 +161,82 @@ set(dataScenes
     "${data_dir_full}/_scenes/3.9_geoshader_testscene.cpp"
     "${data_dir_full}/_scenes/4.1.blinnphong_testscene.cpp"
     "${data_dir_full}/_scenes/4.2_gammacorrection_testscene.cpp"
+    "${data_dir_full}/_scenes/4.3_shadows_testscene.cpp"
+)
+
+set(shaderFiles
+    "${shader_dir_full}/1.0.3d_frag_shader.glsl"
+    "${shader_dir_full}/1.0.3d_vrtx_shader.glsl"
+    "${shader_dir_full}/1.1.axis-x_frag_shader.glsl"
+    "${shader_dir_full}/1.1.axis-x_vrtx_shader.glsl"
+    "${shader_dir_full}/1.1.axis-z_frag_shader.glsl"
+    "${shader_dir_full}/1.1.axis-z_vrtx_shader.glsl"
+    "${shader_dir_full}/1.2.diffuse_frag_shader.glsl"
+    "${shader_dir_full}/1.2.diffuse_vrtx_shader.glsl"
+    "${shader_dir_full}/1.3.green_frag_shader.glsl"
+    "${shader_dir_full}/1.3.green_vrtx_shader.glsl"
+    "${shader_dir_full}/1.4.pink_frag_shader.glsl"
+    "${shader_dir_full}/1.4.pink_vrtx_shader.glsl"
+    "${shader_dir_full}/2.0.phong_lit_frag_shader.glsl"
+    "${shader_dir_full}/2.0.phong_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/2.1.lightmap_lit_frag_shader.glsl"
+    "${shader_dir_full}/2.1.lightmap_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/2.2.lightcaster-directional_lit_frag_shader.glsl"
+    "${shader_dir_full}/2.2.lightcaster-directional_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/2.2.lightcaster-point_lit_frag_shader.glsl"
+    "${shader_dir_full}/2.2.lightcaster-point_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/2.2.lightcaster-spot_lit_frag_shader.glsl"
+    "${shader_dir_full}/2.2.lightcaster-spot_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/2.3.multiplelights_lit_frag_shader.glsl"
+    "${shader_dir_full}/2.3.multiplelights_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/3.0.depthtesting_lit_frag_shader.glsl"
+    "${shader_dir_full}/3.0.depthtesting_lit_vrtx_shader.glsl"
+    "${shader_dir_full}/3.1.stenciltesting02_frag_shader.glsl"
+    "${shader_dir_full}/3.1.stenciltesting02_vrtx_shader.glsl"
+    "${shader_dir_full}/3.1.stenciltesting_frag_shader.glsl"
+    "${shader_dir_full}/3.1.stenciltesting_vrtx_shader.glsl"
+    "${shader_dir_full}/3.10.instance02_frag_shader.glsl"
+    "${shader_dir_full}/3.10.instance02_vrtx_shader.glsl"
+    "${shader_dir_full}/3.10.instance_frag_shader.glsl"
+    "${shader_dir_full}/3.10.instance_vrtx_shader.glsl"
+    "${shader_dir_full}/3.2.blending_frag_shader.glsl"
+    "${shader_dir_full}/3.2.blending_vrtx_shader.glsl"
+    "${shader_dir_full}/3.4.framebuffer_frag_shader.glsl"
+    "${shader_dir_full}/3.4.framebuffer_vrtx_shader.glsl"
+    "${shader_dir_full}/3.5.cubemap_frag_shader.glsl"
+    "${shader_dir_full}/3.5.cubemap_vrtx_shader.glsl"
+    "${shader_dir_full}/3.6.cubemaplit_frag_shader.glsl"
+    "${shader_dir_full}/3.6.cubemaplit_vrtx_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-blue_frag_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-blue_vrtx_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-green_frag_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-green_vrtx_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-red_frag_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-red_vrtx_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-yellow_frag_shader.glsl"
+    "${shader_dir_full}/3.8.advglsl-yellow_vrtx_shader.glsl"
+    "${shader_dir_full}/3.9.axes_frag_shader.glsl"
+    "${shader_dir_full}/3.9.axes_geo_shader.glsl"
+    "${shader_dir_full}/3.9.axes_vrtx_shader.glsl"
+    "${shader_dir_full}/3.9.explode_frag_shader.glsl"
+    "${shader_dir_full}/3.9.explode_geo_shader.glsl"
+    "${shader_dir_full}/3.9.explode_vrtx_shader.glsl"
+    "${shader_dir_full}/3.9.geo_frag_shader.glsl"
+    "${shader_dir_full}/3.9.geo_geo_shader.glsl"
+    "${shader_dir_full}/3.9.geo_vrtx_shader.glsl"
+    "${shader_dir_full}/3.9.normal_frag_shader.glsl"
+    "${shader_dir_full}/3.9.normal_geo_shader.glsl"
+    "${shader_dir_full}/3.9.normal_vrtx_shader.glsl"
+    "${shader_dir_full}/4.1.blinnphong2_frag_shader.glsl"
+    "${shader_dir_full}/4.1.blinnphong2_vrtx_shader.glsl"
+    "${shader_dir_full}/4.1.blinnphong_frag_shader.glsl"
+    "${shader_dir_full}/4.1.blinnphong_vrtx_shader.glsl"
+    "${shader_dir_full}/4.2.gamma_frag_shader.glsl"
+    "${shader_dir_full}/4.2.gamma_vrtx_shader.glsl"
+    "${shader_dir_full}/4.3.light-shadow_frag_shader.glsl"
+    "${shader_dir_full}/4.3.light-shadow_vrtx_shader.glsl"
+    "${shader_dir_full}/4.3.shadowmap_frag_shader.glsl"
+    "${shader_dir_full}/4.3.shadowmap_vrtx_shader.glsl"
 )
 
 
@@ -274,11 +350,12 @@ source_group(TREE ${data_dir_full}/_maps PREFIX "data/_maps" FILES ${dataMaps})
 source_group(TREE ${data_dir_full}/_paths PREFIX "data/_paths" FILES ${dataPaths})
 source_group(TREE ${data_dir_full}/_predefs PREFIX "data/_predefs" FILES ${dataPredefs})
 source_group(TREE ${data_dir_full}/_scenes PREFIX "data/_scenes" FILES ${dataScenes})
+source_group(TREE ${shader_dir_full} PREFIX "shaders" FILES ${shaderFiles})
+
 
 # ----------------------------------------------------------------------------------------
 #               Organize Header Files into Folders
 # ----------------------------------------------------------------------------------------
-
 source_group(TREE ${CMAKE_SOURCE_DIR}/headers/abstract PREFIX "headers/abstract" FILES ${abstractHeaders})
 source_group(TREE ${CMAKE_SOURCE_DIR}/headers/core PREFIX "headers/core" FILES ${coreHeaders})
 source_group(TREE ${CMAKE_SOURCE_DIR}/headers/data PREFIX "headers/data" FILES ${dataHeaders})
@@ -308,6 +385,7 @@ add_executable(
     ${dataPredefs}
     ${dataScenes}
     # Adding headers here doesn't affect compilation, but makes them appear in the solution explorer
+    ${shaderFiles}
     ${abstractHeaders}
     ${coreHeaders}
     ${dataHeaders}

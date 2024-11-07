@@ -76,6 +76,13 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 	,.emission = std::string("textures/test_2k_emission.jpg")
 	}
 },
+{"linegrid_2k_white",
+	{
+	.color = std::string("textures/linegrid_2k_16d_white_color.png")
+	,.specular = std::string("textures/kraftpaper01_2k_roughness.jpg")
+	,.emission = std::string("textures/test_2k_emission.jpg")
+	}
+},
 {"out_container2",
 	{
 	.color = std::string("textures/out_container2_diffuse.png")
@@ -85,9 +92,25 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 },
 {"out_planks023b",
 	{
-	.color 		= std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Color.jpg")
+	.color = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Color.jpg")
 	//,.roughness = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg")
-	,.specular  = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Specular.jpg")
+	,.specular = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg")
+	//,.normal 	= std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg")
+	}
+},
+{"out_planks023a",
+	{
+	.color = std::string("textures/ambientcg/planks023a_2k/Planks023a_2K-JPG_Color.jpg")
+	//,.roughness = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg")
+	,.specular = std::string("textures/ambientcg/planks023a_2k/Planks023a_2K-JPG_Roughness.jpg")
+	//,.normal 	= std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg")
+	}
+},
+{"out_planks023a",
+	{
+	.color = std::string("textures/ambientcg/planks023a_2k/Planks023A_2K-JPG_Color.jpg")
+	//,.roughness = std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_Roughness.jpg")
+	,.specular = std::string("textures/ambientcg/planks023a_2k/Planks023A_2K-JPG_Roughness.jpg")
 	//,.normal 	= std::string("textures/ambientcg/planks023b_2k/Planks023B_2K-JPG_NormalGL.jpg")
 	}
 },

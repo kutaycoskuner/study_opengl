@@ -135,7 +135,15 @@ const std::vector<ShaderPaths> PathAfterDirectory::shader_paths =
 	}
 	,{
 		std::string("4.2.gamma_vrtx_shader.glsl")
-		, std::string("4.2.gamma_frag_shader.glsl")
+		,std::string("4.2.gamma_frag_shader.glsl")
+	}
+	,{
+		std::string("4.3.shadowmap_vrtx_shader.glsl")
+		,std::string("4.3.shadowmap_frag_shader.glsl")
+	}
+	,{
+		std::string("4.3.light-shadow_vrtx_shader.glsl")
+		,std::string("4.3.light-shadow_frag_shader.glsl")
 	}
 };
 

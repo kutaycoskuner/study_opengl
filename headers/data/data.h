@@ -136,6 +136,7 @@ struct PrimitiveSceneNode
 	Transform		transform;
 	std::string		shader_name;
 	std::string		texture_name;
+	float			tiling_factor = 1.0f;
 	Material		material;
 	ElementBools	element_bools;
 };

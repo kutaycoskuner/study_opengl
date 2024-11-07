@@ -73,6 +73,13 @@ namespace mat_utils
 	Mat4 rotateXYZ(const float& angleInRadians, const Vec3& axis);
 	Mat4 projectPerspective(float fov_inRadians, float aspect_ratio, float near, float far);
 	Mat4 projectPerspective(float near, float far, float left, float right, float top, float bottom);
+
+	Mat4 lookAtTarget(const Vec3& position, const Vec3& target, const Vec3& world_up);
+	Mat4 lookAtDirection(const Vec3& position, const Vec3& direction, const Vec3& world_up);
+
+
+	Mat4 projectOrthographic(const float& vertical_size, const float& aspect_ratio, const float& near, const float& far);
+	Mat4 projectOrthographic(const float& near, const float& far, const float& left, const float& right, const float& top, const float& bottom);
 }
 
 namespace vec_utils
