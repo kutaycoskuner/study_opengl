@@ -119,6 +119,11 @@
     - add light bilboards
     - debug kodu
 
+- [0.90.3] fix dynamic shadow problem
+    - 07-Nov-2024 
+        - add: display
+        - fix: matrix push on shadow maps
+
 - [0.90.2] add shadow render, refining
     - 05-Nov-2024
         - add displays and problems

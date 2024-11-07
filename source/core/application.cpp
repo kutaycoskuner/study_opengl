@@ -855,7 +855,11 @@ void Application::updateUI()
 		ImGui::SliderFloat("Camera Pos Z", &this->active_scene->cameras[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+
+		// Debug
+		//ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::SliderFloat("Osman", &this->active_scene->directional_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+
 
 		const char* animate_button_name =
 			this->active_scene->scene_state.animate ? "Stop" : "Play";
@@ -1118,53 +1122,92 @@ void Application::drawShadowMap()
 	Mat4 light_projection = mat_utils::projectOrthographic(near_plane, far_plane, -dim, dim, dim, -dim);
 	//light_projection = mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
 
-	Vec3 p = active_scene->directional_lights[0].position;
-	Vec3 d = active_scene->directional_lights[0].direction;
+	const Vec3& p = active_scene->directional_lights[0].position;
+	const Vec3& d = active_scene->directional_lights[0].direction;
+
 	//Mat4 light_view = mat_utils::lookAtTarget(
 	//	Vec3(p.x, p.y, p.z),						// position
-	//	//Vec3(-1.0f, -0.8f, -0.2f),					// direction
-	//	Vec3(0.0f, 0.0f, 0.0f),						// target
+	//	//Vec3(-1.0f, -0.8f, -0.2f),				// direction
+	//	Vec3(0.0f, 0.0f, 0.0f),					// target
 	//	world_up									// world up
 	//);
+
 	Mat4 light_view = mat_utils::lookAtDirection(
-		Vec3(p.x, p.y, p.z),					    // position
+		p,					    // position
 		//Vec3(-1.0f, -0.8f, -0.2f),					// direction
-		Vec3(d.x, d.y, d.z),						// target
+		d,											// direction
 		world_up									// world up
 	);
 
 
 	Mat4 light_space_matrix = light_projection * light_view;
 
-	m_light_space_matrix.push_back(light_space_matrix);
+	if (m_light_space_matrix.size() == 0)
+	{
+		m_light_space_matrix.push_back(light_space_matrix);
+	}
+	else
+	{
+		m_light_space_matrix[0] = light_space_matrix;
+	}
+	
 
 	this->active_shader = shaders.at("shadowmap");
 
+	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
+
+	//glEnable(GL_DEPTH_TEST);
+	//glCullFace(GL_FRONT);
+	//glDrawBuffer(GL_NONE);
+	//glReadBuffer(GL_NONE);
+
+	//GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
+	//GLfloat* ptr_light_space_mat    = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
+	//glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_mat);
+
+
+
+	//glViewport(0, 0, shadowmap_resolution_x, shadowmap_resolution_y);
+	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
+	//glEnable(GL_DEPTH_TEST);
+	//glDrawBuffer(GL_NONE);
+	//glReadBuffer(GL_NONE);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//drawSceneNode_primitive_shadows(light_space_matrix);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glCullFace(GL_BACK);
+
+
+	// Bind the framebuffer and set up for depth rendering
 	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
 
+	// Enable depth testing and prepare the framebuffer for rendering
 	glEnable(GL_DEPTH_TEST);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_FRONT);  // Optional: setting cull face to render only front faces for shadow mapping
+
+	// Ensure no color buffer is drawn to
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 
-	GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
-	GLfloat* ptr_light_space_mat    = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
-	ptr_light_space_matrix.push_back(ptr_light_space_mat);
-	glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_mat);
-
-
-
+	// Set viewport and clear depth buffer
 	glViewport(0, 0, shadowmap_resolution_x, shadowmap_resolution_y);
-	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
-	glEnable(GL_DEPTH_TEST);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
 	glClear(GL_DEPTH_BUFFER_BIT);
+
+	// Set the uniform for the light space matrix
+	GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
+	GLfloat* ptr_light_space_mat = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
+	glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_mat);
+	ptr_light_space_matrix.push_back(ptr_light_space_mat);
+
+	// Render the scene
 	drawSceneNode_primitive_shadows(light_space_matrix);
+
+	// Unbind the framebuffer to reset rendering to the default framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glCullFace(GL_BACK);
+	glCullFace(GL_BACK);  // Reset culling to default if needed
 	//Mat4 light_view		  
 	//glViewport(0, 0, 2048, 2048);
 	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_maps[0]);

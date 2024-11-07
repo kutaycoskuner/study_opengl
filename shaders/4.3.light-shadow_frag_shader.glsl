@@ -102,7 +102,7 @@ float ShadowCalculation(vec4 light_space_position, float shadow_bias) {
     float current_depth = proj_coords.z;
 
 //    float bias = 0.005f;
-    shadow_bias = 0.001;
+//     shadow_bias = 0.005f;
     // float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
     // compare depths for machine to comprehend shadow
     float shadow = current_depth - shadow_bias > closest_depth_sample ? 0.6 : 0.0;
@@ -133,7 +133,7 @@ vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir
     vec3 specular = light.specular * spec * surface.specular;
 
     // Apply shadow calculation
-    float shadow_bias = max(0.05 * (1.0 - dot(normalize(surface.normal), -light_dir)), 0.005);
+    float shadow_bias = max(0.005 * (1.0 - dot(normalize(surface.normal), -light_dir)), 0.0005);
     float shadow = ShadowCalculation(fs_in.light_space_position, shadow_bias);
 
     // Combine results and apply brightness, factoring in shadow

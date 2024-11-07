@@ -71,7 +71,7 @@ void ShadowsTestScene::loadData()
 	predefined_scene_elements[1].shader_name = "light-shadow";
 
 	predefined_scene_elements[2].transform = {
-		Vec3(3.0f, 0.0f, 3.0f),
+		Vec3(3.0f, 2.0f, 3.0f),
 		//Vec3(0.0f, 0.0f, 4.0f),
 		Vec3(0.0f, -48.0f, 0.0f),
 		//Vec3(0.0f, 0.0f, 0.0f),
@@ -105,11 +105,24 @@ void ShadowsTestScene::loadData()
 	}
 
 	// camera pos
-	cameras[0].position		= Vec3(-8.38f, 10.284f, 8.462f);
+	cameras[0].position		= Vec3(-7.3f, 18.284f, -13.262f);
+	//cameras[0].position = Vec3(0.0f, 10.0f, 10.0f);
 	cameras[0].pitch_rad	= 0.785f;
 	cameras[0].yaw_rad		= -1.120f;
 
 	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
+
+	directional_lights[0].position = Vec3(
+		//3.0f,
+		10.0f,
+		//10.0f * cos(scene_state.time),
+		8.0f,
+		//2.0f  * (((sin(scene_state.time) + 1.0f) / 2.0f) + 5.0f),
+		//10.0f * sin(scene_state.time)
+		//5.0f
+		10.0f
+	);
+
 
 }
 
@@ -128,18 +141,25 @@ void ShadowsTestScene::update() {
 	float distance_multiplier = 3.0f;
 	const float pi = 3.141592f;
 
-	//directional_lights[0].position = Vec3(
-	//	10.0f * cos(scene_state.time),
-	//	8.0f,
-	//	//2.0f  * (((sin(scene_state.time) + 1.0f) / 2.0f) + 5.0f),
-	//	10.0f * sin(scene_state.time)
-	//);
+	directional_lights[0].position = Vec3(
+		//3.0f,
+		//10.0f,
+		10.0f * cos(scene_state.time),
+		8.0f,
+		//2.0f  * (((sin(scene_state.time) + 1.0f) / 2.0f) + 5.0f),
+		10.0f * sin(scene_state.time)
+		//5.0f
+		//10.0f
+		);
+	spot_lights[0].position = directional_lights[0].position;
+
+	//directional_lights[0].position = Vec3(10.0f, 8.0f, 10.0f);
+	directional_lights[0].direction = -(directional_lights[0].position - Vec3(0.0f, 0.0f, 0.0f));
 
 
 	//Vec3 origin = (0.0f, 0.0f, 0.0f);
 	//directional_lights[0].direction = (origin - directional_lights[0].position);
 
-	spot_lights[0].position = directional_lights[0].position;
 
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
