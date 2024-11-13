@@ -180,7 +180,19 @@ bool Application::initialize(const ConfigData& config)
 	// Enable reading from the front buffer
 	//glReadBuffer(GL_FRONT);
 
-
+	// 4.4 point cubemap
+	// ---------------------------------------------------------
+	unsigned int shadow_depth_cubemap;
+	glGenTextures(1, &shadow_depth_cubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_depth_cubemap);
+	for (unsigned int i = 0; i < 6; ++i)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+			shadowmap_resolution_x, shadowmap_resolution_y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	// texture for framebuffer
 	// ---------------------------------------------------------
@@ -297,6 +309,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 12)	active_scene = new BlinnPhongTestScene;
 	else if (scene_number == 13)	active_scene = new GammaCorrectionTestScene;
 	else if (scene_number == 14)	active_scene = new ShadowsTestScene;
+	else if (scene_number == 15)	active_scene = new PointShadowsTestScene;
 
 
 	// ----- set cubemap
@@ -804,23 +817,12 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Shadows", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 14 });
 			}
+			if (ImGui::MenuItem("Point Light Shadows", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 15 });
+			}
 
 			ImGui::EndMenu();
 		}
-
-		//if (scene_number == 0)			active_scene = new TestScene;
-		//else if (scene_number == 1)		active_scene = new MultipleLightsTestScene;
-		//else if (scene_number == 2)		active_scene = new ImportModelTestScene;
-		//else if (scene_number == 3)		active_scene = new OutlinerTestScene;
-		//else if (scene_number == 4)		active_scene = new BlendingTestScene;
-		//else if (scene_number == 5)		active_scene = new FaceCullingTestScene;
-		//else if (scene_number == 6)		active_scene = new FrameBufferTestScene;
-		//else if (scene_number == 7)		active_scene = new CubemapTestScene;
-		//else if (scene_number == 8)		active_scene = new AdvancedGLSLTestScene;
-		//else if (scene_number == 9)		active_scene = new GeoShaderTestScene;
-		//else if (scene_number == 10)	active_scene = new InstancingTestScene;
-		//else if (scene_number == 11)	active_scene = new AntiAliasingTestScene;
-
 
 		ImGui::EndMainMenuBar();
 	}
@@ -959,7 +961,11 @@ void Application::drawScene(Uniforms& uni)
 
 	int display_w, display_h;
 	glfwGetFramebufferSize(window, &display_w, &display_h);
-	drawShadowMap();
+	
+	
+	if (!active_scene->directional_lights.empty()) drawShadowMap();
+
+
 	glDrawBuffer(GL_BACK);  // Enable drawing to the back buffer
 	glReadBuffer(GL_FRONT);  // Enable reading from the front buffer
 
@@ -1115,6 +1121,40 @@ void Application::drawHelper_axes(Uniforms& uni)
 	}
 }
 
+void Application::drawShadowCubemap()
+{
+	float near = 0.1f, far = 100.0f;
+
+	Mat4 shadow_proj = mat_utils::projectPerspective(math_utils::toRadian(90.0f), 1.0f, near, far);
+
+	Vec3 light_pos = active_scene->directional_lights[0].position;
+
+	std::vector<Mat4> shadow_transforms;
+	shadow_transforms.push_back(shadow_proj *
+		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(1.0, 0.0, 0.0),		world_up));
+	shadow_transforms.push_back(shadow_proj *
+		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(-1.0, 0.0, 0.0),		world_up));
+	shadow_transforms.push_back(shadow_proj *
+		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, 1.0, 0.0),		world_up));
+	shadow_transforms.push_back(shadow_proj *
+		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, -1.0, 0.0),		world_up));
+	shadow_transforms.push_back(shadow_proj *
+		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, 0.0, 1.0),		world_up));
+	shadow_transforms.push_back(shadow_proj *
+		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, 0.0, -1.0),		world_up));
+
+	glViewport(0, 0, shadowmap_resolution_x, shadowmap_resolution_y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->active_shader = shaders.at("shadowmap-pl");
+
+	// ... send uniforms to shader (including light's far_plane value)
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps.back());
+	// ... bind other textures
+	//RenderScene();
+
+}
+
 void Application::drawShadowMap()
 {
 	float near_plane = 0.1f, far_plane = 100.0f;
@@ -1154,32 +1194,6 @@ void Application::drawShadowMap()
 
 	this->active_shader = shaders.at("shadowmap");
 
-	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
-
-	//glEnable(GL_DEPTH_TEST);
-	//glCullFace(GL_FRONT);
-	//glDrawBuffer(GL_NONE);
-	//glReadBuffer(GL_NONE);
-
-	//GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
-	//GLfloat* ptr_light_space_mat    = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
-	//glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_mat);
-
-
-
-	//glViewport(0, 0, shadowmap_resolution_x, shadowmap_resolution_y);
-	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
-	//glEnable(GL_DEPTH_TEST);
-	//glDrawBuffer(GL_NONE);
-	//glReadBuffer(GL_NONE);
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//drawSceneNode_primitive_shadows(light_space_matrix);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glCullFace(GL_BACK);
-
-
 	// Bind the framebuffer and set up for depth rendering
 	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
@@ -1208,13 +1222,7 @@ void Application::drawShadowMap()
 	// Unbind the framebuffer to reset rendering to the default framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);  // Reset culling to default if needed
-	//Mat4 light_view		  
-	//glViewport(0, 0, 2048, 2048);
-	//glBindFramebuffer(GL_FRAMEBUFFER, shadow_maps[0]);
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//ConfigureShaderAndMatrices();
-	//RenderScene();
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 void Application::drawFramebuffer(int display_w, int display_h)
@@ -1288,6 +1296,10 @@ void Application::drawSceneNode_primitive_shadows(const Mat4& model_mat)
 
 void Application::drawSceneNodes_primitive(Uniforms& uni)
 {
+	if (m_light_space_matrix.empty())
+	{
+		return;
+	}
 	// draw scene objects
 	// --------------------------------------------------------------------------
 	Camera cam = active_scene->cameras[0];

@@ -118,6 +118,19 @@
     - fix outliner first element is not outlining
     - add light bilboards
     - debug kodu
+    - nvidia api extension
+
+- [0.90.4] add point light shadows test scene
+    - 13-Nov-2024
+        - add remake point light shadows test scene
+        - add def edge cases on shadow drawing functions no directional light
+        - add cmake to new test scene and shaders
+    - 08-Nov-2024
+        - wip point lights scene
+        - add point lights test scene
+    - 07-Nov-2024 
+        - chg caption last display
+        - fix cicd name
 
 - [0.90.3] fix dynamic shadow problem
     - 07-Nov-2024 

@@ -162,6 +162,7 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.1.blinnphong_testscene.cpp"
     "${data_dir_full}/_scenes/4.2_gammacorrection_testscene.cpp"
     "${data_dir_full}/_scenes/4.3_shadows_testscene.cpp"
+    "${data_dir_full}/_scenes/4.4_point-shadows_testscene.cpp"
 )
 
 set(shaderFiles
@@ -237,6 +238,11 @@ set(shaderFiles
     "${shader_dir_full}/4.3.light-shadow_vrtx_shader.glsl"
     "${shader_dir_full}/4.3.shadowmap_frag_shader.glsl"
     "${shader_dir_full}/4.3.shadowmap_vrtx_shader.glsl"
+    "${shader_dir_full}/4.4.plight-shadow_frag_shader.glsl"
+    "${shader_dir_full}/4.4.plight-shadow_vrtx_shader.glsl"
+    "${shader_dir_full}/4.4.shadowmap-pl_frag_shader.glsl"
+    "${shader_dir_full}/4.4.shadowmap-pl_geo_shader.glsl"
+    "${shader_dir_full}/4.4.shadowmap-pl_vrtx_shader.glsl"
 )
 
 

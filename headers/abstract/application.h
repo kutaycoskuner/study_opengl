@@ -148,6 +148,7 @@ private:
 
 
         void drawShadowMap();
+        void drawShadowCubemap();
 
         void drawFramebuffer(int display_w, int display_h);
 
@@ -205,8 +206,10 @@ private:
     // shadow fbo
     std::vector<unsigned int> shadow_fbo;
     std::vector<unsigned int> shadow_maps;
+    std::vector<unsigned int> shadow_cubemaps;
     std::vector<GLfloat*>     ptr_light_space_matrix;
     std::vector<Mat4>         m_light_space_matrix;
+    std::vector<Mat4>         cubemap_light_space_matrices;
 
     // anti-aliasing
     unsigned int sample_count = 1;
@@ -229,12 +232,13 @@ private:
     Vec4        clear_color;
 
     // temporary
-    unsigned int msaa_width     = 800;
-    unsigned int msaa_height    = 600;
-    int display_width           = 800;
-    int display_height          = 600;
-    int shadowmap_resolution_x  = 1024;
-    int shadowmap_resolution_y  = 1024;
+    unsigned int    msaa_width              = 800;
+    unsigned int    msaa_height             = 600;
+    int             display_width           = 800;
+    int             display_height          = 600;
+    int             shadowmap_resolution_x  = 1024;
+    int             shadowmap_resolution_y  = 1024;
+    float           shadowmap_aspect_ratio;
 
     float dimension = 10.0f;
 

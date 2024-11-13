@@ -82,6 +82,7 @@ public:
 	static unsigned int cube_inds__pos_norm_uv[36];
 
 	static float		plane_vrts__pos_tex[30];
+	static float		plane_vrts__pos_norm_uv[48];
 	static float		quad_vrts__pos_tex[24];
 	static float		quad_vrts__pos_norm_tex[42];
 	static float		quad_vrts__pos_col[30];
@@ -156,6 +157,7 @@ public:
 	static PrimitiveSceneNode ground_platform;
 	static PrimitiveSceneNode small_plane;
 	static PrimitiveSceneNode plane;
+	static PrimitiveSceneNode plane01;
 	static PrimitiveSceneNode light_placeholder;
 	static PrimitiveSceneNode nobg_grass;
 	static PrimitiveSceneNode transparent_window;

@@ -184,7 +184,16 @@ float VertexData::cube_vrts__pos_norm_uv[] = {		  // position, normal, texture c
 	+0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,	1.0f, 0.0f,
 	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,	0.0f, 0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,	0.0f, 1.0f
+};
 
+float VertexData::plane_vrts__pos_norm_uv[] = {		// basic plane
+    // pos, normal, uv
+    -1.0f, -0.0f, -1.0f,    0.0f,  1.0f, 0.0f,	    0.0f, 0.0f,
+    -1.0f, -0.0f, +1.0f,    0.0f,  1.0f, 0.0f,	    0.0f, 1.0f,
+    +1.0f, -0.0f, +1.0f,    0.0f,  1.0f, 0.0f,	    1.0f, 1.0f,
+    -1.0f, -0.0f, -1.0f,    0.0f,  1.0f, 0.0f,	    0.0f, 0.0f,
+    +1.0f, -0.0f, +1.0f,    0.0f,  1.0f, 0.0f,	    1.0f, 1.0f,
+    +1.0f, -0.0f, -1.0f,    0.0f,  1.0f, 0.0f,	    1.0f, 0.0f,
 };
 
 unsigned int VertexData::cube_inds__pos_norm_uv[] = {

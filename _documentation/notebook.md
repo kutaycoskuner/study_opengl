@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- assembly instruction tables
+    - https://www.agner.org/optimize/instruction_tables.pdf
+
 - graphtoy graphviz tool
     - https://graphtoy.com/
 
@@ -465,6 +468,11 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <programi hangi gpu calistiriyor>
+    - ctrl + shift + esc = task manaager
+    - ctrl + tab -> performaance
+        - 
+
 - <git branch>
     - git checkout <bname>
 

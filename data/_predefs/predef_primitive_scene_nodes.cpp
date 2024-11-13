@@ -213,6 +213,27 @@ PrimitiveSceneNode PrimitiveSceneNodes::box_0_10 = {
 				)
 };
 
+PrimitiveSceneNode PrimitiveSceneNodes::plane01 = {
+	.name = "plane01"
+	,.vertex_array_name = "plane01"
+	,.transform = {
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(1.0f, 1.0f, 1.0f)
+		}
+	,.shader_name = "plight-shadow"
+	,.texture_name = ""
+	,.element_bools = ElementBools(
+					false		// wireframe_mode
+					,false		// depth testing
+					,false		// stencil testing
+					,false		// blending
+					,false		// partial render
+					,false		// is indexed
+					,true		// is triangle
+				)
+};
+
 PrimitiveSceneNode PrimitiveSceneNodes::plane = {
 	.name = "plane"
 	,.vertex_array_name = "small_plane"

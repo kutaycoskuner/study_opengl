@@ -293,13 +293,13 @@ namespace mat_utils
 	{
 		const float n = near;
 		const float f = far;
-		const float e = 1.0f / std::tan(fov_inRadians / 2);
+		const float e = 1.0f / std::tanf(fov_inRadians * 0.5f); // tan double icin tanf float icin
 		return Mat4(
 			e / aspect_ratio,	0.0f,				0.0f,					0.0f,
 			0.0f,				e,					0.0f,					0.0f,
 			0.0f,				0.0f,				(f+n)/(n-f),			(2.0f*f*n)/(n-f),
 			0.0f,				0.0f,				-1.0f,					0.0f
-			);
+		);
 	}
 
 	Mat4 projectOrthographic(const float& near, const float& far, const float& left, const float& right, const float& top, const float& bottom)
