@@ -9,6 +9,12 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- opengl cubemap docs
+    - https://www.khronos.org/opengl/wiki/Cubemap_Texture
+
+- assembly instruction tables
+    - https://www.agner.org/optimize/instruction_tables.pdf
+
 - graphtoy graphviz tool
     - https://graphtoy.com/
 
@@ -465,6 +471,11 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+- <programi hangi gpu calistiriyor>
+    - ctrl + shift + esc = task manaager
+    - ctrl + tab -> performaance
+        - 
+
 - <git branch>
     - git checkout <bname>
 
@@ -528,6 +539,10 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - <cc0>
     - san miguel
     - sponza
+
+- <unordered map>
+    - at kullandginda %100 emin olman gerekiyor.
+    - eger yoksa find -> iterator donduruyor -> dereference daha safe
 
 - <problem: release not included>
     - vs den include exclude etmeye calistim olmadi
@@ -815,7 +830,12 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - <exceptions>
     - Exception thrown at 0x00007FF870AFCF19 in opengl_renderer.exe: Microsoft C++ exception: std::ios_base::failure at memory location 0x000000ECD359D5C0.
 
+- <shader problems>
+- Block "VS_OUT" mismatch between shader stages
+
 - <errors>
+    - Exception thrown at 0x00007FFC8AB3D6AB (nvoglv64.dll) in opengl_renderer.exe: 0xC0000005: Access violation reading location 0x0000000000000010.
+
     - error C2259: 'Application': cannot instantiate abstract class
         - The error message "error C2259: 'Application': cannot instantiate abstract class" typically occurs when you try to create an instance of a class that has one or more pure virtual functions but has not provided implementations for those functions. In your case, the Application class inherits from InputListener, which is an abstract class due to the presence of pure virtual functions.
 

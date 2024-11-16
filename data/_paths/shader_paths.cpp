@@ -145,6 +145,15 @@ const std::vector<ShaderPaths> PathAfterDirectory::shader_paths =
 		std::string("4.3.light-shadow_vrtx_shader.glsl")
 		,std::string("4.3.light-shadow_frag_shader.glsl")
 	}
+	,{
+		std::string("4.4.plight-shadow_vrtx_shader.glsl")
+		,std::string("4.4.plight-shadow_frag_shader.glsl")
+	}
+	,{
+		std::string("4.4.shadowmap-pl_vrtx_shader.glsl")
+		,std::string("4.4.shadowmap-pl_frag_shader.glsl")
+		,std::string("4.4.shadowmap-pl_geo_shader.glsl")
+	}
 };
 
 // another model try with keys. this approach is abstracting the identifier from file names.

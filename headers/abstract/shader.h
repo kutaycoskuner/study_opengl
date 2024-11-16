@@ -2,12 +2,14 @@
 #ifndef S_SHADER
 #define S_SHADER
 // ------------------------------------------------------------------------------------------------
-// ----- libraries
+//                  libraries
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/matrix4.h"
 #include "../abstract/vector2.h"
 
 #include <glad/glad.h>
+
+#include <vector>
 
 #include <string>
 #include <fstream>
@@ -15,36 +17,43 @@
 #include <iostream>
 
 // ------------------------------------------------------------------------------------------------
-// ----- function declerations
+//                  function declerations
 // ------------------------------------------------------------------------------------------------
 
 
 // ------------------------------------------------------------------------------------------------
-// ----- abstract
+//                  abstract
 // ------------------------------------------------------------------------------------------------
 struct ShaderCompileDesc
 {
-	// variables
-	// -----------------------------------
-	const std::string name;
-	const std::string path;
-	const std::string content;
+    // Variables
+    // -----------------------------------
+    std::string name;
+    std::string vrtx_path;
+    std::string frag_path;
+    std::string geom_path;
 
-	// constructors
-	// -----------------------------------	
-	// Default constructor
-	ShaderCompileDesc() : name(""), path(""), content("") {}
+    // Constructors
+    // -----------------------------------    
+    // Default constructor
+    ShaderCompileDesc()
+        : name(""), vrtx_path(""), frag_path(""), geom_path("") {}
 
-	// Parameter constructor
-	ShaderCompileDesc(const std::string& name, const std::string& path, const std::string& content) 
-		: name(name), path(path), content(content) {}
+    // Parameterized constructor
+    ShaderCompileDesc(const std::string& name, const std::string& vrtx_path, const std::string& frag_path, const std::string& geom_path)
+        : name(name), vrtx_path(vrtx_path), frag_path(frag_path), geom_path(geom_path) {}
 
-	// Copy constructor
-	ShaderCompileDesc(const ShaderCompileDesc& other) : name(other.name), path(other.path), content(other.content) {}
+    // Copy constructor
+    ShaderCompileDesc(const ShaderCompileDesc& other)
+        : name(other.name), vrtx_path(other.vrtx_path), frag_path(other.frag_path), geom_path(other.geom_path) {}
 
-	// todo move constructor
+    // Move constructor
+    ShaderCompileDesc(ShaderCompileDesc&& other) noexcept
+        : name(std::move(other.name)), vrtx_path(std::move(other.vrtx_path)), frag_path(std::move(other.frag_path)),
+        geom_path(std::move(other.geom_path)) {}
 
-	// todo destructor
+    // Destructor (default is sufficient)
+    ~ShaderCompileDesc() = default;
 };
 
 // this shader class is suggested in learnopengl
@@ -54,9 +63,12 @@ public:
     unsigned int ID;
     // constructor generates the shader on the fly
     // ------------------------------------------------------------------------
-    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
+        // Constructor generates the shader from ShaderCompileDesc
+    // ------------------------------------------------------------------------
+// Constructor that generates the shader program
+    Shader(const ShaderCompileDesc& shader_compile_desc)
     {
-        // 1. retrieve the vertex/fragment source code from filePath
+        // 1. Retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
         std::string fragmentCode;
         std::string geometryCode;
@@ -65,91 +77,90 @@ public:
         std::ifstream fShaderFile;
         std::ifstream gShaderFile;
 
-        // ensure ifstream objects can throw exceptions:
-        vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-        fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+        // Ensure ifstream objects can throw exceptions:
+        vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        try
-        {
-            // open files
-            vShaderFile.open(vertexPath);
-            fShaderFile.open(fragmentPath);
+
+        try {
+            // Open files
+            vShaderFile.open(shader_compile_desc.vrtx_path);
+            fShaderFile.open(shader_compile_desc.frag_path);
 
             std::stringstream vShaderStream, fShaderStream;
-            // read file's buffer contents into streams
+            // Read file's buffer contents into streams
             vShaderStream << vShaderFile.rdbuf();
             fShaderStream << fShaderFile.rdbuf();
-            // close file handlers
+            // Close file handlers
             vShaderFile.close();
             fShaderFile.close();
-            // convert stream into string
+            // Convert streams into strings
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
 
-            if (geometryPath != nullptr)
-            {
-                gShaderFile.open(geometryPath);
+            // If a geometry shader is provided, load it
+            if (!shader_compile_desc.geom_path.empty()) {
+                gShaderFile.open(shader_compile_desc.geom_path);
                 std::stringstream gShaderStream;
                 gShaderStream << gShaderFile.rdbuf();
                 gShaderFile.close();
                 geometryCode = gShaderStream.str();
             }
         }
-        catch (const std::ifstream::failure& e)
-        {
+        catch (const std::ifstream::failure& e) {
             std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n"
                 << "File: " << __FILE__ << "\n"
                 << "Line: " << __LINE__ << "\n"
                 << "Exception Message: " << e.what() << "\n"
-                << "Shader File Path: " << (geometryPath ? geometryPath : (vShaderFile.is_open() ? vertexPath : fragmentPath)) << "\n" 
+                << "Shader File Path: " << (shader_compile_desc.geom_path.empty() ?
+                    (shader_compile_desc.vrtx_path) : shader_compile_desc.geom_path) << "\n"
                 << std::endl;
         }
 
+        // Compile shaders
+        unsigned int vertex, fragment, geometry;
         const char* vShaderCode = vertexCode.c_str();
-        const char * fShaderCode = fragmentCode.c_str();
-        // 2. compile shader
-        unsigned int vertex, fragment;
-        // vertex shader
+        const char* fShaderCode = fragmentCode.c_str();
+        const char* gShaderCode = geometryCode.c_str();
+
+        // Vertex shader
         vertex = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertex, 1, &vShaderCode, NULL);
         glCompileShader(vertex);
-        checkCompileErrors(vertex, "VERTEX");
-        // fragment Shader
+        checkCompileErrors(shader_compile_desc, vertex, "VERTEX");
+
+        // Fragment shader
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragment, 1, &fShaderCode, NULL);
         glCompileShader(fragment);
-        checkCompileErrors(fragment, "FRAGMENT");
-        // if geometry shader is given, compile geometry shader
-        unsigned int geometry;
-        if (geometryPath != nullptr)
-        {
-            const char* gShaderCode = geometryCode.c_str();
+        checkCompileErrors(shader_compile_desc, fragment, "FRAGMENT");
+
+        // If a geometry shader is provided, compile it
+        if (!shader_compile_desc.geom_path.empty()) {
             geometry = glCreateShader(GL_GEOMETRY_SHADER);
             glShaderSource(geometry, 1, &gShaderCode, NULL);
             glCompileShader(geometry);
-            checkCompileErrors(geometry, "GEOMETRY");
+            checkCompileErrors(shader_compile_desc, geometry, "GEOMETRY");
         }
-        // shader Program
+
+        // Create the shader program
         ID = glCreateProgram();
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
-        if (geometryPath != nullptr)
-        {
+        if (!shader_compile_desc.geom_path.empty()) {
             glAttachShader(ID, geometry);
         }
+
         glLinkProgram(ID);
-        checkCompileErrors(ID, "PROGRAM");
-        // delete the shader as they're linked into our program now and no longer necessary
+        checkCompileErrors(shader_compile_desc, ID, "PROGRAM");
+
+        // Delete shaders after they are linked
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        if (geometryPath != nullptr) glDeleteShader(geometry);
+        if (!shader_compile_desc.geom_path.empty()) {
+            glDeleteShader(geometry);
+        }
     }
-    Shader(const std::string& vertexPath, const std::string& fragPath): 
-        Shader(vertexPath.c_str(), fragPath.c_str())
-    {}
-    Shader(const std::string& vertexPath, const std::string& fragPath, const std::string& geoPath) :
-        Shader(vertexPath.c_str(), fragPath.c_str(), geoPath.c_str())
-    {}
     // activate the shader
     // ------------------------------------------------------------------------
     void use() 
@@ -175,7 +186,8 @@ public:
     // ------------------------------------------------------------------------
     void setMat4(const std::string& name, const Mat4& value) const
     {
-        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_TRUE, &value.m[0][0]);
+        GLuint loc = glGetUniformLocation(ID, name.c_str());
+        glUniformMatrix4fv(loc, 1, GL_TRUE, &value.m[0][0]);
     }
     // ------------------------------------------------------------------------
     void setVec2(const std::string& name, const Vec2& value) const
@@ -201,26 +213,37 @@ public:
 private:
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------
-    void checkCompileErrors(unsigned int shader, std::string type)
+    void checkCompileErrors(const ShaderCompileDesc& scd, unsigned int shader, const std::string& type)
     {
         int success;
         char infoLog[1024];
-        if (type != "PROGRAM")
-        {
+
+        // Check the type of error (shader or program)
+        if (type != "PROGRAM") {
+            // Shader compilation errors
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-            if (!success)
-            {
+            if (!success) {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                std::cerr << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n"
+                    << "File Path: " << scd.vrtx_path << " (Vertex Shader)\n"
+                    << "Error Message: " << infoLog << "\n"
+                    << "-- --------------------------------------------------- --\n";
             }
         }
-        else
-        {
+        else {
+            // Program linking errors
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
-            if (!success)
-            {
+            if (!success) {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                std::cerr << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n"
+                    << "File Paths: \n"
+                    << "Vertex Shader: " << scd.vrtx_path << "\n"
+                    << "Fragment Shader: " << scd.frag_path << "\n";
+                if (!scd.geom_path.empty()) {
+                    std::cerr << "Geometry Shader: " << scd.geom_path << "\n";
+                }
+                std::cerr << "Error Message: " << infoLog << "\n"
+                    << "-- --------------------------------------------------- --\n";
             }
         }
     }

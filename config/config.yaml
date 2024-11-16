@@ -12,13 +12,13 @@ settings:
   is_wireframeMode: false
 
 colors:
-   bg: #181818
-   bg-alter: 0
-   bg-second: 0
+  bg: #121212
+  bg-alter: 0
+  bg-second: 0
 
 default_camera:
   near: 0.01
-  far: 1000
+  far: 1000.01
   fov: 45.0
   rotation_sensitivity: 0.02
 
@@ -29,7 +29,7 @@ default_animation:
   emission_factor: 0.0
 
 scene:
-    active_scene: 14
+    active_scene: 15
 
 
 # Right hand major.

@@ -49,6 +49,7 @@ namespace math_utils
 
 namespace mat_utils
 {
+	Mat4 debugMat();
 	Mat4 identity4();
 	Mat4 transpose(const Mat4& mat);
 	Mat4 inverse(const Mat4& mat);

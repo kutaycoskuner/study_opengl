@@ -116,8 +116,41 @@
     - overlay test
     - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
+    - fix face cullign scene problem after shadows
+    - add python test on scenes
     - add light bilboards
     - debug kodu
+    - nvidia api extension
+    - buildbinaries.bat degistir
+    - okuma render pipeline
+    - okuma lighting equation
+
+- [0.90.6] fix point light shadow projection
+    - 16-Nov-2024
+        - update readme
+        - add: displays
+        - fix: point light shadow mapping false projection
+
+- [0.90.5] first point light shadows
+    - 15-Nov-2024
+        - add first point shadows / to be fixed
+        - ref refactoring shaders for more detailed error messages and adaptability (8.46, 2h10m)
+        - fix old scene renders due to defensive m_light_matrix control
+    - 14-Nov-2024 
+        - wip plight shadows 
+        - fix shader sending light transform matrices to form cubemap
+
+- [0.90.4] add point light shadows test scene
+    - 13-Nov-2024
+        - add remake point light shadows test scene
+        - add def edge cases on shadow drawing functions no directional light
+        - add cmake to new test scene and shaders
+    - 08-Nov-2024
+        - wip point lights scene
+        - add point lights test scene
+    - 07-Nov-2024 
+        - chg caption last display
+        - fix cicd name
 
 - [0.90.3] fix dynamic shadow problem
     - 07-Nov-2024 

@@ -29,6 +29,10 @@ std::map<std::string, Predef3DNode> PredefNameMaps::predef3d_namemap = {
 		,Predef3DNode(VertexData::cube_vrts__pos_norm_uv,	288,	8, { 3, 3, 2 })
 	}
 	,{
+		"plane01"
+		,Predef3DNode(VertexData::plane_vrts__pos_norm_uv,	 48,		8, { 3, 3, 2 })
+	}
+	,{
 		"plane"
 		,Predef3DNode(VertexData::rectangle__vrts,			8,		2, { 2 })
 	}

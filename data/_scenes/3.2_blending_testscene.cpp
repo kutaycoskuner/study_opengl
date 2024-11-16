@@ -18,6 +18,7 @@ void BlendingTestScene::loadData()
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 6.0f;
+	scene_state.display_shadows = false;
 
 	// ----- camera position
 	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
@@ -179,13 +180,13 @@ void BlendingTestScene::update() {
 	3. Draw all the transparent objects in sorted order.
 	*/
 	// normalde blendingin calismasi icin objeleri arkadan one dogru sort edip cizmek egerekiyor ama su anda garip bir sekilde calisiyor.
-	std::map<float, PrimitiveSceneNode> sorted;
-	std::sort(predefined_scene_elements.begin(), predefined_scene_elements.end(),
-		[this](const PrimitiveSceneNode& a, const PrimitiveSceneNode& b) {
-			float distanceA = vec_utils::length(this->cameras[0].position - a.transform.position);
-			float distanceB = vec_utils::length(this->cameras[0].position - b.transform.position);
-			return distanceA > distanceB;
-		});
+	//std::map<float, PrimitiveSceneNode> sorted;
+	//std::sort(predefined_scene_elements.begin(), predefined_scene_elements.end(),
+	//	[this](const PrimitiveSceneNode& a, const PrimitiveSceneNode& b) {
+	//		float distanceA = vec_utils::length(this->cameras[0].position - a.transform.position);
+	//		float distanceB = vec_utils::length(this->cameras[0].position - b.transform.position);
+	//		return distanceA > distanceB;
+	//	});
 
 }
 

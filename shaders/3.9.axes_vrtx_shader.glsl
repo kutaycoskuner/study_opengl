@@ -3,7 +3,7 @@ layout (location = 0) in vec3 in_pos;
 
 out VS_OUT {
     vec3 normal;
-} vs_out;
+} vs_out[];
 
 uniform mat4 world_mat;
 

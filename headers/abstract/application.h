@@ -140,7 +140,8 @@ private:
         void drawHelper_axes(Uniforms& uni);
         void drawHelper_lightPlaceholders(Uniforms& uni);
 
-        void drawSceneNode_primitive_shadows(const Mat4& model_mat);
+        void drawSceneNode_primitive_shadows_dl(const Mat4& model_mat);
+        void drawSceneNode_primitive_shadows_pl(const float far_plane);
 
         void drawSceneNodes_primitive(Uniforms& uni);
         void drawSceneNodes_models(Uniforms& uni);
@@ -148,6 +149,7 @@ private:
 
 
         void drawShadowMap();
+        void drawShadowCubemap();
 
         void drawFramebuffer(int display_w, int display_h);
 
@@ -205,8 +207,13 @@ private:
     // shadow fbo
     std::vector<unsigned int> shadow_fbo;
     std::vector<unsigned int> shadow_maps;
+
+    std::vector<unsigned int> shadow_cube_fbo;
+    std::vector<unsigned int> shadow_cubemaps;
+    
     std::vector<GLfloat*>     ptr_light_space_matrix;
     std::vector<Mat4>         m_light_space_matrix;
+    std::array<Mat4, 6>       cubemap_light_space_matrices;
 
     // anti-aliasing
     unsigned int sample_count = 1;
@@ -229,12 +236,17 @@ private:
     Vec4        clear_color;
 
     // temporary
-    unsigned int msaa_width     = 800;
-    unsigned int msaa_height    = 600;
-    int display_width           = 800;
-    int display_height          = 600;
-    int shadowmap_resolution_x  = 1024;
-    int shadowmap_resolution_y  = 1024;
+    unsigned int    msaa_width              = 800;
+    unsigned int    msaa_height             = 600;
+    int             display_width           = 800;
+    int             display_height          = 600;
+    int             shadowmap_resolution_x  = 1024;
+    int             shadowmap_resolution_y  = 1024;
+    float           shadowmap_aspect_ratio;
+    float           camera_aspect_ratio;
+    float           shadow_far_plane;
+    Vec3            ui_vector;
+
 
     float dimension = 10.0f;
 

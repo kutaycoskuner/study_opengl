@@ -4,6 +4,7 @@
 // ----------------------------------------------------------------------------
 #include "../../headers/abstract/scene.h"
 #include "../../headers/data/data.h"
+#include "../../headers/utils/utilities.h"
 #include <iostream>
 
 
@@ -133,5 +134,13 @@ public:
 	void update()	override;
 	
 	ShadowsTestScene();
+};
+
+class PointShadowsTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+
+	PointShadowsTestScene();
 };
 
