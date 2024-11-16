@@ -46,6 +46,7 @@ struct SceneState
     bool display_axes = false;
     bool display_skybox = false;
     bool display_normals = false;
+    bool display_shadows = true;
 
     // bool
     bool model_explosion = false;

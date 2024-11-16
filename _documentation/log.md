@@ -116,12 +116,20 @@
     - overlay test
     - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
+    - fix face cullign scene problem after shadows
+    - add python test on scenes
     - add light bilboards
     - debug kodu
     - nvidia api extension
     - buildbinaries.bat degistir
     - okuma render pipeline
     - okuma lighting equation
+
+- [0.90.6] fix point light shadow projection
+    - 16-Nov-2024
+        - update readme
+        - add: displays
+        - fix: point light shadow mapping false projection
 
 - [0.90.5] first point light shadows
     - 15-Nov-2024

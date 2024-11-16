@@ -361,7 +361,8 @@ void Application::loadSceneData(const ConfigData& config)
 
 	//		ui bindings
 	// --------------------------------------------------------------------------------------
-	ui_vector = active_scene->predefined_scene_elements.back().transform.position;
+	if (active_scene->predefined_scene_elements.size() > 0)
+		ui_vector = active_scene->predefined_scene_elements.back().transform.position;
 }
 
 void Application::loadTextures()
@@ -982,8 +983,11 @@ void Application::drawScene(Uniforms& uni)
 	glfwGetFramebufferSize(window, &display_w, &display_h);
 
 
-	if (!active_scene->directional_lights.empty()) drawShadowMap();
-	if (!active_scene->point_lights.empty()) drawShadowCubemap();
+	if (active_scene->scene_state.display_shadows)
+	{
+		if (!active_scene->directional_lights.empty()) drawShadowMap();
+		if (!active_scene->point_lights.empty()) drawShadowCubemap();
+	}
 
 
 	glDrawBuffer(GL_BACK);  // Enable drawing to the back buffer
@@ -1151,19 +1155,30 @@ void Application::drawShadowCubemap()
 
 	Vec3 light_pos = active_scene->point_lights[0].position;
 
-	//cubemap_light_space_matrices[0] = mat_utils::debugMat();
+	// Right (+X face)
 	cubemap_light_space_matrices[0] = shadow_proj *
-		mat_utils::lookAtDirection(light_pos, Vec3(+1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f));
+		mat_utils::lookAtDirection(light_pos, Vec3(+1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
+
+	// Left (-X face)
 	cubemap_light_space_matrices[1] = shadow_proj *
-		mat_utils::lookAtDirection(light_pos, Vec3(-1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f));
+		mat_utils::lookAtDirection(light_pos, Vec3(-1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
+
+	// Top (+Y face)
 	cubemap_light_space_matrices[2] = shadow_proj *
-		mat_utils::lookAtDirection(light_pos, Vec3(0.0, +1.0, 0.0), Vec3(0.0f, 0.0f, +1.0f));
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, +1.0, 0.0), Vec3(0.0f, 0.0f, -1.0f)); // Up is +Z
+
+	// Bottom (-Y face)
 	cubemap_light_space_matrices[3] = shadow_proj *
-		mat_utils::lookAtDirection(light_pos, Vec3(0.0, -1.0, 0.0), Vec3(0.0f, 0.0f, -1.0f));
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, -1.0, 0.0), Vec3(0.0f, 0.0f, +1.0f)); // Up is -Z
+
+	// Front (+Z face)
 	cubemap_light_space_matrices[4] = shadow_proj *
-		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, +1.0), Vec3(0.0f, -1.0f, 0.0f));
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, -1.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
+
+	// Back (-Z face)
 	cubemap_light_space_matrices[5] = shadow_proj *
-		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, -1.0), Vec3(0.0f, -1.0f, 0.0f));
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, +1.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
+
 
 	this->active_shader = shaders.at("shadowmap-pl");
 
@@ -1300,6 +1315,7 @@ void Application::drawSceneNode_primitive_shadows_dl(const Mat4& model_mat)
 	(*active_shader).use();
 	for (int i = 0; i < element_count; i++)
 	{
+		glBindVertexArray(0);
 		active_shader->setMat4("lightSpaceMatrix", model_mat);
 		const std::string& name = active_scene->predefined_scene_elements[i].vertex_array_name;
 		glBindVertexArray(named_arrays.at(name));
@@ -1312,20 +1328,21 @@ void Application::drawSceneNode_primitive_shadows_dl(const Mat4& model_mat)
 			* mat_utils::scale(transform.scale.x, transform.scale.y, transform.scale.z)
 			;
 		active_shader->setMat4("model", model);
-		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
-		{
-			// Bind the index buffer
-			glBindBuffer(named_arrays.at(name), lit_ebo);
-			glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
-		}
-		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
-		{
-			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
-		}
-		else
-		{
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		//if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		//{
+		//	// Bind the index buffer
+		//	// fix: exception error scene
+		//	glBindBuffer(named_arrays.at(name), lit_ebo);
+		//	glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
+		//}
+		//else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
+		//{
+		//	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+		//}
+		//else
+		//{
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//}
 	}
 }
 
@@ -1335,13 +1352,13 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
 	(*active_shader).use();
 	active_shader->setVec3("light_position", active_scene->point_lights[0].position);
 	active_shader->setFloat("far_plane", far_plane);
-	
+
 	for (int ii = 0; ii < 6; ii++)
 	{
 		std::string name = "shadow_transform_matrices[" + std::to_string(ii) + "]";
 		active_shader->setMat4(name, cubemap_light_space_matrices[ii]);
 	}
-	
+
 	for (int i = 0; i < element_count; i++)
 	{
 		/*active_shader->setMat4Vector("shadow_transform_matrcies", shadow_transform_matrices);*/
@@ -1357,20 +1374,20 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
 			* mat_utils::scale(transform.scale.x, transform.scale.y, transform.scale.z)
 			;
 		active_shader->setMat4("model", model);
-		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
-		{
-			// Bind the index buffer
-			glBindBuffer(named_arrays.at(name), lit_ebo);
-			glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
-		}
-		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
-		{
-			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
-		}
-		else
-		{
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		//if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		//{
+		//	// Bind the index buffer
+		//	glBindBuffer(named_arrays.at(name), lit_ebo);
+		//	glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
+		//}
+		//else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
+		//{
+		//	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+		//}
+		//else
+		//{
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//}
 	}
 }
 
@@ -1848,7 +1865,8 @@ void Application::setMaterial(const Material& material)
 void Application::updateScene()
 {
 	// update time
-	active_scene->predefined_scene_elements.back().transform.position = ui_vector;
+	if (active_scene->predefined_scene_elements.size() > 0)
+		active_scene->predefined_scene_elements.back().transform.position = ui_vector;
 	SceneState& scene_state = active_scene->scene_state;
 	scene_state.time = (float)glfwGetTime();
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;

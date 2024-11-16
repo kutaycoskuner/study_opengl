@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- opengl cubemap docs
+    - https://www.khronos.org/opengl/wiki/Cubemap_Texture
+
 - assembly instruction tables
     - https://www.agner.org/optimize/instruction_tables.pdf
 
@@ -831,6 +834,8 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - Block "VS_OUT" mismatch between shader stages
 
 - <errors>
+    - Exception thrown at 0x00007FFC8AB3D6AB (nvoglv64.dll) in opengl_renderer.exe: 0xC0000005: Access violation reading location 0x0000000000000010.
+
     - error C2259: 'Application': cannot instantiate abstract class
         - The error message "error C2259: 'Application': cannot instantiate abstract class" typically occurs when you try to create an instance of a class that has one or more pure virtual functions but has not provided implementations for those functions. In your case, the Application class inherits from InputListener, which is an abstract class due to the presence of pure virtual functions.
 

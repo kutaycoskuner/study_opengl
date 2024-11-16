@@ -100,49 +100,55 @@ vec3 grid_sampling_disk[20] = vec3[]
 // ---------------------------------------------------------------------------------------
 
 // Shadow calculation function
-// float ShadowCalculation(vec3 world_pos)
-// {
-//     // get vector between fragment position and light position
-//     vec3 frag_distance_to_light = world_pos - point_lights[0].position; 
-//     // now get current linear depth as the length between the fragment and light position
-//     float current_depth = length(frag_distance_to_light);
+ float ShadowCalculation(vec3 world_pos)
+ {
+    world_pos.z = -world_pos.z;
+     // get vector between fragment position and light position
+     vec3 frag_distance_to_light = world_pos - point_lights[0].position; 
+     // now get current linear depth as the length between the fragment and light position
+     float current_depth = length(frag_distance_to_light);
 
-//     // now test for shadows
-//     float shadow    = 0.0;
-//     float bias      = 0.15;
-//     int   samples   = 20;
-//     float view_distance = length(view_pos - world_pos);
-//     float disk_radius = (1.0 + (view_distance / far_plane)) / 25.0;
+     // now test for shadows
+     float shadow    = 0.0;
+     float bias      = 0.15;
+     int   samples   = 20;
+     float view_distance = length(view_pos - world_pos);
+     float disk_radius = (1.0 + (view_distance / far_plane)) / 25.0;
     
-//     for(int i = 0; i < samples; ++i)
-//     {
-//         float closest_depth = texture(shadow_cubemap, frag_distance_to_light 
-//             + grid_sampling_disk[i] * disk_radius).r;
-//         closest_depth *= far_plane;   // undo mapping [0;1]
-//         if(current_depth - bias > closest_depth)
-//             shadow += 0.6;
-//     }
-//     shadow /= float(samples);
+     for(int i = 0; i < samples; ++i)
+     {
+         float closest_depth = texture(shadow_cubemap, frag_distance_to_light 
+             + grid_sampling_disk[i] * disk_radius).r;
+         closest_depth *= far_plane;   // undo mapping [0;1]
+         if(current_depth - bias > closest_depth)
+             shadow += 0.6;
+     }
+     shadow /= float(samples);
 
-//     return shadow;
-// }  
+     return shadow;
+ }  
 
-float ShadowCalculation(vec3 world_pos)
-{
-    // get vector between fragment position and light position
-    vec3 frag_distance_to_light = world_pos - point_lights[0].position;
-    // use the light to fragment vector to sample from the depth map    
-    float closest_depth = texture(shadow_cubemap, frag_distance_to_light).r;
-    // it is currently in linear range between [0,1]. Re-transform back to original value
-    closest_depth *= far_plane;
-    // now get current linear depth as the length between the fragment and light position
-    float current_depth = length(frag_distance_to_light);
-    // now test for shadows
-    float bias = 0.05; 
-    float shadow = current_depth -  bias > closest_depth ? 1.0 : 0.0;
-
-    return shadow;
-} 
+//float ShadowCalculation(vec3 world_pos)
+//{
+//    // get vector between fragment position and light position
+////    world_pos.y = -world_pos.y;
+////    world_pos.x = -world_pos.x;
+//    world_pos.z = -world_pos.z;
+//    vec3 frag_distance_to_light = world_pos - point_lights[0].position;
+//    // use the light to fragment vector to sample from the depth map    
+////    shadow_cubemap.z = -shadow_cubemap.z;
+////    shadow_cubemap.y = -shadow_cubemap.y;
+//    float closest_depth = texture(shadow_cubemap, frag_distance_to_light).r;
+//    // it is currently in linear range between [0,1]. Re-transform back to original value
+//    closest_depth *= far_plane;
+//    // now get current linear depth as the length between the fragment and light position
+//    float current_depth = length(frag_distance_to_light);
+//    // now test for shadows
+//    float bias = 0.05; 
+//    float shadow = current_depth -  bias > closest_depth ? 1.0 : 0.0;
+//
+//    return shadow;
+//} 
 
 //float ShadowCalculation(vec4 light_space_position, float shadow_bias) {
 //    // perform perspective divide

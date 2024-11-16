@@ -95,3 +95,13 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
             - fakat geo shader hala dogru transformasyonu yapmiyor.
                 - trivial case -> default case view translate olmadan z+ veya z- ye baktiginda projectionda problem olup olmadigini gorebiliriz cunku view identity matris gidiyor.
                 - projectionda problem varmis -> aspect ratio set edilmemis
+
+- <problem: shadowmap oryantasyonlari yanlis>
+    - opengl cubemap is left hand unlikely to rst of the system I found it on the documentation.
+    - first I set object on each axis with different rotation to understand behaviour
+    - temporary fix 
+        - reversed -z on shader
+        - reversed shaadow matrice z faces
+        - reversed shadow matrice  y ups
+
+- <problem: face culling scene is not working>
