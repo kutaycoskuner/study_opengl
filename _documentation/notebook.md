@@ -537,6 +537,10 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - san miguel
     - sponza
 
+- <unordered map>
+    - at kullandginda %100 emin olman gerekiyor.
+    - eger yoksa find -> iterator donduruyor -> dereference daha safe
+
 - <problem: release not included>
     - vs den include exclude etmeye calistim olmadi
     - vsc den hata satirini arattim. vsxproj dosyasinda include edildigi yeri bulup xml de manual olarak exclude ettim
@@ -822,6 +826,9 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 
 - <exceptions>
     - Exception thrown at 0x00007FF870AFCF19 in opengl_renderer.exe: Microsoft C++ exception: std::ios_base::failure at memory location 0x000000ECD359D5C0.
+
+- <shader problems>
+- Block "VS_OUT" mismatch between shader stages
 
 - <errors>
     - error C2259: 'Application': cannot instantiate abstract class

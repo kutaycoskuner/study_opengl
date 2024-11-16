@@ -26,7 +26,6 @@ void PointShadowsTestScene::loadData()
 	// camera pos
 	// ----------------------------------------------------------------
 	cameras[0].position = Vec3(0.0f, 0.0f, 20.0f);
-	//cameras[0].lookAtDirection(Vec3(0.0f, 0.0f, -1.0f));
 	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 	//cameras[0].position = Vec3(0.0f, 10.0f, 10.0f);
 	//cameras[0].pitch_rad = 0.785f;
@@ -35,7 +34,7 @@ void PointShadowsTestScene::loadData()
 	// light definitions
 	// ----------------------------------------------------------------
 	// directional
-	directional_lights.push_back(PredefSceneLights::d_light);
+	//directional_lights.push_back(PredefSceneLights::d_light);
 	//directional_lights[0].brightness = 1.0f;
 
 	// point6
@@ -59,6 +58,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -5.0f);
 	predefined_scene_elements.back().texture_name		= "out_planks023a";
+	predefined_scene_elements.back().shader_name = "plight-shadow";
 	//predefined_scene_elements.back().shader_name = "multiplelights";
 
 	// bottom
@@ -67,6 +67,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, -5.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
+	predefined_scene_elements.back().shader_name = "plight-shadow";
 
 	// top
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
@@ -74,6 +75,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(180.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, 5.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
+	predefined_scene_elements.back().shader_name = "plight-shadow";
 
 	// left
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
@@ -81,6 +83,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, -90.0f);
 	predefined_scene_elements.back().transform.position = Vec3(-9.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
+	predefined_scene_elements.back().shader_name = "plight-shadow";
 
 	// right
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
@@ -88,27 +91,32 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 90.0f);
 	predefined_scene_elements.back().transform.position = Vec3(9.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
-
-	// cube
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	predefined_scene_elements.back().transform.rotation = Vec3(15.0f, 21.0f, 13.0f);
-	predefined_scene_elements.back().transform.position = Vec3(-3.0f, 1.0f, -1.5f);
 	predefined_scene_elements.back().shader_name = "plight-shadow";
 
 	// cube
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 36.0f, 45.0f);
-	predefined_scene_elements.back().transform.position = Vec3(3.0f, 2.0f, 2.5f);
+	//predefined_scene_elements.back().transform.rotation = Vec3(15.0f, 21.0f, 13.0f);
+	//predefined_scene_elements.back().transform.position = Vec3(-3.0f, 1.0f, -1.5f);
+	predefined_scene_elements.back().transform.position = Vec3(3.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().shader_name = "plight-shadow";
+
+	//// cube
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
+	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
+	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 36.0f, 45.0f);
+	//predefined_scene_elements.back().transform.position = Vec3(3.0f, 2.0f, 2.5f);
+	predefined_scene_elements.back().transform.position = Vec3(-3.0f, 0.0f, 0.0f);
+	//predefined_scene_elements.back().transform.position = Vec3(0.0f, 3.0f, 0.0f);
 	predefined_scene_elements.back().shader_name = "plight-shadow";
 
 
-	// cube
+	//// cube
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 25.0f, 42.0f);
-	predefined_scene_elements.back().transform.position = Vec3(2.0f, -3.0f, -2.0f);
+	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 25.0f, 42.0f);
+	//predefined_scene_elements.back().transform.position = Vec3(2.0f, -3.0f, -2.0f);
+	predefined_scene_elements.back().transform.position = Vec3(3.0f, -3.0f, -3.0f);
 	predefined_scene_elements.back().shader_name = "plight-shadow";
 
 
@@ -203,15 +211,15 @@ void PointShadowsTestScene::update() {
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		// change light position
-		point_lights[ii].position = Vec3(
-			distance_multiplier * cos(scene_state.time + 2 * pi / point_lights.size() * ii),
-			4.0f * sinf(scene_state.time),
-			distance_multiplier * sin(scene_state.time + 2 * pi / point_lights.size() * ii))
-			;
+		//point_lights[ii].position = Vec3(
+		//	distance_multiplier * cos(scene_state.time + 2 * pi / point_lights.size() * ii),
+		//	4.0f * sinf(scene_state.time),
+		//	distance_multiplier * sin(scene_state.time + 2 * pi / point_lights.size() * ii))
+		//	;
 
-		// change light color
-		float change_key = scene_state.time + ii;
-		setTriangleLightColorShiftByTime(point_lights[ii].diffuse, point_lights[ii].specular, change_key);
+		//// change light color
+		//float change_key = scene_state.time + ii;
+		//setTriangleLightColorShiftByTime(point_lights[ii].diffuse, point_lights[ii].specular, change_key);
 	}
 
 

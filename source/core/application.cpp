@@ -89,6 +89,8 @@ bool Application::initialize(const ConfigData& config)
 {
 	gp_app = this;
 
+	shadowmap_aspect_ratio = float(shadowmap_resolution_x) / float(shadowmap_resolution_y);
+
 	const unsigned int k_scr_width = std::stoul(config.at("scr").at("width"));
 	const unsigned int k_scr_height = std::stoul(config.at("scr").at("height"));
 	const char* kp_wndw_name = config.at("scr").at("wndw_name").c_str();
@@ -182,6 +184,10 @@ bool Application::initialize(const ConfigData& config)
 
 	// 4.4 point cubemap
 	// ---------------------------------------------------------
+	unsigned int shadow_cubemap_fbo;
+	glGenFramebuffers(1, &shadow_cubemap_fbo);
+	shadow_cube_fbo.push_back(shadow_cubemap_fbo);
+
 	unsigned int shadow_depth_cubemap;
 	glGenTextures(1, &shadow_depth_cubemap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_depth_cubemap);
@@ -193,6 +199,7 @@ bool Application::initialize(const ConfigData& config)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	shadow_cubemaps.push_back(shadow_depth_cubemap);
 
 	// texture for framebuffer
 	// ---------------------------------------------------------
@@ -293,7 +300,7 @@ void Application::loadSceneData(const ConfigData& config)
 		scene_number = active_test_scene;
 		save_frame = true;
 	}
-		// select scene test scene
+	// select scene test scene
 	if (scene_number == 0)			active_scene = new TestScene;
 	else if (scene_number == 1)		active_scene = new MultipleLightsTestScene;
 	else if (scene_number == 2)		active_scene = new ImportModelTestScene;
@@ -314,7 +321,7 @@ void Application::loadSceneData(const ConfigData& config)
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
-	cubemap_texture = img_utils::loadCubemap(data_dir_path, PathAfterDirectory::cubemap_texture_paths["skybox03"]);
+	cubemap_texture = img_utils::loadCubemap(data_dir_path, PathAfterDirectory::cubemap_texture_paths["skybox04"]);
 
 
 	// ----- camera
@@ -351,6 +358,10 @@ void Application::loadSceneData(const ConfigData& config)
 		Model ourModel((data_dir_path + model_paths[ii]).c_str());
 		active_scene->models.push_back(Model(ourModel));
 	}
+
+	//		ui bindings
+	// --------------------------------------------------------------------------------------
+	ui_vector = active_scene->predefined_scene_elements.back().transform.position;
 }
 
 void Application::loadTextures()
@@ -392,23 +403,26 @@ void Application::loadShaders()
 	// todo: butun shaderlari yukle daha sonra aktifi sec | bu 3d pipeline ini bozuyor
 	for (const ShaderPaths& path_struct : PathAfterDirectory::shader_paths)
 	{
-		const std::string vrtx	= file_utils::getFileNameWithoutExtension(path_struct.vrtx_shader_file);
-		const std::string frag	= file_utils::getFileNameWithoutExtension(path_struct.frag_shader_file);
-		const std::string geo	= file_utils::getFileNameWithoutExtension(path_struct.geo_shader_file);
+		const std::string		 vrtx = file_utils::getFileNameWithoutExtension(path_struct.vrtx_shader_file);
+		const std::string		 frag = file_utils::getFileNameWithoutExtension(path_struct.frag_shader_file);
+		const std::string		 geo = file_utils::getFileNameWithoutExtension(path_struct.geo_shader_file);
+
 		// get between / and _ for key
 		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
-		std::string left_trimmed_key = path_parts[0];
+		std::string				 left_trimmed_key = path_parts[0];
 
+		// get the shaader type embedded on name
 		path_parts = str_utils::split(left_trimmed_key, ".");
-		const std::string name = path_parts.back();
+		const std::string		 name = path_parts.back();
 
-		if (geo == "") {
-			shaders[name] = std::make_shared<Shader>(shader_dir_path + path_struct.vrtx_shader_file, shader_dir_path + path_struct.frag_shader_file);
-		}
-		else {
-			shaders[name] = std::make_shared<Shader>(shader_dir_path + path_struct.vrtx_shader_file, shader_dir_path + path_struct.frag_shader_file,
-				shader_dir_path + path_struct.geo_shader_file);
-		}
+		// Create the ShaderCompileDesc object
+		ShaderCompileDesc shader_compile_description;
+		shader_compile_description.name = name;
+		shader_compile_description.vrtx_path = shader_dir_path + path_struct.vrtx_shader_file;
+		shader_compile_description.frag_path = shader_dir_path + path_struct.frag_shader_file;
+		shader_compile_description.geom_path = (geo.empty()) ? "" : shader_dir_path + path_struct.geo_shader_file;
+
+		shaders[name] = std::make_shared<Shader>(shader_compile_description);
 
 		//unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(name)->ID, "Matrices");
 		//glUniformBlockBinding(shaders.at(name)->ID, uniform_block_index, 0);
@@ -632,7 +646,8 @@ void Application::mainLoop(ConfigData& config)
 		int w, h;
 		glfwGetWindowSize(window, &w, &h);
 		Camera& cam = active_scene->cameras[0];
-		cam.aspect_ratio = float(w) / float(h);
+		camera_aspect_ratio = float(w) / float(h);
+		cam.aspect_ratio = camera_aspect_ratio;
 
 		// Start the Dear ImGui frame
 		updateUI();
@@ -662,9 +677,9 @@ void Application::mainLoop(ConfigData& config)
 		}
 		else if (create_test_scene_frames)
 		{
-			reload				= true;
-			save_frame			= true;
-			active_test_scene	+= 1;
+			reload = true;
+			save_frame = true;
+			active_test_scene += 1;
 			break;
 		}
 
@@ -858,6 +873,10 @@ void Application::updateUI()
 		ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
+
+		ImGui::SliderFloat("UI Vector X", &this->ui_vector.x, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("UI Vector Y", &this->ui_vector.y, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("UI Vector Z", &this->ui_vector.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		// Debug
 		//ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		//ImGui::SliderFloat("Osman", &this->active_scene->directional_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -961,9 +980,10 @@ void Application::drawScene(Uniforms& uni)
 
 	int display_w, display_h;
 	glfwGetFramebufferSize(window, &display_w, &display_h);
-	
-	
+
+
 	if (!active_scene->directional_lights.empty()) drawShadowMap();
+	if (!active_scene->point_lights.empty()) drawShadowCubemap();
 
 
 	glDrawBuffer(GL_BACK);  // Enable drawing to the back buffer
@@ -1123,36 +1143,52 @@ void Application::drawHelper_axes(Uniforms& uni)
 
 void Application::drawShadowCubemap()
 {
-	float near = 0.1f, far = 100.0f;
+	float near = 0.1f, far = 20.1f;
 
-	Mat4 shadow_proj = mat_utils::projectPerspective(math_utils::toRadian(90.0f), 1.0f, near, far);
+	shadow_far_plane = far;
 
-	Vec3 light_pos = active_scene->directional_lights[0].position;
+	Mat4 shadow_proj = mat_utils::projectPerspective(math_utils::toRadian(90.0f), shadowmap_aspect_ratio, near, far);
 
-	std::vector<Mat4> shadow_transforms;
-	shadow_transforms.push_back(shadow_proj *
-		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(1.0, 0.0, 0.0),		world_up));
-	shadow_transforms.push_back(shadow_proj *
-		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(-1.0, 0.0, 0.0),		world_up));
-	shadow_transforms.push_back(shadow_proj *
-		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, 1.0, 0.0),		world_up));
-	shadow_transforms.push_back(shadow_proj *
-		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, -1.0, 0.0),		world_up));
-	shadow_transforms.push_back(shadow_proj *
-		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, 0.0, 1.0),		world_up));
-	shadow_transforms.push_back(shadow_proj *
-		mat_utils::lookAtDirection(light_pos,	light_pos + Vec3(0.0, 0.0, -1.0),		world_up));
+	Vec3 light_pos = active_scene->point_lights[0].position;
+
+	//cubemap_light_space_matrices[0] = mat_utils::debugMat();
+	cubemap_light_space_matrices[0] = shadow_proj *
+		mat_utils::lookAtDirection(light_pos, Vec3(+1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f));
+	cubemap_light_space_matrices[1] = shadow_proj *
+		mat_utils::lookAtDirection(light_pos, Vec3(-1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f));
+	cubemap_light_space_matrices[2] = shadow_proj *
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, +1.0, 0.0), Vec3(0.0f, 0.0f, +1.0f));
+	cubemap_light_space_matrices[3] = shadow_proj *
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, -1.0, 0.0), Vec3(0.0f, 0.0f, -1.0f));
+	cubemap_light_space_matrices[4] = shadow_proj *
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, +1.0), Vec3(0.0f, -1.0f, 0.0f));
+	cubemap_light_space_matrices[5] = shadow_proj *
+		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, -1.0), Vec3(0.0f, -1.0f, 0.0f));
+
+	this->active_shader = shaders.at("shadowmap-pl");
+
+	// Bind the framebuffer and set up for depth rendering
+	glBindFramebuffer(GL_FRAMEBUFFER, shadow_cube_fbo[0]);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadow_cubemaps[0], 0);
+
+	// Enable depth testing and prepare the framebuffer for rendering
+	glEnable(GL_DEPTH_TEST);
+
+	// Ensure no color buffer is drawn to
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 
 	glViewport(0, 0, shadowmap_resolution_x, shadowmap_resolution_y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	this->active_shader = shaders.at("shadowmap-pl");
+
 
 	// ... send uniforms to shader (including light's far_plane value)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps.back());
 	// ... bind other textures
-	//RenderScene();
+	drawSceneNode_primitive_shadows_pl(far);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Application::drawShadowMap()
@@ -1173,8 +1209,7 @@ void Application::drawShadowMap()
 	//);
 
 	Mat4 light_view = mat_utils::lookAtDirection(
-		p,					    // position
-		//Vec3(-1.0f, -0.8f, -0.2f),					// direction
+		p,											// position
 		d,											// direction
 		world_up									// world up
 	);
@@ -1190,7 +1225,7 @@ void Application::drawShadowMap()
 	{
 		m_light_space_matrix[0] = light_space_matrix;
 	}
-	
+
 
 	this->active_shader = shaders.at("shadowmap");
 
@@ -1217,7 +1252,7 @@ void Application::drawShadowMap()
 	ptr_light_space_matrix.push_back(ptr_light_space_mat);
 
 	// Render the scene
-	drawSceneNode_primitive_shadows(light_space_matrix);
+	drawSceneNode_primitive_shadows_dl(light_space_matrix);
 
 	// Unbind the framebuffer to reset rendering to the default framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1259,7 +1294,7 @@ void Application::drawFramebuffer(int display_w, int display_h)
 
 }
 
-void Application::drawSceneNode_primitive_shadows(const Mat4& model_mat)
+void Application::drawSceneNode_primitive_shadows_dl(const Mat4& model_mat)
 {
 	const int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
 	(*active_shader).use();
@@ -1294,12 +1329,53 @@ void Application::drawSceneNode_primitive_shadows(const Mat4& model_mat)
 	}
 }
 
+void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
+{
+	const int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
+	(*active_shader).use();
+	active_shader->setVec3("light_position", active_scene->point_lights[0].position);
+	active_shader->setFloat("far_plane", far_plane);
+	
+	for (int ii = 0; ii < 6; ii++)
+	{
+		std::string name = "shadow_transform_matrices[" + std::to_string(ii) + "]";
+		active_shader->setMat4(name, cubemap_light_space_matrices[ii]);
+	}
+	
+	for (int i = 0; i < element_count; i++)
+	{
+		/*active_shader->setMat4Vector("shadow_transform_matrcies", shadow_transform_matrices);*/
+
+		const std::string& name = active_scene->predefined_scene_elements[i].vertex_array_name;
+		glBindVertexArray(named_arrays.at(name));
+		const Transform& transform = active_scene->predefined_scene_elements[i].transform;
+		const Mat4 model =
+			mat_utils::translation(Vec3(transform.position.x, transform.position.y, transform.position.z))  // 0, 3, 10 * cos(ss.time)
+			* mat_utils::rotateX(toRadian(transform.rotation.x))
+			* mat_utils::rotateY(toRadian(transform.rotation.y))
+			* mat_utils::rotateZ(toRadian(transform.rotation.z))
+			* mat_utils::scale(transform.scale.x, transform.scale.y, transform.scale.z)
+			;
+		active_shader->setMat4("model", model);
+		if (active_scene->predefined_scene_elements[i].element_bools.indexed)
+		{
+			// Bind the index buffer
+			glBindBuffer(named_arrays.at(name), lit_ebo);
+			glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
+		}
+		else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
+		{
+			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+	}
+}
+
 void Application::drawSceneNodes_primitive(Uniforms& uni)
 {
-	if (m_light_space_matrix.empty())
-	{
-		return;
-	}
 	// draw scene objects
 	// --------------------------------------------------------------------------
 	Camera cam = active_scene->cameras[0];
@@ -1344,8 +1420,11 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setBool("gamma", active_scene->scene_state.gamma);
 		active_shader->setInt("num_point_lights", active_scene->point_lights.size());
 
+		active_shader->setFloat("far_plane", shadow_far_plane);
+
 		// assign shadow
-		active_shader->setMat4("light_space_matrix", m_light_space_matrix[0]);
+		if (m_light_space_matrix.size() > 0)
+			active_shader->setMat4("light_space_matrix", m_light_space_matrix[0]);
 
 
 		// directional light
@@ -1367,6 +1446,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setInt("material.specular_map1", 1);
 		active_shader->setInt("material.emission_map1", 2);
 		active_shader->setInt("shadow_map", 3);
+		active_shader->setInt("shadow_cubemap", 4);
 		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
 		active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 		float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
@@ -1403,8 +1483,13 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		shadow_maps.size() > 0 ?
 			glBindTexture(GL_TEXTURE_2D, shadow_maps[0])
 			: glBindTexture(GL_TEXTURE_2D, 0);
-		
-		
+
+		glActiveTexture(GL_TEXTURE4);
+		shadow_cubemaps.size() > 0 ?
+			glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps[0])
+			: glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+
 		// ----- draw 1: draw element
 		// -------------------------------------------------------------------------------------
 		std::string name = active_scene->predefined_scene_elements[i].vertex_array_name;
@@ -1464,6 +1549,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			active_shader->setInt("material.texture_specular1", 1);
 			active_shader->setInt("material.texture_emissive1", 2);
 			active_shader->setInt("shadow_map", 3);
+			active_shader->setInt("shadow_cubemap", 4);
 			active_shader->setFloat("material.emission_factor", ss.emission_factor);
 			active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 
@@ -1483,20 +1569,14 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 				glBindBuffer(named_arrays.at(name), lit_ebo);
 				std::string name = active_scene->predefined_scene_elements[i].vertex_array_name;
 				glDrawElements(GL_TRIANGLES, sizeof(float) * PredefNameMaps::predef3d_namemap.at(name).num_elements, GL_UNSIGNED_INT, 0);
-				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
-				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
 			}
 			else if (active_scene->predefined_scene_elements[i].element_bools.partial_render)
 			{
 				glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
-				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
-				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
 			}
 			else
 			{
 				glDrawArrays(GL_TRIANGLES, 0, 36);
-				active_scene->scene_state.stats_vrts += 3 * active_scene->scene_state.instance_count;
-				active_scene->scene_state.stats_tris += 1 * active_scene->scene_state.instance_count;
 			}
 			clearStencil();
 			glClear(GL_STENCIL_BUFFER_BIT);
@@ -1768,6 +1848,7 @@ void Application::setMaterial(const Material& material)
 void Application::updateScene()
 {
 	// update time
+	active_scene->predefined_scene_elements.back().transform.position = ui_vector;
 	SceneState& scene_state = active_scene->scene_state;
 	scene_state.time = (float)glfwGetTime();
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;

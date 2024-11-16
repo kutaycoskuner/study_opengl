@@ -61,3 +61,37 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
     - when I added my cmake to scene and shaders I lost my progress on scene.
     - I remade the test scene as well as handling problems.
     - todo: problem vs_out not matching on shader, implement shadows on point lights
+    - shadow_transform_matrices in shaderlara gonderilip gondeirlmedigini renderdoctan kontrol ettim.
+    - shaderlarin talep ettigi butun uniformlar gonderiliyor mu onlara bakiyorum.
+    - butun uniformlar gonderiliyor
+
+- <problem: when there is no directional light, scene is not drawing>
+    - error: Block "VS_OUT" mismatch between shader stages
+        - renderdocs 
+            - primitive callari yapmiyor.
+            - sorun tespiti -> m_light space matrix kontrolu yapip return yapiyordu.
+            - texture viewr overlay
+            - mesh viwer vs input, output
+        - shaderlari aktive ettim
+            - verilen linking erroru aratip break point koy
+            - call stackten hangi shaaderin hata verdigine bak
+            - shader parametrelerini shadercompiledesc ile degistirdim.
+                - yeni parametreler eklendiginde signature u degil sadece logic i degistirmek yetecek
+                - errorleri daha detayli yazabiliyorum
+
+- <writing plight shaders>
+    - problem: shadow_transform_matrices 2 and 3 passing values as nan
+    - bu look at directiondaki alignment problemi. iki vektor ayni veya tam zit yone bakinca bu problemi aliyorsun
+    - varsyilan durum ayarlayarak simdilik ustunden atladim
+    - problem: render shaderi yazdim fakat cubemap i shadera gonderemiyorum. renderdocda cubemap i goremiyorum
+        - sampleri renderdocta gormuyordu. Hesaplamada kullanilmadigi icinmis
+        - bin icerisindeki debug ciftmis nedenini anlayamadim.
+            - binaries yeniden generate ettirdim su an renderdoc ve sln ayni bin i kullaniyor
+        - renderdocs geometry shader outputlari yanlis gorunuyor
+            - ya matrisler yanlis hesaplaniyor ya matrisleri yanlis gonderiyoruz
+            - cpu ve gpu kodunu karsilastirdigimizda matrislerin farkli oldguun gorduk
+            - garip bir sekilde debug dosyasini geri atiyor
+            - boyu belli oldugu icin arraya cevirerek gonderdik. arrayler dogru geciyor. 
+            - fakat geo shader hala dogru transformasyonu yapmiyor.
+                - trivial case -> default case view translate olmadan z+ veya z- ye baktiginda projectionda problem olup olmadigini gorebiliriz cunku view identity matris gidiyor.
+                - projectionda problem varmis -> aspect ratio set edilmemis

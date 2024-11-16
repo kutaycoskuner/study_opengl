@@ -119,6 +119,18 @@
     - add light bilboards
     - debug kodu
     - nvidia api extension
+    - buildbinaries.bat degistir
+    - okuma render pipeline
+    - okuma lighting equation
+
+- [0.90.5] first point light shadows
+    - 15-Nov-2024
+        - add first point shadows / to be fixed
+        - ref refactoring shaders for more detailed error messages and adaptability (8.46, 2h10m)
+        - fix old scene renders due to defensive m_light_matrix control
+    - 14-Nov-2024 
+        - wip plight shadows 
+        - fix shader sending light transform matrices to form cubemap
 
 - [0.90.4] add point light shadows test scene
     - 13-Nov-2024

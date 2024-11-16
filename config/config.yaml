@@ -12,13 +12,13 @@ settings:
   is_wireframeMode: false
 
 colors:
-   bg: #121212
-   bg-alter: 0
-   bg-second: 0
+  bg: #121212
+  bg-alter: 0
+  bg-second: 0
 
 default_camera:
   near: 0.01
-  far: 1000
+  far: 1000.01
   fov: 45.0
   rotation_sensitivity: 0.02
 

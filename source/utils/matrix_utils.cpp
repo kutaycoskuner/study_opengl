@@ -6,6 +6,7 @@
 #include "../../headers/utils/utilities.h"
 #include <cassert>
 #include <cmath>
+#include <iostream>
 
 // ------------------------------------------------------------------------------------------------
 // ----- Function Definitions
@@ -252,13 +253,69 @@ namespace mat_utils
 		);
 	}
 
+	Mat4 debugMat()
+	{
+		return Mat4(
+			1.0f, 2.0f, 3.0f, 4.0f,
+			1.0f, 2.0f, 3.0f, 4.0f,
+			1.0f, 2.0f, 3.0f, 4.0f,
+			1.0f, 2.0f, 3.0f, 4.0f
+		);
+	}
+
+	//Mat4 lookAtDirection(const Vec3& position, const Vec3& in_direction, const Vec3& world_up) {
+	//	
+	//	//return lookAtTarget(position, in_direction + position, world_up);
+	//	// Normalize the direction vector to get the forward (z) axis
+	//	Vec3 direction = -in_direction.normalized();
+
+	//	// Calculate the right (x) axis as the cross product of world_up and forward
+	//	Vec3 right;
+	//	if (in_direction == world_up || in_direction == -world_up) {
+	//		// Fallback to a vector that won't cause zero cross-product
+	//		right = (world_up == Vec3(0.0f, 1.0f, 0.0f)) ? Vec3(1.0f, 0.0f, 0.0f) : Vec3(0.0f, 1.0f, 0.0f);
+	//	}
+	//	else {
+	//		right = math_utils::cross3d(direction, world_up).normalized();
+	//	}
+
+	//	// Check for NaN values in the right vector
+	//	if (std::isnan(right.x) || std::isnan(right.y) || std::isnan(right.z)) {
+	//		std::cerr << "ERROR::lookAtDirection: Right vector contains NaN values.\n";
+	//		return Mat4(); // Return an identity or error matrix
+	//	}
+
+	//	// Recalculate the orthogonal up vector (y axis)
+	//	Vec3 up = math_utils::cross3d(right, direction).normalized();
+
+	//	// Ensure the vectors are valid
+	//	if (right.length() == 0.0f || up.length() == 0.0f) {
+	//		std::cerr << "ERROR::lookAtDirection: Degenerate right or up vector encountered.\n";
+	//		return Mat4(); // Return an identity or error matrix
+	//	}
+
+	//	// Construct the LookAt view matrixs
+	//	return Mat4(
+	//		right.x,		right.y,		right.z,		-right.dot(position),
+	//		up.x,			up.y,			up.z,			-up.dot(position),
+	//		direction.x,	direction.y,	direction.z,	-direction.dot(position),
+	//		0.0f,			0.0f,			0.0f,			1.0f
+	//	);
+	//}
+
 	Mat4 lookAtDirection(const Vec3& position, const Vec3& in_direction, const Vec3& world_up)
 	{
 		// Normalize the direction vector to get the forward (z) axis
 		Vec3 direction = -in_direction.normalized();
 
 		// Calculate the right (x) axis as the cross product of world_up and forward
-		Vec3 right = math_utils::cross3d(direction, world_up).normalized();
+		Vec3 right;
+		if (in_direction == world_up)
+			right = Vec3(1.0f, 0.0f, 0.0f);
+		else if(in_direction == -world_up)
+			right = Vec3(1.0f, 0.0f, 0.0f);
+		else
+			right = math_utils::cross3d(direction, world_up).normalized();
 
 		// Recalculate the orthogonal up vector (y axis)
 		Vec3 up = math_utils::cross3d(right, direction);
