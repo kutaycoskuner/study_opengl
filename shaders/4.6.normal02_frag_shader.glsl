@@ -1,6 +1,7 @@
 #version 330 core
 #if 1
-// abstract
+// ---------------------------------------------------------------------------------------
+//              abstract
 // ---------------------------------------------------------------------------------------
 struct DirectionalLight {
 
@@ -49,6 +50,7 @@ struct Material {
     vec3 specular;
     sampler2D diffuse_map1;
     sampler2D specular_map1;
+    sampler2D normal_map1;
     sampler2D emission_map1;
     float emission_factor;
     float shininess;
@@ -56,77 +58,70 @@ struct Material {
 
 struct Surface {
     vec3 normal;
+    vec3 normal_tangent_space;
     vec3 diffuse;
     vec3 specular;
     vec3 emission;
 };
 
-// globals = uniform variables
+// ---------------------------------------------------------------------------------------
+//              globals = uniform variables
 // ---------------------------------------------------------------------------------------
 #define NR_POINT_LIGHTS 3
-out vec4            f_frag_color;
+out vec4 f_frag_color;
 
 in VS_OUT {
-    vec3            world_position;
-    vec3            normal;
-    vec2            tex_coords;
+    vec3 world_position;
+    vec3 world_normal;
+    vec2 tex_coords;
+    mat3 tbn;
 } fs_in;
 
-uniform vec3                view_pos;
-uniform float               far_plane;
-uniform                     Material material;
+uniform vec3 view_pos;
+uniform float far_plane;
+uniform Material material;
 
-uniform int                 num_point_lights;
-uniform DirectionalLight    directional_light;
-uniform PointLight          point_lights[NR_POINT_LIGHTS];
-uniform SpotLight           spot_light;
+uniform int num_point_lights;
+uniform DirectionalLight directional_light;
+uniform PointLight point_lights[NR_POINT_LIGHTS];
+uniform SpotLight spot_light;
 
 // New shadow-related uniforms
-uniform sampler2D           shadow_map;      // Shadow map for the light
-uniform samplerCube         shadow_cubemap;
-
+uniform sampler2D shadow_map;      // Shadow map for the light
+uniform samplerCube shadow_cubemap;
 
 // array of offset direction for sampling
-vec3 grid_sampling_disk[20] = vec3[]
-(
-   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
-   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
-   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
-   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
-   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
-);
+vec3 grid_sampling_disk[20] = vec3[](vec3(1, 1, 1), vec3(1, -1, 1), vec3(-1, -1, 1), vec3(-1, 1, 1), vec3(1, 1, -1), vec3(1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1), vec3(1, 1, 0), vec3(1, -1, 0), vec3(-1, -1, 0), vec3(-1, 1, 0), vec3(1, 0, 1), vec3(-1, 0, 1), vec3(1, 0, -1), vec3(-1, 0, -1), vec3(0, 1, 1), vec3(0, -1, 1), vec3(0, -1, -1), vec3(0, 1, -1));
 
-// function definitions
+// ---------------------------------------------------------------------------------------
+//              function definitions
 // ---------------------------------------------------------------------------------------
 
 // Shadow calculation function
- float ShadowCalculation(vec3 world_pos)
- {
+float ShadowCalculation(vec3 world_pos) {
     world_pos.z = -world_pos.z;
      // get vector between fragment position and light position
-     vec3 frag_distance_to_light = world_pos - point_lights[0].position; 
+    vec3 frag_distance_to_light = world_pos - point_lights[0].position; 
      // now get current linear depth as the length between the fragment and light position
-     float current_depth = length(frag_distance_to_light);
+    float current_depth = length(frag_distance_to_light);
 
      // now test for shadows
-     float shadow    = 0.0;
-     float bias      = 0.15;
-     int   samples   = 20;
-     float view_distance = length(view_pos - world_pos);
-     float disk_radius = (1.0 + (view_distance / far_plane)) / 25.0;
-    
-     for(int i = 0; i < samples; ++i)
-     {
-         float closest_depth = texture(shadow_cubemap, frag_distance_to_light 
-             + grid_sampling_disk[i] * disk_radius).r;
-         closest_depth *= far_plane;   // undo mapping [0;1]
-         if(current_depth - bias > closest_depth)
-             shadow += 0.6;
-     }
-     shadow /= float(samples);
+    float shadow = 0.0;
+    float bias = 0.15;
+    int samples = 20;
+    float view_distance = length(view_pos - world_pos);
+    float disk_radius = (1.0 + (view_distance / far_plane)) / 25.0;
 
-     return shadow;
- }  
+    for(int i = 0; i < samples; ++i) {
+        float closest_depth = texture(shadow_cubemap, frag_distance_to_light + grid_sampling_disk[i] * disk_radius).r;
+        closest_depth *= far_plane;   // undo mapping [0;1]
+        if(current_depth - bias > closest_depth)
+            shadow += 0.6;
+    }
+    shadow /= float(samples);
+
+    return shadow;
+}  
 
 //float ShadowCalculation(vec3 world_pos)
 //{
@@ -203,26 +198,44 @@ vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir
     return (ambient + (1.0) * (diffuse + specular)) * light.brightness;
 }
 
+
 vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_dir) {
-    vec3 light_dir = normalize(frag_pos - light.position);
+    
+	// yuzeyden isiga giden vektor
+	vec3 light_dir = normalize(light.position - frag_pos);
+
+
+    // vec3 tan_pos      = fs_in.tbn * fs_in.world_position;
+    // vec3 tan_view_pos = fs_in.tbn * view_pos;
+    // vec3 tan_view_dir = normalize(tan_view_pos - tan_pos);
     // diffuse shading
-    float diff = max(dot(surface.normal, -light_dir), 0.0);
+    float diff = max(dot(surface.normal, light_dir), 0.0);
+    
     // specular shading
-    vec3 reflect_dir = reflect(light_dir, surface.normal);
-    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+    //vec3 reflect_dir = reflect(-light_dir, surface.normal);
+    vec3 halfway_dir = normalize(light_dir + view_dir);
+    float spec      = pow(max(dot(surface.normal, halfway_dir), 0.0), material.shininess);
+
     // attenuation
-    float distance = length(light.position - frag_pos);
+    float distance    = length(light.position - frag_pos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    
     // combine results
-    vec3 ambient = light.ambient * surface.diffuse;
-    vec3 diffuse = light.diffuse * diff * surface.diffuse;
-    vec3 specular = light.specular * spec * surface.specular;
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
+    vec3 ambient    = light.ambient         * surface.diffuse;
+    vec3 diffuse    = light.diffuse  * diff * surface.diffuse;
+    vec3 specular   = light.specular * spec * surface.specular;
+    ambient         *= attenuation;
+    diffuse         *= attenuation;
+    specular        *= attenuation;
+
+    
+	//return halfway_dir;
     float shadow = ShadowCalculation(fs_in.world_position);
+
+//    return surface.normal * 1.0f;
     return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.brightness;
 }
+
 
 vec3 calcSpotLight(SpotLight light, Surface surface, vec3 frag_pos, vec3 view_dir) {
     vec3 light_dir = normalize(frag_pos - light.position);
@@ -247,22 +260,50 @@ vec3 calcSpotLight(SpotLight light, Surface surface, vec3 frag_pos, vec3 view_di
     specular *= attenuation * intensity;
     return (ambient + diffuse + specular) * light.brightness;
 }
-
-// main
+// ---------------------------------------------------------------------------------------
+//              main
 // ---------------------------------------------------------------------------------------
 void main() {
     vec3 illumination = vec3(0.0);
 
     Surface surface;
-    surface.normal = normalize(fs_in.normal);
+
+    // set textures
+    // -----------------------------------------------------------------------------------
+    // set normal
+    //    surface.normal = normalize(fs_in.normal);
+    surface.normal = texture(material.normal_map1, fs_in.tex_coords).rgb;
+    surface.normal = normalize(surface.normal * 2.0 - 1.0); 
+    surface.normal = fs_in.tbn * surface.normal;
+
+    
+    //    if (surface.specular == vec3(0.0)) {surface.specular = vec3(0.0f, 0.0f, 1.0f);}
+
+    // diffuse
     surface.diffuse = vec3(texture(material.diffuse_map1, fs_in.tex_coords));
+
+    // set specular
     surface.specular = vec3(texture(material.specular_map1, fs_in.tex_coords));
+    if(surface.specular == vec3(0.0)) {
+        surface.specular = vec3(0.5);
+    }
+
+    // set emission
     surface.emission = vec3(texture(material.emission_map1, fs_in.tex_coords));
+    //    if (surface.emission == vec3(0.0)) { surface.emission = vec3(1.0f, 1.0f, 1.0f); }
 
+    // compute
+    // -----------------------------------------------------------------------------------
     vec3 view_dir = normalize(view_pos - fs_in.world_position);
+    // vec3 tan_pos      = fs_in.tbn * fs_in.world_position;
+    // vec3 tan_view_pos = fs_in.tbn * view_pos;
+    // vec3 tan_view_dir = normalize(tan_view_pos - tan_pos);
 
+
+    // illuminate
+    // -----------------------------------------------------------------------------------
     // Add directional light with shadows
-     illumination += calcDirectionalLight(directional_light, surface, view_dir);
+    // illumination += calcDirectionalLight(directional_light, surface, view_dir);
 
     // Add point lights with shadows
     for(int ii = 0; ii < num_point_lights; ii++) {
@@ -274,11 +315,17 @@ void main() {
 
     // Add emission
     if(material.emission_factor > 0) {
-        illumination += surface.emission * material.emission_factor;
+        //illumination += surface.emission * material.emission_factor;
     }
 
+    // result
+    // -----------------------------------------------------------------------------------
     // Set final color output
-     f_frag_color = vec4(illumination, 1.0);
+    f_frag_color = vec4(illumination, 1.0);
+
+//     surface.normal = surface.normal * 0.5f + 0.5f;
+//     f_frag_color = vec4(surface.normal, 1.0);
+
 //    f_frag_color = vec4(vec3(1.0f, 1.0f, 1.0f), 1.0);
 
 }

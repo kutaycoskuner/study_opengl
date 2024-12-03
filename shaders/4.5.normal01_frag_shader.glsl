@@ -49,6 +49,7 @@ struct Material {
     vec3 specular;
     sampler2D diffuse_map1;
     sampler2D specular_map1;
+    sampler2D normal_map1;
     sampler2D emission_map1;
     float emission_factor;
     float shininess;
@@ -207,19 +208,24 @@ vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_
     vec3 light_dir = normalize(frag_pos - light.position);
     // diffuse shading
     float diff = max(dot(surface.normal, -light_dir), 0.0);
+    
     // specular shading
     vec3 reflect_dir = reflect(light_dir, surface.normal);
-    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+    vec3 halfway_dir = normalize(-light_dir + view_dir);
+
+    float spec      = pow(max(dot(view_dir, halfway_dir), 0.0), material.shininess);
     // attenuation
-    float distance = length(light.position - frag_pos);
+    float distance    = length(light.position - frag_pos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    
     // combine results
-    vec3 ambient = light.ambient * surface.diffuse;
-    vec3 diffuse = light.diffuse * diff * surface.diffuse;
-    vec3 specular = light.specular * spec * surface.specular;
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
+    vec3 ambient    = light.ambient * surface.diffuse;
+    vec3 diffuse    = light.diffuse * diff * surface.diffuse;
+    vec3 specular   = light.specular * spec * surface.specular;
+    ambient         *= attenuation;
+    diffuse         *= attenuation;
+    specular        *= attenuation;
+    
     float shadow = ShadowCalculation(fs_in.world_position);
     return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.brightness;
 }
@@ -254,10 +260,24 @@ void main() {
     vec3 illumination = vec3(0.0);
 
     Surface surface;
-    surface.normal = normalize(fs_in.normal);
-    surface.diffuse = vec3(texture(material.diffuse_map1, fs_in.tex_coords));
+    
+    // set normal
+    //  surface.normal = normalize(fs_in.normal);
+    surface.normal   = texture(material.normal_map1, fs_in.tex_coords).rgb;
+    surface.normal   = normalize(surface.normal * 2.0 - 1.0);
+    //  if (surface.specular == vec3(0.0)) {surface.specular = vec3(0.0f, 0.0f, 1.0f);}
+
+    
+    // diffuse
+    surface.diffuse  = vec3(texture(material.diffuse_map1, fs_in.tex_coords));
+    
+    // set specular
     surface.specular = vec3(texture(material.specular_map1, fs_in.tex_coords));
+    if (surface.specular == vec3(0.0)) {surface.specular = vec3(0.5f);}
+    
+    // set emission
     surface.emission = vec3(texture(material.emission_map1, fs_in.tex_coords));
+    // if (surface.emission == vec3(0.0)) { surface.emission = vec3(1.0f, 1.0f, 1.0f); }
 
     vec3 view_dir = normalize(view_pos - fs_in.world_position);
 
@@ -266,7 +286,7 @@ void main() {
 
     // Add point lights with shadows
     for(int ii = 0; ii < num_point_lights; ii++) {
-        illumination += calcPointLight(point_lights[ii], surface, fs_in.world_position, view_dir);
+    // illumination += calcPointLight(point_lights[ii], surface, fs_in.world_position, view_dir);
     }
 
     // Add spotlight with shadows
@@ -279,6 +299,10 @@ void main() {
 
     // Set final color output
      f_frag_color = vec4(illumination, 1.0);
+
+//     surface.normal = surface.normal * 0.5f + 0.5f;
+//     f_frag_color = vec4(surface.normal, 1.0);
+
 //    f_frag_color = vec4(vec3(1.0f, 1.0f, 1.0f), 1.0);
 
 }

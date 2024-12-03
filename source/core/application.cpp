@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------
-// ----- Notes
+//				Notes
 // ---------------------------------------------------------------------------------------
 /*
 	I will write some stuff here someday.
@@ -7,7 +7,7 @@
 */
 #if 1
 // ---------------------------------------------------------------------------------------
-// ----- Libraries
+//				Libraries
 // ---------------------------------------------------------------------------------------
 // imgui
 #include "../../libs/imgui/imgui.h"
@@ -41,7 +41,7 @@
 #include <format>
 
 // ---------------------------------------------------------------------------------------
-// self keywords
+//				self keywords
 // ---------------------------------------------------------------------------------------
 using uint = unsigned int;		// unsigned int yerine uint kisayolu tanimlama
 using namespace math_utils;
@@ -50,7 +50,7 @@ using namespace file_utils;
 using namespace img_utils;
 
 // ---------------------------------------------------------------------------------------
-// global, constant variables
+//				global, constant variables
 // ---------------------------------------------------------------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
 Application* gp_app;
@@ -59,7 +59,7 @@ const Vec3	Application::world_origin = Vec3(0.0f, 0.0f, 0.0f);
 bool		Application::toggle_mouselock = true;
 
 // ---------------------------------------------------------------------------------------
-// ----- Functions Definitions
+//				functions definitions
 // ---------------------------------------------------------------------------------------   
 void Application::disableStencil()
 {
@@ -317,7 +317,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 13)	active_scene = new GammaCorrectionTestScene;
 	else if (scene_number == 14)	active_scene = new ShadowsTestScene;
 	else if (scene_number == 15)	active_scene = new PointShadowsTestScene;
-
+	else if (scene_number == 16)	active_scene = new NormalMapTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -836,6 +836,9 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Point Light Shadows", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 15 });
 			}
+			if (ImGui::MenuItem("Normal Map", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 16 });
+			}
 
 			ImGui::EndMenu();
 		}
@@ -875,9 +878,9 @@ void Application::updateUI()
 		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 
-		ImGui::SliderFloat("UI Vector X", &this->ui_vector.x, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("UI Vector Y", &this->ui_vector.y, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("UI Vector Z", &this->ui_vector.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("p light 01 x", &this->active_scene->point_lights[0].position.x, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("p light 01 y", &this->active_scene->point_lights[0].position.y, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("p light 01 z", &this->active_scene->point_lights[0].position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		// Debug
 		//ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		//ImGui::SliderFloat("Osman", &this->active_scene->directional_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -896,7 +899,93 @@ void Application::updateUI()
 	}
 }
 
+void Application::compute_QuadVrtxTangents()
+{
+	if (computed_vertex_array_obj == 0)
+	{
+		// positions
+		Vec3 pos1(-1.0f, 0.0f, +1.0f);
+		Vec3 pos2(-1.0f, 0.0f, -1.0f);
+		Vec3 pos3(+1.0f, 0.0f, -1.0f);
+		Vec3 pos4(+1.0f, 0.0f, +1.0f);
+		// texture coordinates
+		Vec2 uv1(0.0f, 1.0f);
+		Vec2 uv2(0.0f, 0.0f);
+		Vec2 uv3(1.0f, 0.0f);
+		Vec2 uv4(1.0f, 1.0f);
+		// normal vector
+		Vec3 nm(0.0f, 1.0f, 0.0f);
 
+		// calculate tangent/bitangent vectors of both triangles
+		Vec3 tangent1, bitangent1;
+		Vec3 tangent2, bitangent2;
+		// triangle 1
+		// ----------
+		Vec3 edge1 = pos2 - pos1;
+		Vec3 edge2 = pos3 - pos1;
+		Vec2 deltaUV1 = uv2 - uv1;
+		Vec2 deltaUV2 = uv3 - uv1;
+
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		tangent1.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent1.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+		bitangent1.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		bitangent1.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		bitangent1.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+
+		// triangle 2
+		// ----------
+		edge1 = pos3 - pos1;
+		edge2 = pos4 - pos1;
+		deltaUV1 = uv3 - uv1;
+		deltaUV2 = uv4 - uv1;
+
+		f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		tangent2.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent2.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent2.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+		bitangent2.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		bitangent2.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		bitangent2.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+
+
+		float quadVertices[] = {
+			// positions               // normal            // texcoords   // tangent                               // bitangent
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, //bitangent1.x, bitangent1.y, bitangent1.z,
+			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, //bitangent1.x, bitangent1.y, bitangent1.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, //bitangent1.x, bitangent1.y, bitangent1.z,
+
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, //bitangent2.x, bitangent2.y, bitangent2.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, //bitangent2.x, bitangent2.y, bitangent2.z,
+			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z //bitangent2.x, bitangent2.y, bitangent2.z
+		};
+		// configure plane VAO
+		glGenVertexArrays(1, &computed_vertex_array_obj);
+		glGenBuffers(1, &computed_vertex_buffer);
+		glBindVertexArray(computed_vertex_array_obj);
+		glBindBuffer(GL_ARRAY_BUFFER, computed_vertex_buffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		const unsigned int vertex_stride = 11;
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(8 * sizeof(float)));
+		//glEnableVertexAttribArray(4);
+		//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+	}
+	glBindVertexArray(computed_vertex_array_obj);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+}
 
 void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsigned int& inptLayout, const unsigned int& vrtxBuffer)
 {
@@ -1455,15 +1544,20 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setMat4("world_mat", model);
 
 		// material
-		//active_shader->setInt("texture1", 0);
-		//active_shader->setInt("texture2", 1);
+
+		// default values
 		active_shader->setVec3("material.diffuse", 0.5f, 0.5f, 0.5f);
 		active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+
+		// textures
 		active_shader->setInt("material.diffuse_map1", 0);
 		active_shader->setInt("material.specular_map1", 1);
-		active_shader->setInt("material.emission_map1", 2);
-		active_shader->setInt("shadow_map", 3);
-		active_shader->setInt("shadow_cubemap", 4);
+		active_shader->setInt("material.normal_map1", 2);
+		active_shader->setInt("material.emission_map1", 3);
+		active_shader->setInt("shadow_map", 4);
+		active_shader->setInt("shadow_cubemap", 5);
+
+		// factors
 		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
 		active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 		float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
@@ -1492,16 +1586,22 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 
 		glActiveTexture(GL_TEXTURE2);
 		textures[texture_name].color != 0 ?
-			glBindTexture(GL_TEXTURE_2D, textures[texture_name].emission)
+			glBindTexture(GL_TEXTURE_2D, textures[texture_name].normal)
 			: glBindTexture(GL_TEXTURE_2D, 0);
 
 
 		glActiveTexture(GL_TEXTURE3);
+		textures[texture_name].color != 0 ?
+			glBindTexture(GL_TEXTURE_2D, textures[texture_name].emission)
+			: glBindTexture(GL_TEXTURE_2D, 0);
+
+
+		glActiveTexture(GL_TEXTURE4);
 		shadow_maps.size() > 0 ?
 			glBindTexture(GL_TEXTURE_2D, shadow_maps[0])
 			: glBindTexture(GL_TEXTURE_2D, 0);
 
-		glActiveTexture(GL_TEXTURE4);
+		glActiveTexture(GL_TEXTURE5);
 		shadow_cubemaps.size() > 0 ?
 			glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps[0])
 			: glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -1524,7 +1624,11 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 
 		if (active_scene->predefined_scene_elements[i].element_bools.stencil_testing) { disableStencil(); }
 
-		if (!active_scene->predefined_scene_elements[i].element_bools.is_triangle)
+		if (active_scene->predefined_scene_elements[i].element_bools.is_using_tan_space)
+		{
+			compute_QuadVrtxTangents();
+		}
+		else if (!active_scene->predefined_scene_elements[i].element_bools.is_triangle)
 		{
 			glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(36 / active_scene->scene_state.vertex_divider));
 		}
@@ -1864,9 +1968,6 @@ void Application::setMaterial(const Material& material)
 
 void Application::updateScene()
 {
-	// update time
-	if (active_scene->predefined_scene_elements.size() > 0)
-		active_scene->predefined_scene_elements.back().transform.position = ui_vector;
 	SceneState& scene_state = active_scene->scene_state;
 	scene_state.time = (float)glfwGetTime();
 	scene_state.delta_time = scene_state.time - scene_state.last_frame_time;

@@ -181,7 +181,7 @@ void main() {
     // result
     //    f_frag_color = vec4(surface.diffuse, 1.0f);
     //    f_frag_color = vec4(dark, 1.0f);
-    f_frag_color = vec4(illumination, 1.0);
+    f_frag_color = vec4(surface.normal, 1.0);
 }
 
 #endif

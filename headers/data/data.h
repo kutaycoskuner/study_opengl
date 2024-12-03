@@ -126,6 +126,7 @@ struct ElementBools {
 	bool partial_render		= false;
 	bool indexed			= false;
 	bool is_triangle		= true;
+	bool is_using_tan_space = false;
 	bool face_culling		= false;
 	bool gamma				= false;
 };

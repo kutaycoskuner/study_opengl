@@ -132,4 +132,13 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 	.color = std::string("textures/out_blending_transparent_window_blue_256.png")
 	}
 }
+,
+{"out_brickwall",
+	{
+	.color     = std::string("textures/learnopengl/out_brickwall_color_1k.jpg")
+	,.normal   = std::string("textures/learnopengl/out_brickwall_normal_1k.jpg")
+	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
+	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
+	}
+}
 };

@@ -1,0 +1,11 @@
+- <normal map debugging>
+    - lighting is not as expected 
+    - isolated only the point lights
+    - changing values on renderdocs to understand what is wrong.
+    - first aattempt to see view_direction
+        - I set camera to 0, 8, 10
+        - I look at plane and visualize view direction
+        - expected to see green blue transition
+            - texture is black to red from left to right
+            - normalized and used absolute value to -> saw something what I have been expecting
+            - normal vis -> normaller problmeli geciyor. uste bakan yuz yesil olamsi gerekirken maviyid

@@ -153,6 +153,8 @@ private:
 
         void drawFramebuffer(int display_w, int display_h);
 
+        void compute_QuadVrtxTangents();
+
     void updateScene();
     void setMaterial(const Material& material);
     void setPresetMaterial(const Material& material);
@@ -188,6 +190,8 @@ private:
     unsigned int lit_ebo; // element buffer object  || index buffer
     unsigned int instanced_buffer;
     
+    unsigned int computed_vertex_array_obj = 0;
+    unsigned int computed_vertex_buffer;
     unsigned int vertex_arrays[buffer_count];
     unsigned int vertex_buffers[buffer_count];
     unsigned int element_buffers[buffer_count];
