@@ -143,6 +143,16 @@ struct PrimitiveSceneNode
 	ElementBools	element_bools;
 };
 
+struct SceneNode
+{
+	std::string		name;
+	Transform		transform;
+
+	// Constructor
+	SceneNode(const std::string& node_name = "", const Transform& node_transform = Transform())
+		: name(node_name), transform(node_transform) {}
+};
+
 //
 class PrimitiveSceneNodes
 {

@@ -116,7 +116,6 @@
     - overlay test
     - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
-    - fix face cullign scene problem after shadows
     - fix resizing screen
     - add python test on scenes
     - add light bilboards
@@ -130,6 +129,16 @@
     - change libs to external
     - asset_import -> copy paste var if copy var
     - asset_import retrieve material info
+
+- [0.91.2] add scene node struct / fix older scenes
+    - 07-Dec-2024
+        - readme update
+        - add display
+        - fix frame buffer scene element bools
+    - 06-Dec-2024 
+        - add model scaling parametric quick solution
+        - add scene node struct
+        - fix scene render problem due to changes (scaling)
 
 - [0.91.1] add model import tangent space / gltf import
     - 05-Dec-2024 

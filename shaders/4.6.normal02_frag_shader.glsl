@@ -301,6 +301,7 @@ void main() {
 
     // set specular
     surface.specular = vec3(texture(material.specular_map1, fs_in.tex_coords));
+        if (surface.specular == vec3(0.0)) { surface.specular = vec3(0.4f, 0.4f, 0.4f); }
 
     // set emission
     surface.emission = vec3(texture(material.emission_map1, fs_in.tex_coords));
@@ -317,11 +318,11 @@ void main() {
     // illuminate
     // -----------------------------------------------------------------------------------
     // Add directional light with shadows
-    illumination += calcDirectionalLight(directional_light, surface, view_dir);
+//    illumination += calcDirectionalLight(directional_light, surface, view_dir);
 
     // Add point lights with shadows
     for(int ii = 0; ii < num_point_lights; ii++) {
-//        illumination += calcPointLight(point_lights[ii], surface, fs_in.world_position, view_dir);
+        illumination += calcPointLight(point_lights[ii], surface, fs_in.world_position, view_dir);
     }
 
     // Add spotlight with shadows

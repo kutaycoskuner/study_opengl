@@ -185,22 +185,22 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 
 		// Calculate bitangent handedness
-		if (mesh->mBitangents)
-		{
-			// If Assimp provides bitangents, you can use them directly
-			Vec3 bitangentFromAssimp;
-			bitangentFromAssimp.x = mesh->mBitangents[ii].x;
-			bitangentFromAssimp.y = mesh->mBitangents[ii].y;
-			bitangentFromAssimp.z = mesh->mBitangents[ii].z;
+		//if (mesh->mBitangents)
+		//{
+		//	// If Assimp provides bitangents, you can use them directly
+		//	Vec3 bitangentFromAssimp;
+		//	bitangentFromAssimp.x = mesh->mBitangents[ii].x;
+		//	bitangentFromAssimp.y = mesh->mBitangents[ii].y;
+		//	bitangentFromAssimp.z = mesh->mBitangents[ii].z;
 
-			// Calculate handedness
-			vertex.tangent.w = (
-				math_utils::dot3d(
-					math_utils::cross3d(
-						vertex.normal,
-						Vec3(vertex.tangent.x, vertex.tangent.y, vertex.tangent.z)
-					), bitangentFromAssimp) < 0.0f) ? -1.0f : 1.0f;
-		}
+		//	// Calculate handedness
+		//	vertex.tangent.w = (
+		//		math_utils::dot3d(
+		//			math_utils::cross3d(
+		//				vertex.normal,
+		//				Vec3(vertex.tangent.x, vertex.tangent.y, vertex.tangent.z)
+		//			), bitangentFromAssimp) < 0.0f) ? -1.0f : 1.0f;
+		//}
 		//else
 		//{
 		//    // If Assimp does not provide bitangents, calculate them using UV data

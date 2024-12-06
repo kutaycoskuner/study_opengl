@@ -830,7 +830,7 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Gamma Correction", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 13 });
 			}
-			if (ImGui::MenuItem("Shadows", "")) {
+			if (ImGui::MenuItem("Directional Light Shadows", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 14 });
 			}
 			if (ImGui::MenuItem("Point Light Shadows", "")) {
@@ -1748,23 +1748,7 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 		active_shader->setFloat("tiling_factor", 1.0f);
 		active_shader->setBool("gamma", active_scene->scene_state.gamma);
 		active_shader->setFloat("num_point_lights", active_scene->point_lights.size());
-
-
 		active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
-
-		// todo: remove
-		//active_shader->setInt("material.texture_diffuse1", 0);
-		//active_shader->setInt("material.texture_specular1", 1);
-		//active_shader->setInt("material.texture_emissive1", 2);
-
-		// new textures
-		//active_shader->setInt("material.diffuse_map1", 0);
-		//active_shader->setInt("material.specular_map1", 1);
-		//active_shader->setInt("material.normal_map1", 2);
-		//active_shader->setInt("material.emission_map1", 3);
-		//active_shader->setInt("shadow_map", 4);
-		//active_shader->setInt("shadow_cubemap", 5);
-
 		active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
 
@@ -1781,7 +1765,9 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 		setSpotLightParameters(uni);
 
 		Mat4 world = mat_utils::identity4();
-		world *= mat_utils::scale(0.01f , 0.01f, 0.01f);
+		active_scene->scene_nodes.size() > 0
+			? world *= mat_utils::scale(active_scene->scene_nodes[i].transform.scale)
+			: world *= mat_utils::scale(1.0f, 1.0f, 1.0f);
 		
 		active_shader->setMat4("world_mat", world);
 

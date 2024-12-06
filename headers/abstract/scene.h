@@ -29,6 +29,8 @@ public:
 	// cameras
 	std::vector<PrimitiveSceneNode> predefined_scene_elements;
 	std::vector<Transform>			predefined_scene_element_transforms;
+
+	std::vector<SceneNode>			scene_nodes;
 	
 	std::vector<std::string>		model_paths;
 	std::vector<Model>				models;

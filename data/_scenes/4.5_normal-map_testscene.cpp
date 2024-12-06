@@ -28,8 +28,9 @@ void NormalMapTestScene::loadData()
 	cameras[0].position = Vec3(0.0f, 0.0f, 20.0f);
 	cameras[0].position = Vec3(-2.0f, 0.0f, 10.0f);
 	cameras[0].position = Vec3(-2.0f, 8.0f, 8.0f);
-	cameras[0].position = Vec3(0.0f, 0.0f, 14.0f);
-	cameras[0].position = Vec3(0.0f, 1.86f, 0.0f);
+	cameras[0].position = Vec3(0.0f, 0.0f, 12.0f);
+	//cameras[0].position = Vec3(0.0f, 0.0f, 14.0f);
+	//cameras[0].position = Vec3(0.0f, 1.86f, 0.0f);
 	cameras[0].lookAtDirection(Vec3(0.0f, 0.0f, -1.0f));
 	//cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 	//cameras[0].position = Vec3(0.0f, 10.0f, 10.0f);
@@ -47,6 +48,7 @@ void NormalMapTestScene::loadData()
 	point_lights.back().brightness = 2.0f;
 	point_lights.back().position   = Vec3(3.6f, 2.0f, 2.6f);
 	point_lights.back().position = Vec3(0.0f, 0.0f, 0.0f);
+	//point_lights.back().diffuse = Vec3(0.8f, 0.9f, 0.6f);
 	//point_lights.push_back(PredefSceneLights::p_light);
 	//point_lights.push_back(PredefSceneLights::p_light);
 
@@ -70,49 +72,49 @@ void NormalMapTestScene::loadData()
 	//predefined_scene_elements.back().shader_name = "multiplelights";
 
 	// back
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale	= Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -5.0f);
-	//predefined_scene_elements.back().texture_name		= "out_brickwall";
-	//predefined_scene_elements.back().shader_name = "normal02";
-	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
+	predefined_scene_elements.back().transform.scale	= Vec3(5.0f, 5.0f, 5.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -5.0f);
+	predefined_scene_elements.back().texture_name		= "out_brickwall";
+	predefined_scene_elements.back().shader_name = "normal02";
+	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// bottom
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, -5.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_brickwall";
-	//predefined_scene_elements.back().shader_name = "normal02";
-	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
+	// bottom
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
+	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().transform.position = Vec3(0.0f, -5.0f, 0.0f);
+	predefined_scene_elements.back().texture_name = "out_brickwall";
+	predefined_scene_elements.back().shader_name = "normal02";
+	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	////// top
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(180.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, +5.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_brickwall";
-	//predefined_scene_elements.back().shader_name = "normal02";
-	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
+	//// top
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
+	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(180.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().transform.position = Vec3(0.0f, +5.0f, 0.0f);
+	predefined_scene_elements.back().texture_name = "out_brickwall";
+	predefined_scene_elements.back().shader_name = "normal02";
+	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	////// left
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, -90.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(-5.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_brickwall";
-	//predefined_scene_elements.back().shader_name = "normal02";
-	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
+	//// left
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
+	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, -90.0f);
+	predefined_scene_elements.back().transform.position = Vec3(-5.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().texture_name = "out_brickwall";
+	predefined_scene_elements.back().shader_name = "normal02";
+	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	////// right
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 90.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(+5.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_brickwall";
-	//predefined_scene_elements.back().shader_name = "normal02";
-	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
+	//// right
+	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
+	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 90.0f);
+	predefined_scene_elements.back().transform.position = Vec3(+5.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().texture_name = "out_brickwall";
+	predefined_scene_elements.back().shader_name = "normal02";
+	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
 
 
@@ -168,22 +170,32 @@ void NormalMapTestScene::loadData()
 	scene_state.model_shader_name = "normal02";
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
-		"models/out_sponza/glTF/Sponza.gltf"
+		//"models/out_sponza/glTF/Sponza.gltf"
 		//"models/testobject0_frustum/testobject.obj",
 		//"models/testobject1_dodecahedron/testobject.obj",
 	};
 
 	// ---- create bools for each imported model
 	for (int i = 0; i < model_paths.size(); i++) {
+		scene_nodes.push_back(SceneNode("ModelName", Transform()));
 		scene_state.model_element_bools.push_back(
-			ElementBools(
-				false,		// wireframe_mode
-				false,		// depth testing
-				false,		// stencil testing
-				false		// blending
-			)
+			ElementBools{
+				.wireframe_mode      = false,
+				.depth_testing       = false,
+				.stencil_testing	 = false,
+				.blending			 = false,
+				.partial_render	     = false,
+				.indexed		     = true,
+				.is_triangle		 = true,
+				.is_using_tan_space  = true,
+				.face_culling		 = false,
+				.gamma			     = false
+			}
 		);
 	}
+
+	if (scene_nodes.size() > 0)
+		scene_nodes[0].transform.scale = Vec3(0.01f, 0.01f, 0.01f);
 
 }
 
@@ -222,7 +234,7 @@ void NormalMapTestScene::update() {
 		//setTriangleLightColorShiftByTime(point_lights[ii].diffuse, point_lights[ii].specular, change_key);
 	}
 
-	//setTriangleLightColorShiftByTime(directional_lights[0].diffuse, directional_lights[0].specular, time);
+	//setTriangleLightColorShiftByTime(point_lights[0].diffuse, point_lights[0].specular, time);
 
 	//point_lights[0].position.x = 3.0f * cost;
 	//directional_lights[0].position = point_lights[0].position;
@@ -257,7 +269,7 @@ void NormalMapTestScene::update() {
 		point_lights[0].position.y = -multiplier * cost;
 		if (cost < -0.99f) scene_state.animation_stage = 1;
 	}
-	//point_lights[0].position.z = 2.0f * sint + 2.0f;
+	point_lights[0].position.z = 2.0f * sint + 2.0f;
 	point_lights[0].brightness = 2.0f;
 
 	// rotate obj x z 
