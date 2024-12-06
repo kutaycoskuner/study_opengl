@@ -1,5 +1,12 @@
 #version 330 core
 #if 1
+// notes
+// ---------------------------------------------------------------------------------------
+/*
+    Shader name: Normal02
+
+*/
+
 // ---------------------------------------------------------------------------------------
 //              abstract
 // ---------------------------------------------------------------------------------------
@@ -183,18 +190,22 @@ float ShadowCalculation(vec3 world_pos) {
 // Modify the lighting functions to incorporate shadows
 vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir) {
     vec3 light_dir = normalize(light.direction);
-    float diff = max(dot(surface.normal, -light_dir), 0.0);
-    vec3 reflect_dir = reflect(light_dir, surface.normal);
-    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+
+
+    float diff = max(dot(surface.normal, light_dir), 0.0);
+    vec3 halfway_dir = normalize(light_dir + view_dir);
+    float spec = pow(max(dot(view_dir, halfway_dir), 0.0), 1.0f);
+
     vec3 ambient = light.ambient * surface.diffuse;
     vec3 diffuse = light.diffuse * diff * surface.diffuse;
     vec3 specular = light.specular * spec * surface.specular;
 
     // Apply shadow calculation
-//    float shadow_bias = max(0.005 * (1.0 - dot(normalize(surface.normal), -light_dir)), 0.0005);
-//    float shadow = ShadowCalculation(fs_in.light_space_position, shadow_bias);
+    //    float shadow_bias = max(0.005 * (1.0 - dot(normalize(surface.normal), -light_dir)), 0.0005);
+    //    float shadow = ShadowCalculation(fs_in.light_space_position, shadow_bias);
     float shadow = 0.0;
     // Combine results and apply brightness, factoring in shadow
+    //    return surface.normal * light.brightness;
     return (ambient + (1.0) * (diffuse + specular)) * light.brightness;
 }
 
@@ -280,13 +291,16 @@ void main() {
     //    if (surface.specular == vec3(0.0)) {surface.specular = vec3(0.0f, 0.0f, 1.0f);}
 
     // diffuse
-    surface.diffuse = vec3(texture(material.diffuse_map1, fs_in.tex_coords));
+    vec4 diffuse_map_sample = texture(material.diffuse_map1, fs_in.tex_coords);
+
+    // alpha masking
+    if(diffuse_map_sample.a < 0.02f) 
+        discard;
+
+    surface.diffuse         = diffuse_map_sample.rgb;
 
     // set specular
     surface.specular = vec3(texture(material.specular_map1, fs_in.tex_coords));
-    if(surface.specular == vec3(0.0)) {
-        surface.specular = vec3(0.5);
-    }
 
     // set emission
     surface.emission = vec3(texture(material.emission_map1, fs_in.tex_coords));
@@ -303,11 +317,11 @@ void main() {
     // illuminate
     // -----------------------------------------------------------------------------------
     // Add directional light with shadows
-    // illumination += calcDirectionalLight(directional_light, surface, view_dir);
+    illumination += calcDirectionalLight(directional_light, surface, view_dir);
 
     // Add point lights with shadows
     for(int ii = 0; ii < num_point_lights; ii++) {
-        illumination += calcPointLight(point_lights[ii], surface, fs_in.world_position, view_dir);
+//        illumination += calcPointLight(point_lights[ii], surface, fs_in.world_position, view_dir);
     }
 
     // Add spotlight with shadows

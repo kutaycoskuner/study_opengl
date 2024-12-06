@@ -455,6 +455,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 # ----------------------- assimp
 # Disable building all importers and exporters by default
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_GLTF_IMPORTER ON)             # Enable only GLTF importer
 set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 # Enable only the importers you need (e.g., OBJ)
 set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)

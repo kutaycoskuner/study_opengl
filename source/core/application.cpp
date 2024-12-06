@@ -956,13 +956,13 @@ void Application::compute_QuadVrtxTangents()
 
 		float quadVertices[] = {
 			// positions               // normal            // texcoords   // tangent                               // bitangent
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, //bitangent1.x, bitangent1.y, bitangent1.z,
-			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, //bitangent1.x, bitangent1.y, bitangent1.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, //bitangent1.x, bitangent1.y, bitangent1.z,
-
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, //bitangent2.x, bitangent2.y, bitangent2.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, //bitangent2.x, bitangent2.y, bitangent2.z,
-			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z //bitangent2.x, bitangent2.y, bitangent2.z
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, 1.0f, //bitangent1.x, bitangent1.y, bitangent1.z,
+			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, 1.0f, //bitangent1.x, bitangent1.y, bitangent1.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, 1.0f, //bitangent1.x, bitangent1.y, bitangent1.z,
+																											  
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, 1.0f, //bitangent2.x, bitangent2.y, bitangent2.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, 1.0f, //bitangent2.x, bitangent2.y, bitangent2.z,
+			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, 1.0f, //bitangent2.x, bitangent2.y, bitangent2.z
 		};
 		// configure plane VAO
 		glGenVertexArrays(1, &computed_vertex_array_obj);
@@ -970,7 +970,7 @@ void Application::compute_QuadVrtxTangents()
 		glBindVertexArray(computed_vertex_array_obj);
 		glBindBuffer(GL_ARRAY_BUFFER, computed_vertex_buffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-		const unsigned int vertex_stride = 11;
+		const unsigned int vertex_stride = 12;
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
@@ -978,7 +978,7 @@ void Application::compute_QuadVrtxTangents()
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(8 * sizeof(float)));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(8 * sizeof(float)));
 		//glEnableVertexAttribArray(4);
 		//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
 	}
@@ -1726,8 +1726,10 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 			glDisable(GL_CULL_FACE);
 		}
 
-		active_scene->scene_state.b_model_refraction ? active_scene->scene_state.model_shader_name = "cubemaplit" :
-			active_scene->scene_state.model_shader_name = active_scene->scene_state.model_shader_name;
+		active_scene->scene_state.b_model_refraction 
+			? active_scene->scene_state.model_shader_name = "cubemaplit" 
+			: active_scene->scene_state.model_shader_name = active_scene->scene_state.model_shader_name;
+		
 		this->active_shader = shaders.at(active_scene->scene_state.model_shader_name);
 		// activate shader
 		(*active_shader).use();
@@ -1750,9 +1752,19 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 
 		active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
 
-		active_shader->setInt("material.texture_diffuse1", 0);
-		active_shader->setInt("material.texture_specular1", 1);
-		active_shader->setInt("material.texture_emissive1", 2);
+		// todo: remove
+		//active_shader->setInt("material.texture_diffuse1", 0);
+		//active_shader->setInt("material.texture_specular1", 1);
+		//active_shader->setInt("material.texture_emissive1", 2);
+
+		// new textures
+		//active_shader->setInt("material.diffuse_map1", 0);
+		//active_shader->setInt("material.specular_map1", 1);
+		//active_shader->setInt("material.normal_map1", 2);
+		//active_shader->setInt("material.emission_map1", 3);
+		//active_shader->setInt("shadow_map", 4);
+		//active_shader->setInt("shadow_cubemap", 5);
+
 		active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
 
@@ -1769,6 +1781,8 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 		setSpotLightParameters(uni);
 
 		Mat4 world = mat_utils::identity4();
+		world *= mat_utils::scale(0.01f , 0.01f, 0.01f);
+		
 		active_shader->setMat4("world_mat", world);
 
 		float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));

@@ -127,7 +127,18 @@
     - okuma lighting equation
     - nvidia nsight graphics
     - geo shader vertex normal vis
+    - change libs to external
+    - asset_import -> copy paste var if copy var
+    - asset_import retrieve material info
 
+- [0.91.1] add model import tangent space / gltf import
+    - 05-Dec-2024 
+        - fix assimp_import texture loader
+        - added cmake assimp gltf import
+        - added sponza scene
+    - 03-Dec-2024
+        - add rectangular light shift algorithm
+        - chg normals test scene box
 
 - [0.91] add normal mapping tangent space math single quad
     - 03-Dec-2024

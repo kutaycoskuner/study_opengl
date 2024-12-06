@@ -29,7 +29,9 @@ void NormalMapTestScene::loadData()
 	cameras[0].position = Vec3(-2.0f, 0.0f, 10.0f);
 	cameras[0].position = Vec3(-2.0f, 8.0f, 8.0f);
 	cameras[0].position = Vec3(0.0f, 0.0f, 14.0f);
-	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
+	cameras[0].position = Vec3(0.0f, 1.86f, 0.0f);
+	cameras[0].lookAtDirection(Vec3(0.0f, 0.0f, -1.0f));
+	//cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 	//cameras[0].position = Vec3(0.0f, 10.0f, 10.0f);
 	//cameras[0].pitch_rad = 0.785f;
 	//cameras[0].yaw_rad = -1.120f;
@@ -42,7 +44,7 @@ void NormalMapTestScene::loadData()
 
 	// point6
 	point_lights.push_back(PredefSceneLights::p_light);
-	//point_lights.back().brightness = 2.0f;
+	point_lights.back().brightness = 2.0f;
 	point_lights.back().position   = Vec3(3.6f, 2.0f, 2.6f);
 	point_lights.back().position = Vec3(0.0f, 0.0f, 0.0f);
 	//point_lights.push_back(PredefSceneLights::p_light);
@@ -68,120 +70,49 @@ void NormalMapTestScene::loadData()
 	//predefined_scene_elements.back().shader_name = "multiplelights";
 
 	// back
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	predefined_scene_elements.back().transform.scale	= Vec3(5.0f, 5.0f, 5.0f);
+	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
+	//predefined_scene_elements.back().transform.scale	= Vec3(5.0f, 5.0f, 5.0f);
 	//predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
 	//predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -5.0f);
-	predefined_scene_elements.back().texture_name		= "out_brickwall";
-	predefined_scene_elements.back().shader_name = "normal02";
-	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
-	//predefined_scene_elements.back().shader_name = "multiplelights";
+	//predefined_scene_elements.back().texture_name		= "out_brickwall";
+	//predefined_scene_elements.back().shader_name = "normal02";
+	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
 	//// bottom
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale = Vec3(9.0f, 5.0f, 5.0f);
+	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
 	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
 	//predefined_scene_elements.back().transform.position = Vec3(0.0f, -5.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_planks023a";
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
+	//predefined_scene_elements.back().texture_name = "out_brickwall";
+	//predefined_scene_elements.back().shader_name = "normal02";
+	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// top
+	////// top
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//predefined_scene_elements.back().transform.scale = Vec3(9.0f, 5.0f, 5.0f);
+	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
 	//predefined_scene_elements.back().transform.rotation = Vec3(180.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, 5.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_planks023a";
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
+	//predefined_scene_elements.back().transform.position = Vec3(0.0f, +5.0f, 0.0f);
+	//predefined_scene_elements.back().texture_name = "out_brickwall";
+	//predefined_scene_elements.back().shader_name = "normal02";
+	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// left
+	////// left
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, -90.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(-9.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_planks023a";
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
+	//predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, -90.0f);
+	//predefined_scene_elements.back().transform.position = Vec3(-5.0f, 0.0f, 0.0f);
+	//predefined_scene_elements.back().texture_name = "out_brickwall";
+	//predefined_scene_elements.back().shader_name = "normal02";
+	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// right
+	////// right
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	//predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 90.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(9.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().texture_name = "out_planks023a";
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-
-	//// ----------------------------------------------------------------
-	//// cube top left
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(15.0f, 21.0f, 13.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(-3.0f, 1.0f, -1.5f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-	//// cube right
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 36.0f, 45.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(2.4f, 2.0f, -1.2f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-	//// cube bottom
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 25.0f, 42.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(2.0f, -3.0f, 2.0f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-	// ----------------------------------------------------------------
-
-
-
-	//// cube x+
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	////predefined_scene_elements.back().transform.rotation = Vec3(15.0f, 21.0f, 13.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(10.0f, 0.0f, 22.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(-3.0f, 1.0f, -1.5f);
-	//predefined_scene_elements.back().transform.position = Vec3(3.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-	////// cube x-
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(10.0f, 0.0f, 10.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(2.0f, -3.0f, -2.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(-4.0f, 0.0f, 0.0f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-	////// cube y+
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	////predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 36.0f, 45.0f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 12.0f, 0.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(3.0f, 2.0f, 2.5f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, 3.0f, 0.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(0.0f, 3.0f, 0.0f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-	////// cube y-
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 20.0f, 0.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(3.0f, 2.0f, 2.5f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, -3.0f, 0.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(0.0f, 3.0f, 0.0f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-	////// cube z-
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
-	//predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
-	//predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 5.0f);
-	////predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 25.0f, 42.0f);
-	////predefined_scene_elements.back().transform.position = Vec3(2.0f, -3.0f, -2.0f);
-	//predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -3.0f);
-	//predefined_scene_elements.back().shader_name = "plight-shadow";
-
-
-
+	//predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 90.0f);
+	//predefined_scene_elements.back().transform.position = Vec3(+5.0f, 0.0f, 0.0f);
+	//predefined_scene_elements.back().texture_name = "out_brickwall";
+	//predefined_scene_elements.back().shader_name = "normal02";
+	//predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
 
 
@@ -234,7 +165,10 @@ void NormalMapTestScene::loadData()
 
 	// models
 	// ----------------------------------------------------------------
+	scene_state.model_shader_name = "normal02";
 	model_paths = {
+		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
+		"models/out_sponza/glTF/Sponza.gltf"
 		//"models/testobject0_frustum/testobject.obj",
 		//"models/testobject1_dodecahedron/testobject.obj",
 	};
@@ -271,6 +205,7 @@ void NormalMapTestScene::update() {
 	//Vec3 origin = (0.0f, 0.0f, 0.0f);
 	//directional_lights[0].direction = (origin - directional_lights[0].position);
 
+
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		// change light position
@@ -294,15 +229,46 @@ void NormalMapTestScene::update() {
 	//directional_lights[0].direction = -(directional_lights[0].position - Vec3(0.0f, 0.0f, 0.0f));
 
 
+	// light move rectangular
+	// ----------------------------------------------------------------
+	if (scene_state.animation_stage < 0) scene_state.animation_stage = 1;
+	float multiplier = 1.0f;
+	if (scene_state.animation_stage == 1)
+	{
+		point_lights[0].position.x = multiplier * cost;
+		point_lights[0].position.y = multiplier;
+		if (cost > 0.99f) scene_state.animation_stage = 2;
+	}
+	else if (scene_state.animation_stage == 2)
+	{
+		point_lights[0].position.x = multiplier;
+		point_lights[0].position.y = multiplier * cost;
+		if (cost < -0.99f) scene_state.animation_stage = 3;
+	}
+	else if (scene_state.animation_stage == 3)
+	{
+		point_lights[0].position.x = -multiplier * cost;
+		point_lights[0].position.y = -multiplier;
+		if (cost > 0.99f) scene_state.animation_stage = 4;
+	}
+	else if (scene_state.animation_stage == 4)
+	{
+		point_lights[0].position.x = -multiplier;
+		point_lights[0].position.y = -multiplier * cost;
+		if (cost < -0.99f) scene_state.animation_stage = 1;
+	}
+	//point_lights[0].position.z = 2.0f * sint + 2.0f;
+	point_lights[0].brightness = 2.0f;
+
 	// rotate obj x z 
 	// ----------------------------------------------------------------
-	Transform& tf = predefined_scene_elements.back().transform;
+	//Transform& tf = predefined_scene_elements.back().transform;
 
-	tf.position.x = 5.0f * cost;
-	tf.position.y = 5.0f * sint;
+	//tf.position.x = 5.0f * cost;
+	//tf.position.y = 5.0f * sint;
 
-	//tf.rotation.x = 30.0f;
-	tf.rotation.z = 90.0f + fmod(scene_state.time * 360.0f / 6.28f, 360.0f);
+	////tf.rotation.x = 30.0f;
+	//tf.rotation.z = 90.0f + fmod(scene_state.time * 360.0f / 6.28f, 360.0f);
 
 
 	for (int i = 0; i < predefined_scene_elements.size(); i++)

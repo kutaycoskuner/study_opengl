@@ -28,6 +28,19 @@ namespace vec_utils
 		return length(result_vector);
 	}
 
+	Vec3 normalize(const Vec3& vec)
+	{
+		float len = length(vec);
+
+		// Check to avoid division by zero
+		if (len == 0.0f)
+		{
+			return Vec3(0.0f, 0.0f, 0.0f); // Return zero vector for zero-length vectors
+		}
+
+		return Vec3(vec.x / len, vec.y / len, vec.z / len);
+	}
+
 	//float mergeSort(std::vector<Vec3>& vec, bool is_ascending)
 	//{
 	//	if (vec.size() < 1)

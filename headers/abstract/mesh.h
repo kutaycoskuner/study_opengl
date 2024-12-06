@@ -14,9 +14,10 @@
 struct Vertex
 {
 	// will be removed as it will not be necessary on directional light model
-	Vec3 position;
-	Vec3 normal;
-	Vec2 tex_coords;
+	Vec3  position;
+	Vec3  normal;
+	Vec2  tex_coords;
+    Vec4  tangent;
 };
 
 struct Texture {
@@ -42,6 +43,7 @@ public:
         setupMesh();
     }
 
+    void setDrawParameters(const Shader& shader);
     void draw(const Shader& shader);
     void drawInstanced(const Shader& shader, const unsigned int count);
 
