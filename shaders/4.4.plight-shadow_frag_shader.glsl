@@ -186,22 +186,22 @@ vec3 grid_sampling_disk[20] = vec3[]
 //}
 
 // Modify the lighting functions to incorporate shadows
-//vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir) {
-//    vec3 light_dir = normalize(light.direction);
-//    float diff = max(dot(surface.normal, -light_dir), 0.0);
-//    vec3 reflect_dir = reflect(light_dir, surface.normal);
-//    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
-//    vec3 ambient = light.ambient * surface.diffuse;
-//    vec3 diffuse = light.diffuse * diff * surface.diffuse;
-//    vec3 specular = light.specular * spec * surface.specular;
-//
-//    // Apply shadow calculation
+vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir) {
+    vec3 light_dir = normalize(light.direction);
+    float diff = max(dot(surface.normal, -light_dir), 0.0);
+    vec3 reflect_dir = reflect(light_dir, surface.normal);
+    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+    vec3 ambient = light.ambient * surface.diffuse;
+    vec3 diffuse = light.diffuse * diff * surface.diffuse;
+    vec3 specular = light.specular * spec * surface.specular;
+
+    // Apply shadow calculation
 //    float shadow_bias = max(0.005 * (1.0 - dot(normalize(surface.normal), -light_dir)), 0.0005);
 //    float shadow = ShadowCalculation(fs_in.light_space_position, shadow_bias);
-//
-//    // Combine results and apply brightness, factoring in shadow
-//    return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.brightness;
-//}
+    float shadow = 0.0;
+    // Combine results and apply brightness, factoring in shadow
+    return (ambient + (1.0) * (diffuse + specular)) * light.brightness;
+}
 
 vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_dir) {
     vec3 light_dir = normalize(frag_pos - light.position);
@@ -262,7 +262,7 @@ void main() {
     vec3 view_dir = normalize(view_pos - fs_in.world_position);
 
     // Add directional light with shadows
-    // illumination += calcDirectionalLight(directional_light, surface, view_dir);
+     illumination += calcDirectionalLight(directional_light, surface, view_dir);
 
     // Add point lights with shadows
     for(int ii = 0; ii < num_point_lights; ii++) {

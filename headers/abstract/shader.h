@@ -236,9 +236,9 @@ private:
             if (!success) {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
                 std::cerr << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n"
-                    << "File Paths: \n"
-                    << "Vertex Shader: " << scd.vrtx_path << "\n"
-                    << "Fragment Shader: " << scd.frag_path << "\n";
+                    << "File Paths : \n"
+                    << "  Vertex Shader   : " << scd.vrtx_path << "\n"
+                    << "  Fragment Shader : " << scd.frag_path << "\n";
                 if (!scd.geom_path.empty()) {
                     std::cerr << "Geometry Shader: " << scd.geom_path << "\n";
                 }

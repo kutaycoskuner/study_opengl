@@ -56,17 +56,19 @@ PrimitiveSceneNode PrimitiveSceneNodes::big_cube = {
 			Vec3(10.0f, 10.0f, 10.0f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "test_2k"
-	,.element_bools = ElementBools(
-					false,		// wireframe_mode
-					true,		// depth testing
-					true,		// stencil testing
-					false,		// blending
-					false,		// partial render
-					true		// is indexed
-					,true
-					,true
-	)
+	,.texture_name = "test_2k",
+	.element_bools = ElementBools{
+		.wireframe_mode		= false,
+		.depth_testing		= true,
+		.stencil_testing    = true,
+		.blending			= false,
+		.partial_render		= false,
+		.indexed			= true,
+		.is_triangle		= true,
+		.is_using_tan_space = false,
+		.face_culling		= true,
+		.gamma				= false
+	}
 };
 
 

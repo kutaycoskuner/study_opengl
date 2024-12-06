@@ -144,3 +144,12 @@ public:
 	PointShadowsTestScene();
 };
 
+
+class NormalMapTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+
+	NormalMapTestScene();
+};
+

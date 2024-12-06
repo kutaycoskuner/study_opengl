@@ -187,7 +187,7 @@ float VertexData::cube_vrts__pos_norm_uv[] = {		  // position, normal, texture c
 };
 
 float VertexData::plane_vrts__pos_norm_uv[] = {		// basic plane
-    // pos, normal, uv
+    // pos,                    normal,                    uv
     -1.0f, -0.0f, -1.0f,    0.0f,  1.0f, 0.0f,	    0.0f, 0.0f,
     -1.0f, -0.0f, +1.0f,    0.0f,  1.0f, 0.0f,	    0.0f, 1.0f,
     +1.0f, -0.0f, +1.0f,    0.0f,  1.0f, 0.0f,	    1.0f, 1.0f,
@@ -311,5 +311,3 @@ float VertexData::rectangle__vrts[] = {
 //	0, 1, 3,    // first triangle
 //	1, 2, 3     // second triangle
 //};
-
-

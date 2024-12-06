@@ -1,0 +1,27 @@
+- <normal map debugging>
+    - lighting is not as expected 
+    - isolated only the point lights
+    - changing values on renderdocs to understand what is wrong.
+    - first aattempt to see view_direction
+        - I set camera to 0, 8, 10
+        - I look at plane and visualize view direction
+        - expected to see green blue transition
+            - texture is black to red from left to right
+            - normalized and used absolute value to -> saw something what I have been expecting
+            - normal vis -> normaller problmeli geciyor. uste bakan yuz yesil olamsi gerekirken maviyid
+
+- <normal map complex models>
+    - I need complex 3d models to check if my tangent calculation on model import works
+    - found gltf sample models
+    - used sponza
+        - encountered with a problem
+        - noticed that I disabled importer downloads on cmake
+        - activated gltf import
+        - imported sponza
+            - problem: scale is too big I have only one point light not enough to illuminate whole scene
+            - quickfix: scale model problem todo: better parametric solution
+            - problem: only normal is the one coming from primitive scene node -> brick
+            - fix: changed enum values of height to normal on assimp
+            - problem: on sponza arch normals does not seem to be right
+                - normal maaps are not loading
+                - fix: asset importta texture binding numralari farkli

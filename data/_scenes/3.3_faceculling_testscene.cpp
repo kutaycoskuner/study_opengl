@@ -33,10 +33,9 @@ void FaceCullingTestScene::loadData()
 	//spot_lights[0].brightness = 10.0f;
 
 	// ----- define predefined elements
+	//predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::big_cube);
 	//predefined_scene_elements.back().transform.position.y = 2.0f;
-
-
 
 	// ----- define model paths
 	model_paths = {};
@@ -44,15 +43,18 @@ void FaceCullingTestScene::loadData()
 	// ----- create bools for each imported model
 	for (int i = 0; i < model_paths.size(); i++) {
 		scene_state.model_element_bools.push_back(
-			ElementBools(
-				false		// wireframe_mode
-				, false		// depth testing
-				, false		// stencil testing
-				, false		// blending
-				, false		// partial render
-				, false		// is indexed
-				, true		// is triangle
-			)
+			ElementBools{
+				.wireframe_mode = false,
+				.depth_testing = false,
+				.stencil_testing = false,
+				.blending = false,
+				.partial_render = false,
+				.indexed = true,
+				.is_triangle = true,
+				.is_using_tan_space = false,
+				.face_culling = false,
+				.gamma = false
+			}
 		);
 	}
 

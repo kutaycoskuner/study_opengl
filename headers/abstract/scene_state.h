@@ -23,7 +23,7 @@ struct SceneState
 
     float tant                      = 0.0f;
 
-    unsigned int animation_stage    = -1;
+    int animation_stage             = -1;
 
     bool animate                    = false;
     float animation_time            = 0.0f;

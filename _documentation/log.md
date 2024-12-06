@@ -116,14 +116,47 @@
     - overlay test
     - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
-    - fix face cullign scene problem after shadows
+    - fix resizing screen
     - add python test on scenes
     - add light bilboards
     - debug kodu
-    - nvidia api extension
-    - buildbinaries.bat degistir
+    - okuma nvidia api extension
+    - rename buildbinaries.bat degistir
     - okuma render pipeline
     - okuma lighting equation
+    - nvidia nsight graphics
+    - geo shader vertex normal vis
+    - change libs to external
+    - asset_import -> copy paste var if copy var
+    - asset_import retrieve material info
+
+- [0.91.2] add scene node struct / fix older scenes
+    - 07-Dec-2024
+        - readme update
+        - add display
+        - fix frame buffer scene element bools
+    - 06-Dec-2024 
+        - add model scaling parametric quick solution
+        - add scene node struct
+        - fix scene render problem due to changes (scaling)
+
+- [0.91.1] add model import tangent space / gltf import
+    - 05-Dec-2024 
+        - fix assimp_import texture loader
+        - added cmake assimp gltf import
+        - added sponza scene
+    - 03-Dec-2024
+        - add rectangular light shift algorithm
+        - chg normals test scene box
+
+- [0.91] add normal mapping tangent space math single quad
+    - 03-Dec-2024
+        - fix normal lighting problem
+    - 21-Nov-2024 
+        - wip fixing the illumination after tangent normal bitangent matrix
+        - wip tangent space implementation
+    - 19-Nov-2024 add basic normal map implementation
+    - 16-Nov-2024 wip normal mapping test scene
 
 - [0.90.6] fix point light shadow projection
     - 16-Nov-2024

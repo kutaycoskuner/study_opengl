@@ -126,6 +126,7 @@ struct ElementBools {
 	bool partial_render		= false;
 	bool indexed			= false;
 	bool is_triangle		= true;
+	bool is_using_tan_space = false;
 	bool face_culling		= false;
 	bool gamma				= false;
 };
@@ -140,6 +141,16 @@ struct PrimitiveSceneNode
 	float			tiling_factor = 1.0f;
 	Material		material;
 	ElementBools	element_bools;
+};
+
+struct SceneNode
+{
+	std::string		name;
+	Transform		transform;
+
+	// Constructor
+	SceneNode(const std::string& node_name = "", const Transform& node_transform = Transform())
+		: name(node_name), transform(node_transform) {}
 };
 
 //

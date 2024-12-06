@@ -163,6 +163,7 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.2_gammacorrection_testscene.cpp"
     "${data_dir_full}/_scenes/4.3_shadows_testscene.cpp"
     "${data_dir_full}/_scenes/4.4_point-shadows_testscene.cpp"
+    "${data_dir_full}/_scenes/4.5_normal-map_testscene.cpp"
 )
 
 set(shaderFiles
@@ -243,6 +244,10 @@ set(shaderFiles
     "${shader_dir_full}/4.4.shadowmap-pl_frag_shader.glsl"
     "${shader_dir_full}/4.4.shadowmap-pl_geo_shader.glsl"
     "${shader_dir_full}/4.4.shadowmap-pl_vrtx_shader.glsl"
+    "${shader_dir_full}/4.5.normal01_frag_shader.glsl"
+    "${shader_dir_full}/4.5.normal01_vrtx_shader.glsl"
+    "${shader_dir_full}/4.6.normal02_frag_shader.glsl"
+    "${shader_dir_full}/4.6.normal02_vrtx_shader.glsl"
 )
 
 
@@ -450,6 +455,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 # ----------------------- assimp
 # Disable building all importers and exporters by default
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_GLTF_IMPORTER ON)             # Enable only GLTF importer
 set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 # Enable only the importers you need (e.g., OBJ)
 set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)

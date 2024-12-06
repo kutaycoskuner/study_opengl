@@ -30,7 +30,7 @@ namespace math_utils
 { 
 	constexpr float PI = 3.14159265359f;
 	// scaling
-	float scaleByteToZeroOne(unsigned int byte);
+	float scaleByteToZeroOne(unsigned int byte);	
 	float scaleByteToZeroOne(float byte);
 	Vec3 scaleByteToZeroOne(float a, float b, float c);
 	Vec3 scaleByteToZeroOne(unsigned int a, unsigned int b, unsigned int c);
@@ -87,6 +87,7 @@ namespace vec_utils
 {
 	float length(const Vec3& vec);
 	float distance(const Vec3& vec1, const Vec3& vec2);
+	Vec3  normalize(const Vec3& vec);
 }
 
 namespace img_utils
