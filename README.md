@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.91.2-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.92-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
     <img alt="Build Status Main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=main&label=Build Status" />
@@ -129,11 +129,18 @@ If you run `_PackProgram.bat`, an isolated executable instance of the program wi
 - [x] Automated frame-based scene testing
 - [x] Shadow Mapping (Point light / Directional Light)
 - [x] Normal Mapping
+- [x] Parallax Mapping
 
 # Display
 Showcasing various rendering features and their implementation in the project.   
 For more visual examples of the project's output, please check the `_display` folder.   
 Below are some examples:
+
+<p align="center">
+    <img src="_display/0.92_parallax-mapping_20241217.gif" />
+    <br>
+    <sub><i>0.92 Parallax occlusion mapping</i></sub>
+</p>
 
 <p align="center">
     <img src="_display/0.91.2_normal-map-tangents_20241207.gif" />

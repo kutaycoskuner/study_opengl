@@ -44,15 +44,17 @@ struct TexturePaths {
 	std::string normal;
 	std::string specular;
 	std::string emission;
+	std::string displacement;
 };
 
 struct TextureSet
 {
-	unsigned int color		= 0;
-	unsigned int roughness	= 0;
-	unsigned int normal		= 0;
-	unsigned int specular	= 0;
-	unsigned int emission	= 0;
+	unsigned int color		  = 0;
+	unsigned int roughness	  = 0;
+	unsigned int normal	      = 0;
+	unsigned int specular	  = 0;
+	unsigned int emission	  = 0;
+	unsigned int displacement = 0;
 };
 
 class PathAfterDirectory

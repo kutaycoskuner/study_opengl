@@ -164,6 +164,7 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.3_shadows_testscene.cpp"
     "${data_dir_full}/_scenes/4.4_point-shadows_testscene.cpp"
     "${data_dir_full}/_scenes/4.5_normal-map_testscene.cpp"
+    "${data_dir_full}/_scenes/4.6_parallax_testscene.cpp"
 )
 
 set(shaderFiles
@@ -248,6 +249,8 @@ set(shaderFiles
     "${shader_dir_full}/4.5.normal01_vrtx_shader.glsl"
     "${shader_dir_full}/4.6.normal02_frag_shader.glsl"
     "${shader_dir_full}/4.6.normal02_vrtx_shader.glsl"
+    "${shader_dir_full}/4.7.parallax_frag_shader.glsl"
+    "${shader_dir_full}/4.7.parallax_vrtx_shader.glsl"
 )
 
 

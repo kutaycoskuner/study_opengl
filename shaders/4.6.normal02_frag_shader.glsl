@@ -242,6 +242,7 @@ vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_
     
 	//return halfway_dir;
     float shadow = ShadowCalculation(fs_in.world_position);
+    shadow = 0.0f;
 
 //    return surface.normal * 1.0f;
     return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.brightness;
@@ -336,7 +337,7 @@ void main() {
     // result
     // -----------------------------------------------------------------------------------
     // Set final color output
-    f_frag_color = vec4(illumination, 1.0);
+    f_frag_color = vec4(surface.normal, 1.0);
 
 //     surface.normal = surface.normal * 0.5f + 0.5f;
 //     f_frag_color = vec4(surface.normal, 1.0);

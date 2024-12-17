@@ -131,8 +131,7 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 	{
 	.color = std::string("textures/out_blending_transparent_window_blue_256.png")
 	}
-}
-,
+},
 {"out_brickwall",
 	{
 	.color     = std::string("textures/learnopengl/out_brickwall_color_1k.jpg")
@@ -141,4 +140,35 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
 	}
 }
+,{
+"out_bricks",
+   {
+   .color	      = std::string("textures/learnopengl/out_bricks2_color_512.jpg")
+   ,.normal		  = std::string("textures/learnopengl/out_bricks2_normal_512.jpg")
+   ,.displacement = std::string("textures/learnopengl/out_bricks2_displacement_512.jpg")
+	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
+	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
+   }
+}
+,{
+"out_wood",
+   {
+   .color = std::string("textures/learnopengl/out_wood_color_1k.png")
+   ,.normal = std::string("textures/learnopengl/out_toy_box_normal_256.png")
+   ,.displacement = std::string("textures/learnopengl/out_toy_box_displacement_256.png")
+	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
+	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
+   }
+}
+,{
+"parallax-test",
+{
+.color = std::string("textures/learnopengl/out_wood_color_1k.png")
+,.normal = std::string("textures/self/parallax-test_normal_512.png")
+,.displacement = std::string("textures/self/parallax-test_displacement_512.png")
+//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
+//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
+   }
+}
+
 };
