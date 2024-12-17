@@ -153,3 +153,11 @@ public:
 	NormalMapTestScene();
 };
 
+class ParallaxTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+
+	ParallaxTestScene();
+};
+

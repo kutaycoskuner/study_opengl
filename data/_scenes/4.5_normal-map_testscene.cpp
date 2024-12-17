@@ -74,7 +74,7 @@ void NormalMapTestScene::loadData()
 	// back
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	predefined_scene_elements.back().transform.scale	= Vec3(5.0f, 5.0f, 5.0f);
-	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -5.0f);
 	predefined_scene_elements.back().texture_name		= "out_brickwall";
 	predefined_scene_elements.back().shader_name = "normal02";
@@ -83,34 +83,34 @@ void NormalMapTestScene::loadData()
 	// bottom
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(-90.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, -5.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_brickwall";
 	predefined_scene_elements.back().shader_name = "normal02";
 	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// top
+	// top
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	predefined_scene_elements.back().transform.rotation = Vec3(180.0f, 0.0f, 0.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, +5.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_brickwall";
 	predefined_scene_elements.back().shader_name = "normal02";
 	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// left
+	// left
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, -90.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 90.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(-5.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_brickwall";
 	predefined_scene_elements.back().shader_name = "normal02";
 	predefined_scene_elements.back().element_bools.is_using_tan_space = true;
 
-	//// right
+	////// right
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
 	predefined_scene_elements.back().transform.scale = Vec3(5.0f, 5.0f, 5.0f);
-	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 90.0f);
+	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, -90.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(+5.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_brickwall";
 	predefined_scene_elements.back().shader_name = "normal02";

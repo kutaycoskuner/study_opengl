@@ -318,6 +318,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 14)	active_scene = new ShadowsTestScene;
 	else if (scene_number == 15)	active_scene = new PointShadowsTestScene;
 	else if (scene_number == 16)	active_scene = new NormalMapTestScene;
+	else if (scene_number == 17)	active_scene = new ParallaxTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -393,6 +394,11 @@ void Application::loadTextures()
 		PathAfterDirectory::texture_paths[texture_name].emission != "" ?
 			texture_set.emission = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].emission)
 			: texture_set.emission = 0;
+		textures[texture_name] = texture_set;
+
+		PathAfterDirectory::texture_paths[texture_name].displacement != "" ?
+			texture_set.displacement = createTexture(data_dir_path, PathAfterDirectory::texture_paths[texture_name].displacement)
+			: texture_set.displacement = 0;
 		textures[texture_name] = texture_set;
 	}
 
@@ -839,6 +845,9 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Normal Map", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 16 });
 			}
+			if (ImGui::MenuItem("Parallax Mapping", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 17 });
+			}
 
 			ImGui::EndMenu();
 		}
@@ -878,9 +887,9 @@ void Application::updateUI()
 		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
 
-		ImGui::SliderFloat("p light 01 x", &this->active_scene->point_lights[0].position.x, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("p light 01 y", &this->active_scene->point_lights[0].position.y, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("p light 01 z", &this->active_scene->point_lights[0].position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("p light 01 x", &this->active_scene->point_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("p light 01 y", &this->active_scene->point_lights[0].position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("p light 01 z", &this->active_scene->point_lights[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		// Debug
 		//ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		//ImGui::SliderFloat("Osman", &this->active_scene->directional_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -904,17 +913,17 @@ void Application::compute_QuadVrtxTangents()
 	if (computed_vertex_array_obj == 0)
 	{
 		// positions
-		Vec3 pos1(-1.0f, 0.0f, +1.0f);
-		Vec3 pos2(-1.0f, 0.0f, -1.0f);
-		Vec3 pos3(+1.0f, 0.0f, -1.0f);
-		Vec3 pos4(+1.0f, 0.0f, +1.0f);
+		Vec3 pos1(-1.0f, +1.0f, 0.0f);
+		Vec3 pos2(-1.0f, -1.0f, 0.0f);
+		Vec3 pos3(+1.0f, -1.0f, 0.0f);
+		Vec3 pos4(+1.0f, +1.0f, 0.0f);
 		// texture coordinates
 		Vec2 uv1(0.0f, 1.0f);
 		Vec2 uv2(0.0f, 0.0f);
 		Vec2 uv3(1.0f, 0.0f);
 		Vec2 uv4(1.0f, 1.0f);
 		// normal vector
-		Vec3 nm(0.0f, 1.0f, 0.0f);
+		Vec3 nm(0.0f, 0.0f, 1.0f);
 
 		// calculate tangent/bitangent vectors of both triangles
 		Vec3 tangent1, bitangent1;
@@ -926,15 +935,21 @@ void Application::compute_QuadVrtxTangents()
 		Vec2 deltaUV1 = uv2 - uv1;
 		Vec2 deltaUV2 = uv3 - uv1;
 
-		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+		float det = deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y;
+		if (abs(det) < 1e-6) {
+			det = 1e-6; // Prevent division by zero
+		}
+		float f = 1.0f / det;
 
 		tangent1.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
 		tangent1.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
 		tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+		tangent1.normalize();
 
 		bitangent1.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
 		bitangent1.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
 		bitangent1.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+		bitangent1.normalize();
 
 		// triangle 2
 		// ----------
@@ -943,26 +958,31 @@ void Application::compute_QuadVrtxTangents()
 		deltaUV1 = uv3 - uv1;
 		deltaUV2 = uv4 - uv1;
 
-		f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		//f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
 
 		tangent2.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
 		tangent2.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
 		tangent2.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+		tangent2.normalize();
 
 		bitangent2.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
 		bitangent2.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
 		bitangent2.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+		bitangent2.normalize();
 
+		float handedness = (math_utils::dot3d(
+			math_utils::cross3d(tangent1, bitangent1), nm) > 0.0f) ? 1.0f : -1.0f;
 
 		float quadVertices[] = {
 			// positions               // normal            // texcoords   // tangent                               // bitangent
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, 1.0f, //bitangent1.x, bitangent1.y, bitangent1.z,
-			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, 1.0f, //bitangent1.x, bitangent1.y, bitangent1.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, 1.0f, //bitangent1.x, bitangent1.y, bitangent1.z,
-																											  
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, 1.0f, //bitangent2.x, bitangent2.y, bitangent2.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, 1.0f, //bitangent2.x, bitangent2.y, bitangent2.z,
-			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, 1.0f, //bitangent2.x, bitangent2.y, bitangent2.z
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, handedness, //bitangent1.x, bitangent1.y, bitangent1.z,
+			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, handedness, //bitangent1.x, bitangent1.y, bitangent1.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, handedness, //bitangent1.x, bitangent1.y, bitangent1.z,
+																										
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, handedness, //bitangent2.x, bitangent2.y, bitangent2.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, handedness, //bitangent2.x, bitangent2.y, bitangent2.z,
+			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, handedness //bitangent2.x, bitangent2.y, bitangent2.z
 		};
 		// configure plane VAO
 		glGenVertexArrays(1, &computed_vertex_array_obj);
@@ -1525,6 +1545,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setFloat("tiling_factor", active_scene->predefined_scene_elements[i].tiling_factor);
 		active_shader->setBool("gamma", active_scene->scene_state.gamma);
 		active_shader->setInt("num_point_lights", active_scene->point_lights.size());
+		active_shader->setFloat("prlx_height_scale", 0.2f);
 
 		active_shader->setFloat("far_plane", shadow_far_plane);
 
@@ -1556,6 +1577,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setInt("material.emission_map1", 3);
 		active_shader->setInt("shadow_map", 4);
 		active_shader->setInt("shadow_cubemap", 5);
+		active_shader->setInt("material.depth_map1", 6);
 
 		// factors
 		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
@@ -1605,6 +1627,11 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		shadow_cubemaps.size() > 0 ?
 			glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps[0])
 			: glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+		glActiveTexture(GL_TEXTURE6);
+		textures.at(texture_name).displacement != 0 ?
+			glBindTexture(GL_TEXTURE_2D, textures.at(texture_name).displacement)
+			: glBindTexture(GL_TEXTURE_2D, 0);
 
 
 		// ----- draw 1: draw element
@@ -1669,8 +1696,10 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			active_shader->setInt("material.texture_diffuse1", 0);
 			active_shader->setInt("material.texture_specular1", 1);
 			active_shader->setInt("material.texture_emissive1", 2);
+			
 			active_shader->setInt("shadow_map", 3);
 			active_shader->setInt("shadow_cubemap", 4);
+
 			active_shader->setFloat("material.emission_factor", ss.emission_factor);
 			active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 

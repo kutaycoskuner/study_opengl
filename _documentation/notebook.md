@@ -9,6 +9,9 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- tangent space
+    - https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
+
 - opengl cubemap docs
     - https://www.khronos.org/opengl/wiki/Cubemap_Texture
 
@@ -529,6 +532,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - <adding new shader>
     - shaders/<new>.glsl yeni shader ekle
     - data/paths/shader_paths.cpp -> shader pathleri ekle
+    - cmake add shaders
     - change element shader name 
 
 - <adding new texture>
@@ -834,6 +838,9 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 - Block "VS_OUT" mismatch between shader stages
 
 - <errors>
+    - error C7560: 'displacement': designators must appear in member declaration order of class 'TexturePaths'
+        - siralamanin tutmasi gerekiyormus
+
     - Exception thrown at 0x00007FFC8AB3D6AB (nvoglv64.dll) in opengl_renderer.exe: 0xC0000005: Access violation reading location 0x0000000000000010.
 
     - error C2259: 'Application': cannot instantiate abstract class

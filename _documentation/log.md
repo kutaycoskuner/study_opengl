@@ -113,6 +113,7 @@
 
 # Log
 - [todo]
+    - general unused code cleaning and descriptive commenting
     - overlay test
     - fix outliner when removing primitive element its rendering differently
     - fix outliner first element is not outlining
@@ -129,6 +130,24 @@
     - change libs to external
     - asset_import -> copy paste var if copy var
     - asset_import retrieve material info
+
+- [0.92] parallax mapping implementation
+    - 17-Dec-2024
+        - update readme
+        - add display
+        - add self test textures for parallax
+        - add set standard to parallax height map definition
+        - fix parallax mapping texture problems
+    - 12-Dec-2024
+        - wip normal texture test
+        - wip parallax mapping
+    - 09-Dec-2024
+        - add parallax occ implementation
+        - add new test textures
+    - 08-Dec-2024
+        - wip parallax calc
+        - add parallax study shader
+        - add parallax study scene
 
 - [0.91.2] add scene node struct / fix older scenes
     - 07-Dec-2024

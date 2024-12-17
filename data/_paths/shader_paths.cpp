@@ -162,6 +162,10 @@ const std::vector<ShaderPaths> PathAfterDirectory::shader_paths =
 	 std::string("4.6.normal02_vrtx_shader.glsl")
 	,std::string("4.6.normal02_frag_shader.glsl")
 	}
+	,{
+	 std::string("4.7.parallax_vrtx_shader.glsl")
+	,std::string("4.7.parallax_frag_shader.glsl")
+	}
 };
 
 // another model try with keys. this approach is abstracting the identifier from file names.
