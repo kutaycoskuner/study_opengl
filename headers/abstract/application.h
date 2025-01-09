@@ -137,6 +137,8 @@ private:
     // draw scene
     void drawScene(Uniforms& uni);
 
+        void setUniforms(Uniforms& uni);
+        
         void drawHelper_axes(Uniforms& uni);
         void drawHelper_lightPlaceholders(Uniforms& uni);
 
@@ -151,7 +153,7 @@ private:
         void drawShadowMap();
         void drawShadowCubemap();
 
-        void drawFramebuffer(int display_w, int display_h);
+        void drawBackbuffer(int display_w, int display_h);
 
         void compute_QuadVrtxTangents();
 
@@ -204,7 +206,7 @@ private:
     unsigned int ubo_matrices;
 
     // frame buffer
-    unsigned int fbo; // frame buffer object    || frame buffer
+    unsigned int fbo_lighting; // frame buffer object    || frame buffer
     unsigned int rbo; // render buffer object   || render buffer
     unsigned int screen_colortexture;
 
@@ -221,7 +223,7 @@ private:
 
     // anti-aliasing
     unsigned int sample_count = 1;
-    unsigned int fbo_msaa;
+    unsigned int fbo_lighting_msaa;
     unsigned int rbo_msaa;
     unsigned int colorbuffer_msaa;
 

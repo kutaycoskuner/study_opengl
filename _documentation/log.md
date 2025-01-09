@@ -130,6 +130,24 @@
     - change libs to external
     - asset_import -> copy paste var if copy var
     - asset_import retrieve material info
+    - add exposure to ui
+    - add shadow to sponza
+
+- [0.93] add hdr lighting
+    - 09-Jan-2025
+        - add hdr lighting
+        - add exposure parameter to scene_state
+    - 24-Dec-2024
+        - wip: gamma reference point testing
+        - add: gamma test textures (23.10, 50m)
+    - 22-Dec-2024
+        - wip: gamma correction testing method
+        - add tone mapping on frame buffer
+        - add 16f image tex on frame buffer
+    - 17-Dec-2024
+        - fix directional light specular
+        - chg uniform set function to application
+        - add hdr test scene and shaders
 
 - [0.92] parallax mapping implementation
     - 17-Dec-2024

@@ -132,12 +132,12 @@ bool Application::initialize(const ConfigData& config)
 
 	// 3.11 configure MSAA framebuffer
 	// --------------------------
-	glGenFramebuffers(1, &fbo_msaa);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_msaa);
+	glGenFramebuffers(1, &fbo_lighting_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_lighting_msaa);
 	// create a multisampled color attachment texture
 	glGenTextures(1, &colorbuffer_msaa);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorbuffer_msaa);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample_count, GL_RGB, msaa_width, msaa_height, GL_TRUE);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample_count, GL_RGBA16F, msaa_width, msaa_height, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, colorbuffer_msaa, 0);
 	// create a (also multisampled) renderbuffer object for depth and stencil attachments
@@ -150,8 +150,30 @@ bool Application::initialize(const ConfigData& config)
 
 	// 3.4 generate frame buffer object 
 	// -------------------------
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenFramebuffers(1, &fbo_lighting);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_lighting);
+	//// create floating point color buffer
+	//unsigned int color_buffer;
+	//glGenTextures(1, &color_buffer);
+	//glBindTexture(GL_TEXTURE_2D, color_buffer);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//glBindFramebuffer(GL_FRAMEBUFFER, fbo_lighting);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
+	////// create depth buffer (renderbuffer)
+	////unsigned int render_buffer_obj_depth;
+	////glGenRenderbuffers(1, &render_buffer_obj_depth);
+	////glBindRenderbuffer(GL_RENDERBUFFER, render_buffer_obj_depth);
+	////glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, display_width, display_height);
+	//// attach buffers
+	////glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	////glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
+	//////glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, render_buffer_obj_depth);
+	//if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	//	std::cout << "Framebuffer not complete!" << std::endl;
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	// 4.3 shadow fbo
@@ -205,7 +227,7 @@ bool Application::initialize(const ConfigData& config)
 	// ---------------------------------------------------------
 	glGenTextures(1, &screen_colortexture);
 	glBindTexture(GL_TEXTURE_2D, screen_colortexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, k_scr_width, k_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, k_scr_width, k_scr_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -224,6 +246,11 @@ bool Application::initialize(const ConfigData& config)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	input_speaker.addListener(this);
+
+	// gamma background linear -> srgb
+	clear_color.x = pow(clear_color.x, 2.2);
+	clear_color.y = pow(clear_color.y, 2.2);
+	clear_color.z = pow(clear_color.z, 2.2);
 
 	return 0;
 }
@@ -319,6 +346,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 15)	active_scene = new PointShadowsTestScene;
 	else if (scene_number == 16)	active_scene = new NormalMapTestScene;
 	else if (scene_number == 17)	active_scene = new ParallaxTestScene;
+	else if (scene_number == 18)	active_scene = new HDRTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -664,7 +692,7 @@ void Application::mainLoop(ConfigData& config)
 		drawScene(uni);
 
 		drawUI();
-
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
@@ -711,8 +739,9 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 #endif
 
 	// glfw window creation
+	//glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 	this->window = glfwCreateWindow(width, height, window_name, NULL, NULL);
-	// first two params x,y in size; 3. name; 4-5 necesssary but ignore
+	// first two parameters x,y in size; 3. name; 4-5 necessary but ignore
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -754,7 +783,7 @@ void Application::unload()
 	//glDeleteBuffers(1, &lit_vbo);
 	if (!reload)
 	{
-		glDeleteFramebuffers(1, &fbo);
+		glDeleteFramebuffers(1, &fbo_lighting);
 		glDeleteRenderbuffers(1, &rbo);
 		glDeleteVertexArrays(buffer_count, vertex_arrays);
 		glDeleteBuffers(buffer_count, vertex_buffers);
@@ -847,6 +876,9 @@ void Application::updateUI()
 			}
 			if (ImGui::MenuItem("Parallax Mapping", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 17 });
+			}
+			if (ImGui::MenuItem("High Dynamic Range", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 18 });
 			}
 
 			ImGui::EndMenu();
@@ -1041,7 +1073,7 @@ void Application::setDirectionalLightParameters(Uniforms& uni)
 {
 	const std::vector<DirectionalLight>& directional_lights = active_scene->directional_lights;
 	if (directional_lights.empty()) { return; }
-	active_shader->setVec3("directional_light.direction", directional_lights[0].direction);
+	active_shader->setVec3("directional_light.direction", directional_lights[0].direction.normalized());
 	active_shader->setVec3("directional_light.diffuse", directional_lights[0].diffuse); // darken diffuse light a bit
 	active_shader->setVec3("directional_light.ambient", directional_lights[0].ambient);
 	active_shader->setVec3("directional_light.specular", directional_lights[0].specular);
@@ -1129,7 +1161,7 @@ void Application::drawScene(Uniforms& uni)
 	// 3.4. framebuffer
 	// bind to framebuffer and draw scene as we normally would to color texture 
 	//glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_lighting_msaa);
 
 
 	// enable this to avoid awkward whatever front rendering
@@ -1179,7 +1211,7 @@ void Application::drawScene(Uniforms& uni)
 
 	drawScene_skybox(uni);
 
-	drawFramebuffer(display_w, display_h);
+	drawBackbuffer(display_w, display_h);
 
 
 }
@@ -1196,6 +1228,7 @@ void Application::drawHelper_lightPlaceholders(Uniforms& uni)
 
 		// assign uniforms
 		active_shader->setVec3("light_color", active_scene->point_lights[ii].diffuse); // light_coloru degistirme
+		active_shader->setFloat("light_brightness", active_scene->point_lights[ii].brightness); 
 		active_shader->setMat4("view_matrix", uni.upv.view_matrix);
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
@@ -1384,18 +1417,32 @@ void Application::drawShadowMap()
 
 }
 
-void Application::drawFramebuffer(int display_w, int display_h)
+void Application::drawBackbuffer(int display_w, int display_h)
 {
 	// 3.4. framebuffer
 	// --------------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
 
 	// 3.11 anti aliasing
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_msaa);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_lighting_msaa);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_lighting);
 	glBlitFramebuffer(0, 0, msaa_width, msaa_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#define CHECK_BACKBUFFER_ENCODING 0
+#if CHECK_BUFFER_ENCODING
+	// check back buffer encoding
+	GLint encoding;
+	glGetFramebufferAttachmentParameteriv(
+		GL_FRAMEBUFFER, 
+		GL_BACK_LEFT, 
+		GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING,
+		&encoding
+	);
+	std::cout << (encoding == GL_SRGB ? "srgb" : "linear");
+#endif
+
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -1404,6 +1451,8 @@ void Application::drawFramebuffer(int display_w, int display_h)
 
 	this->active_shader = shaders.at("framebuffer");
 	(*active_shader).use();
+	
+	active_shader->setFloat("exposure", active_scene->scene_state.exposure);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(named_arrays.at("frame"));
 	glBindTexture(GL_TEXTURE_2D, screen_colortexture);	// use the color attachment texture as the texture of the quad plane
@@ -1500,6 +1549,45 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
 	}
 }
 
+void Application::setUniforms(Uniforms& uni)
+{
+	// draw scene objects
+	// --------------------------------------------------------------------------
+	Camera cam = active_scene->cameras[0];
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+	// assign uniforms
+	active_shader->setVec3("view_pos", cam.position);
+	active_shader->setMat4("view_mat", upv.view_matrix);
+	active_shader->setMat4("projection_mat", upv.projection_matrix);
+	active_shader->setFloat("mix_val", upo.mix_value);
+	active_shader->setFloat("time", active_scene->scene_state.time);
+	active_shader->setFloat("tiling_factor", 1.0f);
+	active_shader->setBool("gamma", active_scene->scene_state.gamma);
+	active_shader->setInt("num_point_lights", active_scene->point_lights.size());
+	active_shader->setFloat("prlx_height_scale", 0.2f);
+	active_shader->setFloat("far_plane", shadow_far_plane);
+	active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
+
+	// assign shadow
+	if (m_light_space_matrix.size() > 0)
+		active_shader->setMat4("light_space_matrix", m_light_space_matrix[0]);
+
+	// textures
+	active_shader->setInt("material.diffuse_map1", 0);
+	active_shader->setInt("material.specular_map1", 1);
+	active_shader->setInt("material.normal_map1", 2);
+	active_shader->setInt("material.emission_map1", 3);
+	active_shader->setInt("shadow_map", 4);
+	active_shader->setInt("shadow_cubemap", 5);
+	active_shader->setInt("material.depth_map1", 6);
+
+	// factors
+	active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
+	active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
+}
+
 void Application::drawSceneNodes_primitive(Uniforms& uni)
 {
 	// draw scene objects
@@ -1536,24 +1624,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			}
 		}
 
-		// assign uniforms
-		active_shader->setVec3("view_pos", cam.position);
-		active_shader->setMat4("view_mat", upv.view_matrix);
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
-		active_shader->setFloat("mix_val", upo.mix_value);
-		active_shader->setFloat("time", active_scene->scene_state.time);
-		active_shader->setFloat("tiling_factor", active_scene->predefined_scene_elements[i].tiling_factor);
-		active_shader->setBool("gamma", active_scene->scene_state.gamma);
-		active_shader->setInt("num_point_lights", active_scene->point_lights.size());
-		active_shader->setFloat("prlx_height_scale", 0.2f);
-
-		active_shader->setFloat("far_plane", shadow_far_plane);
-
-		// assign shadow
-		if (m_light_space_matrix.size() > 0)
-			active_shader->setMat4("light_space_matrix", m_light_space_matrix[0]);
-
-
+		setUniforms(uni);
 		// directional light
 		setDirectionalLightParameters(uni);
 		// point light
@@ -1570,18 +1641,6 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setVec3("material.diffuse", 0.5f, 0.5f, 0.5f);
 		active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 
-		// textures
-		active_shader->setInt("material.diffuse_map1", 0);
-		active_shader->setInt("material.specular_map1", 1);
-		active_shader->setInt("material.normal_map1", 2);
-		active_shader->setInt("material.emission_map1", 3);
-		active_shader->setInt("shadow_map", 4);
-		active_shader->setInt("shadow_cubemap", 5);
-		active_shader->setInt("material.depth_map1", 6);
-
-		// factors
-		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
-		active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 		float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
 		//active_shader->setFloat("outline_scale", maxObjectScale);
 
@@ -1768,18 +1827,8 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 		UniformsPerView& upv = uni.upv;
 		UniformsPerFrame& upf = uni.upf;
 
-		// assign textures and uniforms
-		active_shader->setVec3("view_pos", active_scene->cameras[0].position);
-		active_shader->setMat4("view_mat", upv.view_matrix);
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
-		active_shader->setFloat("mix_val", upo.mix_value);
-		active_shader->setFloat("time", active_scene->scene_state.time);
-		active_shader->setFloat("tiling_factor", 1.0f);
-		active_shader->setBool("gamma", active_scene->scene_state.gamma);
-		active_shader->setFloat("num_point_lights", active_scene->point_lights.size());
-		active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
-		active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
+		setUniforms(uni);
 
 
 		if (active_scene->scene_state.b_model_refraction)

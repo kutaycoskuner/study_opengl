@@ -134,8 +134,8 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 },
 {"out_brickwall",
 	{
-	.color     = std::string("textures/learnopengl/out_brickwall_color_1k.jpg")
-	,.normal   = std::string("textures/learnopengl/out_brickwall_normal_1k.jpg")
+	.color = std::string("textures/learnopengl/out_brickwall_color_1k.jpg")
+	,.normal = std::string("textures/learnopengl/out_brickwall_normal_1k.jpg")
 	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
 	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
 	}
@@ -143,8 +143,8 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 ,{
 "out_bricks",
    {
-   .color	      = std::string("textures/learnopengl/out_bricks2_color_512.jpg")
-   ,.normal		  = std::string("textures/learnopengl/out_bricks2_normal_512.jpg")
+   .color = std::string("textures/learnopengl/out_bricks2_color_512.jpg")
+   ,.normal = std::string("textures/learnopengl/out_bricks2_normal_512.jpg")
    ,.displacement = std::string("textures/learnopengl/out_bricks2_displacement_512.jpg")
 	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
 	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
@@ -169,6 +169,19 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 //,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
 //,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
    }
+},
+{
+"gamma-test-rgb",
+	{
+	.color = std::string("textures/self/gamma_test_rgb_256.png")
+    }
+},
+{
+"gamma-test-srgb",
+	{
+	.color = std::string("textures/self/gamma_test_srgb_256.png")
+	}
 }
+
 
 };

@@ -22,6 +22,7 @@ struct SceneState
     float last_frame_time           = 0.0f;
 
     float tant                      = 0.0f;
+    float exposure                  = 1.0f;
 
     int animation_stage             = -1;
 

@@ -6,13 +6,45 @@ in vec2 v_tex_coords;
 
 uniform sampler2D screen_texture;
 
+uniform float exposure;
+
 float Luma(vec3 color) { return max(dot(color, vec3(0.299, 0.587, 0.114)), 0.001); }
+
+vec3 srgb_to_linear(vec3 srgb_color) 
+{
+    return pow(srgb_color, vec3(2.2));
+}
+
+vec3 linear_to_srgb(vec3 linear_color) 
+{
+    return pow(linear_color, vec3(1.0/2.2));
+}
 
 void main()
 {
-        
-	//   1.0 init
-	out_frag_color = texture(screen_texture, v_tex_coords);
+	vec3 hdr_color = texture(screen_texture, v_tex_coords).rgb;
+    vec3 mapped = hdr_color;
+    
+    // tm: reinhard tone mapping 
+//    mapped = hdr_color / (hdr_color + vec3(1.0));
+    
+    // tm-alt: modified reinhard tone mapping 
+    // mapped = hdr_color / (hdr_color + vec3(.5));
+     mapped = vec3(1.0) - exp(-hdr_color * exposure);
+
+    // tm-alt: linear tone mapping
+    // tm-alt: logarithmic tone mapping
+    // tm-alt: local tone mapping
+    // tm-alt: bilateral filtering
+    // tm-alt: gradient domain compression
+
+
+    // gamma correction 
+    mapped = linear_to_srgb(mapped);
+    
+    // output
+    out_frag_color = vec4(mapped, 1.0f);
+
     //  0.0 disabled
     return;
 	
