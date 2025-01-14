@@ -347,6 +347,7 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 16)	active_scene = new NormalMapTestScene;
 	else if (scene_number == 17)	active_scene = new ParallaxTestScene;
 	else if (scene_number == 18)	active_scene = new HDRTestScene;
+	else if (scene_number == 19)	active_scene = new BloomTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -879,6 +880,9 @@ void Application::updateUI()
 			}
 			if (ImGui::MenuItem("High Dynamic Range", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 18 });
+			}
+			if (ImGui::MenuItem("Bloom", "")) {
+				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 19 });
 			}
 
 			ImGui::EndMenu();

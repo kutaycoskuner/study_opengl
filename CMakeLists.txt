@@ -166,6 +166,7 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.5_normal-map_testscene.cpp"
     "${data_dir_full}/_scenes/4.6_parallax_testscene.cpp"
     "${data_dir_full}/_scenes/4.7_hdr_testscene.cpp"
+    "${data_dir_full}/_scenes/4.8_bloom_testscene.cpp"
 )
 
 set(shaderFiles
@@ -254,6 +255,8 @@ set(shaderFiles
     "${shader_dir_full}/4.7.parallax_vrtx_shader.glsl"
     "${shader_dir_full}/4.8.hdr_frag_shader.glsl"
     "${shader_dir_full}/4.8.hdr_vrtx_shader.glsl"
+    "${shader_dir_full}/4.9.bloom_frag_shader.glsl"
+    "${shader_dir_full}/4.9.bloom_vrtx_shader.glsl"
 )
 
 

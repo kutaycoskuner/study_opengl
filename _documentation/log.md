@@ -132,6 +132,20 @@
     - asset_import retrieve material info
     - add exposure to ui
     - add shadow to sponza
+    - proper yaml parser
+    - refactoring naming convention
+    - ui handlers
+    - ref: buffer names remove unused ones / temporals
+        - fbo
+        - rbo
+        - msaa
+        - lighting
+
+- [0.94] add bloom shaders and test scene
+    - 12-Jan-2025
+        - wip failed texture attachments for bloom
+        - add bloom shaders
+        - add bloom test scene
 
 - [0.93] add hdr lighting
     - 09-Jan-2025
