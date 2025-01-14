@@ -48,7 +48,7 @@ void BloomTestScene::loadData()
 	// point6
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(1.0f, 1.0f, 1.0f);
-	point_lights.back().brightness = 100.0f;
+	point_lights.back().brightness = 10000.0f;
 	point_lights.back().position = Vec3(1.0, 2.0f, 1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
@@ -98,7 +98,7 @@ void BloomTestScene::loadData()
 
 	// models
 	// ----------------------------------------------------------------
-	scene_state.model_shader_name = "bloom";
+	scene_state.model_shader_name = "hdr";
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
 		//"models/out_sponza/glTF/Sponza.gltf"

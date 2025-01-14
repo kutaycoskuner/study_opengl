@@ -308,6 +308,9 @@
     - selection (orange / overlay)
                     -> blender  1.0, 0.62, 0.16
 
+- <engine setup>
+    - msaa > intermediate hdr > bloom > ldr 
+
 - <graphics pipeline>
 
 - <space transformations>

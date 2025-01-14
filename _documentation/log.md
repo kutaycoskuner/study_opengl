@@ -140,6 +140,13 @@
         - rbo
         - msaa
         - lighting
+    - add glew 
+    - validation layer -> yanlis yaptiginda geri bildirim veriyor
+
+- [0.94.1] add bright color extraction
+    - 14-Jan-2025
+        - add extracting bright color 
+        - add separate ui functions to another cpp with imgui header imports
 
 - [0.94] add bloom shaders and test scene
     - 12-Jan-2025

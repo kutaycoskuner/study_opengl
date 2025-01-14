@@ -88,6 +88,7 @@ set(blackboardCode
 
 set(coreCode
     "${sourceDir}/core/application.cpp"
+    "${sourceDir}/core/ui.cpp"
 )
 
 set(eventHandlingCode

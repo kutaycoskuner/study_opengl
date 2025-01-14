@@ -198,34 +198,40 @@ private:
     unsigned int vertex_buffers[buffer_count];
     unsigned int element_buffers[buffer_count];
 
-    unsigned int frame_buffers[buffer_count];
-    unsigned int render_buffers[buffer_count];
+    //unsigned int frame_buffers[buffer_count];
+    //unsigned int render_buffers[buffer_count];
 
     std::map<std::string, unsigned int> named_arrays;
 
     unsigned int ubo_matrices;
-
-    // frame buffer
-    unsigned int fbo_lighting; // frame buffer object    || frame buffer
-    unsigned int rbo; // render buffer object   || render buffer
-    unsigned int screen_colortexture;
-
-    // shadow fbo
-    std::vector<unsigned int> shadow_fbo;
-    std::vector<unsigned int> shadow_maps;
-
-    std::vector<unsigned int> shadow_cube_fbo;
-    std::vector<unsigned int> shadow_cubemaps;
-    
-    std::vector<GLfloat*>     ptr_light_space_matrix;
-    std::vector<Mat4>         m_light_space_matrix;
-    std::array<Mat4, 6>       cubemap_light_space_matrices;
-
+   
     // anti-aliasing
     unsigned int sample_count = 1;
-    unsigned int fbo_lighting_msaa;
-    unsigned int rbo_msaa;
-    unsigned int colorbuffer_msaa;
+    unsigned int fbo_scene_lighting_msaa;
+    unsigned int rbo_scene_lighting_msaa;
+    unsigned int tex_scene_lighting_color;
+        
+    // high dynamic range
+    GLuint  fbo_scene_lighting_hdr;
+    GLuint  tex_scene_lighting_hdr[2];
+
+    // final frame buffer (low dynamic range output)
+    unsigned int fbo_backbuffer;       // frame buffer object    || frame buffer
+    unsigned int rbo_backbuffer_depth; // render buffer object   || render buffer
+    unsigned int fbo_backbuffer_color;
+
+    // shadow buffers
+    std::vector<unsigned int> fbo_shadow;
+    std::vector<unsigned int> tex_shadow_maps;
+
+    // shadow cubemaps
+    std::vector<unsigned int> fbo_shadow_cube;
+    std::vector<unsigned int> tex_shadow_cubemaps;
+    
+    // shadow matrices
+    std::vector<GLfloat*>     ptr_mat_light_space;
+    std::vector<Mat4>         mat_light_space;
+    std::array<Mat4, 6>       mat_light_space_cubemaps;
 
 
     std::shared_ptr<Shader> active_shader;
@@ -242,13 +248,13 @@ private:
     Vec4        clear_color;
 
     // temporary
-    unsigned int    msaa_width              = 800;
-    unsigned int    msaa_height             = 600;
     int             display_width           = 800;
     int             display_height          = 600;
+
     int             shadowmap_resolution_x  = 1024;
     int             shadowmap_resolution_y  = 1024;
     float           shadowmap_aspect_ratio;
+  
     float           camera_aspect_ratio;
     float           shadow_far_plane;
     Vec3            ui_vector;
