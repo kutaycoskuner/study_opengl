@@ -171,6 +171,8 @@ set(dataScenes
 )
 
 set(shaderFiles
+    "${shader_dir_full}/post_process/gaussian-blur_vrtx_shader.glsl"
+    "${shader_dir_full}/post_process/gaussian-blur_frag_shader.glsl"
     "${shader_dir_full}/1.0.3d_frag_shader.glsl"
     "${shader_dir_full}/1.0.3d_vrtx_shader.glsl"
     "${shader_dir_full}/1.1.axis-x_frag_shader.glsl"
@@ -259,11 +261,6 @@ set(shaderFiles
     "${shader_dir_full}/4.9.bloom_frag_shader.glsl"
     "${shader_dir_full}/4.9.bloom_vrtx_shader.glsl"
 )
-
-
-# set(dataFiles
-#     "${data_dir_full}/test.stl"
-# )
 
 
 # ----------------------------------------------------------------------------------------

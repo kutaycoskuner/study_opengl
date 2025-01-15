@@ -1,12 +1,12 @@
 #version 330 core
 #if 1
+in vec2 v_tex_coords;
 out vec4 out_frag_color;
 
-in vec2 v_tex_coords;
-
 uniform sampler2D screen_texture;
-
+uniform sampler2D screen_bloom;
 uniform float exposure;
+uniform bool bloom;
 
 float Luma(vec3 color) { return max(dot(color, vec3(0.299, 0.587, 0.114)), 0.001); }
 
@@ -22,11 +22,15 @@ vec3 linear_to_srgb(vec3 linear_color)
 
 void main()
 {
-	vec3 hdr_color = texture(screen_texture, v_tex_coords).rgb;
+	vec3 hdr_color   = texture(screen_texture, v_tex_coords).rgb;
+    vec3 bloom_color = texture(screen_bloom, v_tex_coords).rgb;
+
+    if (bloom) hdr_color += bloom_color;
+
     vec3 mapped = hdr_color;
     
     // tm: reinhard tone mapping 
-//    mapped = hdr_color / (hdr_color + vec3(1.0));
+    //    mapped = hdr_color / (hdr_color + vec3(1.0));
     
     // tm-alt: modified reinhard tone mapping 
     // mapped = hdr_color / (hdr_color + vec3(.5));

@@ -127,28 +127,28 @@ bool Application::initialize(const ConfigData& config)
 
 	// 3.11 configure MSAA framebuffer / hdr
 	// --------------------------
-	glGenFramebuffers(1, &fbo_scene_lighting_msaa);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_scene_lighting_msaa);
+	glGenFramebuffers(1, &fbo_illumination_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
 	// create a multisampled color attachment texture
-	glGenTextures(1, &tex_scene_lighting_color);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex_scene_lighting_color);
+	glGenTextures(1, &tex_illumination_msaa_color);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex_illumination_msaa_color);
 	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample_count, GL_RGBA16F, display_width, display_height, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex_scene_lighting_color, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex_illumination_msaa_color, 0);
 	// create a (also multisampled) renderbuffer object for depth and stencil attachments
-	glGenRenderbuffers(1, &rbo_scene_lighting_msaa);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_scene_lighting_msaa);
+	glGenRenderbuffers(1, &rbo_illumination_msaa);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_illumination_msaa);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample_count, GL_DEPTH24_STENCIL8, display_width, display_height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_scene_lighting_msaa);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_illumination_msaa);
 
 	// set up floating point framebuffer to render scene to
-	glGenFramebuffers(1, &fbo_scene_lighting_hdr);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_scene_lighting_hdr);
-	glGenTextures(2, tex_scene_lighting_hdr);
+	glGenFramebuffers(1, &fbo_illumination_hdr);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_hdr);
+	glGenTextures(2, tex_illumination_hdr);
 	for (unsigned int i = 0; i < 2; i++)
 	{
-		glBindTexture(GL_TEXTURE_2D, tex_scene_lighting_hdr[i]);
+		glBindTexture(GL_TEXTURE_2D, tex_illumination_hdr[i]);
 		glTexImage2D(
 			GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL
 		);
@@ -158,7 +158,31 @@ bool Application::initialize(const ConfigData& config)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		// attach texture to framebuffer
 		glFramebufferTexture2D(
-			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, tex_scene_lighting_hdr[i], 0
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, tex_illumination_hdr[i], 0
+		);
+	}
+
+	// finally check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// bloom buffer and textures
+	glGenFramebuffers(2, fbo_bloom);
+	glGenTextures(2, tex_bloom);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo_bloom[i]);
+		glBindTexture(GL_TEXTURE_2D, tex_bloom[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_bloom[i], 0
 		);
 	}
 
@@ -1024,7 +1048,7 @@ void Application::drawScene(Uniforms& uni)
 	// 3.4. framebuffer
 	// bind to framebuffer and draw scene as we normally would to color texture 
 	//glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_scene_lighting_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
 
 
 	// enable this to avoid awkward whatever front rendering
@@ -1286,10 +1310,12 @@ void Application::drawBackbuffer(int display_w, int display_h)
 	// --------------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
 
-	// intermediate buffer to attach bloom
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_scene_lighting_msaa);
+	// ---------------------- extract bloom bright color end
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_scene_lighting_hdr);
+
+	// intermediate buffer to attach bloom
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_msaa);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_illumination_hdr);
 	
 	// Resolve the multisampled color buffer into tex_hdr_color[0] (first render target of HDR)
 	glReadBuffer(GL_COLOR_ATTACHMENT0); // From MSAA framebuffer's single color target
@@ -1298,7 +1324,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
 	glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	// bind frame buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_scene_lighting_hdr);	
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_hdr);	
 
 	// Set the viewport to match your screen size
 	glViewport(0, 0, display_width, display_height);
@@ -1312,7 +1338,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
 
 	// Bind the resolved texture (tex_hdr_color[0]) as input
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex_scene_lighting_hdr[0]); // Texture written by glBlitFramebuffer
+	glBindTexture(GL_TEXTURE_2D, tex_illumination_hdr[0]); // Texture written by glBlitFramebuffer
 	//glUniform1i(glGetUniformLocation(hdrShader.ID, "input_texture"), 0);
 
 	// Configure multiple render targets (if needed)
@@ -1324,14 +1350,41 @@ void Application::drawBackbuffer(int display_w, int display_h)
 	// Unbind framebuffers to reset state
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	// ---------------------- extract bloom bright color end
+	
+	
+	/// ---------------------- gaussian blur
+			// 2. blur bright fragments with two-pass Gaussian Blur 
+		// --------------------------------------------------
+	bool horizontal = true, first_iteration = true;
+	unsigned int amount = 10;
+	this->active_shader = shaders.at("gaussian-blur");
+	(*active_shader).use();
+
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo_bloom[horizontal]);
+		active_shader->setInt("horizontal", horizontal);
+		glBindTexture(GL_TEXTURE_2D, first_iteration ? tex_illumination_hdr[1] : tex_bloom[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+		// bind vertex array
+		glBindVertexArray(named_arrays.at("frame"));
+
+		// Render a full-screen quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/// ---------------------- gaussian blur end
+
 
 	// 3.11 anti aliasing
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_scene_lighting_hdr);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_hdr);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_backbuffer);
 	glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
 #define CHECK_BACKBUFFER_ENCODING 0
@@ -1347,7 +1400,8 @@ void Application::drawBackbuffer(int display_w, int display_h)
 	std::cout << (encoding == GL_SRGB ? "srgb" : "linear");
 #endif
 
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	glDisable(GL_DEPTH_TEST); 
+	// disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -1355,12 +1409,29 @@ void Application::drawBackbuffer(int display_w, int display_h)
 
 	this->active_shader = shaders.at("framebuffer");
 	(*active_shader).use();
-	
-	active_shader->setFloat("exposure", active_scene->scene_state.exposure);
-	glActiveTexture(GL_TEXTURE0);
+
 	glBindVertexArray(named_arrays.at("frame"));
-	glBindTexture(GL_TEXTURE_2D, fbo_backbuffer_color);	// use the color attachment texture as the texture of the quad plane
+
+	glActiveTexture(GL_TEXTURE0);
+	active_shader->setInt("screen_texture", 0);
+	glBindTexture(GL_TEXTURE_2D, fbo_backbuffer_color);
+
+	glActiveTexture(GL_TEXTURE1);
+	active_shader->setInt("screen_bloom", 1);
+	glBindTexture(GL_TEXTURE_2D, tex_bloom[!horizontal]);
+
+	active_shader->setFloat("exposure", active_scene->scene_state.exposure);
+	active_shader->setBool  ("bloom", active_scene->scene_state.bloom);
+
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Unbind textures to release texture slots
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture from slot 0
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture from slot 1
+	// Reset active texture slot to default (GL_TEXTURE0)
+	glActiveTexture(GL_TEXTURE0);
 
 	if (save_frame)
 	{

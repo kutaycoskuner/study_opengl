@@ -207,13 +207,17 @@ private:
    
     // anti-aliasing
     unsigned int sample_count = 1;
-    unsigned int fbo_scene_lighting_msaa;
-    unsigned int rbo_scene_lighting_msaa;
-    unsigned int tex_scene_lighting_color;
+    unsigned int fbo_illumination_msaa;
+    unsigned int rbo_illumination_msaa;
+    unsigned int tex_illumination_msaa_color;
         
     // high dynamic range
-    GLuint  fbo_scene_lighting_hdr;
-    GLuint  tex_scene_lighting_hdr[2];
+    GLuint  fbo_illumination_hdr;
+    GLuint  tex_illumination_hdr[2];
+
+    // pp: post process
+    GLuint fbo_bloom[2];
+    GLuint tex_bloom[2];
 
     // final frame buffer (low dynamic range output)
     unsigned int fbo_backbuffer;       // frame buffer object    || frame buffer

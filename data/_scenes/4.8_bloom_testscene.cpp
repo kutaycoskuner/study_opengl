@@ -48,22 +48,22 @@ void BloomTestScene::loadData()
 	// point6
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(1.0f, 1.0f, 1.0f);
-	point_lights.back().brightness = 10000.0f;
+	point_lights.back().brightness = 10.0f;
 	point_lights.back().position = Vec3(1.0, 2.0f, 1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(1.0f, 0.0f, 0.0f);
-	point_lights.back().brightness = 1.0f;
+	point_lights.back().brightness = 5.0f;
 	point_lights.back().position = Vec3(-1.0, 2.0f, 1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(0.0f, 1.0f, 0.0f);
-	point_lights.back().brightness = 1.0f;
+	point_lights.back().brightness = 4.0f;
 	point_lights.back().position = Vec3(1.0, 2.0f, -1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(0.0f, 0.0f, 1.0f);
-	point_lights.back().brightness = 1.0f;
+	point_lights.back().brightness = 2.0f;
 	point_lights.back().position = Vec3(-1.0, 2.0f, -1.0f);
 
 
@@ -101,7 +101,7 @@ void BloomTestScene::loadData()
 	scene_state.model_shader_name = "hdr";
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
-		//"models/out_sponza/glTF/Sponza.gltf"
+		// "models/out_sponza/glTF/Sponza.gltf"
 		//"models/testobject0_frustum/testobject.obj",
 		//"models/testobject1_dodecahedron/testobject.obj",
 	};

@@ -142,6 +142,13 @@
         - lighting
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
+    - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+
+- [0.94.2] add bloom, add gaussian blur, update readme
+    - 15-Jan-2025
+        - update readme
+        - add bloom
+        - add gaussian blur pp shader
 
 - [0.94.1] add bright color extraction
     - 14-Jan-2025

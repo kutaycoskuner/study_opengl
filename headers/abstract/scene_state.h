@@ -23,6 +23,7 @@ struct SceneState
 
     float tant                      = 0.0f;
     float exposure                  = 1.0f;
+    bool  bloom                     = true;
 
     int animation_stage             = -1;
 
