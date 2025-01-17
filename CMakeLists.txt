@@ -69,6 +69,7 @@ set(sourceDir
     "source"
 )
 
+
 # Define the output directory based on system name, architecture, and build type
 set(outputDir 
     "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${InstructionSetArchitecture}/${CMAKE_BUILD_TYPE}"    
@@ -124,6 +125,10 @@ set(utilsCode
     "${sourceDir}/utils/self_utils.cpp"
     "${sourceDir}/utils/shader_utils.cpp"
     "${sourceDir}/utils/vector_utils.cpp"
+)
+
+set(dataCode
+    "${sourceDir}/data/geometry.cpp"
 )
 
 set(configFiles
@@ -353,12 +358,13 @@ set(allHeaderFiles
 )
 
 # ----------------------------------------------------------------------------------------
-#               Organize the source structure into folders
+#               Organize the source structure into filteres
 # ----------------------------------------------------------------------------------------
 source_group(TREE ${CMAKE_SOURCE_DIR}/source PREFIX "source" FILES ${sourceCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/blackboard PREFIX "source/blackboard" FILES ${blackboardCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/core PREFIX "source/core" FILES ${coreCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/event_handling PREFIX "source/event_handling" FILES ${eventHandlingCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/data PREFIX "source/data" FILES ${dataCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/libs PREFIX "source/libs" FILES ${libsCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/scene PREFIX "source/scene" FILES ${sceneCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/test PREFIX "source/tests" FILES ${testCode})
@@ -395,6 +401,7 @@ add_executable(
     ${eventHandlingCode}
     ${libsCode}
     ${sceneCode}
+    ${dataCode}
     ${testCode}
     ${utilsCode}
     ${configFiles}

@@ -1120,7 +1120,7 @@ void Application::drawHelper_lightPlaceholders(Uniforms& uni)
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 
-		glBindVertexArray(named_arrays.at("cube"));
+		glBindVertexArray(named_arrays.at("icosphere02"));
 		active_shader->setVec3("light_color", point_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(point_lights[ii].position)
@@ -1128,7 +1128,7 @@ void Application::drawHelper_lightPlaceholders(Uniforms& uni)
 			;
 		active_shader->setMat4("world_matrix", model);
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawArrays(GL_TRIANGLES, 0, 240);
 
 	}
 

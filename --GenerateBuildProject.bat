@@ -78,7 +78,7 @@ echo [!PROJECT_NAME!] Solution files successfully generated.
 :: ---------------------------------------------------------------------------------------
 ::              generate binaries
 :: ---------------------------------------------------------------------------------------
-call ../_GenerateBinaries.bat "!SOLUTION_DIRECTORY!"
+call ../--GenerateBinaries.bat "!SOLUTION_DIRECTORY!"
 if !errorlevel! NEQ 0 (
     echo.
     echo [!PROJECT_NAME!] Error: Encountered problem building binaries.

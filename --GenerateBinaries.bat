@@ -24,7 +24,7 @@ for %%i IN (%*) DO (
     set CALL_PATH=%%i
 )
 
-call :print "Running _GenerateBinaries.bat"
+call :print "Running --GenerateBinaries.bat"
 
 :: TODO: More parameter handling
 :: if "%%i"=="-c" call :AddBuildTask_Clean
@@ -36,7 +36,7 @@ call :print "Running _GenerateBinaries.bat"
 if !CALL_PATH! EQU 0 (
     if not exist "!SOLUTION_DIRECTORY!" (
         call :print "Could not find solution directory. Attempting to create solution..."
-        call ./_GenerateBuildProject.bat
+        call ./--GenerateBuildProject.bat
         if !errorlevel! NEQ 0 (
             call :print "ERROR: Failed to generate build project. Exiting..."
             exit /b 1
@@ -46,7 +46,7 @@ if !CALL_PATH! EQU 0 (
     if exist "!SOLUTION_DIRECTORY!" (
         if not exist "!SOLUTION_DIRECTORY!\*.sln" (
             call :print "Could not find solution file. Running build project generation..."
-            call ./_GenerateBuildProject.bat
+            call ./--GenerateBuildProject.bat
             if !errorlevel! NEQ 0 (
                 call :print "ERROR: Failed to generate solution file. Exiting..."
                 exit /b 1

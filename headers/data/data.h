@@ -75,6 +75,9 @@ public:
 class VertexData
 {
 public:
+	static float 		icosphere02__pos[720];
+	static float 		icosahedron__pos[180];
+
 	static float		origin[3];
 	static float		skybox_vrts__pos[108];
 
@@ -143,7 +146,7 @@ struct PrimitiveSceneNode
 	float			tiling_factor = 1.0f;
 	Material		material;
 	ElementBools	element_bools;
-};
+};	
 
 struct SceneNode
 {
@@ -215,6 +218,15 @@ public:
 	static const Material red_rubber;
 	static const Material white_rubber;
 	static const Material yellow_rubber;
+};
+
+class Geometry
+{
+public:
+	static void subdivide(const Vec3& v1, const Vec3& v2, const Vec3& v3,
+		unsigned int level, std::vector<Vec3>& vertices, std::vector<int>& indices);
+	static void generateIcosphere(unsigned int subdivisions);
+	//static void subdivide();
 };
 
 #endif

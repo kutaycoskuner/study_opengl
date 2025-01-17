@@ -339,11 +339,11 @@ PrimitiveSceneNode PrimitiveSceneNodes::axis_z = {
 
 PrimitiveSceneNode PrimitiveSceneNodes::light_placeholder = {
 	.name = "light_placeholder"
-	,.vertex_array_name = "cube"
+	,.vertex_array_name = "icosphere02"
 	,.transform = {
-			Vec3(0.0f, 2.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.1f, 0.1f, 0.1f)
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.05f, 0.05f, 0.05f)
 		}
 	,.shader_name = "3d"
 	,.texture_name = "test_2k"

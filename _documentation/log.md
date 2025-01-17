@@ -135,14 +135,18 @@
     - proper yaml parser
     - refactoring naming convention
     - ui handlers
-    - ref: buffer names remove unused ones / temporals
-        - fbo
-        - rbo
-        - msaa
-        - lighting
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+
+- [0.94.3] added geometry generator, changed script prefixes
+    - 16-Jan-2025
+        - changed generate script prefixes
+        - changed light object
+        - added icosahedron subdivision
+        - wip icosahedron subdivision
+        - added precalculated vertex data isosahedron
+        - add geometry icosahedron vertex gen
 
 - [0.94.2] add bloom, add gaussian blur, update readme
     - 15-Jan-2025

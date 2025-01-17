@@ -24,7 +24,7 @@ jobs:
     - name: Generate Solution File
         # Call the batch script to build the project
       run: |
-        .\_GenerateBuildProject.bat
+        .\--GenerateBuildProject.bat
       shell: cmd # Use Command Prompt for batch files
 
 # ----------------------------------------------------------------------------------------

@@ -29,6 +29,14 @@ std::map<std::string, Predef3DNode> PredefNameMaps::predef3d_namemap = {
 		,Predef3DNode(VertexData::cube_vrts__pos_norm_uv,	288,	8, { 3, 3, 2 })
 	}
 	,{
+		"icosphere02"
+		,Predef3DNode(VertexData::icosphere02__pos,			720,	3, { 3 })
+	}
+	,{
+		"icosahedron"
+		,Predef3DNode(VertexData::icosahedron__pos,			180,	3, { 3 })
+	}
+	,{
 		"plane01"
 		,Predef3DNode(VertexData::plane_vrts__pos_norm_uv,	 48,		8, { 3, 3, 2 })
 	}

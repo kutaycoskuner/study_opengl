@@ -13,13 +13,13 @@ Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\bin" -R
 Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\build" -Recurse -Force
     - removing build directory
 
-./_GenerateBuildProject.bat
+./--GenerateBuildProject.bat
     - run genrate build project script
 
-./_GenerateBinaries.bat
+./--GenerateBinaries.bat
     - run generate binaries
 
-./_PackProgram.bat
+./--PackProgram.bat
 
 Get-ChildItem -Recurse ./ -Filter *.cpp -Name
     - dosyadaki .cpp ile biten dosyalarin isimlerini cikariyor

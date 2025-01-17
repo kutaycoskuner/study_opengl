@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.94.2-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.94.3-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
     <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=main&label=main" />
@@ -54,9 +54,9 @@ cd study_opengl
 ```
 
 #### 2.1. Automated Setup using `.bat` Script
-2. Run the `_GenerateBuildProject.bat` script to generate the build environment:
+2. Run the `--GenerateBuildProject.bat` script to generate the build environment:
 ```bash
-./_GenerateBuildProject.bat
+./--GenerateBuildProject.bat
 ```
 
 #### 2.2. (Alternative) Manual Build with CMake
@@ -81,13 +81,13 @@ To inspect the code in Visual Studio, open the generated solution file:
 ```
 
 #### 3.2. Running the Program from the Generated Binaries
-After running `_GenerateBinaries.bat`, you can run the program with:
+After running `--GenerateBinaries.bat`, you can run the program with:
 ```
 ./bin/Windows/x64/Release/opengl_renderer.exe
 ```
 
 #### 3.3. Running the Isolated Packaged Instance
-If you run `_PackProgram.bat`, an isolated executable instance of the program will be created in the `artifacts` directory. This directory contains all necessary files to run the program independently. You can move the `artifacts` directory anywhere and run `opengl_renderer.exe` directly.
+If you run `--PackProgram.bat`, an isolated executable instance of the program will be created in the `artifacts` directory. This directory contains all necessary files to run the program independently. You can move the `artifacts` directory anywhere and run `opengl_renderer.exe` directly.
 
 # Controls
 | Key          | Function |

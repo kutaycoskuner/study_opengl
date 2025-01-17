@@ -175,7 +175,7 @@ private:
 
 
 private:
-    const static unsigned int buffer_count = 4;
+    const static unsigned int buffer_count = 5;
     const float reduction_128f = 0.0078125f;
     const unsigned int INVALID_ID = 0;
 

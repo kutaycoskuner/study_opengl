@@ -40,6 +40,9 @@
         - preview sphere
         - tiling material
 
+- icosahedron based geodesic sphere
+    - https://web.archive.org/web/20180808214504/http://donhavey.com:80/blog/tutorials/tutorial-3-the-icosahedron-sphere/
+
 - hdr lgihting by john hable
     - https://www.slideshare.net/slideshow/lighting-shading-by-john-hable/12026883
 
@@ -533,6 +536,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+
 - <programi hangi gpu calistiriyor>
     - ctrl + shift + esc = task manaager
     - ctrl + tab -> performaance
@@ -580,6 +584,12 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - go to toolkit open pixel_matcher and run the tests
     - if all true make create_test_scene_frames   = false
 
+- <adding new vertex data object>
+    - kompleks geometriyse vertexleri hespalayacak formulu bul
+    - blackboardda print ile yazdir
+    - vertexdata static icine at
+    - named maps e isimli olarak koy
+    - primitiv scene node tanimla
 
 - <adding new scene yeni sahne ekleme>
     - headers/data/scenes.h uzerinde yeni sahneyi ekle
