@@ -5,7 +5,7 @@
 	path = external/libs/assimp
 	url = https://github.com/assimp/assimp.git
 [submodule "libs_imgui"]
-	path = external/imgui
+	path = external/libs/imgui
 	url = https://github.com/ocornut/imgui.git
 [submodule "data_yurt"]
 	path = external/data/yurt
