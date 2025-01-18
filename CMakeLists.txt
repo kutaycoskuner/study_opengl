@@ -463,7 +463,7 @@ include_directories("${CMAKE_SOURCE_DIR}/external/libs/_stb")
 # ----------------------- glfw
 add_subdirectory("${CMAKE_SOURCE_DIR}/external/libs/glfw") 
 include_directories("${CMAKE_SOURCE_DIR}/external/libs/glfw/include")
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/libs/glfw/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/libs/glfw/include)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
 # ----------------------- assimp
@@ -480,11 +480,11 @@ set(ASSIMP_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)  # Disable tools like assimp_cmd
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/external/libs/assimp") 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/libs/assimp/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/libs/assimp/include)
 target_link_libraries(${PROJECT_NAME} PRIVATE assimp)
 
 # ----------------------- imgui
-include_directories("${CMAKE_SOURCE_DIR}/libs/imgui")
+include_directories("${CMAKE_SOURCE_DIR}/external/libs/imgui")
 add_library( # MODULE, STATIC, SHARED (DYNAMIC)
     "imgui" STATIC
     "external/libs/imgui/imgui.cpp"
@@ -496,7 +496,7 @@ add_library( # MODULE, STATIC, SHARED (DYNAMIC)
     "external/libs/imgui/backends/imgui_impl_opengl3.cpp"
 
 )
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/libs/imgui)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/libs/imgui)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui)
 
 # Add the executable, linking the project name with the source files

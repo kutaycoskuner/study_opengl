@@ -1,12 +1,12 @@
-[submodule "libs_glfw"]
+[submodule "external/libs/glfw"]
 	path = external/libs/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "libs_assimp"]
+[submodule "external/libs/assimp"]
 	path = external/libs/assimp
 	url = https://github.com/assimp/assimp.git
-[submodule "libs_imgui"]
+[submodule "external/libs/imgui"]
 	path = external/libs/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "data_yurt"]
+[submodule "external/data/yurt"]
 	path = external/data/yurt
 	url = https://github.com/kutaycoskuner/yurt.git

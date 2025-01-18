@@ -127,7 +127,6 @@
     - okuma lighting equation
     - nvidia nsight graphics
     - geo shader vertex normal vis
-    - change libs to external
     - asset_import -> copy paste var if copy var
     - asset_import retrieve material info
     - add exposure to ui
@@ -138,6 +137,9 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+
+- [0.94.5] add submodule refactoring
+    - 19-Jan-2025
 
 - [0.94.4] wip submodule refactoring
     - 18-Jan-2025
