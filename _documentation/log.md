@@ -139,6 +139,10 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
 
+- [0.94.4] wip submodule refactoring
+    - 18-Jan-2025
+        - wip submodule refactoring
+
 - [0.94.3] added geometry generator, changed script prefixes
     - 16-Jan-2025
         - changed generate script prefixes

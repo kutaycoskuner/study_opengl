@@ -604,6 +604,8 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - cmake add shaders
     - change shader naame on notes
 
+- <adding new submodule>
+
 - <adding new texture>
     - add textures to data/textures
     - add paths to maps > texture_name-pathmap.cpp
