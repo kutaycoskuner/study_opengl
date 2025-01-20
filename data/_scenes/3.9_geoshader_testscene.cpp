@@ -88,7 +88,7 @@ void GeoShaderTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "out_container2", "linegrid_2k_darkgray", "grid_2k_white" };
+	texture_names = { "out_container", "linegrid_darkgray_2k", "grid_2k_white" };
 
 
 	// ----- specific position

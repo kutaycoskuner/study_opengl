@@ -69,7 +69,7 @@ void OutlinerTestScene::loadData()
 	}
 
 	// ---- define texture names
-	texture_names = { "test_2k", "linegrid_2k_darkgray"};
+	texture_names = { "test_2k", "linegrid_darkgray_2k"};
 
 }
 

@@ -138,6 +138,9 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
 
+- [0.94.7] chores texture cleaning and refactoring
+    - 21-Jan-2025
+
 - [0.94.6] add bloom display, add submodule refactoring, temp screenshot mode
     - 20-Jan-2025
         - added display bloom

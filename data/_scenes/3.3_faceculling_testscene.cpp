@@ -59,7 +59,7 @@ void FaceCullingTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "linegrid_2k_darkgray", "test_2k", "out_container2" };
+	texture_names = { "linegrid_darkgray_2k", "test_2k", "out_container" };
 
 
 	// ----- specific position

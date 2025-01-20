@@ -94,7 +94,7 @@ void HDRTestScene::loadData()
 
 	// textures to cache for objects
 	// ----------------------------------------------------------------
-	texture_names = { "out_planks023a", "out_container2", "out_brickwall", "gamma-test-rgb", "gamma-test-srgb"};
+	texture_names = { "out_planks023a", "out_container", "out_brickwall", "gamma-test-rgb", "gamma-test-srgb"};
 
 	// models
 	// ----------------------------------------------------------------

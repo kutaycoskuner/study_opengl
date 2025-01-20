@@ -395,7 +395,7 @@ void Application::loadSceneData(const ConfigData& config)
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
-	cubemap_texture = img_utils::loadCubemap(data_dir_path, PathAfterDirectory::cubemap_texture_paths["skybox04"]);
+	cubemap_texture = img_utils::loadCubemap(data_dir_path, PathAfterDirectory::cubemap_texture_paths["nebula-blue"]);
 
 
 	// ----- camera

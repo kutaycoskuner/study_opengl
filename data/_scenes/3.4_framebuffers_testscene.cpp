@@ -63,7 +63,7 @@ void FrameBufferTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "linegrid_2k_darkgray", "grid_2k_white"};
+	texture_names = { "linegrid_darkgray_2k", "grid_2k_white"};
 
 
 	// ----- specific position

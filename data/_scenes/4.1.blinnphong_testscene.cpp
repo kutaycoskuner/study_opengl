@@ -64,7 +64,7 @@ void BlinnPhongTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "linegrid_2k_darkgray", "out_grass", "out_blending_window_blue", "out_planks023b"};
+	texture_names = { "linegrid_darkgray_2k", "out_grass", "out_blending_window_blue", "out_planks023b"};
 
 
 	// ----- specific position

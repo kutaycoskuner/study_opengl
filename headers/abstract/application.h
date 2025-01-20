@@ -181,7 +181,7 @@ private:
 
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
-    bool screenshot_mode = true;
+    bool screenshot_mode = false;
 
 
     // event
