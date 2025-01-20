@@ -25,6 +25,7 @@ void BloomTestScene::loadData()
 
 	// camera pos
 	// ----------------------------------------------------------------
+	cameras[0].position.y += 4.0f;
 	//cameras[0].position = Vec3(0.0f, 0.0f, 20.0f);
 	//cameras[0].position = Vec3(-2.0f, 0.0f, 10.0f);
 	//cameras[0].position = Vec3(-8.0f, 4.0f, 0.0f);
@@ -53,40 +54,32 @@ void BloomTestScene::loadData()
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(1.0f, 0.0f, 0.0f);
-	point_lights.back().brightness = 5.0f;
+	point_lights.back().brightness = 4.0f;
 	point_lights.back().position = Vec3(-1.0, 2.0f, 1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(0.0f, 1.0f, 0.0f);
-	point_lights.back().brightness = 4.0f;
+	point_lights.back().brightness = 3.0f;
 	point_lights.back().position = Vec3(1.0, 2.0f, -1.0f);
 
-	point_lights.push_back(PredefSceneLights::p_light);
-	point_lights.back().diffuse = Vec3(0.0f, 0.0f, 1.0f);
-	point_lights.back().brightness = 2.0f;
-	point_lights.back().position = Vec3(-1.0, 2.0f, -1.0f);
+	//point_lights.push_back(PredefSceneLights::p_light);
+	//point_lights.back().diffuse = Vec3(0.0f, 0.0f, 1.0f);
+	//point_lights.back().brightness = 2.0f;
+	//point_lights.back().position = Vec3(-1.0, 2.0f, -1.0f);
 
 
 	// spot
-	//spot_lights.push_back(PredefSceneLights::s_light);
+	spot_lights.push_back(PredefSceneLights::s_light);
 	//spot_lights[0].position = Vec3(0.0f, 8.0f, 0.0f);
 	//spot_lights[0].diffuse = Vec3(1.0f, 1.0f, 1.0f);
-	//spot_lights[0].brightness = 2.0f;
+	spot_lights[0].brightness = 2.0f;
 
 	// primitive scene objects
 	// ----------------------------------------------------------------
-	//predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
-	//element.transform.scale					 = Vec3(1.0f, 1.0f, 1.0f);
-	//element.transform.rotation				 = Vec3(0.0f, -90.0f, 0.0f);
-	//element.transform.position				 = Vec3(0.0f, 1.0f, 0.0f);
-	//element.texture_name					 = "gamma-test-rgb";
-	//element.shader_name						 = "diffuse";
-	//element.element_bools.is_using_tan_space = true;
-	
-	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
-	PrimitiveSceneNode& element				 = predefined_scene_elements.back();
-	element.texture_name					 = "test_2k";
-	element.shader_name                      = "hdr";
+	//predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
+	//PrimitiveSceneNode& element				 = predefined_scene_elements.back();
+	//element.texture_name					 = "linegrid01_white_2k";
+	//element.shader_name                      = "multiplelights";
 
 	//element.texture_name					 = "gamma-test-rgb";
 
@@ -99,28 +92,27 @@ void BloomTestScene::loadData()
 
 	// textures to cache for objects
 	// ----------------------------------------------------------------
-	texture_names = { "test_2k", "linegrid_2k_darkgray", "out_planks023a", "out_container2", "out_brickwall", "gamma-test-rgb", "gamma-test-srgb" };
+	texture_names = { "linegrid01_white_2k" };
 
 	// models
 	// ----------------------------------------------------------------
 	scene_state.model_shader_name = "hdr";
 	model_paths = {
-		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
 		// "models/out_sponza/glTF/Sponza.gltf"
-		//"models/testobject0_frustum/testobject.obj",
-		//"models/testobject1_dodecahedron/testobject.obj",
-		std::string("models/testobject0_frustum/testobject.obj"),
-		std::string("models/testobject1_dodecahedron/testobject.obj"),
-		std::string("models/testobject2_sphere/testobject.obj"),
-		std::string("models/testobject3_cube0/testobject.obj"),
-		std::string("models/testobject4_cube1/testobject.obj"),
-		std::string("models/testobject5_cube2/testobject.obj"),
-		std::string("models/testobject6_cube3/testobject.obj"),
-		std::string("models/testobject7_torus/testobject.obj"),
-		std::string("models/testobject8_mine/testobject.obj"),
-		std::string("models/testobject9_cylinder/testobject.obj"),
-		std::string("models/testobject10_suzanne/testobject.obj"),
-		std::string("models/testobject11_cone/testobject.obj")
+		//std::string("/yurt/assets/scenes/outliner-testscene/gltf/outliner-testscene.gltf"),
+		//std::string("models/testobject0_frustum/testobject.obj"),
+		//std::string("models/testobject1_dodecahedron/testobject.obj"),
+		//std::string("models/testobject2_sphere/testobject.obj"),
+		//std::string("models/testobject3_cube0/testobject.obj"),
+		//std::string("models/testobject4_cube1/testobject.obj"),
+		//std::string("models/testobject5_cube2/testobject.obj"),
+		//std::string("models/testobject6_cube3/testobject.obj"),
+		//std::string("models/testobject7_torus/testobject.obj"),
+		//std::string("models/testobject8_mine/testobject.obj"),
+		//std::string("models/testobject9_cylinder/testobject.obj"),
+		//std::string("models/testobject10_suzanne/testobject.obj"),
+		//std::string("models/testobject11_cone/testobject.obj")
+		//std::string("models/testobjects_by_kutaycoskuner/testobjects.obj")
 	};
 
 	// ---- create bools for each imported model
@@ -142,35 +134,76 @@ void BloomTestScene::loadData()
 		);
 	}
 
-	if (scene_nodes.size() > 0)
-		scene_nodes[0].transform.scale = Vec3(0.01f, 0.01f, 0.01f);
+	//if (scene_nodes.size() > 0)
+	//	scene_nodes[0].transform.scale = Vec3(0.01f, 0.01f, 0.01f);
 
 }
 
 void BloomTestScene::update() {
 	// emission pulse/breath
-	// ----------------------------------------------------------------
+	// --------------------------------------------------------------------------------------
 	float time = scene_state.time;
 	float sint = sin(scene_state.time);
 	float cost = cos(scene_state.time);
 	float sint10 = sin(scene_state.time + 1.0f) * .5f;
+
 	//scene_state.emission_factor = sint10;
 
-
 	// move lights radial
-	// ----------------------------------------------------------------
+// --------------------------------------------------------------------------------------
+	float distance_multiplier = 3.0f;
+	const float pi = 3.141592f;
+	for (int ii = 0; ii < point_lights.size(); ii++)
+	{
+		// change light position
+		point_lights[ii].position = Vec3(
+			distance_multiplier * cos(scene_state.time + 2 * pi / point_lights.size() * ii),
+			3.0f,
+			distance_multiplier * sin(scene_state.time + 2 * pi / point_lights.size() * ii))
+			;
 
-
-	// light move rectangular
-	// ----------------------------------------------------------------
+		// change light color
+		float change_key = scene_state.time + ii;
+		setTriangleLightColorShiftByTime(point_lights[ii].diffuse, point_lights[ii].specular, change_key);
+	}
 
 
 	// rotate obj x z 
-	// ----------------------------------------------------------------
-
+	// --------------------------------------------------------------------------------------
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		if (predefined_scene_elements[i].name == "ground_plane")
+			continue;
+		if (predefined_scene_elements[i].name == "light_placeholder")
+			continue;
+		float x = predefined_scene_elements[i].transform.rotation.x;
+		float y = predefined_scene_elements[i].transform.rotation.y;
+		float z = predefined_scene_elements[i].transform.rotation.z;
+		predefined_scene_elements[i].transform.rotation
+			= Vec3(fmod(time * 40.0f, 360.0f), y, fmod(time * 40.0f, 360.0f));
+	}
 
 	// move objects
-	// ----------------------------------------------------------------
+	// --------------------------------------------------------------------------------------
+	bool b_offset = false;
+	float time_offset = sint;
+	for (int i = 0; i < predefined_scene_elements.size(); i++)
+	{
+		if (predefined_scene_elements[i].name == "ground_plane")
+			continue;
+		if (predefined_scene_elements[i].name == "light_placeholder")
+			continue;
+		b_offset = !b_offset;
+		time_offset = sint;
+		if (b_offset) time_offset = sin(time + 3.14f / 2.0f);
+		float x = predefined_scene_element_transforms[i].position.x;
+		float y = predefined_scene_elements[i].transform.position.y;
+		float z = predefined_scene_element_transforms[i].position.z;
+		predefined_scene_elements[i].transform.position
+			= Vec3(time_offset * x, y, time_offset * z);
+	}
+
+	//scene_state.emission_factor = sint;
 }
 
 BloomTestScene::BloomTestScene() {

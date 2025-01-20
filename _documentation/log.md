@@ -138,6 +138,15 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
 
+- [0.94.6] add bloom display, add submodule refactoring, temp screenshot mode
+    - 20-Jan-2025
+        - added display bloom
+        - temp screenshot_mode
+    - 19-Jan-2025
+        - wip bloom display scene
+        - add yurt submodule
+        - add submodule refactoring
+
 - [0.94.5] add submodule refactoring
     - 19-Jan-2025
 

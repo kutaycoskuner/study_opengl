@@ -441,13 +441,13 @@ include_directories(
 )
 
 # ----------------------- glad
-include_directories("${CMAKE_SOURCE_DIR}/external/libs/_glad-0.136/include")
-add_library(glad STATIC "${CMAKE_SOURCE_DIR}/external/libs/_glad-0.136/src/glad.c")
+include_directories("${CMAKE_SOURCE_DIR}/libs/_glad-0.136/include")
+add_library(glad STATIC "${CMAKE_SOURCE_DIR}/libs/_glad-0.136/src/glad.c")
 target_link_libraries(${PROJECT_NAME} PRIVATE glad)
 
 
 # ----------------------- stb
-include_directories("${CMAKE_SOURCE_DIR}/external/libs/_stb")
+include_directories("${CMAKE_SOURCE_DIR}/libs/_stb")
 
 
 
@@ -461,9 +461,9 @@ include_directories("${CMAKE_SOURCE_DIR}/external/libs/_stb")
 # submodules
 
 # ----------------------- glfw
-add_subdirectory("${CMAKE_SOURCE_DIR}/external/libs/glfw") 
-include_directories("${CMAKE_SOURCE_DIR}/external/libs/glfw/include")
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/libs/glfw/include)
+add_subdirectory("${CMAKE_SOURCE_DIR}/libs/glfw") 
+include_directories("${CMAKE_SOURCE_DIR}/libs/glfw/include")
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/libs/glfw/include)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
 # ----------------------- assimp
@@ -479,24 +479,24 @@ set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)  # Disable tools like assimp_cmd
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/external/libs/assimp") 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/libs/assimp/include)
+add_subdirectory("${CMAKE_SOURCE_DIR}/libs/assimp") 
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/libs/assimp/include)
 target_link_libraries(${PROJECT_NAME} PRIVATE assimp)
 
 # ----------------------- imgui
-include_directories("${CMAKE_SOURCE_DIR}/external/libs/imgui")
+include_directories("${CMAKE_SOURCE_DIR}/libs/imgui")
 add_library( # MODULE, STATIC, SHARED (DYNAMIC)
     "imgui" STATIC
-    "external/libs/imgui/imgui.cpp"
-    "external/libs/imgui/imgui_demo.cpp"
-    "external/libs/imgui/imgui_draw.cpp"
-    "external/libs/imgui/imgui_tables.cpp"
-    "external/libs/imgui/imgui_widgets.cpp"
-    "external/libs/imgui/backends/imgui_impl_glfw.cpp"
-    "external/libs/imgui/backends/imgui_impl_opengl3.cpp"
+    "libs/imgui/imgui.cpp"
+    "libs/imgui/imgui_demo.cpp"
+    "libs/imgui/imgui_draw.cpp"
+    "libs/imgui/imgui_tables.cpp"
+    "libs/imgui/imgui_widgets.cpp"
+    "libs/imgui/backends/imgui_impl_glfw.cpp"
+    "libs/imgui/backends/imgui_impl_opengl3.cpp"
 
 )
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/libs/imgui)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/libs/imgui)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui)
 
 # Add the executable, linking the project name with the source files
@@ -514,16 +514,16 @@ add_compile_definitions(SHADER_DIR_RELATIVE="${shader_dir_relative}")
 # ----------------------------------------------------------------------------------------
 #               Set Folders
 # ----------------------------------------------------------------------------------------
-set_property(TARGET glad PROPERTY FOLDER "external/Libs/glad")
+set_property(TARGET glad PROPERTY FOLDER "Libs/glad")
 
-set_property(TARGET assimp PROPERTY FOLDER "external/Libs/assimp")
-set_property(TARGET zlibstatic PROPERTY FOLDER "external/Libs/assimp")
-set_property(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTY FOLDER "external/Libs/assimp")
+set_property(TARGET assimp PROPERTY FOLDER "Libs/assimp")
+set_property(TARGET zlibstatic PROPERTY FOLDER "Libs/assimp")
+set_property(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTY FOLDER "Libs/assimp")
 
-set_property(TARGET glfw PROPERTY FOLDER "external/Libs/glfw")
-set_property(TARGET uninstall PROPERTY FOLDER "external/Libs/glfw")
-set_property(TARGET update_mappings PROPERTY FOLDER "external/Libs/glfw")
+set_property(TARGET glfw PROPERTY FOLDER "Libs/glfw")
+set_property(TARGET uninstall PROPERTY FOLDER "Libs/glfw")
+set_property(TARGET update_mappings PROPERTY FOLDER "Libs/glfw")
 
 
-set_property(TARGET imgui PROPERTY FOLDER "external/Libs/imgui")
+set_property(TARGET imgui PROPERTY FOLDER "Libs/imgui")
 

@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.94.3-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.94.6-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
     <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=main&label=main" />
@@ -143,6 +143,12 @@ For more visual examples of the project's output, please check the `_display` fo
 Below are some examples:
 
 <p align="center">
+    <img src="_display/0.94.6_pshadows-gloom_20250120.gif" />
+    <br>
+    <sub><i>0.94.6 Dynamic Point light shadows with bloom post processing</i></sub>
+</p>
+
+<p align="center">
     <img src="_display/0.92_parallax-mapping_20241217.gif" />
     <br>
     <sub><i>0.92 Parallax occlusion mapping</i></sub>
@@ -152,12 +158,6 @@ Below are some examples:
     <img src="_display/0.91.2_normal-map-tangents_20241207.gif" />
     <br>
     <sub><i>0.91.2 Tangent bitangent normal calculation</i></sub>
-</p>
-
-<p align="center">
-    <img src="_display/0.90.6_point-light-shadows_20241116.gif" />
-    <br>
-    <sub><i>0.90.6 Dynamic Point light shadows (Shadow Mapping)</i></sub>
 </p>
 
 <p align="center">

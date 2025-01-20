@@ -40,11 +40,13 @@ void Application::drawUI()
 
 void Application::updateUI()
 {
+
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
+	if (screenshot_mode) return;
 	// ----- test ---------------------------------------------------------------------------
 
 	if (ImGui::BeginMainMenuBar())
