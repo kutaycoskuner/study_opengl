@@ -161,3 +161,20 @@ public:
 	ParallaxTestScene();
 };
 
+class HDRTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+
+	HDRTestScene();
+};
+
+class BloomTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+
+	BloomTestScene();
+};
+
+

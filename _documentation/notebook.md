@@ -9,6 +9,43 @@
 - [Shortcuts](#shortcuts)
 
 # Links
+- models
+    - metadata
+        - author
+        - source 
+        - format
+        - upload date
+        - licence
+        - modifications
+    - stanford bunny
+        - https://graphics.stanford.edu/data/3Dscanrep/
+    - sponza
+        - 
+    - san miguel scene
+    - utah teapot
+        - https://de.wikipedia.org/wiki/Utah_teapot
+    - khronos sample models 
+        - https://github.com/KhronosGroup/glTF-Sample-Models
+    - nvidia bistro
+        - https://developer.nvidia.com/orca/amazon-lumberyard-bistro
+    - suzanne_blender
+    - self
+        - textures
+            - clayman
+            - parallax-test
+            - grids
+    - substance
+        - jade toad
+        - meet mat
+        - preview sphere
+        - tiling material
+
+- icosahedron based geodesic sphere
+    - https://web.archive.org/web/20180808214504/http://donhavey.com:80/blog/tutorials/tutorial-3-the-icosahedron-sphere/
+
+- hdr lgihting by john hable
+    - https://www.slideshare.net/slideshow/lighting-shading-by-john-hable/12026883
+
 - tangent space
     - https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
 
@@ -216,18 +253,6 @@
 - module ne demek
     - .exe, ya da .dll
 
-- coordinate systems
-    - https://learnopengl.com/Getting-started/Coordinate-Systems
-    - local space (or object space) : are the coordinates of your object relative to its local origin; they're the coordinates your object begins in.
-    - world space                   : coordinates relative to global origin of the world
-    - view space (or eye space)     : camera view
-    - clip space                    : -1 to 1 removes anything outer than this range
-    - screen space                  : clip coordinates to monitor screen coordinates    
-
-    - model_matrix         : local -> world
-    - view_matrix          : world -> view
-    - projection_matrix    : view  -> clip
-
 - vector math
     - vector negation
     - scalar vector operations | + - * /
@@ -286,6 +311,36 @@
     - selection (orange / overlay)
                     -> blender  1.0, 0.62, 0.16
 
+- <engine setup>
+    - msaa > intermediate hdr > bloom > ldr 
+
+- <graphics pipeline>
+
+- <space transformations>
+- keyword: change of basis
+
+    - coordinate systems
+        0. tangent space
+            : normale tam karsidan texture koordinatlari x/y olacak sekilde baktigimiz uzay
+        - https://learnopengl.com/Getting-started/Coordinate-Systems
+        1. local space (object space / model space) 
+            : are the coordinates of your object relative to its local origin; they're the coordinates your object begins in.
+        2. world space                   
+            : coordinates relative to global origin of the world
+        3. view space (or eye space)     
+            : camera view
+        4. projection space              
+            : camera view i 2d gorsele ceviren projection
+            : Projection space is an intermediate space after applying the projection matrix but before the perspective divide.
+            : This means the coordinates have a W component (e.g., (𝑥,𝑦,𝑧,𝑤) (x,y,z,w)).
+        5. clip space                    
+            : -1 to 1 removes anything outer than this range
+        - (homogeneous) screen space     
+            : clip coordinates to monitor screen coordinates    
+
+        - model_matrix         : local -> world
+        - view_matrix          : world -> view
+        - projection_matrix    : view  -> clip
 
 - magic number
     - guzel degisken isimlendirmesi ile saglamak lazim
@@ -389,6 +444,13 @@
 
 
 # Blackboard
+- <color spaces>
+    - rgb  = linear space
+    - srgb = gamma space li color space
+
+- <blit>
+    - bir bufferi otekine kopyalamak
+
 - <shields badges>
     - badges / shields
         - https://shields.io/badges/static-badge
@@ -474,6 +536,7 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - could you give me an example class and architecture for this?
 
 # How to
+
 - <programi hangi gpu calistiriyor>
     - ctrl + shift + esc = task manaager
     - ctrl + tab -> performaance
@@ -521,19 +584,27 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - go to toolkit open pixel_matcher and run the tests
     - if all true make create_test_scene_frames   = false
 
+- <adding new vertex data object>
+    - kompleks geometriyse vertexleri hespalayacak formulu bul
+    - blackboardda print ile yazdir
+    - vertexdata static icine at
+    - named maps e isimli olarak koy
+    - primitiv scene node tanimla
 
 - <adding new scene yeni sahne ekleme>
     - headers/data/scenes.h uzerinde yeni sahneyi ekle
-    - data/scenes/<scene>.cpp uzerinde yeni sahneyi yarat
+    - data/scenes/<scene>.cpp uzerinde yeni sahneyi yarat [vsc]
     - application da loadscenedata fonksiyonuna scene i numarasiyla ekle
     - ui a da ekle (Application::updateUI())
     - cmake icine de adresi ekle
 
 - <adding new shader>
-    - shaders/<new>.glsl yeni shader ekle
-    - data/paths/shader_paths.cpp -> shader pathleri ekle
+    - shaders/<new>.glsl yeni shader ekle [vsc]
+    - data/paths/shader_paths.cpp -> shader pathleri ekle 
     - cmake add shaders
-    - change element shader name 
+    - change shader naame on notes
+
+- <adding new submodule>
 
 - <adding new texture>
     - add textures to data/textures

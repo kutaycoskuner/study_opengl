@@ -32,23 +32,23 @@ std::map<std::string, std::vector<std::string>> PathAfterDirectory::cubemap_text
 	}
 	,{"skybox03",
 		{
-		std::string("textures_cubemap/nebula_2k.xp.jpg"),
-		std::string("textures_cubemap/nebula_2k.xn.jpg"),
-		std::string("textures_cubemap/nebula_2k.yp.jpg"),
-		std::string("textures_cubemap/nebula_2k.yn.jpg"),
-		std::string("textures_cubemap/nebula_2k.zp.jpg"),
-		std::string("textures_cubemap/nebula_2k.zn.jpg")
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_xp.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_xn.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_yp.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_yn.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_zp.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_zn.jpg")
 		}
 	}
 	,{"skybox04",
 		{
-		std::string("textures_cubemap/nebula01_2k.xp.jpg"),
-		std::string("textures_cubemap/nebula01_2k.xn.jpg"),
-		std::string("textures_cubemap/nebula01_2k.yp.jpg"),
-		std::string("textures_cubemap/nebula01_2k.yn.jpg"),
-		std::string("textures_cubemap/nebula01_2k.zp.jpg"),
-		std::string("textures_cubemap/nebula01_2k.zn.jpg")
-		}
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_xp.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_xn.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_yp.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_yn.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_zp.jpg"),
+		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_zn.jpg")
+		}		
 	}
 };
 
@@ -67,6 +67,26 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 		.color = std::string("textures/grid_2k_16d_white_color.png")
 		,.specular = std::string("textures/test_2k_specular.jpg")
 	//,.emission = std::string("textures/grid02_16d_emission_2k.png")
+	}
+},
+{"grid_darkgray_2k",
+	{
+		.color = std::string("yurt/assets/textures_simple/grid-16_darkgray_2k_color.png")
+	,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+	}
+},
+{"linegrid01_darkgray_2k",
+	{
+	    .color = std::string("yurt/assets/textures_simple/linegrid-16_darkgray_2k_color.png")
+	,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+	}
+},
+{"linegrid01_white_2k",
+	{
+		.color = std::string("yurt/assets/textures_simple/linegrid-16_white_2k_color.png")
+	//,.normal = std::string("textures/self/normal.png")
+	,.specular = std::string("textures/kraftpaper01_2k_roughness.jpg")
+	,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
 	}
 },
 {"linegrid_2k_darkgray",
@@ -134,8 +154,8 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 },
 {"out_brickwall",
 	{
-	.color     = std::string("textures/learnopengl/out_brickwall_color_1k.jpg")
-	,.normal   = std::string("textures/learnopengl/out_brickwall_normal_1k.jpg")
+	.color = std::string("textures/learnopengl/out_brickwall_color_1k.jpg")
+	,.normal = std::string("textures/learnopengl/out_brickwall_normal_1k.jpg")
 	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
 	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
 	}
@@ -143,8 +163,8 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 ,{
 "out_bricks",
    {
-   .color	      = std::string("textures/learnopengl/out_bricks2_color_512.jpg")
-   ,.normal		  = std::string("textures/learnopengl/out_bricks2_normal_512.jpg")
+   .color = std::string("textures/learnopengl/out_bricks2_color_512.jpg")
+   ,.normal = std::string("textures/learnopengl/out_bricks2_normal_512.jpg")
    ,.displacement = std::string("textures/learnopengl/out_bricks2_displacement_512.jpg")
 	//,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
 	//,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
@@ -169,6 +189,19 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths =
 //,.specular = std::string("textures/linegrid_2k_16d_white_color.png")
 //,.emission = std::string("textures/linegrid_2k_16d_white_color.png")
    }
+},
+{
+"gamma-test-rgb",
+	{
+	.color = std::string("textures/self/gamma_test_rgb_256.png")
+    }
+},
+{
+"gamma-test-srgb",
+	{
+	.color = std::string("textures/self/gamma_test_srgb_256.png")
+	}
 }
+
 
 };

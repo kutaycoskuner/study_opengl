@@ -155,16 +155,28 @@ const std::vector<ShaderPaths> PathAfterDirectory::shader_paths =
 		,std::string("4.4.shadowmap-pl_geo_shader.glsl")
 	}
 	, {
-	 std::string("4.5.normal01_vrtx_shader.glsl")
+	std::string("4.5.normal01_vrtx_shader.glsl")
 	,std::string("4.5.normal01_frag_shader.glsl")
 	}
 	, {
-	 std::string("4.6.normal02_vrtx_shader.glsl")
+	std::string("4.6.normal02_vrtx_shader.glsl")
 	,std::string("4.6.normal02_frag_shader.glsl")
 	}
 	,{
-	 std::string("4.7.parallax_vrtx_shader.glsl")
+	std::string("4.7.parallax_vrtx_shader.glsl")
 	,std::string("4.7.parallax_frag_shader.glsl")
+	}
+	,{
+	std::string("4.8.hdr_vrtx_shader.glsl")
+	,std::string("4.8.hdr_frag_shader.glsl")
+	}
+	,{
+	std::string("4.9.bloom_vrtx_shader.glsl")
+	,std::string("4.9.bloom_frag_shader.glsl")
+	}
+	, {
+	 std::string("post_process/gaussian-blur_vrtx_shader.glsl")
+	,std::string("post_process/gaussian-blur_frag_shader.glsl")
 	}
 };
 

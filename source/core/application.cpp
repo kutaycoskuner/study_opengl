@@ -9,11 +9,6 @@
 // ---------------------------------------------------------------------------------------
 //				Libraries
 // ---------------------------------------------------------------------------------------
-// imgui
-#include "../../libs/imgui/imgui.h"
-#include "../../libs/imgui/backends/imgui_impl_glfw.h"
-#include "../../libs/imgui/backends/imgui_impl_opengl3.h"
-
 #include "basic.h"			// project start basic test
 #include "utilities.h"		// self written utilities
 #include "data.h"			// data headers ex. model vertices
@@ -130,35 +125,106 @@ bool Application::initialize(const ConfigData& config)
 	);
 
 
-	// 3.11 configure MSAA framebuffer
+	// 3.11 configure MSAA framebuffer / hdr
 	// --------------------------
-	glGenFramebuffers(1, &fbo_msaa);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_msaa);
+	glGenFramebuffers(1, &fbo_illumination_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
 	// create a multisampled color attachment texture
-	glGenTextures(1, &colorbuffer_msaa);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorbuffer_msaa);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample_count, GL_RGB, msaa_width, msaa_height, GL_TRUE);
+	glGenTextures(1, &tex_illumination_msaa_color);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex_illumination_msaa_color);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, sample_count, GL_RGBA16F, display_width, display_height, GL_TRUE);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, colorbuffer_msaa, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex_illumination_msaa_color, 0);
 	// create a (also multisampled) renderbuffer object for depth and stencil attachments
-	glGenRenderbuffers(1, &rbo_msaa);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_msaa);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample_count, GL_DEPTH24_STENCIL8, msaa_width, msaa_height);
+	glGenRenderbuffers(1, &rbo_illumination_msaa);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_illumination_msaa);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, sample_count, GL_DEPTH24_STENCIL8, display_width, display_height);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_msaa);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_illumination_msaa);
+
+	// set up floating point framebuffer to render scene to
+	glGenFramebuffers(1, &fbo_illumination_hdr);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_hdr);
+	glGenTextures(2, tex_illumination_hdr);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, tex_illumination_hdr[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		// attach texture to framebuffer
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, tex_illumination_hdr[i], 0
+		);
+	}
+
+	// finally check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// bloom buffer and textures
+	glGenFramebuffers(2, fbo_bloom);
+	glGenTextures(2, tex_bloom);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo_bloom[i]);
+		glBindTexture(GL_TEXTURE_2D, tex_bloom[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_bloom[i], 0
+		);
+	}
+
+	// finally check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	// 3.4 generate frame buffer object 
 	// -------------------------
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenFramebuffers(1, &fbo_backbuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_backbuffer);
+	//// create floating point color buffer
+	//unsigned int color_buffer;
+	//glGenTextures(1, &color_buffer);
+	//glBindTexture(GL_TEXTURE_2D, color_buffer);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//glBindFramebuffer(GL_FRAMEBUFFER, fbo_lighting);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
+	////// create depth buffer (renderbuffer)
+	////unsigned int render_buffer_obj_depth;
+	////glGenRenderbuffers(1, &render_buffer_obj_depth);
+	////glBindRenderbuffer(GL_RENDERBUFFER, render_buffer_obj_depth);
+	////glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, display_width, display_height);
+	//// attach buffers
+	////glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	////glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
+	//////glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, render_buffer_obj_depth);
+	//if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	//	std::cout << "Framebuffer not complete!" << std::endl;
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	// 4.3 shadow fbo
 	// ---------------------------------------------------------
 	unsigned int depthMapFBO;
 	glGenFramebuffers(1, &depthMapFBO);
-	shadow_fbo.push_back(depthMapFBO);  // Store FBO ID
+	fbo_shadow.push_back(depthMapFBO);  // Store FBO ID
 
 
 	unsigned int depthMap;
@@ -175,7 +241,7 @@ bool Application::initialize(const ConfigData& config)
 	float border_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
 
-	shadow_maps.push_back(depthMap);
+	tex_shadow_maps.push_back(depthMap);
 
 	// Enable drawing to the back buffer
 	//glDrawBuffer(GL_BACK);
@@ -186,7 +252,7 @@ bool Application::initialize(const ConfigData& config)
 	// ---------------------------------------------------------
 	unsigned int shadow_cubemap_fbo;
 	glGenFramebuffers(1, &shadow_cubemap_fbo);
-	shadow_cube_fbo.push_back(shadow_cubemap_fbo);
+	fbo_shadow_cube.push_back(shadow_cubemap_fbo);
 
 	unsigned int shadow_depth_cubemap;
 	glGenTextures(1, &shadow_depth_cubemap);
@@ -199,24 +265,24 @@ bool Application::initialize(const ConfigData& config)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	shadow_cubemaps.push_back(shadow_depth_cubemap);
+	tex_shadow_cubemaps.push_back(shadow_depth_cubemap);
 
 	// texture for framebuffer
 	// ---------------------------------------------------------
-	glGenTextures(1, &screen_colortexture);
-	glBindTexture(GL_TEXTURE_2D, screen_colortexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, k_scr_width, k_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glGenTextures(1, &fbo_backbuffer_color);
+	glBindTexture(GL_TEXTURE_2D, fbo_backbuffer_color);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, k_scr_width, k_scr_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screen_colortexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_backbuffer_color, 0);
 
 	// rbo
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glGenRenderbuffers(1, &rbo_backbuffer_depth);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_backbuffer_depth);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, k_scr_width, k_scr_height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_backbuffer_depth);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
@@ -224,6 +290,11 @@ bool Application::initialize(const ConfigData& config)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	input_speaker.addListener(this);
+
+	// gamma background linear -> srgb
+	clear_color.x = pow(clear_color.x, 2.2);
+	clear_color.y = pow(clear_color.y, 2.2);
+	clear_color.z = pow(clear_color.z, 2.2);
 
 	return 0;
 }
@@ -319,6 +390,8 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 15)	active_scene = new PointShadowsTestScene;
 	else if (scene_number == 16)	active_scene = new NormalMapTestScene;
 	else if (scene_number == 17)	active_scene = new ParallaxTestScene;
+	else if (scene_number == 18)	active_scene = new HDRTestScene;
+	else if (scene_number == 19)	active_scene = new BloomTestScene;
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -664,7 +737,7 @@ void Application::mainLoop(ConfigData& config)
 		drawScene(uni);
 
 		drawUI();
-
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
@@ -711,8 +784,9 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 #endif
 
 	// glfw window creation
+	//glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 	this->window = glfwCreateWindow(width, height, window_name, NULL, NULL);
-	// first two params x,y in size; 3. name; 4-5 necesssary but ignore
+	// first two parameters x,y in size; 3. name; 4-5 necessary but ignore
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -727,22 +801,6 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
 	return 0;
 }
 
-void Application::initUISystem(const char*& glsl_version)
-{
-	//  :: IMGUI Init
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-
-	// Setup Platform/Renderer backends
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init(glsl_version);
-}
 
 void Application::unload()
 {
@@ -754,8 +812,8 @@ void Application::unload()
 	//glDeleteBuffers(1, &lit_vbo);
 	if (!reload)
 	{
-		glDeleteFramebuffers(1, &fbo);
-		glDeleteRenderbuffers(1, &rbo);
+		glDeleteFramebuffers(1, &fbo_backbuffer);
+		glDeleteRenderbuffers(1, &rbo_backbuffer_depth);
 		glDeleteVertexArrays(buffer_count, vertex_arrays);
 		glDeleteBuffers(buffer_count, vertex_buffers);
 	}
@@ -767,145 +825,6 @@ int Application::exit()
 	// ------------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
-}
-
-void Application::drawUI()
-{
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void Application::updateUI()
-{
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-	// ----- test ---------------------------------------------------------------------------
-
-	if (ImGui::BeginMainMenuBar())
-	{
-		//if (ImGui::BeginMenu("File"))
-		//{
-		//	//ImGui::ShowExampleMenuFile();
-		//	if (ImGui::MenuItem("Select Scene", "Shortcut")) {}
-		//	ImGui::EndMenu();
-		//}
-		if (ImGui::BeginMenu("Select Scene"))
-		{
-			//if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-			//if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-			ImGui::Separator();
-			if (ImGui::MenuItem("Multiple Lights", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 1 });
-			}
-			if (ImGui::MenuItem("Import Model", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 2 });
-			}
-			if (ImGui::MenuItem("Outliner", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 3 });
-			}
-			if (ImGui::MenuItem("Blending", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 4 });
-			}
-			if (ImGui::MenuItem("Face Culling", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 5 });
-			}
-			if (ImGui::MenuItem("Frame Buffer", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 6 });
-			}
-			if (ImGui::MenuItem("Cube Map", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 7 });
-			}
-			if (ImGui::MenuItem("Advanced GLSL", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 8 });
-			}
-			if (ImGui::MenuItem("Geometry Shader", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 9 });
-			}
-			if (ImGui::MenuItem("Instancing", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 10 });
-			}
-			if (ImGui::MenuItem("Anti Aliasing", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 11 });
-			}
-			if (ImGui::MenuItem("Blinn-Phong / Phong", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 12 });
-			}
-			if (ImGui::MenuItem("Gamma Correction", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 13 });
-			}
-			if (ImGui::MenuItem("Directional Light Shadows", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 14 });
-			}
-			if (ImGui::MenuItem("Point Light Shadows", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 15 });
-			}
-			if (ImGui::MenuItem("Normal Map", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 16 });
-			}
-			if (ImGui::MenuItem("Parallax Mapping", "")) {
-				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 17 });
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMainMenuBar();
-	}
-
-	// ----- test  end ----------------------------------------------------------------------
-
-
-	// remove this retun to activate ui
-	if (!active_scene->scene_state.b_toggleui)
-		return;
-
-	//2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
-	{
-		static float f = 0.0f;
-		static int counter = 0;
-		static const char* txt_aspectRatio = "Aspect Ratio: ";
-
-		ImGui::Begin("Hello world");                          // Create a window called "Hello, world!" and append into it.
-
-		//ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
-		//ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
-		//ImGui::Checkbox("Another Window", &show_another_window);
-
-		//ImGui::SliderFloat("Light Dir X", &this->scene_state.light.direction.x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::ColorEdit3("", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
-
-		ImGui::SliderFloat("Camera Pos X", &this->active_scene->cameras[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pos Y", &this->active_scene->cameras[0].position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pos Z", &this->active_scene->cameras[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-
-		ImGui::SliderFloat("p light 01 x", &this->active_scene->point_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("p light 01 y", &this->active_scene->point_lights[0].position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("p light 01 z", &this->active_scene->point_lights[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		// Debug
-		//ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Osman", &this->active_scene->directional_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-
-		const char* animate_button_name =
-			this->active_scene->scene_state.animate ? "Stop" : "Play";
-		if (ImGui::Button(animate_button_name))
-			this->active_scene->scene_state.animate = !this->active_scene->scene_state.animate;
-		//ImGui::SameLine();
-		//ImGui::Text("counter = %d", counter);
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		//ImGui::Text("vertices: %u | tringles: %u", active_scene->scene_state.stats_vrts, active_scene->scene_state.stats_tris);
-		ImGui::End();
-	}
 }
 
 void Application::compute_QuadVrtxTangents()
@@ -1041,7 +960,7 @@ void Application::setDirectionalLightParameters(Uniforms& uni)
 {
 	const std::vector<DirectionalLight>& directional_lights = active_scene->directional_lights;
 	if (directional_lights.empty()) { return; }
-	active_shader->setVec3("directional_light.direction", directional_lights[0].direction);
+	active_shader->setVec3("directional_light.direction", directional_lights[0].direction.normalized());
 	active_shader->setVec3("directional_light.diffuse", directional_lights[0].diffuse); // darken diffuse light a bit
 	active_shader->setVec3("directional_light.ambient", directional_lights[0].ambient);
 	active_shader->setVec3("directional_light.specular", directional_lights[0].specular);
@@ -1129,7 +1048,7 @@ void Application::drawScene(Uniforms& uni)
 	// 3.4. framebuffer
 	// bind to framebuffer and draw scene as we normally would to color texture 
 	//glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_msaa);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
 
 
 	// enable this to avoid awkward whatever front rendering
@@ -1179,7 +1098,7 @@ void Application::drawScene(Uniforms& uni)
 
 	drawScene_skybox(uni);
 
-	drawFramebuffer(display_w, display_h);
+	drawBackbuffer(display_w, display_h);
 
 
 }
@@ -1196,11 +1115,12 @@ void Application::drawHelper_lightPlaceholders(Uniforms& uni)
 
 		// assign uniforms
 		active_shader->setVec3("light_color", active_scene->point_lights[ii].diffuse); // light_coloru degistirme
+		active_shader->setFloat("light_brightness", active_scene->point_lights[ii].brightness); 
 		active_shader->setMat4("view_matrix", uni.upv.view_matrix);
 		active_shader->setMat4("projection_matrix", uni.upv.projection_matrix);
 		active_shader->setMat4("view_proj_matrix", uni.upv.view_proj_matrix);
 
-		glBindVertexArray(named_arrays.at("cube"));
+		glBindVertexArray(named_arrays.at("icosphere02"));
 		active_shader->setVec3("light_color", point_lights[ii].diffuse);
 
 		Mat4 model = mat_utils::translation(point_lights[ii].position)
@@ -1208,7 +1128,7 @@ void Application::drawHelper_lightPlaceholders(Uniforms& uni)
 			;
 		active_shader->setMat4("world_matrix", model);
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawArrays(GL_TRIANGLES, 0, 240);
 
 	}
 
@@ -1265,35 +1185,35 @@ void Application::drawShadowCubemap()
 	Vec3 light_pos = active_scene->point_lights[0].position;
 
 	// Right (+X face)
-	cubemap_light_space_matrices[0] = shadow_proj *
+	mat_light_space_cubemaps[0] = shadow_proj *
 		mat_utils::lookAtDirection(light_pos, Vec3(+1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
 
 	// Left (-X face)
-	cubemap_light_space_matrices[1] = shadow_proj *
+	mat_light_space_cubemaps[1] = shadow_proj *
 		mat_utils::lookAtDirection(light_pos, Vec3(-1.0, 0.0, 0.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
 
 	// Top (+Y face)
-	cubemap_light_space_matrices[2] = shadow_proj *
+	mat_light_space_cubemaps[2] = shadow_proj *
 		mat_utils::lookAtDirection(light_pos, Vec3(0.0, +1.0, 0.0), Vec3(0.0f, 0.0f, -1.0f)); // Up is +Z
 
 	// Bottom (-Y face)
-	cubemap_light_space_matrices[3] = shadow_proj *
+	mat_light_space_cubemaps[3] = shadow_proj *
 		mat_utils::lookAtDirection(light_pos, Vec3(0.0, -1.0, 0.0), Vec3(0.0f, 0.0f, +1.0f)); // Up is -Z
 
 	// Front (+Z face)
-	cubemap_light_space_matrices[4] = shadow_proj *
+	mat_light_space_cubemaps[4] = shadow_proj *
 		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, -1.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
 
 	// Back (-Z face)
-	cubemap_light_space_matrices[5] = shadow_proj *
+	mat_light_space_cubemaps[5] = shadow_proj *
 		mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, +1.0), Vec3(0.0f, -1.0f, 0.0f)); // Up is -Y
 
 
 	this->active_shader = shaders.at("shadowmap-pl");
 
 	// Bind the framebuffer and set up for depth rendering
-	glBindFramebuffer(GL_FRAMEBUFFER, shadow_cube_fbo[0]);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadow_cubemaps[0], 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_shadow_cube[0]);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tex_shadow_cubemaps[0], 0);
 
 	// Enable depth testing and prepare the framebuffer for rendering
 	glEnable(GL_DEPTH_TEST);
@@ -1308,7 +1228,7 @@ void Application::drawShadowCubemap()
 
 	// ... send uniforms to shader (including light's far_plane value)
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps.back());
+	glBindTexture(GL_TEXTURE_CUBE_MAP, tex_shadow_cubemaps.back());
 	// ... bind other textures
 	drawSceneNode_primitive_shadows_pl(far);
 
@@ -1341,21 +1261,21 @@ void Application::drawShadowMap()
 
 	Mat4 light_space_matrix = light_projection * light_view;
 
-	if (m_light_space_matrix.size() == 0)
+	if (this->mat_light_space.size() == 0)
 	{
-		m_light_space_matrix.push_back(light_space_matrix);
+		this->mat_light_space.push_back(light_space_matrix);
 	}
 	else
 	{
-		m_light_space_matrix[0] = light_space_matrix;
+		this->mat_light_space[0] = light_space_matrix;
 	}
 
 
 	this->active_shader = shaders.at("shadowmap");
 
 	// Bind the framebuffer and set up for depth rendering
-	glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo[0]);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_shadow[0]);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex_shadow_maps[0], 0);
 
 	// Enable depth testing and prepare the framebuffer for rendering
 	glEnable(GL_DEPTH_TEST);
@@ -1373,7 +1293,7 @@ void Application::drawShadowMap()
 	GLuint lightSpaceMatrixLocation = glGetUniformLocation(this->active_shader->ID, "lightSpaceMatrix");
 	GLfloat* ptr_light_space_mat = reinterpret_cast<GLfloat*>(&light_space_matrix._11);
 	glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, ptr_light_space_mat);
-	ptr_light_space_matrix.push_back(ptr_light_space_mat);
+	ptr_mat_light_space.push_back(ptr_light_space_mat);
 
 	// Render the scene
 	drawSceneNode_primitive_shadows_dl(light_space_matrix);
@@ -1384,19 +1304,104 @@ void Application::drawShadowMap()
 
 }
 
-void Application::drawFramebuffer(int display_w, int display_h)
+void Application::drawBackbuffer(int display_w, int display_h)
 {
 	// 3.4. framebuffer
 	// --------------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
 
-	// 3.11 anti aliasing
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_msaa);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	glBlitFramebuffer(0, 0, msaa_width, msaa_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	// ---------------------- extract bloom bright color end
 
+
+	// intermediate buffer to attach bloom
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_msaa);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_illumination_hdr);
+	
+	// Resolve the multisampled color buffer into tex_hdr_color[0] (first render target of HDR)
+	glReadBuffer(GL_COLOR_ATTACHMENT0); // From MSAA framebuffer's single color target
+	glDrawBuffer(GL_COLOR_ATTACHMENT0); // To HDR framebuffer's first render target
+
+	glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	// bind frame buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_hdr);	
+
+	// Set the viewport to match your screen size
+	glViewport(0, 0, display_width, display_height);
+	
+	// select shader
+	this->active_shader = shaders.at("bloom");
+	(*active_shader).use();
+
+	// bind vertex array
+	glBindVertexArray(named_arrays.at("frame"));
+
+	// Bind the resolved texture (tex_hdr_color[0]) as input
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex_illumination_hdr[0]); // Texture written by glBlitFramebuffer
+	//glUniform1i(glGetUniformLocation(hdrShader.ID, "input_texture"), 0);
+
+	// Configure multiple render targets (if needed)
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(1, &attachments[1]);
+	// Render a full-screen quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Unbind framebuffers to reset state
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+
+	// ---------------------- extract bloom bright color end
+	
+	
+	/// ---------------------- gaussian blur
+			// 2. blur bright fragments with two-pass Gaussian Blur 
+		// --------------------------------------------------
+	bool horizontal = true, first_iteration = true;
+	unsigned int amount = 10;
+	this->active_shader = shaders.at("gaussian-blur");
+	(*active_shader).use();
+
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo_bloom[horizontal]);
+		active_shader->setInt("horizontal", horizontal);
+		glBindTexture(GL_TEXTURE_2D, first_iteration ? tex_illumination_hdr[1] : tex_bloom[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+		// bind vertex array
+		glBindVertexArray(named_arrays.at("frame"));
+
+		// Render a full-screen quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/// ---------------------- gaussian blur end
+
+
+	// 3.11 anti aliasing
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_hdr);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_backbuffer);
+	glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+#define CHECK_BACKBUFFER_ENCODING 0
+#if CHECK_BUFFER_ENCODING
+	// check back buffer encoding
+	GLint encoding;
+	glGetFramebufferAttachmentParameteriv(
+		GL_FRAMEBUFFER, 
+		GL_BACK_LEFT, 
+		GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING,
+		&encoding
+	);
+	std::cout << (encoding == GL_SRGB ? "srgb" : "linear");
+#endif
+
+	glDisable(GL_DEPTH_TEST); 
+	// disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -1404,10 +1409,29 @@ void Application::drawFramebuffer(int display_w, int display_h)
 
 	this->active_shader = shaders.at("framebuffer");
 	(*active_shader).use();
-	glActiveTexture(GL_TEXTURE0);
+
 	glBindVertexArray(named_arrays.at("frame"));
-	glBindTexture(GL_TEXTURE_2D, screen_colortexture);	// use the color attachment texture as the texture of the quad plane
+
+	glActiveTexture(GL_TEXTURE0);
+	active_shader->setInt("screen_texture", 0);
+	glBindTexture(GL_TEXTURE_2D, fbo_backbuffer_color);
+
+	glActiveTexture(GL_TEXTURE1);
+	active_shader->setInt("screen_bloom", 1);
+	glBindTexture(GL_TEXTURE_2D, tex_bloom[!horizontal]);
+
+	active_shader->setFloat("exposure", active_scene->scene_state.exposure);
+	active_shader->setBool  ("bloom", active_scene->scene_state.bloom);
+
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Unbind textures to release texture slots
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture from slot 0
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture from slot 1
+	// Reset active texture slot to default (GL_TEXTURE0)
+	glActiveTexture(GL_TEXTURE0);
 
 	if (save_frame)
 	{
@@ -1465,7 +1489,7 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
 	for (int ii = 0; ii < 6; ii++)
 	{
 		std::string name = "shadow_transform_matrices[" + std::to_string(ii) + "]";
-		active_shader->setMat4(name, cubemap_light_space_matrices[ii]);
+		active_shader->setMat4(name, mat_light_space_cubemaps[ii]);
 	}
 
 	for (int i = 0; i < element_count; i++)
@@ -1498,6 +1522,45 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		//}
 	}
+}
+
+void Application::setUniforms(Uniforms& uni)
+{
+	// draw scene objects
+	// --------------------------------------------------------------------------
+	Camera cam = active_scene->cameras[0];
+	UniformsPerObject& upo = uni.upo;
+	UniformsPerView& upv = uni.upv;
+	UniformsPerFrame& upf = uni.upf;
+	// assign uniforms
+	active_shader->setVec3("view_pos", cam.position);
+	active_shader->setMat4("view_mat", upv.view_matrix);
+	active_shader->setMat4("projection_mat", upv.projection_matrix);
+	active_shader->setFloat("mix_val", upo.mix_value);
+	active_shader->setFloat("time", active_scene->scene_state.time);
+	active_shader->setFloat("tiling_factor", 1.0f);
+	active_shader->setBool("gamma", active_scene->scene_state.gamma);
+	active_shader->setInt("num_point_lights", active_scene->point_lights.size());
+	active_shader->setFloat("prlx_height_scale", 0.2f);
+	active_shader->setFloat("far_plane", shadow_far_plane);
+	active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
+
+	// assign shadow
+	if (mat_light_space.size() > 0)
+		active_shader->setMat4("light_space_matrix", mat_light_space[0]);
+
+	// textures
+	active_shader->setInt("material.diffuse_map1", 0);
+	active_shader->setInt("material.specular_map1", 1);
+	active_shader->setInt("material.normal_map1", 2);
+	active_shader->setInt("material.emission_map1", 3);
+	active_shader->setInt("shadow_map", 4);
+	active_shader->setInt("shadow_cubemap", 5);
+	active_shader->setInt("material.depth_map1", 6);
+
+	// factors
+	active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
+	active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 }
 
 void Application::drawSceneNodes_primitive(Uniforms& uni)
@@ -1536,24 +1599,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 			}
 		}
 
-		// assign uniforms
-		active_shader->setVec3("view_pos", cam.position);
-		active_shader->setMat4("view_mat", upv.view_matrix);
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
-		active_shader->setFloat("mix_val", upo.mix_value);
-		active_shader->setFloat("time", active_scene->scene_state.time);
-		active_shader->setFloat("tiling_factor", active_scene->predefined_scene_elements[i].tiling_factor);
-		active_shader->setBool("gamma", active_scene->scene_state.gamma);
-		active_shader->setInt("num_point_lights", active_scene->point_lights.size());
-		active_shader->setFloat("prlx_height_scale", 0.2f);
-
-		active_shader->setFloat("far_plane", shadow_far_plane);
-
-		// assign shadow
-		if (m_light_space_matrix.size() > 0)
-			active_shader->setMat4("light_space_matrix", m_light_space_matrix[0]);
-
-
+		setUniforms(uni);
 		// directional light
 		setDirectionalLightParameters(uni);
 		// point light
@@ -1570,18 +1616,6 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 		active_shader->setVec3("material.diffuse", 0.5f, 0.5f, 0.5f);
 		active_shader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 
-		// textures
-		active_shader->setInt("material.diffuse_map1", 0);
-		active_shader->setInt("material.specular_map1", 1);
-		active_shader->setInt("material.normal_map1", 2);
-		active_shader->setInt("material.emission_map1", 3);
-		active_shader->setInt("shadow_map", 4);
-		active_shader->setInt("shadow_cubemap", 5);
-		active_shader->setInt("material.depth_map1", 6);
-
-		// factors
-		active_shader->setFloat("material.emission_factor", active_scene->scene_state.emission_factor); // material emission factor
-		active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 		float maxObjectScale = (std::max(model._11, std::max(model._22, model._33)));
 		//active_shader->setFloat("outline_scale", maxObjectScale);
 
@@ -1619,13 +1653,13 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
 
 
 		glActiveTexture(GL_TEXTURE4);
-		shadow_maps.size() > 0 ?
-			glBindTexture(GL_TEXTURE_2D, shadow_maps[0])
+		tex_shadow_maps.size() > 0 ?
+			glBindTexture(GL_TEXTURE_2D, tex_shadow_maps[0])
 			: glBindTexture(GL_TEXTURE_2D, 0);
 
 		glActiveTexture(GL_TEXTURE5);
-		shadow_cubemaps.size() > 0 ?
-			glBindTexture(GL_TEXTURE_CUBE_MAP, shadow_cubemaps[0])
+		tex_shadow_cubemaps.size() > 0 ?
+			glBindTexture(GL_TEXTURE_CUBE_MAP, tex_shadow_cubemaps[0])
 			: glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 		glActiveTexture(GL_TEXTURE6);
@@ -1768,18 +1802,8 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 		UniformsPerView& upv = uni.upv;
 		UniformsPerFrame& upf = uni.upf;
 
-		// assign textures and uniforms
-		active_shader->setVec3("view_pos", active_scene->cameras[0].position);
-		active_shader->setMat4("view_mat", upv.view_matrix);
-		active_shader->setMat4("projection_mat", upv.projection_matrix);
-		active_shader->setFloat("mix_val", upo.mix_value);
-		active_shader->setFloat("time", active_scene->scene_state.time);
-		active_shader->setFloat("tiling_factor", 1.0f);
-		active_shader->setBool("gamma", active_scene->scene_state.gamma);
-		active_shader->setFloat("num_point_lights", active_scene->point_lights.size());
-		active_shader->setFloat("anim_tant", active_scene->scene_state.tant);
-		active_shader->setFloat("material.emission_factor", ss.emission_factor);
 
+		setUniforms(uni);
 
 
 		if (active_scene->scene_state.b_model_refraction)

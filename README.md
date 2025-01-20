@@ -8,10 +8,11 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.92-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.94.6-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
-    <img alt="Build Status Main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=main&label=Build Status" />
+    <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=main&label=main" />
+    <img alt="dev" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=dev&label=dev" />
     
 </p>
 
@@ -31,7 +32,7 @@
 
 # Installation and Usage
 
-### Prerequisites
+### 1. Prerequisites
 Before setting up and running this project, ensure you have the following installed:
 
 - [Git](https://git-scm.com/downloads)
@@ -40,7 +41,7 @@ Before setting up and running this project, ensure you have the following instal
 - [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/) (version 10.0.19041.0 or higher)
 - [OpenGL API](https://www.opengl.org/) (usually comes pre-installed with the graphics driver)
 
-### Installation
+### 2. Installation
 To install and set up the repository locally, follow these steps:
 
 1. **Clone the repository**:
@@ -52,13 +53,13 @@ git clone https://github.com/kutaycoskuner/study_opengl.git
 cd study_opengl
 ```
 
-#### Automated Setup using `.bat` Script
-2. Run the `_GenerateBuildProject.bat` script to generate the build environment:
+#### 2.1. Automated Setup using `.bat` Script
+2. Run the `--GenerateBuildProject.bat` script to generate the build environment:
 ```bash
-./_GenerateBuildProject.bat
+./--GenerateBuildProject.bat
 ```
 
-#### (Alternative) Manual Build with CMake
+#### 2.2. (Alternative) Manual Build with CMake
 If you prefer a manual setup, follow these steps:
 
 2. **Create and navigate to the `build` directory**:
@@ -72,21 +73,21 @@ cd build
 cmake ..
 ```
 
-### Run
-#### Open Solution (.sln) File
+### 3. Run
+#### 3.1. Open Solution (.sln) File
 To inspect the code in Visual Studio, open the generated solution file:
 ```
 ./build/opengl_renderer.sln
 ```
 
-#### Running the Program from the Generated Binaries
-After running `_GenerateBinaries.bat`, you can run the program with:
+#### 3.2. Running the Program from the Generated Binaries
+After running `--GenerateBinaries.bat`, you can run the program with:
 ```
 ./bin/Windows/x64/Release/opengl_renderer.exe
 ```
 
-#### Running the Isolated Packaged Instance
-If you run `_PackProgram.bat`, an isolated executable instance of the program will be created in the `artifacts` directory. This directory contains all necessary files to run the program independently. You can move the `artifacts` directory anywhere and run `opengl_renderer.exe` directly.
+#### 3.3. Running the Isolated Packaged Instance
+If you run `--PackProgram.bat`, an isolated executable instance of the program will be created in the `artifacts` directory. This directory contains all necessary files to run the program independently. You can move the `artifacts` directory anywhere and run `opengl_renderer.exe` directly.
 
 # Controls
 | Key          | Function |
@@ -121,20 +122,31 @@ If you run `_PackProgram.bat`, an isolated executable instance of the program wi
 - [x] Transparency through blending
 - [x] Face culling
 - [x] Frame buffers
-- [x] Uniform Buffer Object (UBO) implementation
-- [x] Cubemapped Skybox 
+- [x] Uniform buffer objects (UBO) implementation
+- [x] Cubemapped skybox 
 - [x] GPU instancing
 - [x] Anti-Aliasing (MSAA)
-- [x] UI Scene changer
+- [x] UI scene changer
 - [x] Automated frame-based scene testing
-- [x] Shadow Mapping (Point light / Directional Light)
-- [x] Normal Mapping
-- [x] Parallax Mapping
+- [x] Shadow mapping (Point light / Directional light)
+- [x] Normal mapping
+- [x] Parallax mapping
+- [x] High dynamic range lighting (HDR)
+- [x] Post process effect: Bloom
+- [ ] Deferred Shading
+- [ ] Screen Space Ambient Occlusion (SSAO)
+- [ ] Physically Based Rendering (PBR)
 
 # Display
 Showcasing various rendering features and their implementation in the project.   
 For more visual examples of the project's output, please check the `_display` folder.   
 Below are some examples:
+
+<p align="center">
+    <img src="_display/0.94.6_pshadows-gloom_20250120.gif" />
+    <br>
+    <sub><i>0.94.6 Dynamic Point light shadows with bloom post processing</i></sub>
+</p>
 
 <p align="center">
     <img src="_display/0.92_parallax-mapping_20241217.gif" />
@@ -146,12 +158,6 @@ Below are some examples:
     <img src="_display/0.91.2_normal-map-tangents_20241207.gif" />
     <br>
     <sub><i>0.91.2 Tangent bitangent normal calculation</i></sub>
-</p>
-
-<p align="center">
-    <img src="_display/0.90.6_point-light-shadows_20241116.gif" />
-    <br>
-    <sub><i>0.90.6 Dynamic Point light shadows (Shadow Mapping)</i></sub>
 </p>
 
 <p align="center">

@@ -127,9 +127,74 @@
     - okuma lighting equation
     - nvidia nsight graphics
     - geo shader vertex normal vis
-    - change libs to external
     - asset_import -> copy paste var if copy var
     - asset_import retrieve material info
+    - add exposure to ui
+    - add shadow to sponza
+    - proper yaml parser
+    - refactoring naming convention
+    - ui handlers
+    - add glew 
+    - validation layer -> yanlis yaptiginda geri bildirim veriyor
+    - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+
+- [0.94.6] add bloom display, add submodule refactoring, temp screenshot mode
+    - 20-Jan-2025
+        - added display bloom
+        - temp screenshot_mode
+    - 19-Jan-2025
+        - wip bloom display scene
+        - add yurt submodule
+        - add submodule refactoring
+
+- [0.94.5] add submodule refactoring
+    - 19-Jan-2025
+
+- [0.94.4] wip submodule refactoring
+    - 18-Jan-2025
+        - wip submodule refactoring
+
+- [0.94.3] added geometry generator, changed script prefixes
+    - 16-Jan-2025
+        - changed generate script prefixes
+        - changed light object
+        - added icosahedron subdivision
+        - wip icosahedron subdivision
+        - added precalculated vertex data isosahedron
+        - add geometry icosahedron vertex gen
+
+- [0.94.2] add bloom, add gaussian blur, update readme
+    - 15-Jan-2025
+        - update readme
+        - add bloom
+        - add gaussian blur pp shader
+
+- [0.94.1] add bright color extraction
+    - 14-Jan-2025
+        - add extracting bright color 
+        - add separate ui functions to another cpp with imgui header imports
+
+- [0.94] add bloom shaders and test scene
+    - 12-Jan-2025
+        - wip failed texture attachments for bloom
+        - add bloom shaders
+        - add bloom test scene
+
+- [0.93] add hdr lighting
+    - 09-Jan-2025
+        - add hdr lighting
+        - add exposure parameter to scene_state
+    - 24-Dec-2024
+        - wip: gamma reference point testing
+        - add: gamma test textures (23.10, 50m)
+    - 22-Dec-2024
+        - wip: gamma correction testing method
+        - add tone mapping on frame buffer
+        - add 16f image tex on frame buffer
+    - 17-Dec-2024
+        - fix directional light specular
+        - chg uniform set function to application
+        - add hdr test scene and shaders
 
 - [0.92] parallax mapping implementation
     - 17-Dec-2024

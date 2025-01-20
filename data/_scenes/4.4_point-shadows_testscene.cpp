@@ -40,7 +40,7 @@ void PointShadowsTestScene::loadData()
 
 	// point6
 	point_lights.push_back(PredefSceneLights::p_light);
-	point_lights.back().brightness = 2.0f;
+	point_lights.back().brightness = 6.0f;
 	//point_lights.push_back(PredefSceneLights::p_light);
 	//point_lights.push_back(PredefSceneLights::p_light);
 

@@ -69,6 +69,7 @@ set(sourceDir
     "source"
 )
 
+
 # Define the output directory based on system name, architecture, and build type
 set(outputDir 
     "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${InstructionSetArchitecture}/${CMAKE_BUILD_TYPE}"    
@@ -88,6 +89,7 @@ set(blackboardCode
 
 set(coreCode
     "${sourceDir}/core/application.cpp"
+    "${sourceDir}/core/ui.cpp"
 )
 
 set(eventHandlingCode
@@ -123,6 +125,10 @@ set(utilsCode
     "${sourceDir}/utils/self_utils.cpp"
     "${sourceDir}/utils/shader_utils.cpp"
     "${sourceDir}/utils/vector_utils.cpp"
+)
+
+set(dataCode
+    "${sourceDir}/data/geometry.cpp"
 )
 
 set(configFiles
@@ -165,9 +171,13 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.4_point-shadows_testscene.cpp"
     "${data_dir_full}/_scenes/4.5_normal-map_testscene.cpp"
     "${data_dir_full}/_scenes/4.6_parallax_testscene.cpp"
+    "${data_dir_full}/_scenes/4.7_hdr_testscene.cpp"
+    "${data_dir_full}/_scenes/4.8_bloom_testscene.cpp"
 )
 
 set(shaderFiles
+    "${shader_dir_full}/post_process/gaussian-blur_vrtx_shader.glsl"
+    "${shader_dir_full}/post_process/gaussian-blur_frag_shader.glsl"
     "${shader_dir_full}/1.0.3d_frag_shader.glsl"
     "${shader_dir_full}/1.0.3d_vrtx_shader.glsl"
     "${shader_dir_full}/1.1.axis-x_frag_shader.glsl"
@@ -251,12 +261,11 @@ set(shaderFiles
     "${shader_dir_full}/4.6.normal02_vrtx_shader.glsl"
     "${shader_dir_full}/4.7.parallax_frag_shader.glsl"
     "${shader_dir_full}/4.7.parallax_vrtx_shader.glsl"
+    "${shader_dir_full}/4.8.hdr_frag_shader.glsl"
+    "${shader_dir_full}/4.8.hdr_vrtx_shader.glsl"
+    "${shader_dir_full}/4.9.bloom_frag_shader.glsl"
+    "${shader_dir_full}/4.9.bloom_vrtx_shader.glsl"
 )
-
-
-# set(dataFiles
-#     "${data_dir_full}/test.stl"
-# )
 
 
 # ----------------------------------------------------------------------------------------
@@ -349,12 +358,13 @@ set(allHeaderFiles
 )
 
 # ----------------------------------------------------------------------------------------
-#               Organize the source structure into folders
+#               Organize the source structure into filteres
 # ----------------------------------------------------------------------------------------
 source_group(TREE ${CMAKE_SOURCE_DIR}/source PREFIX "source" FILES ${sourceCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/blackboard PREFIX "source/blackboard" FILES ${blackboardCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/core PREFIX "source/core" FILES ${coreCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/event_handling PREFIX "source/event_handling" FILES ${eventHandlingCode})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/data PREFIX "source/data" FILES ${dataCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/libs PREFIX "source/libs" FILES ${libsCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/scene PREFIX "source/scene" FILES ${sceneCode})
 source_group(TREE ${CMAKE_SOURCE_DIR}/source/test PREFIX "source/tests" FILES ${testCode})
@@ -391,6 +401,7 @@ add_executable(
     ${eventHandlingCode}
     ${libsCode}
     ${sceneCode}
+    ${dataCode}
     ${testCode}
     ${utilsCode}
     ${configFiles}
@@ -430,13 +441,13 @@ include_directories(
 )
 
 # ----------------------- glad
-include_directories("${CMAKE_SOURCE_DIR}/libs/glad-0.136/include")
-add_library(glad STATIC "${CMAKE_SOURCE_DIR}/libs/glad-0.136/src/glad.c")
+include_directories("${CMAKE_SOURCE_DIR}/libs/_glad-0.136/include")
+add_library(glad STATIC "${CMAKE_SOURCE_DIR}/libs/_glad-0.136/src/glad.c")
 target_link_libraries(${PROJECT_NAME} PRIVATE glad)
 
 
 # ----------------------- stb
-include_directories("${CMAKE_SOURCE_DIR}/libs/stb")
+include_directories("${CMAKE_SOURCE_DIR}/libs/_stb")
 
 
 

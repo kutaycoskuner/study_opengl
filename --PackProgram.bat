@@ -20,8 +20,8 @@ call :print "Packaging started.."
 
 :: Step 1: Control if build folder exists
 if not exist "%BUILD_DIRECTORY%" (
-    echo Build directory does not exist. Running ./_GenerateBuildProject.bat...
-    call ./_GenerateBuildProject.bat
+    echo Build directory does not exist. Running ./--GenerateBuildProject.bat...
+    call ./--GenerateBuildProject.bat
     if !errorlevel! NEQ 0 (
         echo ERROR: Build project generation failed. Stopping packaging process.
         exit /b -1
@@ -30,8 +30,8 @@ if not exist "%BUILD_DIRECTORY%" (
 
 :: Step 2: Control if bin/Windows/x64/Release/*.exe exists
 if not exist "%BINARIES_PATH%\%EXECUTABLE_PATTERN%" (
-    echo Executables not found in %BINARIES_PATH%. Running ./_GenerateBinaries.bat...
-    call ./_GenerateBinaries.bat
+    echo Executables not found in %BINARIES_PATH%. Running ./--GenerateBinaries.bat...
+    call ./--GenerateBinaries.bat
     if !errorlevel! NEQ 0 (
         echo ERROR: Binary generation failed. Stopping packaging process.
         exit /b -1

@@ -1,7 +1,8 @@
-cd libs
-git submodule add https://github.com/glfw/glfw.git
-git submodule add https://github.com/assimp/assimp.git
-git submodule add https://github.com/ocornut/imgui.git
+git submodule add https://github.com/glfw/glfw.git libs/glfw
+git submodule add https://github.com/assimp/assimp.git libs/assimp
+git submodule add https://github.com/ocornut/imgui.git libs/imgui
+git submodule add https://github.com/kutaycoskuner/yurt.git data/yurt
+
 
 
 Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\artifacts" -Recurse -Force
@@ -13,13 +14,13 @@ Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\bin" -R
 Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\build" -Recurse -Force
     - removing build directory
 
-./_GenerateBuildProject.bat
+./--GenerateBuildProject.bat
     - run genrate build project script
 
-./_GenerateBinaries.bat
+./--GenerateBinaries.bat
     - run generate binaries
 
-./_PackProgram.bat
+./--PackProgram.bat
 
 Get-ChildItem -Recurse ./ -Filter *.cpp -Name
     - dosyadaki .cpp ile biten dosyalarin isimlerini cikariyor
