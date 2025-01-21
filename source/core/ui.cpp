@@ -6,6 +6,7 @@
 	...
 */
 
+
 // ---------------------------------------------------------------------------------------
 //				Libraries
 // ---------------------------------------------------------------------------------------
@@ -14,6 +15,17 @@
 #include "../../libs/imgui/backends/imgui_impl_glfw.h"
 #include "../../libs/imgui/backends/imgui_impl_opengl3.h"
 // test
+
+// ---------------------------------------------------------------------------------------
+//				Forward Declarations
+// ---------------------------------------------------------------------------------------
+void drawKeybindingsTab();
+void drawGraphicsTab();
+void drawParametersTab(const Application& app);
+
+// ---------------------------------------------------------------------------------------
+//				Functions
+// ---------------------------------------------------------------------------------------
 
 void Application::initUISystem(const char*& glsl_version)
 {
@@ -47,10 +59,12 @@ void Application::updateUI()
 	ImGui::NewFrame();
 
 	if (screenshot_mode) return;
-	// ----- test ---------------------------------------------------------------------------
 
+	//				main menu bar
+	// --------------------------------------------------------------------------------------
 	if (ImGui::BeginMainMenuBar())
 	{
+		// this is an example code do not delete
 		//if (ImGui::BeginMenu("File"))
 		//{
 		//	//ImGui::ShowExampleMenuFile();
@@ -126,55 +140,121 @@ void Application::updateUI()
 		ImGui::EndMainMenuBar();
 	}
 
-	// ----- test  end ----------------------------------------------------------------------
 
 
 	// remove this retun to activate ui
 	if (!active_scene->scene_state.b_toggleui)
 		return;
 
+	//				floating window
+	// --------------------------------------------------------------------------------------
 	//2. Show a simple window that we create ourselves.We use a Begin / End pair to create a named window.
 	{
-		static float f = 0.0f;
-		static int counter = 0;
-		static const char* txt_aspectRatio = "Aspect Ratio: ";
+		ImGui::Begin("Scene Controls"); // Create a window called "Scene Controls"
 
-		ImGui::Begin("Hello world");                          // Create a window called "Hello, world!" and append into it.
+		if (ImGui::BeginTabBar("Tabs")) // Start the tab bar
+		{
+			// Parameters Tab
+			if (ImGui::BeginTabItem("Parameters"))
+			{
+				ImGui::Text("Camera Controls");
+				ImGui::SliderFloat("Camera Pos X", &this->active_scene->cameras[0].position.x, -10.0f, 10.0f);
+				ImGui::SliderFloat("Camera Pos Y", &this->active_scene->cameras[0].position.y, -10.0f, 10.0f);
+				ImGui::SliderFloat("Camera Pos Z", &this->active_scene->cameras[0].position.z, -10.0f, 10.0f);
+				ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);
+				ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);
 
-		//ImGui::Text(txt_aspectRatio);               // Display some text (you can use a format strings too)
-		//ImGui::Checkbox("Animate Y", &this->ui_state.animate);      // Edit bools storing our window open/close state
-		//ImGui::Checkbox("Another Window", &show_another_window);
+				ImGui::Text("Point Light Controls");
+				ImGui::SliderFloat("p light 01 x", &this->active_scene->point_lights[0].position.x, -10.0f, 10.0f);
+				ImGui::SliderFloat("p light 01 y", &this->active_scene->point_lights[0].position.y, -10.0f, 10.0f);
+				ImGui::SliderFloat("p light 01 z", &this->active_scene->point_lights[0].position.z, -10.0f, 10.0f);
 
-		//ImGui::SliderFloat("Light Dir X", &this->scene_state.light.direction.x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Light Dir Y", &this->scene_state.light.direction.y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Light Dir Z", &this->scene_state.light.direction.z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Light Pos Z", &this->scene_state.light.position.z, -5.0f, 5.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::ColorEdit3("", (this->ui_state.clear_color.toFloatPointer()));		// Edit 3 floats representing a color
-
-		ImGui::SliderFloat("Camera Pos X", &this->active_scene->cameras[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pos Y", &this->active_scene->cameras[0].position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pos Z", &this->active_scene->cameras[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Yaw  ", &this->active_scene->cameras[0].yaw_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Camera Pitch", &this->active_scene->cameras[0].pitch_rad, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-
-		ImGui::SliderFloat("p light 01 x", &this->active_scene->point_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("p light 01 y", &this->active_scene->point_lights[0].position.y, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("p light 01 z", &this->active_scene->point_lights[0].position.z, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		// Debug
-		//ImGui::SliderFloat("Dimension",    &this->dimension, -30.0f, 50.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::SliderFloat("Osman", &this->active_scene->directional_lights[0].position.x, -10.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+				ImGui::EndTabItem();
+			}
 
 
-		const char* animate_button_name =
-			this->active_scene->scene_state.animate ? "Stop" : "Play";
-		if (ImGui::Button(animate_button_name))
-			this->active_scene->scene_state.animate = !this->active_scene->scene_state.animate;
-		//ImGui::SameLine();
-		//ImGui::Text("counter = %d", counter);
+			drawKeybindingsTab();
 
+			ImGui::EndTabBar();
+		}
+
+		// Show FPS and performance stats
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		//ImGui::Text("vertices: %u | tringles: %u", active_scene->scene_state.stats_vrts, active_scene->scene_state.stats_tris);
 		ImGui::End();
 	}
+
+	//				docked panel
+	// --------------------------------------------------------------------------------------
+}
+
+void drawParametersTab(const Application& app) {
+
+}
+
+void drawGraphicsTab() {
+	if (ImGui::BeginTabItem("Graphics"))
+	{
+		ImGui::Text("Graphics Settings");
+		static float gamma_correction = 2.2f;
+		static float bloom_threshold = 1.0f;
+		static int shadow_quality = 3; // 1: Low, 2: Medium, 3: High
+
+		ImGui::SliderFloat("Gamma Correction", &gamma_correction, 1.0f, 3.0f);
+		ImGui::SliderFloat("Bloom Threshold", &bloom_threshold, 0.0f, 2.0f);
+		ImGui::Combo("Shadow Quality", &shadow_quality, "Low\0Medium\0High\0");
+
+		ImGui::EndTabItem();
+	}
+}
+
+void drawKeybindingsTab() {
+	if (ImGui::BeginTabItem("Keybinds"))
+	{
+		ImGui::Text("Keybindings");
+
+		// Define the keybinding pairs
+		static const char* keybinds[][2] = {
+			{"W", "Move camera forward"},
+			{"A", "Move camera left"},
+			{"S", "Move camera backward"},
+			{"D", "Move camera right"},
+			{"X", "Move camera down"},
+			{"Space Bar", "Move camera up"},
+			{"Q", "Rotate camera left"},
+			{"E", "Rotate camera right"},
+			{"R", "Tilt camera up"},
+			{"F", "Tilt camera down"},
+			{"Z", "Toggle mouse control for rotation (default: disabled)"},
+			{"C", "Reset camera position"},
+			{"G", "Toggle user interface"},
+			{"T", "Toggle Screenshot mode"},
+			{"Shift", "Increases movement speed while pressed"}
+
+		};
+
+		// Render the table
+		if (ImGui::BeginTable("KeybindTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+		{
+			ImGui::TableSetupColumn("Key", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+			ImGui::TableSetupColumn("Description", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableHeadersRow();
+
+			for (const auto& keybind : keybinds)
+			{
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("%s", keybind[0]);
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%s", keybind[1]);
+			}
+
+			ImGui::EndTable();
+		}
+
+		ImGui::EndTabItem();
+	}
+}
+
+void Application::toggleScreenshotMode() {
+	screenshot_mode = !screenshot_mode;
 }

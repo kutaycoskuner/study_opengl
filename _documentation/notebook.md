@@ -584,6 +584,10 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - go to toolkit open pixel_matcher and run the tests
     - if all true make create_test_scene_frames   = false
 
+- <adding key to ui / observer>
+    - window_events ccp > ekle
+    - application a private degisken ve o degiskeni kontrol edecek public function ekle
+
 - <adding new vertex data object>
     - kompleks geometriyse vertexleri hespalayacak formulu bul
     - blackboardda print ile yazdir

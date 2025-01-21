@@ -106,6 +106,7 @@ If you run `--PackProgram.bat`, an isolated executable instance of the program w
 | `c`          | Reset camera position |
 | `g`          | Toggle user interface |
 | `shift`      | Increases movement speed while pressed |
+| `t`          | Toggle screenshot mode |
 
 # Feature List
 - [x] Vertex-defined shape drawing

@@ -61,6 +61,7 @@ public:
     static bool toggle_mouselock;
 
     void resetCamera();
+    void toggleScreenshotMode();
 
     void setPathType(std::string path_mode);
 

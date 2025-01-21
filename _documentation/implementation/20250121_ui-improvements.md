@@ -1,0 +1,27 @@
+- analysis
+    - 
+
+    - scene controls
+        - hdr
+        - scene schange
+        - camera change
+    - profiler
+    - graphics settings
+        - debug
+            - draw mode 
+        - display
+        - rendering 
+        - post processing   
+
+    - editor (dock)
+        - material
+            - 
+        - light
+            - enabled
+            - color
+            - brightness
+            - position
+        - objects
+            - translations
+    - keybindings
+    - 

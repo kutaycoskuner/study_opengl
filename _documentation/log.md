@@ -122,7 +122,6 @@
     - add light bilboards
     - debug kodu
     - okuma nvidia api extension
-    - rename buildbinaries.bat degistir
     - okuma render pipeline
     - okuma lighting equation
     - nvidia nsight graphics
@@ -137,6 +136,12 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+
+- [0.94.8] add ui template, add clang format base, add screenshot mode 
+    - 21-Jan-2025
+        - add clang-format base
+        - ui rework
+        - add screenshot mode full functionality
 
 - [0.94.7] chores texture cleaning and refactoring
     - 21-Jan-2025
