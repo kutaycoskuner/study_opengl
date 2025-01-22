@@ -133,6 +133,7 @@ set(dataCode
 
 set(configFiles
     "${config_dir_full}/config.yaml"
+    "${config_dir_full}/yamltest.yaml"
 )
 
 set(dataMaps
@@ -339,6 +340,7 @@ set(testHeaders
 
 set(utilsHeaders
     "${CMAKE_SOURCE_DIR}/headers/utils/utilities.h"
+    "${CMAKE_SOURCE_DIR}/headers/utils/light_yaml_parser.hpp"
 )
 
 # ----------------------------------------------------------------------------------------

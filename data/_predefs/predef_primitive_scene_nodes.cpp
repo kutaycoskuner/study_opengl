@@ -283,7 +283,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::ground_platform = {
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(14.0f, 0.2f, 14.0f)
+			Vec3(15.0f, 0.2f, 15.0f)
 		}
 	,.shader_name = "multiplelights"
 	,.texture_name = "linegrid_darkgray_2k"

@@ -137,6 +137,12 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
 
+- [0.94.9] tryout yaml parser 
+    - 22-Jan-2025 
+        - wip yaml parser | cancelled
+    - 21-Jan-2025
+        - wip yaml parser test fail yrml, yaml-cpp
+
 - [0.94.8] add ui template, add clang format base, add screenshot mode 
     - 21-Jan-2025
         - add clang-format base

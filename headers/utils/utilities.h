@@ -15,11 +15,15 @@ namespace str_utils
 
 namespace file_utils
 {
+void printFileContents(const std::string& path);
+
+    bool        check_file_access(const std::string& file_path);
 	std::string getExecutableDir();
 	std::string getFileNameWithoutExtension(const std::string& filePath);
 	std::string getDirectoryName(const std::string& filePath);
 	std::string getDirectoryPath(const std::string& filePath);
 	std::string getExtension(const std::string& filePath);
+
 
 	std::string readFileContents(const std::string& path);
 	std::vector<std::string> parseFileToRowArray(const std::string& path);

@@ -1,0 +1,126 @@
+# Sample YAML with various data types
+
+# Scalar values
+string: "Hello, YAML!"
+integer: 12345
+float: 3.14159
+boolean_true: true
+boolean_false: false
+null_value: null
+date: 2025-01-21
+timestamp: 2025-01-21T10:30:00Z
+
+# Sequence (list) of values
+fruits:
+  - apple
+  - banana
+  - orange
+
+# Sequence of numbers
+numbers:
+  - 1
+  - 2
+  - 3.14
+  - 42
+
+# Mapping (dictionary) inside a list
+person:
+  name: "John Doe"
+  age: 30
+  email: "john.doe@example.com"
+  is_active: true
+  address:
+    street: "1234 Elm St"
+    city: "Metropolis"
+    zip: "12345"
+    country: "Countryland"
+  phone_numbers:
+    - "555-1234"
+    - "555-5678"
+  hobbies:
+    - hiking
+    - reading
+    - coding
+
+# Nested mappings
+nested_data:
+  first_level:
+    second_level:
+      third_level:
+        value: "deeply nested"
+
+# Multi-line strings (block literals and folded style)
+block_literal: |
+  This is a block literal.
+  It preserves newlines.
+  This is a new line.
+  
+folded_style: >
+  This is a folded style.
+  Newlines are replaced with spaces, but this string will
+  still look like it has multiple lines when you print it.
+  
+# Special characters and escape sequences
+escaped_string: "This string contains a newline escape: \n and a tab escape: \t"
+
+# Complex mappings with lists and other types
+config:
+  enabled: true
+  max_connections: 100
+  retry_count: 5
+  servers:
+    - host: "server1.local"
+      port: 8080
+    - host: "server2.local"
+      port: 9090
+  timeout: 30
+
+# Anchors and Aliases (using & and * for references)
+defaults: &defaults
+  timeout: 30
+  retries: 3
+  enable_feature: true
+
+server1:
+  <<: *defaults
+  host: "server1.local"
+  port: 8080
+
+server2:
+  <<: *defaults
+  host: "server2.local"
+  port: 9090
+
+# Complex example with mixed types
+complex_example:
+  user:
+    name: "Alice"
+    roles:
+      - admin
+      - developer
+    active: true
+  items:
+    - id: 1
+      name: "item1"
+      price: 19.99
+      tags:
+        - sale
+        - new
+    - id: 2
+      name: "item2"
+      price: 29.99
+      tags:
+        - featured
+
+# Multi-document YAML (using '---' to separate documents)
+---
+document_1:
+  description: "This is the first document."
+  status: "active"
+---
+document_2:
+  description: "This is the second document."
+  status: "inactive"
+
+# Comments in YAML
+# This is a comment, it will not affect the data
