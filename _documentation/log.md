@@ -137,6 +137,12 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
 
+- [0.94.10] update submodules
+    - 31-Jan-2025
+        - remove copy of sponza
+        - update submodule related paths
+        - update submodules
+ 
 - [0.94.9] tryout yaml parser 
     - 22-Jan-2025 
         - wip yaml parser | cancelled

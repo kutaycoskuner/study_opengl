@@ -20,7 +20,15 @@
     - stanford bunny
         - https://graphics.stanford.edu/data/3Dscanrep/
     - sponza
-        - 
+        - crytek sponza
+        - intel sponza
+        - san miguel
+        - bistro
+        - junk shop
+        - the bathroom
+        - interrogation room
+        - abandoned warehouse
+        
     - san miguel scene
     - utah teapot
         - https://de.wikipedia.org/wiki/Utah_teapot
@@ -29,6 +37,8 @@
     - nvidia bistro
         - https://developer.nvidia.com/orca/amazon-lumberyard-bistro
     - suzanne_blender
+    - blender scenes
+        - https://www.blender.org/download/demo-files/#cycles
     - self
         - textures
             - clayman
@@ -39,6 +49,12 @@
         - meet mat
         - preview sphere
         - tiling material
+
+- engine example
+    - https://github.com/KTStephano/StratusGFX
+
+- polyhaven standards
+    - https://docs.polyhaven.com/en/technical-standards/models
 
 - icosahedron based geodesic sphere
     - https://web.archive.org/web/20180808214504/http://donhavey.com:80/blog/tutorials/tutorial-3-the-icosahedron-sphere/

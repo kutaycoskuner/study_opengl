@@ -12,22 +12,22 @@ std::map<std::string, std::vector<std::string>> PathAfterDirectory::cubemap_text
 {
 	{"nebula",
 		{
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_xp.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_xn.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_yp.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_yn.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_zp.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula_2k_zn.jpg")
+		std::string("yurt/textures_cubemaps/nebula_2k_xp.jpg"),
+		std::string("yurt/textures_cubemaps/nebula_2k_xn.jpg"),
+		std::string("yurt/textures_cubemaps/nebula_2k_yp.jpg"),
+		std::string("yurt/textures_cubemaps/nebula_2k_yn.jpg"),
+		std::string("yurt/textures_cubemaps/nebula_2k_zp.jpg"),
+		std::string("yurt/textures_cubemaps/nebula_2k_zn.jpg")
 		}
 	}
 	,{"nebula-blue",
 		{
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_xp.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_xn.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_yp.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_yn.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_zp.jpg"),
-		std::string("yurt/assets/textures_skybox-cubemaps/nebula-blue/nebula-blue_2k_zn.jpg")
+		std::string("yurt/textures_cubemaps/nebula-blue/nebula-blue_2k_xp.jpg"),
+		std::string("yurt/textures_cubemaps/nebula-blue/nebula-blue_2k_xn.jpg"),
+		std::string("yurt/textures_cubemaps/nebula-blue/nebula-blue_2k_yp.jpg"),
+		std::string("yurt/textures_cubemaps/nebula-blue/nebula-blue_2k_yn.jpg"),
+		std::string("yurt/textures_cubemaps/nebula-blue/nebula-blue_2k_zp.jpg"),
+		std::string("yurt/textures_cubemaps/nebula-blue/nebula-blue_2k_zn.jpg")
 		}		
 	}
 };
@@ -38,50 +38,50 @@ std::map<std::string, TexturePaths> PathAfterDirectory::texture_paths = {
 		{
 		.color 			= std::string("textures/blender/test_2k_mid_color.jpg")
 		,.specular 		= std::string("textures/blender/test_2k_specular.jpg")
-		,.emission 		= std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+		,.emission 		= std::string("yurt/textures_simple/color-emission_2k.jpg")
 		}
 	},
 	{"parallax-test",
 		{
 		.color 			= std::string("textures/learnopengl/out_wood_color_1k.png")
-		,.normal 		= std::string("yurt/assets/textures_simple/parallax-test_normal_512.png")
-		,.displacement 	= std::string("yurt/assets/textures_simple/parallax-test_displacement_512.png")
+		,.normal 		= std::string("yurt/textures_simple/parallax-test_normal_512.png")
+		,.displacement 	= std::string("yurt/textures_simple/parallax-test_displacement_512.png")
 		}
 	},
 	{"gamma-test-srgb",
 		{
-		.color 			= std::string("yurt/assets/textures_simple/gamma-test_srgb_256.png")
+		.color 			= std::string("yurt/textures_simple/gamma-test_srgb_256.png")
 		}
 	},
 	{"grid_white_2k",
 		{
-		.color = std::string("yurt/assets/textures_simple/grid-16_darkgray_2k_color.png")
-		,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+		.color = std::string("yurt/textures_simple/grid-16_darkgray_2k_color.png")
+		,.emission = std::string("yurt/textures_simple/color-emission_2k.jpg")
 		}
 	},
 	{"grid_darkgray_2k",
 		{
-		.color = std::string("yurt/assets/textures_simple/grid-16_darkgray_2k_color.png")
-		,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+		.color = std::string("yurt/textures_simple/grid-16_darkgray_2k_color.png")
+		,.emission = std::string("yurt/textures_simple/color-emission_2k.jpg")
 		}
 	},
 	{"linegrid_white_2k",
 		{
-		.color = std::string("yurt/assets/textures_simple/linegrid-16_white_2k_color.png")
-		,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+		.color = std::string("yurt/textures_simple/linegrid-16_white_2k_color.png")
+		,.emission = std::string("yurt/textures_simple/color-emission_2k.jpg")
 		}
 	},
 	{"linegrid_darkgray_2k",
 		{
-		.color = std::string("yurt/assets/textures_simple/linegrid-16_darkgray_2k_color.png")
-		,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+		.color = std::string("yurt/textures_simple/linegrid-16_darkgray_2k_color.png")
+		,.emission = std::string("yurt/textures_simple/color-emission_2k.jpg")
 		}
 	},
 	{"out_container",
 		{
 		.color = std::string("textures/learnopengl/out_container_diffuse.png")
 		,.specular = std::string("textures/learnopengl/out_container_specular.png")
-		,.emission = std::string("yurt/assets/textures_simple/color-emission_2k.jpg")
+		,.emission = std::string("yurt/textures_simple/color-emission_2k.jpg")
 		}
 	},
 	{"out_planks023b",

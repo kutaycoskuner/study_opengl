@@ -2,7 +2,7 @@ git submodule add https://github.com/glfw/glfw.git libs/glfw
 git submodule add https://github.com/assimp/assimp.git libs/assimp
 git submodule add https://github.com/ocornut/imgui.git libs/imgui
 git submodule add https://github.com/kutaycoskuner/yurt.git data/yurt
-
+git submodule update --init --recursive --remote
 
 
 Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\artifacts" -Recurse -Force

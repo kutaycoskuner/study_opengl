@@ -101,7 +101,7 @@ void HDRTestScene::loadData()
 	scene_state.model_shader_name = "hdr";
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
-		"models/out_sponza/glTF/Sponza.gltf"
+		"yurt/scenes/sponza_crytek/gltf/Sponza.gltf"
 		//"models/testobject0_frustum/testobject.obj",
 		//"models/testobject1_dodecahedron/testobject.obj",
 	};
