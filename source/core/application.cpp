@@ -278,7 +278,41 @@ bool Application::initialize(const ConfigData& config)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_backbuffer_color, 0);
 
+	// deferred shading buffer
+    // ----------------------------------------------------------
+	glGenFramebuffers(1, &g_buffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
+
+	// - position color buffer
+    glGenTextures(1, &g_position);
+    glBindTexture(GL_TEXTURE_2D, g_position);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, g_position, 0);
+
+	// normal color buffer
+    glGenTextures(1, &g_normal);
+    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, g_normal, 0);
+
+	// - color + specular color buffer
+    glGenTextures(1, &g_color_specular);
+    glBindTexture(GL_TEXTURE_2D, g_color_specular);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, display_width, display_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, g_color_specular, 0);
+
+	// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
+    unsigned int attachments[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+    glDrawBuffers(3, attachments);
+
 	// rbo
+    // ----------------------------------------------------------
 	glGenRenderbuffers(1, &rbo_backbuffer_depth);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo_backbuffer_depth);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, k_scr_width, k_scr_height);
@@ -392,6 +426,8 @@ void Application::loadSceneData(const ConfigData& config)
 	else if (scene_number == 17)	active_scene = new ParallaxTestScene;
 	else if (scene_number == 18)	active_scene = new HDRTestScene;
 	else if (scene_number == 19)	active_scene = new BloomTestScene;
+	else if (scene_number == 20)	active_scene = new DeferredShadingTestScene;
+
 
 	// ----- set cubemap
 	// --------------------------------------------------------------------------------------
@@ -479,35 +515,40 @@ void Application::loadTextures()
 
 void Application::loadShaders()
 {
-	// build and compile our shader program
-	// todo: butun shaderlari yukle daha sonra aktifi sec | bu 3d pipeline ini bozuyor
-	for (const ShaderPaths& path_struct : PathAfterDirectory::shader_paths)
-	{
-		const std::string		 vrtx = file_utils::getFileNameWithoutExtension(path_struct.vrtx_shader_file);
-		const std::string		 frag = file_utils::getFileNameWithoutExtension(path_struct.frag_shader_file);
-		const std::string		 geo = file_utils::getFileNameWithoutExtension(path_struct.geo_shader_file);
+    // Iterate over the shader paths map
+    for (const auto& [shader_name, path_struct] : PathAfterDirectory::shader_paths)
+    {
 
-		// get between / and _ for key
-		std::vector<std::string> path_parts = str_utils::split(vrtx, "_");
-		std::string				 left_trimmed_key = path_parts[0];
+		const std::string rel_vrtx = std::string(path_struct.vrtx);
+        const std::string rel_frag = std::string(path_struct.frag);
+        const std::string rel_geom = std::string(path_struct.geom);
 
-		// get the shaader type embedded on name
-		path_parts = str_utils::split(left_trimmed_key, ".");
-		const std::string		 name = path_parts.back();
 
-		// Create the ShaderCompileDesc object
-		ShaderCompileDesc shader_compile_description;
-		shader_compile_description.name = name;
-		shader_compile_description.vrtx_path = shader_dir_path + path_struct.vrtx_shader_file;
-		shader_compile_description.frag_path = shader_dir_path + path_struct.frag_shader_file;
-		shader_compile_description.geom_path = (geo.empty()) ? "" : shader_dir_path + path_struct.geo_shader_file;
+        // Convert std::string_view to std::string within the function calls
+        const std::string vrtx = std::string(file_utils::getFileNameWithoutExtension(rel_vrtx));
+        const std::string frag = std::string(file_utils::getFileNameWithoutExtension(rel_frag));
+        const std::string geom =
+            path_struct.geom.empty()
+                ? ""
+                : std::string(file_utils::getFileNameWithoutExtension(rel_geom));
 
-		shaders[name] = std::make_shared<Shader>(shader_compile_description);
+        // Create the ShaderCompileDesc object
+        ShaderCompileDesc shader_compile_description;
+        shader_compile_description.name      = shader_name;
+        shader_compile_description.vrtx_path = shader_dir_path + rel_vrtx;
+        shader_compile_description.frag_path = shader_dir_path + rel_frag;
+        shader_compile_description.geom_path = geom.empty() ? "" : shader_dir_path + rel_geom;
 
-		//unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(name)->ID, "Matrices");
-		//glUniformBlockBinding(shaders.at(name)->ID, uniform_block_index, 0);
-	}
+        // Store shader in the map using shader_name as the key
+        shaders[shader_name] = std::make_shared<Shader>(shader_compile_description);
+
+        // Optional: Set uniform block for matrices
+        // unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(shader_name)->ID, "Matrices");
+        // glUniformBlockBinding(shaders.at(shader_name)->ID, uniform_block_index, 0);
+    }
 }
+
+
 
 std::vector<const char*> Application::loadModelPaths()
 {

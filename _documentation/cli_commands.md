@@ -4,6 +4,8 @@ git submodule add https://github.com/ocornut/imgui.git libs/imgui
 git submodule add https://github.com/kutaycoskuner/yurt.git data/yurt
 git submodule update --init --recursive --remote
 
+clang-format -i data/_paths/shader_paths.cpp
+
 
 Remove-Item -Path "C:\Users\kutay\OneDrive\Documents\GitHub\study_opengl\artifacts" -Recurse -Force
     - removing artifacts directory

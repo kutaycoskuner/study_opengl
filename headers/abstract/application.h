@@ -212,6 +212,12 @@ private:
     unsigned int fbo_illumination_msaa;
     unsigned int rbo_illumination_msaa;
     unsigned int tex_illumination_msaa_color;
+
+    // deferred shading
+    unsigned int g_buffer;
+    unsigned int g_position;
+    unsigned int g_normal;
+    unsigned int g_color_specular;
         
     // high dynamic range
     GLuint  fbo_illumination_hdr;

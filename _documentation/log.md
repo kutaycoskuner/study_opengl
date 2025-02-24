@@ -135,7 +135,14 @@
     - ui handlers
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
-    - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+
+- [0.94.11]
+    - 24-Feb-2025
+        - updated yurt
+        - removed lantern from static data
+    - 31-Jan-2025
+        - added deferred shader and scene
+        - fix shader path problem that prevents to use same vrtx shader for multiple frag shaaders
 
 - [0.94.10] update submodules
     - 31-Jan-2025

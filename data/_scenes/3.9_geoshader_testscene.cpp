@@ -69,7 +69,7 @@ void GeoShaderTestScene::loadData()
 		//"models/testobject10_suzanne/testobject.obj"
 		//,"models/testobject11_cone/testobject.obj"
 		//{"models/out_backpack_by_berkgedik/backpack.obj"}
-		{"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik2.obj"}
+		{"yurt/models/kokorec_by-berk-gedik_sketchfab/gltf/kokorec.gltf"}
 
 	};
 

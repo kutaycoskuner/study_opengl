@@ -174,6 +174,7 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.6_parallax_testscene.cpp"
     "${data_dir_full}/_scenes/4.7_hdr_testscene.cpp"
     "${data_dir_full}/_scenes/4.8_bloom_testscene.cpp"
+    "${data_dir_full}/_scenes/4.9_deferred-shading_testscene.cpp"
 )
 
 set(shaderFiles
@@ -266,6 +267,8 @@ set(shaderFiles
     "${shader_dir_full}/4.8.hdr_vrtx_shader.glsl"
     "${shader_dir_full}/4.9.bloom_frag_shader.glsl"
     "${shader_dir_full}/4.9.bloom_vrtx_shader.glsl"
+    "${shader_dir_full}/4.10.deferred_frag_shader.glsl"
+    "${shader_dir_full}/4.10.deferred_vrtx_shader.glsl"
 )
 
 

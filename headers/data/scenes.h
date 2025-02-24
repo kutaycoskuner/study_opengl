@@ -177,4 +177,11 @@ public:
 	BloomTestScene();
 };
 
+class DeferredShadingTestScene : public Scene {
+public:
+	void loadData() override;
+	void update()	override;
+
+	DeferredShadingTestScene();
+};
 

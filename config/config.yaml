@@ -29,7 +29,7 @@ default_animation:
   emission_factor: 0.0
 
 scene:
-    active_scene: 15
+    active_scene: 20
 
 
 # Right hand major.

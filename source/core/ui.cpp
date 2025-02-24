@@ -133,6 +133,10 @@ void Application::updateUI()
 			if (ImGui::MenuItem("Bloom", "")) {
 				input_speaker.notifyUIEvent(UIEvent::SelectScene, { 19 });
 			}
+                        if (ImGui::MenuItem("Deferred Shading", ""))
+                        {
+                            input_speaker.notifyUIEvent(UIEvent::SelectScene, {20});
+                        }
 
 			ImGui::EndMenu();
 		}
