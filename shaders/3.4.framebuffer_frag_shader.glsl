@@ -23,9 +23,12 @@ vec3 linear_to_srgb(vec3 linear_color)
 void main()
 {
 	vec3 hdr_color   = texture(screen_texture, v_tex_coords).rgb;
-    vec3 bloom_color = texture(screen_bloom, v_tex_coords).rgb;
 
-    if (bloom) hdr_color += bloom_color;
+    if (bloom) 
+    {
+        vec3 bloom_color = texture(screen_bloom, v_tex_coords).rgb;
+        hdr_color += bloom_color;
+    }
 
     vec3 mapped = hdr_color;
     

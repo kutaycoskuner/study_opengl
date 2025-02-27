@@ -1,4 +1,11 @@
 #version 330 core
+// notes
+// ---------------------------------------------------------------------------------------
+/*
+    Shader name: gaussian blur fragment shader
+
+*/
+
 out vec4 f_frag_color;
 
 in vec2 v_tex_coords;

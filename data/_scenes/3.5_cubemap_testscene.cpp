@@ -19,7 +19,7 @@ void CubemapTestScene::loadData()
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 6.0f;
 	scene_state.b_model_refraction = true;
-	scene_state.display_skybox = true;
+	scene_state.b_display_skybox = true;
 
 	// ----- camera position
 	Camera& cam = cameras[0];

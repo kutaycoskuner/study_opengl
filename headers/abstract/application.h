@@ -148,6 +148,7 @@ private:
 
         void drawSceneNodes_primitive(Uniforms& uni);
         void drawSceneNodes_models(Uniforms& uni);
+
         void drawScene_skybox(Uniforms& uni);
 
 

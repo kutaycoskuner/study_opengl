@@ -136,7 +136,14 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
 
-- [0.94.11]
+- [0.94.12] wip deferred shading geometry pass
+    - 27-Feb-2025
+        - use bool to render bloom textures
+        - fix warning geometry shader uninitialized
+    - 24-Feb-2025
+        - wip deferred shading
+
+- [0.94.11] added base for deferred shading
     - 24-Feb-2025
         - updated yurt
         - removed lantern from static data

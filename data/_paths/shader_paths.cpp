@@ -176,7 +176,7 @@ const std::unordered_map<std::string, ShaderPaths> PathAfterDirectory::shader_pa
         { .vrtx = "post_process/gaussian-blur_vrtx_shader.glsl",
           .frag = "post_process/gaussian-blur_frag_shader.glsl" }},
 
-    {"deferred",
+    {"deferred-geometry-pass",
         { .vrtx = "4.10.deferred_vrtx_shader.glsl",
           .frag = "4.10.deferred_frag_shader.glsl" }}
 };

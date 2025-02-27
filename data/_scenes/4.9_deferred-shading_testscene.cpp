@@ -16,16 +16,18 @@ void DeferredShadingTestScene::loadData()
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
+    scene_state.b_deferred_shading = true;
 	// scene_state.vertex_divider = 9.0f;
 	//scene_state.b_model_refraction = true;
 	//scene_state.display_skybox = true;  
 	// scene_state.model_shader_name = "explode";
 	// scene_state.display_normals = true;
-	scene_state.display_axes = true;
+	scene_state.b_display_axes = true;
+    scene_state.b_bloom        = false;
 
 	// camera pos
 	// ----------------------------------------------------------------
-	cameras[0].position.y += 4.0f;
+	//cameras[0].position.y += 4.0f;
 	//cameras[0].position = Vec3(0.0f, 0.0f, 20.0f);
 	//cameras[0].position = Vec3(-2.0f, 0.0f, 10.0f);
 	//cameras[0].position = Vec3(-8.0f, 4.0f, 0.0f);
@@ -49,17 +51,17 @@ void DeferredShadingTestScene::loadData()
 	// point6
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(1.0f, 1.0f, 1.0f);
-	point_lights.back().brightness = 10.0f;
+	point_lights.back().brightness = 1.0f;
 	point_lights.back().position = Vec3(1.0, 2.0f, 1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(1.0f, 0.0f, 0.0f);
-	point_lights.back().brightness = 4.0f;
+	point_lights.back().brightness = 1.0f;
 	point_lights.back().position = Vec3(-1.0, 2.0f, 1.0f);
 
 	point_lights.push_back(PredefSceneLights::p_light);
 	point_lights.back().diffuse = Vec3(0.0f, 1.0f, 0.0f);
-	point_lights.back().brightness = 3.0f;
+	point_lights.back().brightness = 1.0f;
 	point_lights.back().position = Vec3(1.0, 2.0f, -1.0f);
 
 	//point_lights.push_back(PredefSceneLights::p_light);
@@ -99,7 +101,9 @@ void DeferredShadingTestScene::loadData()
 	scene_state.model_shader_name = "hdr";
 	model_paths = {
 		// "models/out_sponza/glTF/Sponza.gltf"
-		//std::string("/yurt/scenes/outliner-testscene/gltf/outliner-testscene.gltf"),
+		//std::string("/yurt/scenes/sponza_crytek/gltf/sponza.gltf"),
+        //std::string("/yurt/scenes/sponza_intel/gltf/intel-sponza.gltf"),
+        std::string("/yurt/scenes/outliner-testscene/obj/outliner-testscene.obj"),
 		//std::string("models/testobject0_frustum/testobject.obj"),
 		//std::string("models/testobject1_dodecahedron/testobject.obj"),
 		//std::string("models/testobject2_sphere/testobject.obj"),
@@ -136,6 +140,7 @@ void DeferredShadingTestScene::loadData()
 
 	//if (scene_nodes.size() > 0)
 	//	scene_nodes[0].transform.scale = Vec3(0.01f, 0.01f, 0.01f);
+        scene_state.model_shader_name = "deferred-geometry-pass";
 
 }
 

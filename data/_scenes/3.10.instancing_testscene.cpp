@@ -21,11 +21,11 @@ void InstancingTestScene::loadData()
 	scene_state.emission_factor			= 10.0f;
 	scene_state.shininess				= 32.0f;
 	scene_state.vertex_divider			= 9.0f;
-	scene_state.display_skybox			= true;
+	scene_state.b_display_skybox			= true;
 	scene_state.model_shader_name		= "diffuse";
-	scene_state.display_normals			= false;
-	scene_state.display_axes			= false;
-	scene_state.using_computed_data		= true;
+	scene_state.b_display_normals			= false;
+	scene_state.b_display_axes			= false;
+	scene_state.b_using_computed_data		= true;
 	scene_state.draw_instanced			= true;
 	//scene_state.b_model_refraction		= true;
 	
