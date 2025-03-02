@@ -136,6 +136,17 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
 
+- [0.94.13] wip deferred shader lighting pass
+    - 02-Mar-2025 
+        - fix exception error due to vertex data
+        - added random position and color on point lights
+        - added random number to utility functions 
+    - 01-Mar-2025 wip deferred shading lighting pass
+    - 27-Feb-2025
+        - wip deferred shading lighting pass
+        - adding new shaders for deferered lgihting pass and lgihtbox
+        - rendering g buffer
+
 - [0.94.12] wip deferred shading geometry pass
     - 27-Feb-2025
         - use bool to render bloom textures

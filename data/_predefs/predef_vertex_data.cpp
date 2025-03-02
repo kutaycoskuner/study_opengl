@@ -410,6 +410,14 @@ float VertexData::origin[] = {
 	-0.500000f, -0.809017f, -0.309017f,
 };
 
+float VertexData::quad__pos_uv[20] = {
+     // positions        // texture Coords
+     -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 
+	 -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+     1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 
+	 1.0f,  -1.0f, 0.0f, 1.0f, 0.0f,
+ };
+
 float VertexData::icosahedron__pos[] = {
 	// Face 1
 	-0.525731f, 0.0f, 0.850651f,

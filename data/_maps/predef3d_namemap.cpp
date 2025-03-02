@@ -12,6 +12,7 @@
 //};
 
 std::map<std::string, Predef3DNode> PredefNameMaps::predef3d_namemap = {
+	//														total float, stride, layout
 	{
 		"origin"
 		,Predef3DNode(VertexData::origin,					3,		3, { 3 })
@@ -51,5 +52,9 @@ std::map<std::string, Predef3DNode> PredefNameMaps::predef3d_namemap = {
 	,{
 		"small_plane"
 		,Predef3DNode(VertexData::quad_vrts__pos_col,		30,		5, { 2, 3 })
+	}
+	,{
+		"quad"
+		,Predef3DNode(VertexData::quad__pos_uv,		20,		5, { 3, 2 })
 	}
 };

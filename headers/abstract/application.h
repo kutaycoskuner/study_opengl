@@ -135,6 +135,9 @@ private:
     void onUIEvent(const UIEvent& event, const std::vector<int>& params);
 
 
+    // draw  sub / short / convention functions
+    void setActiveShader(const std::string& name);
+
     // draw scene
     void drawScene(Uniforms& uni);
 
@@ -154,6 +157,8 @@ private:
 
         void drawShadowMap();
         void drawShadowCubemap();
+
+        void drawDeferredLightingPass();
 
         void drawBackbuffer(int display_w, int display_h);
 
@@ -177,9 +182,9 @@ private:
 
 
 private:
-    const static unsigned int buffer_count = 5;
-    const float reduction_128f = 0.0078125f;
-    const unsigned int INVALID_ID = 0;
+    const static unsigned int buffer_count  = 10;
+    const float reduction_128f              = 0.0078125f;
+    const unsigned int INVALID_ID           = 0;
 
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;

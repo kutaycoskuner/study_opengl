@@ -267,8 +267,12 @@ set(shaderFiles
     "${shader_dir_full}/4.8.hdr_vrtx_shader.glsl"
     "${shader_dir_full}/4.9.bloom_frag_shader.glsl"
     "${shader_dir_full}/4.9.bloom_vrtx_shader.glsl"
-    "${shader_dir_full}/4.10.deferred_frag_shader.glsl"
-    "${shader_dir_full}/4.10.deferred_vrtx_shader.glsl"
+    "${shader_dir_full}/4.10.1.deferred-geometry_frag_shader.glsl"
+    "${shader_dir_full}/4.10.1.deferred-geometry_vrtx_shader.glsl"
+    "${shader_dir_full}/4.10.2.deferred-lighting_frag_shader.glsl"
+    "${shader_dir_full}/4.10.2.deferred-lighting_vrtx_shader.glsl"
+    "${shader_dir_full}/4.10.3.deferred-lightbox_frag_shader.glsl"
+    "${shader_dir_full}/4.10.3.deferred-lightbox_vrtx_shader.glsl"
 )
 
 

@@ -90,9 +90,10 @@ public:
 
 	static float		plane_vrts__pos_tex[30];
 	static float		plane_vrts__pos_norm_uv[48];
-	static float		quad_vrts__pos_tex[24];
+	static float		quad_vrts__pos_tex[24];	
 	static float		quad_vrts__pos_norm_tex[42];
 	static float		quad_vrts__pos_col[30];
+    static float        quad__pos_uv[20];
 
 	static float		square_vrts[32];
 	static unsigned int square_inds[6];

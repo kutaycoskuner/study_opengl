@@ -622,9 +622,15 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - shaders/<new>.glsl yeni shader ekle [vsc]
     - data/paths/shader_paths.cpp -> shader pathleri ekle 
     - cmake add shaders
-    - change shader naame on notes
+    - change shader naame in-shader code notes
 
 - <adding new submodule>
+
+- <aadding new vertex data>
+    - yarattiktan sonra buffer object size i buyut 
+
+- <adding new buffer>
+    - yarattiktan sonra yok et
 
 - <adding new texture>
     - add textures to data/textures

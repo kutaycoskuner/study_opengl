@@ -851,7 +851,11 @@ void Application::unload()
     // glDeleteBuffers(1, &lit_vbo);
     if (!reload)
     {
+        glDeleteFramebuffers(1, &fbo_illumination_msaa);
+        glDeleteFramebuffers(1, &fbo_illumination_hdr);
+        glDeleteFramebuffers(2, fbo_bloom);
         glDeleteFramebuffers(1, &fbo_backbuffer);
+        glDeleteFramebuffers(1, &g_buffer);
         glDeleteRenderbuffers(1, &rbo_backbuffer_depth);
         glDeleteVertexArrays(buffer_count, vertex_arrays);
         glDeleteBuffers(buffer_count, vertex_buffers);
@@ -1166,6 +1170,7 @@ void Application::drawScene(Uniforms& uni)
         drawSceneNodes_primitive(uni);
         drawSceneNodes_models(uni);
         drawScene_skybox(uni);
+        drawDeferredLightingPass();
         drawBackbuffer(display_w, display_h);
     }
 }
@@ -1360,6 +1365,62 @@ void Application::drawShadowMap()
     glCullFace(GL_BACK);  // Reset culling to default if needed
 }
 
+void Application::drawDeferredLightingPass() {
+
+    // set shader
+    setActiveShader("deferred-lighting-pass");
+
+    // set buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
+    
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, g_position);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, g_color_specular);
+    
+
+    // assign uniforms
+    Scene* scene = active_scene;
+
+    active_shader->setVec3("view_pos", active_scene->cameras[0].position);
+    active_shader->setInt("g_position", 0);
+    active_shader->setInt("g_normal", 1);
+    active_shader->setInt("g_color_specular", 2);
+
+    for (int i = 0; i < scene->point_lights.size(); i++)
+    {
+        active_shader->setVec3("lights[" + std::to_string(i) + "].color", scene->point_lights[i].diffuse);
+        active_shader->setVec3("lights[" + std::to_string(i) + "].position", scene->point_lights[i].position);
+    }
+
+    // enable this to avoid awkward whatever front rendering
+    glDisable(GL_DEPTH_TEST);
+
+    // enable stencil test
+    glDisable(GL_STENCIL_TEST);
+
+    // enable blending
+    glDisable(GL_BLEND);
+
+    glDisable(GL_MULTISAMPLE);
+
+    glBindVertexArray(named_arrays.at("quad"));
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+
+
+    //RenderQuad();
+}
+
+void Application::setActiveShader(const std::string& name) {
+    this->active_shader = shaders.at(name);
+    (*active_shader).use();
+}
+
 void Application::drawBackbuffer(int display_w, int display_h)
 {
     // 3.4. framebuffer
@@ -1387,6 +1448,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
     // select shader
     this->active_shader = shaders.at("bloom");
     (*active_shader).use();
+    //setActiveShader("bloom");
 
     // bind vertex array
     glBindVertexArray(named_arrays.at("frame"));

@@ -34,6 +34,7 @@ namespace math_utils
 { 
 	constexpr float PI = 3.14159265359f;
 	// scaling
+    float randomFloat(float min, float max);
 	float scaleByteToZeroOne(unsigned int byte);	
 	float scaleByteToZeroOne(float byte);
 	Vec3 scaleByteToZeroOne(float a, float b, float c);

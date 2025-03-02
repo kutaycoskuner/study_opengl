@@ -23,6 +23,15 @@ namespace fs = std::filesystem;
 // ------------------------------
 namespace math_utils
 {
+	float randomFloat(float min, float max) {
+		if (min > max)
+		{
+			float temp = min;
+			min        = max;
+			max        = temp;
+		}
+		return min + ((float)rand() / RAND_MAX) * (max - min);
+	}
 	// scaling
 	float scaleByteToZeroOne(unsigned int byte)
 	{
