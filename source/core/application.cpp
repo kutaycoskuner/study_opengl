@@ -1153,10 +1153,12 @@ void Application::drawScene(Uniforms& uni)
     }
     else
     {
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        
         // 1. geometry pass: render all geometric/color data to g-buffer
         glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
         // get width and height
         glViewport(0, 0, display_w, display_h);
         // draw scene
@@ -1166,11 +1168,17 @@ void Application::drawScene(Uniforms& uni)
         // upv.projection_matrix
         //	= mat_utils::projectOrthographic(cam.near, cam.far, -10.0f, 10.0f, 10.0f, -10.0f);
         upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
-        drawHelper_lightPlaceholders(uni);
         drawSceneNodes_primitive(uni);
         drawSceneNodes_models(uni);
         drawScene_skybox(uni);
         drawDeferredLightingPass();
+        //
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, g_buffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_illumination_msaa);  // Default framebuffer
+        glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_width, display_height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
+        drawHelper_lightPlaceholders(uni);
+        //
         drawBackbuffer(display_w, display_h);
     }
 }
@@ -1397,14 +1405,12 @@ void Application::drawDeferredLightingPass() {
         active_shader->setVec3("lights[" + std::to_string(i) + "].position", scene->point_lights[i].position);
     }
 
-    // enable this to avoid awkward whatever front rendering
-    glDisable(GL_DEPTH_TEST);
-
-    // enable stencil test
-    glDisable(GL_STENCIL_TEST);
-
-    // enable blending
-    glDisable(GL_BLEND);
+    //// enable this to avoid awkward whatever front rendering
+    //glDisable(GL_DEPTH_TEST);
+    //// enable stencil test
+    //glDisable(GL_STENCIL_TEST);
+    //// enable blending
+    //glDisable(GL_BLEND);
 
     glDisable(GL_MULTISAMPLE);
 

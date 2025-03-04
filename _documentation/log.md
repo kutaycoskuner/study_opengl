@@ -136,6 +136,11 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
 
+- [0.95.0] added deferred shading
+    - 04-Mar-2025
+        - logging missing
+        - light placeholders combining after deferred shading
+
 - [0.94.13] wip deferred shader lighting pass
     - 02-Mar-2025 
         - fix exception error due to vertex data

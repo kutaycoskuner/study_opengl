@@ -27,7 +27,7 @@ void DeferredShadingTestScene::loadData()
 
 	// camera pos
 	// ----------------------------------------------------------------
-	cameras[0].position.y += 4.0f;
+	cameras[0].position.y += 2.0f;
 	//cameras[0].position = Vec3(0.0f, 0.0f, 20.0f);
 	//cameras[0].position = Vec3(-2.0f, 0.0f, 10.0f);
 	//cameras[0].position = Vec3(-8.0f, 4.0f, 0.0f);
@@ -78,9 +78,20 @@ void DeferredShadingTestScene::loadData()
         point_lights[i].diffuse.y = math_utils::randomFloat(0.0f, 5.0f);
         point_lights[i].diffuse.z = math_utils::randomFloat(0.0f, 5.0f);
         point_lights[i].diffuse.normalize();
-        point_lights[i].brightness = math_utils::randomFloat(1.5f, 5.0f);
+        point_lights[i].brightness = math_utils::randomFloat(3.0f, 5.0f);
 	}
 
+	//float multiplier = 3.0f;
+
+	//point_lights[0].position = Vec3(multiplier,  4.0f, multiplier);
+ //   point_lights[1].position = Vec3(-multiplier, 4.0f, multiplier);
+ //   point_lights[2].position = Vec3(multiplier,  4.0f, -multiplier);
+ //   point_lights[3].position = Vec3(-multiplier, 4.0f, -multiplier);
+
+	//point_lights[0].diffuse = Vec3(1.0f, 0.0f, 0.0f);
+ //   point_lights[1].diffuse = Vec3(0.0f, 1.0f, 0.0f);
+ //   point_lights[2].diffuse = Vec3(0.0f, 0.0f, 1.0f);
+ //   point_lights[3].diffuse = Vec3(1.0f, 0.0f, 1.0f);
 
 	//point_lights.push_back(PredefSceneLights::p_light);
 	//point_lights.back().diffuse = Vec3(0.0f, 0.0f, 1.0f);

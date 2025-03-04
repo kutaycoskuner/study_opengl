@@ -19,3 +19,22 @@
     -  drawDeferredLightingPass icinde msaa uzerine quad cizdirdim. kullandigim texture degiskenlerini kullanarak
 
     - isiklarin pozisyon ve rengini degistirecegim random
+
+    - isiklar random olunca dogrulama yapamiyorum 4 uca 4 farkli renkte isik koydum
+
+    - isik renkleri farkli cikiyor.
+
+    - son adim olarak da isik placeholderlari sonradan cizdirme vardi
+
+
+- en sonda ise deferred ve forward rendering complexity anaalysis
+
+forwrd lighting
+    - mesh * light count * width * height
+
+deferred
+    - (light count * width * height) + (mesh * width * height)
+    - mesh + light count (width * height)
+
+    - cok fazla light varsa deferred avantaj sagliyor.
+    - dezavantaji memori yiyor + transparency kullanamiyorsun
