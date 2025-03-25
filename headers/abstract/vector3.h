@@ -58,6 +58,14 @@ struct Vec3
 		z += other.z;
 	}
 
+	// vector vector *=
+        void operator*=(const float& val)
+        {
+            x *= val;
+            y *= val;
+            z *= val;
+        }
+
 	// vector vector - 
 	Vec3 operator-(const Vec3& other) const
 	{

@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include <map>
-
+#include <unordered_map>
 #include "../abstract/vector2.h"
 
 // ----------------------------------------------------------------------------
@@ -32,10 +32,11 @@ struct ModelPath {
 	std::string model_file;
 };
 
-struct ShaderPaths {
-	std::string vrtx_shader_file;
-	std::string frag_shader_file;
-	std::string geo_shader_file = "";
+struct ShaderPaths
+{
+    std::string_view vrtx{};
+    std::string_view frag{};
+    std::string_view geom{};
 };
 
 struct TexturePaths {
@@ -45,6 +46,15 @@ struct TexturePaths {
 	std::string specular;
 	std::string emission;
 	std::string displacement;
+};
+
+class PathAfterDirectory
+{
+   public:
+    static const std::unordered_map<std::string, ShaderPaths> shader_paths;
+    static const std::vector<ModelPath>                       model_paths;
+    static std::map<std::string, TexturePaths>                texture_paths;
+    static std::map<std::string, std::vector<std::string>>    cubemap_texture_paths;
 };
 
 struct TextureSet
@@ -57,14 +67,6 @@ struct TextureSet
 	unsigned int displacement = 0;
 };
 
-class PathAfterDirectory
-{
-public:
-	static const std::vector<ShaderPaths> shader_paths;
-	static const std::vector<ModelPath> model_paths;
-	static std::map<std::string, TexturePaths> texture_paths;
-	static std::map<std::string, std::vector<std::string>> cubemap_texture_paths;
-};
 
 class OpenGLParams
 {
@@ -88,9 +90,10 @@ public:
 
 	static float		plane_vrts__pos_tex[30];
 	static float		plane_vrts__pos_norm_uv[48];
-	static float		quad_vrts__pos_tex[24];
+	static float		quad_vrts__pos_tex[24];	
 	static float		quad_vrts__pos_norm_tex[42];
 	static float		quad_vrts__pos_col[30];
+    static float        quad__pos_uv[20];
 
 	static float		square_vrts[32];
 	static unsigned int square_inds[6];

@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
@@ -69,12 +69,15 @@ void GeoShaderTestScene::loadData()
 		//"models/testobject10_suzanne/testobject.obj"
 		//,"models/testobject11_cone/testobject.obj"
 		//{"models/out_backpack_by_berkgedik/backpack.obj"}
-		{"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik2.obj"}
+		{"yurt/models/kokorec_by-berk-gedik_sketchfab/gltf/kokorec.gltf"}
 
 	};
 
+
 	// ----- create bools for each imported model
+
 	for (int i = 0; i < model_paths.size(); i++) {
+        scene_nodes.push_back(SceneNode("ModelName", Transform()));
 		scene_state.model_element_bools.push_back(
 			ElementBools(
 				false,		// wireframe_mode
@@ -87,8 +90,15 @@ void GeoShaderTestScene::loadData()
 		);
 	}
 
+
+	scene_nodes[0].transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
+	//for (int i = 0; i < model_paths.size(); i++)
+ //   {
+ //           scene_nodes[i].transform
+ //   }
+
 	// ----- define texture names
-	texture_names = { "out_container2", "linegrid_2k_darkgray", "grid_2k_white" };
+	texture_names = { "out_container", "linegrid_darkgray_2k", "grid_2k_white" };
 
 
 	// ----- specific position

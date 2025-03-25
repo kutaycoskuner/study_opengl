@@ -22,6 +22,7 @@ void HDRTestScene::loadData()
 	// scene_state.model_shader_name = "explode";
 	// scene_state.display_normals = true;
 	scene_state.display_axes = true;
+        //scene_state.use_ssao     = true;
 
 	// camera pos
 	// ----------------------------------------------------------------
@@ -94,14 +95,14 @@ void HDRTestScene::loadData()
 
 	// textures to cache for objects
 	// ----------------------------------------------------------------
-	texture_names = { "out_planks023a", "out_container2", "out_brickwall", "gamma-test-rgb", "gamma-test-srgb"};
+	texture_names = { "out_planks023a", "out_container", "out_brickwall", "gamma-test-rgb", "gamma-test-srgb"};
 
 	// models
 	// ----------------------------------------------------------------
 	scene_state.model_shader_name = "hdr";
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
-		"models/out_sponza/glTF/Sponza.gltf"
+		"yurt/scenes/sponza_crytek/gltf/Sponza.gltf"
 		//"models/testobject0_frustum/testobject.obj",
 		//"models/testobject1_dodecahedron/testobject.obj",
 	};

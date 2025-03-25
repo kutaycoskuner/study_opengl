@@ -122,7 +122,6 @@
     - add light bilboards
     - debug kodu
     - okuma nvidia api extension
-    - rename buildbinaries.bat degistir
     - okuma render pipeline
     - okuma lighting equation
     - nvidia nsight graphics
@@ -136,7 +135,83 @@
     - ui handlers
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
-    - suanki shader okuma mantigim birden cok fragment shaderin ayni vertex shaderi kullanmasina izin vermiyor onu duzelt
+    - add enum for shaders
+
+- [0.96.1] updated submodules for lfs problem
+    - 26-Mar-2025 
+        - disabled ssao on hdr scene temporarily
+        - update submodules lfs problem
+
+- [0.96.0] added ssao
+    - 25-Mar-2025 
+        - added display for ssao
+        - ui toggle for ssao
+        - ssao lighting pass
+    - 23-Mar-2025 
+        - wip ssao lighting pass
+        - added ssao blur pass
+        - fixed ssao output problem
+    - 19-Mar-2025
+        - creating sample kernel function
+        - added vec3 to *= operator
+    - 12-Mar-2025
+        - wip naming conventions
+        - added ssao scene
+        - added ssao shaders
+    - 05-Mar-2025
+        - fix rotation problem geometry scene
+
+- [0.95.0] added deferred shading
+    - 04-Mar-2025
+        - logging missing
+        - light placeholders combining after deferred shading
+
+- [0.94.13] wip deferred shader lighting pass
+    - 02-Mar-2025 
+        - fix exception error due to vertex data
+        - added random position and color on point lights
+        - added random number to utility functions 
+    - 01-Mar-2025 wip deferred shading lighting pass
+    - 27-Feb-2025
+        - wip deferred shading lighting pass
+        - adding new shaders for deferered lgihting pass and lgihtbox
+        - rendering g buffer
+
+- [0.94.12] wip deferred shading geometry pass
+    - 27-Feb-2025
+        - use bool to render bloom textures
+        - fix warning geometry shader uninitialized
+    - 24-Feb-2025
+        - wip deferred shading
+
+- [0.94.11] added base for deferred shading
+    - 24-Feb-2025
+        - updated yurt
+        - removed lantern from static data
+    - 31-Jan-2025
+        - added deferred shader and scene
+        - fix shader path problem that prevents to use same vrtx shader for multiple frag shaaders
+
+- [0.94.10] update submodules
+    - 31-Jan-2025
+        - remove copy of sponza
+        - update submodule related paths
+        - update submodules
+ 
+- [0.94.9] tryout yaml parser 
+    - 22-Jan-2025 
+        - wip yaml parser | cancelled
+    - 21-Jan-2025
+        - wip yaml parser test fail yrml, yaml-cpp
+
+- [0.94.8] add ui template, add clang format base, add screenshot mode 
+    - 21-Jan-2025
+        - add clang-format base
+        - ui rework
+        - add screenshot mode full functionality
+
+- [0.94.7] chores texture cleaning and refactoring
+    - 21-Jan-2025
 
 - [0.94.6] add bloom display, add submodule refactoring, temp screenshot mode
     - 20-Jan-2025

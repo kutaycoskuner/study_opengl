@@ -81,7 +81,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::single_cube = {
 			Vec3(1.5f, 1.5f, 1.5f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "out_container2"
+	,.texture_name = "out_container"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing
@@ -183,7 +183,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::box_10_0 = {
 			Vec3(1.5f, 1.5f, 1.5f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "out_container2"
+	,.texture_name = "out_container"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing
@@ -204,7 +204,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::box_0_10 = {
 			Vec3(1.5f, 1.5f, 1.5f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "out_container2"
+	,.texture_name = "out_container"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing
@@ -283,10 +283,10 @@ PrimitiveSceneNode PrimitiveSceneNodes::ground_platform = {
 	,.transform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(14.0f, 0.2f, 14.0f)
+			Vec3(15.0f, 0.2f, 15.0f)
 		}
 	,.shader_name = "multiplelights"
-	,.texture_name = "linegrid_2k_darkgray"
+	,.texture_name = "linegrid_darkgray_2k"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
 					false,		// depth testing

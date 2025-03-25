@@ -225,7 +225,7 @@ void PointShadowsTestScene::loadData()
 
 	// textures to cache for objects
 	// ----------------------------------------------------------------
-	texture_names = { "out_planks023a", "out_container2" };
+	texture_names = { "out_planks023a", "out_container" };
 
 	// models
 	// ----------------------------------------------------------------

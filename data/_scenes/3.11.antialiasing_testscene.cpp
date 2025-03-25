@@ -25,7 +25,7 @@ void AntiAliasingTestScene::loadData()
 	scene_state.display_skybox = false;
 	scene_state.display_normals = false;
 	scene_state.display_axes = false;
-	scene_state.using_computed_data = false;
+	scene_state.use_computed_data = false;
 	scene_state.draw_instanced = false;
 	//scene_state.b_model_refraction		= true;
 
@@ -108,7 +108,7 @@ void AntiAliasingTestScene::loadData()
 	// ----- generate computed data
 
 	// ----- define texture names
-	texture_names = { "out_container2", "linegrid_2k_darkgray", "grid_2k_white" };
+	texture_names = { "out_container", "linegrid_darkgray_2k", "grid_2k_white" };
 
 
 	// ----- specific position

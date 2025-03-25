@@ -22,6 +22,7 @@ void BloomTestScene::loadData()
 	// scene_state.model_shader_name = "explode";
 	// scene_state.display_normals = true;
 	scene_state.display_axes = true;
+    //scene_state.b_bloom        = false;
 
 	// camera pos
 	// ----------------------------------------------------------------
@@ -99,7 +100,7 @@ void BloomTestScene::loadData()
 	scene_state.model_shader_name = "hdr";
 	model_paths = {
 		// "models/out_sponza/glTF/Sponza.gltf"
-		//std::string("/yurt/assets/scenes/outliner-testscene/gltf/outliner-testscene.gltf"),
+		//std::string("/yurt/scenes/outliner-testscene/gltf/outliner-testscene.gltf"),
 		//std::string("models/testobject0_frustum/testobject.obj"),
 		//std::string("models/testobject1_dodecahedron/testobject.obj"),
 		//std::string("models/testobject2_sphere/testobject.obj"),

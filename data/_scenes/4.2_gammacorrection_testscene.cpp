@@ -18,7 +18,7 @@ void GammaCorrectionTestScene::loadData()
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = .5f;
 	scene_state.vertex_divider = 6.0f;
-	scene_state.gamma = true;
+	scene_state.use_gamma_correction = true;
 
 	// ----- camera position
 	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
@@ -122,8 +122,8 @@ void GammaCorrectionTestScene::update() {
 	// change shaderes
 	// --------------------------------------------------------------------------------------
 	static_cast<int>(fmod(time, 2.0f)) == 0 ?
-		scene_state.gamma = true :
-		scene_state.gamma = false;
+		scene_state.use_gamma_correction = true :
+		scene_state.use_gamma_correction = false;
 
 
 	// rotate obj x z 

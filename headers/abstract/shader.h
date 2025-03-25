@@ -118,7 +118,7 @@ public:
         }
 
         // Compile shaders
-        unsigned int vertex, fragment, geometry;
+        unsigned int vertex, fragment, geometry = 0;
         const char* vShaderCode = vertexCode.c_str();
         const char* fShaderCode = fragmentCode.c_str();
         const char* gShaderCode = geometryCode.c_str();
@@ -157,7 +157,8 @@ public:
         // Delete shaders after they are linked
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        if (!shader_compile_desc.geom_path.empty()) {
+        if (geometry != 0)
+        {  // Only delete if it was created
             glDeleteShader(geometry);
         }
     }

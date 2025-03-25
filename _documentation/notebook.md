@@ -20,7 +20,15 @@
     - stanford bunny
         - https://graphics.stanford.edu/data/3Dscanrep/
     - sponza
-        - 
+        - crytek sponza
+        - intel sponza
+        - san miguel
+        - bistro
+        - junk shop
+        - the bathroom
+        - interrogation room
+        - abandoned warehouse
+        
     - san miguel scene
     - utah teapot
         - https://de.wikipedia.org/wiki/Utah_teapot
@@ -29,6 +37,8 @@
     - nvidia bistro
         - https://developer.nvidia.com/orca/amazon-lumberyard-bistro
     - suzanne_blender
+    - blender scenes
+        - https://www.blender.org/download/demo-files/#cycles
     - self
         - textures
             - clayman
@@ -39,6 +49,15 @@
         - meet mat
         - preview sphere
         - tiling material
+
+- john chapmanns cgraphics tutorials
+    - https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
+
+- engine example
+    - https://github.com/KTStephano/StratusGFX
+
+- polyhaven standards
+    - https://docs.polyhaven.com/en/technical-standards/models
 
 - icosahedron based geodesic sphere
     - https://web.archive.org/web/20180808214504/http://donhavey.com:80/blog/tutorials/tutorial-3-the-icosahedron-sphere/
@@ -106,6 +125,9 @@
 
 - snells law (refraction physics)
     - https://en.wikipedia.org/wiki/Snell%27s_law
+
+- hermite interpolation
+    - https://en.wikipedia.org/wiki/Hermite_interpolation
 
 # Structure
 - root/
@@ -584,6 +606,10 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - go to toolkit open pixel_matcher and run the tests
     - if all true make create_test_scene_frames   = false
 
+- <adding key to ui / observer>
+    - window_events ccp > ekle
+    - application a private degisken ve o degiskeni kontrol edecek public function ekle
+
 - <adding new vertex data object>
     - kompleks geometriyse vertexleri hespalayacak formulu bul
     - blackboardda print ile yazdir
@@ -602,9 +628,15 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
     - shaders/<new>.glsl yeni shader ekle [vsc]
     - data/paths/shader_paths.cpp -> shader pathleri ekle 
     - cmake add shaders
-    - change shader naame on notes
+    - change shader naame in-shader code notes
 
 - <adding new submodule>
+
+- <aadding new vertex data>
+    - yarattiktan sonra buffer object size i buyut 
+
+- <adding new buffer>
+    - yarattiktan sonra yok et
 
 - <adding new texture>
     - add textures to data/textures

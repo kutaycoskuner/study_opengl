@@ -25,7 +25,7 @@ void InstancingTestScene::loadData()
 	scene_state.model_shader_name		= "diffuse";
 	scene_state.display_normals			= false;
 	scene_state.display_axes			= false;
-	scene_state.using_computed_data		= true;
+	scene_state.use_computed_data		= true;
 	scene_state.draw_instanced			= true;
 	//scene_state.b_model_refraction		= true;
 	
@@ -62,21 +62,7 @@ void InstancingTestScene::loadData()
 
 	// ----- define model paths
 	model_paths = {
-		{ "models/out_jupiter_by_murilo.kleine/jupiter_self.obj" }
-		//"models/testobject0_frustum/testobject.obj"
-		//,"models/testobject1_dodecahedron/testobject.obj"
-		//,"models/testobject2_sphere/testobject.obj"
-		//,"models/testobject3_cube0/testobject.obj"
-		//,"models/testobject4_cube1/testobject.obj"
-		//,"models/testobject5_cube2/testobject.obj"
-		//,"models/testobject6_cube3/testobject.obj"
-		//,"models/testobject7_torus/testobject.obj"
-		//,"models/testobject8_mine/testobject.obj"
-		//,"models/testobject9_cylinder/testobject.obj"
-		//,"models/testobject10_suzanne/testobject.obj"
-		//,"models/testobject11_cone/testobject.obj"
-		//{"models/out_backpack_by_berkgedik/backpack.obj"}
-		//{"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik2.obj"}
+		{ "yurt/models/jupiter_by-murilo.kleine_sketchfab/gltf/scene.gltf" }
 	};
 
 	// ----- create bools for each imported model
@@ -137,7 +123,7 @@ void InstancingTestScene::loadData()
 	}
 
 	// ----- define texture names
-	texture_names = { "out_container2", "linegrid_2k_darkgray", "grid_2k_white" };
+	texture_names = { "out_container", "linegrid_darkgray_2k", "grid_2k_white" };
 
 
 	// ----- specific position

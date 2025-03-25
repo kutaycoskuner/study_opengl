@@ -23,6 +23,21 @@ namespace fs = std::filesystem;
 // ------------------------------
 namespace math_utils
 {
+	// Performs linear interpolation between two values (a and b) based on a factor t.
+	float lerp(float start, float end, float factor)
+	{
+		return start + factor * (end - start);
+	}
+
+	float randomFloat(float min, float max) {
+		if (min > max)
+		{
+			float temp = min;
+			min        = max;
+			max        = temp;
+		}
+		return min + ((float)rand() / RAND_MAX) * (max - min);
+	}
 	// scaling
 	float scaleByteToZeroOne(unsigned int byte)
 	{

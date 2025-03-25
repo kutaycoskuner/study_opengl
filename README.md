@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.94.6-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.96.0-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study_opengl" />
     <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study_opengl/cmake-platform-windows.yml?branch=main&label=main" />
@@ -106,6 +106,7 @@ If you run `--PackProgram.bat`, an isolated executable instance of the program w
 | `c`          | Reset camera position |
 | `g`          | Toggle user interface |
 | `shift`      | Increases movement speed while pressed |
+| `t`          | Toggle screenshot mode |
 
 # Feature List
 - [x] Vertex-defined shape drawing
@@ -133,14 +134,26 @@ If you run `--PackProgram.bat`, an isolated executable instance of the program w
 - [x] Parallax mapping
 - [x] High dynamic range lighting (HDR)
 - [x] Post process effect: Bloom
-- [ ] Deferred Shading
-- [ ] Screen Space Ambient Occlusion (SSAO)
+- [x] Deferred Shading
+- [x] Screen Space Ambient Occlusion (SSAO)
 - [ ] Physically Based Rendering (PBR)
 
 # Display
 Showcasing various rendering features and their implementation in the project.   
 For more visual examples of the project's output, please check the `_display` folder.   
-Below are some examples:
+
+<p align="center">
+    <img src="_display/0.96.0-ssao-20250326.gif" />
+    <br>
+    <sub><i>0.96.0 Screen space ambient occlusion</i></sub>
+</p>
+
+<p align="center">
+    <img src="_display/0.95.0_deferred-shading_20250305.png" />
+    <br>
+    <sub><i>0.95.0 Deferred shading</i></sub>
+</p>
+
 
 <p align="center">
     <img src="_display/0.94.6_pshadows-gloom_20250120.gif" />

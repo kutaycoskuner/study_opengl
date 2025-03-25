@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <string>
 #include <memory>
+#include <random>
 
 
 //              forward declarations
@@ -61,6 +62,8 @@ public:
     static bool toggle_mouselock;
 
     void resetCamera();
+    void toggleScreenshotMode();
+    void toggleAO();
 
     void setPathType(std::string path_mode);
 
@@ -134,10 +137,13 @@ private:
     void onUIEvent(const UIEvent& event, const std::vector<int>& params);
 
 
+    // draw  sub / short / convention functions
+    void setActiveShader(const std::string& name);
+
     // draw scene
     void drawScene(Uniforms& uni);
 
-        void setUniforms(Uniforms& uni);
+        void setUniforms(const Uniforms& uni);
         
         void drawHelper_axes(Uniforms& uni);
         void drawHelper_lightPlaceholders(Uniforms& uni);
@@ -147,13 +153,17 @@ private:
 
         void drawSceneNodes_primitive(Uniforms& uni);
         void drawSceneNodes_models(Uniforms& uni);
+
         void drawScene_skybox(Uniforms& uni);
 
 
         void drawShadowMap();
         void drawShadowCubemap();
 
+        void drawDeferredLightingPass();
+
         void drawBackbuffer(int display_w, int display_h);
+        void drawQuad();
 
         void compute_QuadVrtxTangents();
 
@@ -167,21 +177,37 @@ private:
     void clearStencil();
 
     // custom functions
-    void setPointLightParameters(Uniforms& uni);
-    void setSpotLightParameters(Uniforms& uni);
-    void setDirectionalLightParameters(Uniforms& uni);
+    void setPointLightParameters(const Uniforms& uni);
+    void setSpotLightParameters(const Uniforms& uni);
+    void setDirectionalLightParameters(const Uniforms& uni);
+
+    // 
+
+    const unsigned int  SSAO_KERNEL_SIZE = 64;
+    unsigned int        fbo_ssao;
+    unsigned int        tex_ssao;
+    unsigned int        fbo_ssao_blur;
+    unsigned int        tex_ssao_blur;
+    std::vector<Vec3>   ssao_kernel;
+    //std::vector<Vec3> ssao_noise;
+    unsigned int        ssao_noise_texture;
+    void createSSAOSampleKernel();
+    void createSSAONoiseTexture();
+    void drawSSAOPass(const Uniforms& uni);
+    void drawSSAOLightingPass(const Uniforms& uni);
+    void ppSSAOBlur(); // pp stans for post process
 
     // reset
 
 
 private:
-    const static unsigned int buffer_count = 5;
-    const float reduction_128f = 0.0078125f;
-    const unsigned int INVALID_ID = 0;
+    const static unsigned int buffer_count  = 10;
+    const float reduction_128f              = 0.0078125f;
+    const unsigned int INVALID_ID           = 0;
 
     // Uygulama veri ve state tanimlari
     GLFWwindow* window;
-    bool screenshot_mode = true;
+    bool screenshot_mode = false;
 
 
     // event
@@ -211,6 +237,12 @@ private:
     unsigned int fbo_illumination_msaa;
     unsigned int rbo_illumination_msaa;
     unsigned int tex_illumination_msaa_color;
+
+    // deferred shading
+    unsigned int g_buffer;
+    unsigned int g_position;
+    unsigned int g_normal;
+    unsigned int g_color_specular;
         
     // high dynamic range
     GLuint  fbo_illumination_hdr;

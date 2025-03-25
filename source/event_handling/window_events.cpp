@@ -72,6 +72,24 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni)
 		active_keys.push_back(GLFW_KEY_G);
 		key_state[GLFW_KEY_G] = false;
 	}
+	
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) key_state[GLFW_KEY_O] = true;
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_RELEASE && key_state[GLFW_KEY_O])
+    {
+        active_keys.push_back(GLFW_KEY_O);
+        key_state[GLFW_KEY_O] = false;
+        gp_app->toggleAO();
+    }
+
+
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) key_state[GLFW_KEY_T] = true;
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE && key_state[GLFW_KEY_T]) {
+		active_keys.push_back(GLFW_KEY_T);
+		key_state[GLFW_KEY_T] = false;
+		gp_app->toggleScreenshotMode();
+	}
+
+
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) key_state[GLFW_KEY_Z] = true;
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE && key_state[GLFW_KEY_Z]) {
 		Application::toggle_mouselock = !Application::toggle_mouselock;
