@@ -69,7 +69,7 @@ void Scene::onMultipleKeyPress(std::vector<int> keys) {
 		//// ----- 
 		if (event == InputEvent::ToggleUI)
 			// todo toggleui applicationa ait
-			scene_state.b_toggleui = !scene_state.b_toggleui;
+			scene_state.toggle_ui = !scene_state.toggle_ui;
 
 
 	}

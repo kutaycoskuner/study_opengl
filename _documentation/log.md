@@ -135,6 +135,26 @@
     - ui handlers
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
+    - add enum for shaders
+
+- [0.96.0] added ssao
+    - 25-Mar-2025 
+        - added display for ssao
+        - ui toggle for ssao
+        - ssao lighting pass
+    - 23-Mar-2025 
+        - wip ssao lighting pass
+        - added ssao blur pass
+        - fixed ssao output problem
+    - 19-Mar-2025
+        - creating sample kernel function
+        - added vec3 to *= operator
+    - 12-Mar-2025
+        - wip naming conventions
+        - added ssao scene
+        - added ssao shaders
+    - 05-Mar-2025
+        - fix rotation problem geometry scene
 
 - [0.95.0] added deferred shading
     - 04-Mar-2025

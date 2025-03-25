@@ -175,6 +175,7 @@ set(dataScenes
     "${data_dir_full}/_scenes/4.7_hdr_testscene.cpp"
     "${data_dir_full}/_scenes/4.8_bloom_testscene.cpp"
     "${data_dir_full}/_scenes/4.9_deferred-shading_testscene.cpp"
+    "${data_dir_full}/_scenes/4.10_ssao_testscene.cpp"
 )
 
 set(shaderFiles
@@ -271,8 +272,12 @@ set(shaderFiles
     "${shader_dir_full}/4.10.1.deferred-geometry_vrtx_shader.glsl"
     "${shader_dir_full}/4.10.2.deferred-lighting_frag_shader.glsl"
     "${shader_dir_full}/4.10.2.deferred-lighting_vrtx_shader.glsl"
-    "${shader_dir_full}/4.10.3.deferred-lightbox_frag_shader.glsl"
-    "${shader_dir_full}/4.10.3.deferred-lightbox_vrtx_shader.glsl"
+    "${shader_dir_full}/4.11.1.ssao-geometry_frag_shader.glsl"
+    "${shader_dir_full}/4.11.1.ssao-geometry_vrtx_shader.glsl"
+    "${shader_dir_full}/4.11.2.ssao-draw_frag_shader.glsl"
+    "${shader_dir_full}/4.11.2.ssao-draw_vrtx_shader.glsl"
+    "${shader_dir_full}/4.11.3.ssao-blur_frag_shader.glsl"
+    "${shader_dir_full}/4.11.4.ssao-lighting_frag_shader.glsl"
 )
 
 

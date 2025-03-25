@@ -18,7 +18,7 @@ void BlendingTestScene::loadData()
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 6.0f;
-	scene_state.b_display_shadows = false;
+	scene_state.display_shadows = false;
 
 	// ----- camera position
 	cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));

@@ -18,10 +18,10 @@ void PointShadowsTestScene::loadData()
 	scene_state.shininess = 32.0f;
 	// scene_state.vertex_divider = 9.0f;
 	//scene_state.b_model_refraction = true;
-	scene_state.b_display_skybox = true;  
+	scene_state.display_skybox = true;  
 	// scene_state.model_shader_name = "explode";
 	// scene_state.display_normals = true;
-	scene_state.b_display_axes = true;
+	scene_state.display_axes = true;
 
 	// camera pos
 	// ----------------------------------------------------------------

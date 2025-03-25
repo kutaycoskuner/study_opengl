@@ -15,9 +15,9 @@ namespace str_utils
 
 namespace file_utils
 {
-void printFileContents(const std::string& path);
+	//void printFileContents(const std::string& path);
 
-    bool        check_file_access(const std::string& file_path);
+    //bool        check_file_access(const std::string& file_path);
 	std::string getExecutableDir();
 	std::string getFileNameWithoutExtension(const std::string& filePath);
 	std::string getDirectoryName(const std::string& filePath);
@@ -34,7 +34,8 @@ namespace math_utils
 { 
 	constexpr float PI = 3.14159265359f;
 	// scaling
-    float randomFloat(float min, float max);
+    float lerp(float start, float end, float factor);
+	float randomFloat(float min, float max);
 	float scaleByteToZeroOne(unsigned int byte);	
 	float scaleByteToZeroOne(float byte);
 	Vec3 scaleByteToZeroOne(float a, float b, float c);
@@ -57,9 +58,9 @@ namespace mat_utils
 	Mat4 debugMat();
 	Mat4 identity4();
 	Mat4 transpose(const Mat4& mat);
-	Mat4 inverse(const Mat4& mat);
-	float determinant(const Mat4& mat);
-	Mat4 cofactor(const Mat4& mat);
+	//Mat4 inverse(const Mat4& mat);
+	//float determinant(const Mat4& mat);
+	//Mat4 cofactor(const Mat4& mat);
 	Mat4 scale(const float& x, const float& y, const float& z);
 	Mat4 scale(const Vec3& vec);
 	Mat4 scale(const float& x);

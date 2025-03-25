@@ -31,7 +31,9 @@ struct InputEventKey {
 };
 
 enum class UIEvent {
-	SelectScene
+	SelectScene,
+	OpenUISegment,
+	ToggleGraphicEnhancer
 };
 
 enum class InputEvent {

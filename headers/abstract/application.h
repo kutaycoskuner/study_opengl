@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <string>
 #include <memory>
+#include <random>
 
 
 //              forward declarations
@@ -62,6 +63,7 @@ public:
 
     void resetCamera();
     void toggleScreenshotMode();
+    void toggleAO();
 
     void setPathType(std::string path_mode);
 
@@ -141,7 +143,7 @@ private:
     // draw scene
     void drawScene(Uniforms& uni);
 
-        void setUniforms(Uniforms& uni);
+        void setUniforms(const Uniforms& uni);
         
         void drawHelper_axes(Uniforms& uni);
         void drawHelper_lightPlaceholders(Uniforms& uni);
@@ -161,6 +163,7 @@ private:
         void drawDeferredLightingPass();
 
         void drawBackbuffer(int display_w, int display_h);
+        void drawQuad();
 
         void compute_QuadVrtxTangents();
 
@@ -174,9 +177,25 @@ private:
     void clearStencil();
 
     // custom functions
-    void setPointLightParameters(Uniforms& uni);
-    void setSpotLightParameters(Uniforms& uni);
-    void setDirectionalLightParameters(Uniforms& uni);
+    void setPointLightParameters(const Uniforms& uni);
+    void setSpotLightParameters(const Uniforms& uni);
+    void setDirectionalLightParameters(const Uniforms& uni);
+
+    // 
+
+    const unsigned int  SSAO_KERNEL_SIZE = 64;
+    unsigned int        fbo_ssao;
+    unsigned int        tex_ssao;
+    unsigned int        fbo_ssao_blur;
+    unsigned int        tex_ssao_blur;
+    std::vector<Vec3>   ssao_kernel;
+    //std::vector<Vec3> ssao_noise;
+    unsigned int        ssao_noise_texture;
+    void createSSAOSampleKernel();
+    void createSSAONoiseTexture();
+    void drawSSAOPass(const Uniforms& uni);
+    void drawSSAOLightingPass(const Uniforms& uni);
+    void ppSSAOBlur(); // pp stans for post process
 
     // reset
 

@@ -182,9 +182,21 @@ const std::unordered_map<std::string, ShaderPaths> PathAfterDirectory::shader_pa
 
     {"deferred-lighting-pass",
         { .vrtx = "4.10.2.deferred-lighting_vrtx_shader.glsl",
-          .frag = "4.10.2.deferred-lighting_frag_shader.glsl" }}
+          .frag = "4.10.2.deferred-lighting_frag_shader.glsl" }},
 
-    // {"deferred-lightbox-pass",
-    //     { .vrtx = "4.10.3.deferred-lightbox_vrtx_shader.glsl",
-    //       .frag = "4.10.3.deferred-lightbox_frag_shader.glsl" }}
+    {"ssao-geometry-pass",
+      { .vrtx = "4.11.1.ssao-geometry_vrtx_shader.glsl",
+        .frag = "4.11.1.ssao-geometry_frag_shader.glsl" }},
+
+    {"ssao-draw-pass",
+      { .vrtx = "4.11.2.ssao-draw_vrtx_shader.glsl",
+        .frag = "4.11.2.ssao-draw_frag_shader.glsl" }},
+        
+    {"ssao-blur-pass",
+      { .vrtx = "post_process/gaussian-blur_vrtx_shader.glsl",
+        .frag = "4.11.3.ssao-blur_frag_shader.glsl" }},
+
+    {"ssao-lighting-pass",
+      { .vrtx = "post_process/gaussian-blur_vrtx_shader.glsl",
+        .frag = "4.11.4.ssao-lighting_frag_shader.glsl" }}
 };

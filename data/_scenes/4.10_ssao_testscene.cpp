@@ -11,12 +11,13 @@
 // ----------------------------------------------------------------------------
 //				abstract
 // ----------------------------------------------------------------------------
-void DeferredShadingTestScene::loadData()
+void SSAOTestScene::loadData()
 {
 	scene_state.animate = true;
 	scene_state.emission_factor = -1.0f;
 	scene_state.shininess = 32.0f;
-    scene_state.use_deferred_shading = true;
+    scene_state.use_ssao = true;
+    //scene_state.b_deferred_shading = true;
 	// scene_state.vertex_divider = 9.0f;
 	//scene_state.b_model_refraction = true;
 	//scene_state.display_skybox = true;  
@@ -35,7 +36,7 @@ void DeferredShadingTestScene::loadData()
 	////cameras[0].position = Vec3(0.0f, 0.0f, 14.0f);
 	////cameras[0].position = Vec3(0.0f, 1.86f, 0.0f);
 	//cameras[0].lookAtDirection(Vec3(1.0f, 0.0f, 0.0f));
-	////cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
+	//cameras[0].lookAtTarget(Vec3(0.0f, 0.0f, 0.0f));
 	////cameras[0].position = Vec3(0.0f, 10.0f, 10.0f);
 	//cameras[0].yaw_rad = +1.520f;
 	//cameras[0].pitch_rad = -0.200f;
@@ -43,10 +44,10 @@ void DeferredShadingTestScene::loadData()
 	// light definitions
 	// ----------------------------------------------------------------
 	// directional
-	//directional_lights.push_back(PredefSceneLights::d_light);
-	//DirectionalLight& dl0 = directional_lights[0];
-	//dl0.brightness = 1.0f;
-	//dl0.direction = Vec3(0.0f, -1.0f, 0.0f);
+	directional_lights.push_back(PredefSceneLights::d_light);
+	DirectionalLight& dl0 = directional_lights[0];
+	dl0.brightness = 1.0f;
+	dl0.direction = Vec3(0.0f, -1.0f, 0.0f);
 
 	// point6
 	//point_lights.push_back(PredefSceneLights::p_light);
@@ -64,7 +65,7 @@ void DeferredShadingTestScene::loadData()
 	//point_lights.back().brightness = 1.0f;
 	//point_lights.back().position = Vec3(1.0, 2.0f, -1.0f);
 
-	int num_point_lights = 200;
+	int num_point_lights = 4;
 	for (int i = 0; i < num_point_lights; i++)
     {
 		point_lights.push_back(PredefSceneLights::p_light);
@@ -81,17 +82,17 @@ void DeferredShadingTestScene::loadData()
         point_lights[i].brightness = math_utils::randomFloat(3.0f, 5.0f);
 	}
 
-	//float multiplier = 3.0f;
+	float multiplier = 3.0f;
 
-	//point_lights[0].position = Vec3(multiplier,  4.0f, multiplier);
- //   point_lights[1].position = Vec3(-multiplier, 4.0f, multiplier);
- //   point_lights[2].position = Vec3(multiplier,  4.0f, -multiplier);
- //   point_lights[3].position = Vec3(-multiplier, 4.0f, -multiplier);
+	point_lights[0].position = Vec3(multiplier,  4.0f, multiplier);
+    point_lights[1].position = Vec3(-multiplier, 4.0f, multiplier);
+    point_lights[2].position = Vec3(multiplier,  4.0f, -multiplier);
+    point_lights[3].position = Vec3(-multiplier, 4.0f, -multiplier);
 
-	//point_lights[0].diffuse = Vec3(1.0f, 0.0f, 0.0f);
- //   point_lights[1].diffuse = Vec3(0.0f, 1.0f, 0.0f);
- //   point_lights[2].diffuse = Vec3(0.0f, 0.0f, 1.0f);
- //   point_lights[3].diffuse = Vec3(1.0f, 0.0f, 1.0f);
+	point_lights[0].diffuse = Vec3(1.0f, 0.0f, 0.0f);
+    point_lights[1].diffuse = Vec3(0.0f, 1.0f, 0.0f);
+    point_lights[2].diffuse = Vec3(0.0f, 0.0f, 1.0f);
+    point_lights[3].diffuse = Vec3(1.0f, 0.0f, 1.0f);
 
 	//point_lights.push_back(PredefSceneLights::p_light);
 	//point_lights.back().diffuse = Vec3(0.0f, 0.0f, 1.0f);
@@ -169,11 +170,11 @@ void DeferredShadingTestScene::loadData()
 
 	//if (scene_nodes.size() > 0)
 	//	scene_nodes[0].transform.scale = Vec3(0.01f, 0.01f, 0.01f);
-        scene_state.model_shader_name = "deferred-geometry-pass";
+        scene_state.model_shader_name = "hdr";
 
 }
 
-void DeferredShadingTestScene::update() {
+void SSAOTestScene::update() {
 //	// emission pulse/breath
 //	// --------------------------------------------------------------------------------------
 //	float time = scene_state.time;
@@ -240,7 +241,7 @@ void DeferredShadingTestScene::update() {
 	//scene_state.emission_factor = sint;
 }
 
-DeferredShadingTestScene::DeferredShadingTestScene() {
+SSAOTestScene::SSAOTestScene() {
 }
 
 

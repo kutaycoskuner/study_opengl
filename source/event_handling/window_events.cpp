@@ -73,6 +73,14 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni)
 		key_state[GLFW_KEY_G] = false;
 	}
 	
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) key_state[GLFW_KEY_O] = true;
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_RELEASE && key_state[GLFW_KEY_O])
+    {
+        active_keys.push_back(GLFW_KEY_O);
+        key_state[GLFW_KEY_O] = false;
+        gp_app->toggleAO();
+    }
+
 
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) key_state[GLFW_KEY_T] = true;
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE && key_state[GLFW_KEY_T]) {

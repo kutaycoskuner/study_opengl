@@ -50,6 +50,9 @@
         - preview sphere
         - tiling material
 
+- john chapmanns cgraphics tutorials
+    - https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
+
 - engine example
     - https://github.com/KTStephano/StratusGFX
 
@@ -122,6 +125,9 @@
 
 - snells law (refraction physics)
     - https://en.wikipedia.org/wiki/Snell%27s_law
+
+- hermite interpolation
+    - https://en.wikipedia.org/wiki/Hermite_interpolation
 
 # Structure
 - root/

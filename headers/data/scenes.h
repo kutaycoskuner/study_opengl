@@ -185,3 +185,12 @@ public:
 	DeferredShadingTestScene();
 };
 
+class SSAOTestScene : public Scene {
+	public:
+		void loadData() override;
+		void update()	override;
+	
+		SSAOTestScene();
+	};
+	
+

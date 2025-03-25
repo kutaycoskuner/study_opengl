@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
@@ -22,10 +22,10 @@ void GeoShaderTestScene::loadData()
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 9.0f;
 	//scene_state.b_model_refraction = true;
-	scene_state.b_display_skybox = true;
+	scene_state.display_skybox = true;
 	scene_state.model_shader_name = "explode";
-	scene_state.b_display_normals = true;
-	scene_state.b_display_axes = true;
+	scene_state.display_normals = true;
+	scene_state.display_axes = true;
 
 	// ----- camera position
 	Camera& cam = cameras[0];
@@ -73,8 +73,11 @@ void GeoShaderTestScene::loadData()
 
 	};
 
+
 	// ----- create bools for each imported model
+
 	for (int i = 0; i < model_paths.size(); i++) {
+        scene_nodes.push_back(SceneNode("ModelName", Transform()));
 		scene_state.model_element_bools.push_back(
 			ElementBools(
 				false,		// wireframe_mode
@@ -86,6 +89,13 @@ void GeoShaderTestScene::loadData()
 			)
 		);
 	}
+
+
+	scene_nodes[0].transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
+	//for (int i = 0; i < model_paths.size(); i++)
+ //   {
+ //           scene_nodes[i].transform
+ //   }
 
 	// ----- define texture names
 	texture_names = { "out_container", "linegrid_darkgray_2k", "grid_2k_white" };

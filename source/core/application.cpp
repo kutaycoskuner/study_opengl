@@ -261,6 +261,32 @@ bool Application::initialize(const ConfigData& config)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_backbuffer_color, 0);
 
+    // 4.9 ssao buffers
+    // -----------------------------------------------------
+    glGenFramebuffers(1, &fbo_ssao);
+    glGenFramebuffers(1, &fbo_ssao_blur);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao);
+    // SSAO color buffer
+    glGenTextures(1, &tex_ssao);
+    glBindTexture(GL_TEXTURE_2D, tex_ssao);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, display_width, display_height, 0, GL_RED, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_ssao, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "SSAO Framebuffer not complete!" << std::endl;
+    // and blur stage
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao_blur);
+    glGenTextures(1, &tex_ssao_blur);
+    glBindTexture(GL_TEXTURE_2D, tex_ssao_blur);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, display_width, display_height, 0, GL_RED, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_ssao_blur, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "SSAO Blur Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     // deferred shading buffer
     // ----------------------------------------------------------
     glGenFramebuffers(1, &g_buffer);
@@ -272,6 +298,8 @@ bool Application::initialize(const ConfigData& config)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, g_position, 0);
 
     // normal color buffer
@@ -433,6 +461,8 @@ void Application::loadSceneData(const ConfigData& config)
         active_scene = new BloomTestScene;
     else if (scene_number == 20)
         active_scene = new DeferredShadingTestScene;
+    else if (scene_number == 21)
+        active_scene = new SSAOTestScene;
 
     // ----- set cubemap
     // --------------------------------------------------------------------------------------
@@ -453,7 +483,7 @@ void Application::loadSceneData(const ConfigData& config)
     // register listeners
     input_speaker.addListener(active_scene);
     // ui
-    scene_state.b_toggleui = false;
+    scene_state.toggle_ui = false;
 
     // animation
     scene_state.last_frame_time = std::stof(config.at("default_animation").at("last_frame_time"));
@@ -686,7 +716,7 @@ void Application::loadMeshData()
     //}
 
     // Instancing vbo test
-    if (active_scene->scene_state.b_using_computed_data)
+    if (active_scene->scene_state.use_computed_data)
     {
         unsigned int amount = active_scene->scene_state.instance_count;
         glGenBuffers(1, &instanced_buffer);
@@ -792,7 +822,11 @@ void Application::mainLoop(ConfigData& config)
                     ui_events.remove();
                     reload = true;
                 }
-                ui_events.remove();
+                else if (pair.first == UIEvent::OpenUISegment)
+                {
+
+                    ui_events.remove();
+                }
                 break;
             }
         }
@@ -987,7 +1021,7 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
     glBindVertexArray(0);
 }
 
-void Application::setPointLightParameters(Uniforms& uni)
+void Application::setPointLightParameters(const Uniforms& uni)
 {
     // point light
     const std::vector<PointLight>& point_lights = active_scene->point_lights;
@@ -1010,7 +1044,7 @@ void Application::setPointLightParameters(Uniforms& uni)
     }
 }
 
-void Application::setDirectionalLightParameters(Uniforms& uni)
+void Application::setDirectionalLightParameters(const Uniforms& uni)
 {
     const std::vector<DirectionalLight>& directional_lights = active_scene->directional_lights;
     if (directional_lights.empty())
@@ -1024,7 +1058,7 @@ void Application::setDirectionalLightParameters(Uniforms& uni)
     active_shader->setFloat("directional_light.brightness", directional_lights[0].brightness);
 }
 
-void Application::setSpotLightParameters(Uniforms& uni)
+void Application::setSpotLightParameters(const Uniforms& uni)
 {
     const std::vector<SpotLight>& spot_lights = active_scene->spot_lights;
     if (spot_lights.empty())
@@ -1066,7 +1100,7 @@ void Application::drawScene(Uniforms& uni)
     int display_w, display_h;
     glfwGetFramebufferSize(window, &display_w, &display_h);
 
-    if (active_scene->scene_state.b_display_shadows)
+    if (active_scene->scene_state.display_shadows)
     {
         if (!active_scene->directional_lights.empty()) drawShadowMap();
         if (!active_scene->point_lights.empty()) drawShadowCubemap();
@@ -1097,7 +1131,7 @@ void Application::drawScene(Uniforms& uni)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
-    if (!active_scene->scene_state.b_deferred_shading)
+    if (!active_scene->scene_state.use_deferred_shading && !active_scene->scene_state.use_ssao)
     {
         // 3.4. framebuffer
         // bind to framebuffer and draw scene as we normally would to color texture
@@ -1154,10 +1188,10 @@ void Application::drawScene(Uniforms& uni)
     else
     {
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        
+
         // 1. geometry pass: render all geometric/color data to g-buffer
         glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // get width and height
         glViewport(0, 0, display_w, display_h);
@@ -1168,19 +1202,90 @@ void Application::drawScene(Uniforms& uni)
         // upv.projection_matrix
         //	= mat_utils::projectOrthographic(cam.near, cam.far, -10.0f, 10.0f, 10.0f, -10.0f);
         upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
+
+        bool _use_ssao = active_scene->scene_state.use_ssao;
+
+        _use_ssao ? setActiveShader("ssao-geometry-pass") : setActiveShader("deferred-geometry-pass");
+
         drawSceneNodes_primitive(uni);
         drawSceneNodes_models(uni);
         drawScene_skybox(uni);
-        drawDeferredLightingPass();
+
+        if (active_scene->scene_state.use_deferred_shading)
+        {
+            drawDeferredLightingPass();
+        }
+
+        if (active_scene->scene_state.use_ssao)
+        {
+            createSSAOSampleKernel();
+            createSSAONoiseTexture();
+            drawSSAOPass(uni);
+            ppSSAOBlur();
+            drawSSAOLightingPass(uni);
+        }
+
         //
         glBindFramebuffer(GL_READ_FRAMEBUFFER, g_buffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_illumination_msaa);  // Default framebuffer
-        glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_width, display_height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_width, display_height, GL_DEPTH_BUFFER_BIT,
+                          GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
         drawHelper_lightPlaceholders(uni);
         //
         drawBackbuffer(display_w, display_h);
     }
+}
+
+void Application::createSSAOSampleKernel() {
+    // generates random floats between 0.0 and 1.0
+    std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);  
+    
+    std::default_random_engine              generator;
+    for (unsigned int i = 0; i < SSAO_KERNEL_SIZE; ++i)
+    {
+        Vec3 sample(
+            randomFloats(generator) * 2.0f - 1.0f, 
+            randomFloats(generator) * 2.0f - 1.0f,
+            randomFloats(generator)
+        );
+
+        // hepsinin boyunu 1 e cek -> hemisphere radius 1
+        sample.normalize();
+        // shorten them randomly so they all stay inside the hemisphere
+        sample *= randomFloats(generator);
+
+        // scale samples closer to center of kernel
+        float scale = float(i) / float(SSAO_KERNEL_SIZE);
+
+        // importance sampling 
+        scale       = math_utils::lerp(0.1f, 1.0f, scale * scale);
+        sample     *= scale;
+        ssao_kernel.push_back(sample);
+    }
+}
+
+void Application::createSSAONoiseTexture() {
+    // generates random floats between 0.0 and 1.0
+    std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
+    std::default_random_engine              generator;
+    std::vector<Vec3>                       ssao_noise;
+    for (unsigned int i = 0; i < 16; i++)
+    {
+        Vec3 noise(
+                randomFloats(generator) * 2.0 - 1.0, 
+                randomFloats(generator) * 2.0 - 1.0, 
+                0.0f
+            );
+        ssao_noise.push_back(noise);
+    }
+    glGenTextures(1, &ssao_noise_texture);
+    glBindTexture(GL_TEXTURE_2D, ssao_noise_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssao_noise[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 void Application::drawHelper_lightPlaceholders(Uniforms& uni)
@@ -1237,7 +1342,7 @@ void Application::drawHelper_axes(Uniforms& uni)
 {
     // ----- draw 0: draw axes
     // -------------------------------------------------------------------------------------
-    if (active_scene->scene_state.b_display_axes)
+    if (active_scene->scene_state.display_axes)
     {
         this->active_shader = shaders.at("axes");
         (*active_shader).use();
@@ -1373,23 +1478,23 @@ void Application::drawShadowMap()
     glCullFace(GL_BACK);  // Reset culling to default if needed
 }
 
-void Application::drawDeferredLightingPass() {
 
+void Application::drawDeferredLightingPass()
+{
     // set shader
     setActiveShader("deferred-lighting-pass");
 
     // set buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
-    
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, g_position);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, g_normal);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, g_color_specular);
-    
 
     // assign uniforms
     Scene* scene = active_scene;
@@ -1406,23 +1511,111 @@ void Application::drawDeferredLightingPass() {
     }
 
     //// enable this to avoid awkward whatever front rendering
-    //glDisable(GL_DEPTH_TEST);
+    // glDisable(GL_DEPTH_TEST);
     //// enable stencil test
-    //glDisable(GL_STENCIL_TEST);
+    // glDisable(GL_STENCIL_TEST);
     //// enable blending
-    //glDisable(GL_BLEND);
+    // glDisable(GL_BLEND);
 
     glDisable(GL_MULTISAMPLE);
 
+    drawQuad();
+
+    // RenderQuad();
+}
+
+void Application::drawSSAOLightingPass(const Uniforms& uni)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    setActiveShader("ssao-lighting-pass");
+
+    // set buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
+
+    // set textures
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, g_position);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, g_color_specular);
+    glActiveTexture(GL_TEXTURE3);  // add extra SSAO texture to lighting pass
+    glBindTexture(GL_TEXTURE_2D, tex_ssao_blur);
+
+    active_shader->setInt("g_position", 0);
+    active_shader->setInt("g_normal", 1);
+    active_shader->setInt("g_color_specular", 2);
+    active_shader->setInt("ssao", 3);
+    active_shader->setInt("nr_point_lights", active_scene->point_lights.size());
+    active_shader->setInt("nr_point_lights", 1);
+
+    active_shader->setBool("is_ao_active", active_scene->scene_state.toggle_ssao);
+
+        // assign uniforms
+    setPointLightParameters(uni);
+    setUniforms(uni);
+
+    drawQuad();
+}
+
+void Application::drawSSAOPass(const Uniforms& uni)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // bind textures
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, g_position);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, ssao_noise_texture);
+    
+    // set shader 
+    setActiveShader("ssao-draw-pass");
+
+
+    active_shader->setInt("g_position", 0);
+    active_shader->setInt("g_normal", 1);
+    active_shader->setInt("tex_noise", 2);
+    setUniforms(uni);
+    
+    // send kernel sample and other uniforms for the shader
+    for (unsigned int i = 0; i < SSAO_KERNEL_SIZE; ++i) 
+        active_shader->setVec3("samples[" + std::to_string(i) + "]", ssao_kernel[i]);
+    drawQuad();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Application::ppSSAOBlur() 
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao_blur);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    setActiveShader("ssao-blur-pass");
+
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex_ssao);
+    
+    //active_shader->setInt("g_position", 0);
+
+    drawQuad();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Application::drawQuad()
+{
     glBindVertexArray(named_arrays.at("quad"));
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
-
-
-    //RenderQuad();
 }
 
-void Application::setActiveShader(const std::string& name) {
+
+void Application::setActiveShader(const std::string& name)
+{
     this->active_shader = shaders.at(name);
     (*active_shader).use();
 }
@@ -1454,7 +1647,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
     // select shader
     this->active_shader = shaders.at("bloom");
     (*active_shader).use();
-    //setActiveShader("bloom");
+    // setActiveShader("bloom");
 
     // bind vertex array
     glBindVertexArray(named_arrays.at("frame"));
@@ -1480,7 +1673,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
     bool         horizontal = true, first_iteration = true;
     unsigned int amount = 10;
     // --------------------------------------------------
-    if (active_scene->scene_state.b_bloom)
+    if (active_scene->scene_state.use_bloom)
     {
         this->active_shader = shaders.at("gaussian-blur");
         (*active_shader).use();
@@ -1543,7 +1736,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
     glBindTexture(GL_TEXTURE_2D, tex_bloom[!horizontal]);
 
     active_shader->setFloat("exposure", active_scene->scene_state.exposure);
-    active_shader->setBool("bloom", active_scene->scene_state.b_bloom);
+    active_shader->setBool("bloom", active_scene->scene_state.use_bloom);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -1646,22 +1839,23 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
     }
 }
 
-void Application::setUniforms(Uniforms& uni)
+void Application::setUniforms(const Uniforms& uni)
 {
     // draw scene objects
     // --------------------------------------------------------------------------
-    Camera             cam = active_scene->cameras[0];
-    UniformsPerObject& upo = uni.upo;
-    UniformsPerView&   upv = uni.upv;
-    UniformsPerFrame&  upf = uni.upf;
+    const Camera&            cam = active_scene->cameras[0];
+    const UniformsPerObject& upo = uni.upo;
+    const UniformsPerView&   upv = uni.upv;
+    const UniformsPerFrame&  upf = uni.upf;
     // assign uniforms
     active_shader->setVec3("view_pos", cam.position);
     active_shader->setMat4("view_mat", upv.view_matrix);
     active_shader->setMat4("projection_mat", upv.projection_matrix);
+    active_shader->setMat4("view_proj_mat", upv.view_matrix * upv.projection_matrix);
     active_shader->setFloat("mix_val", upo.mix_value);
     active_shader->setFloat("time", active_scene->scene_state.time);
     active_shader->setFloat("tiling_factor", 1.0f);
-    active_shader->setBool("gamma", active_scene->scene_state.b_gamma);
+    active_shader->setBool("gamma", active_scene->scene_state.use_gamma_correction);
     active_shader->setInt("num_point_lights", active_scene->point_lights.size());
     active_shader->setFloat("prlx_height_scale", 0.2f);
     active_shader->setFloat("far_plane", shadow_far_plane);
@@ -1711,7 +1905,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
         // activate shader
         (*active_shader).use();
 
-        if (active_scene->scene_state.b_using_computed_data)
+        if (active_scene->scene_state.use_computed_data)
         {
             for (unsigned int i = 0; i < 100; i++)
             {
@@ -1902,9 +2096,17 @@ void Application::drawSceneNodes_models(Uniforms& uni)
             glDisable(GL_CULL_FACE);
         }
 
-        active_scene->scene_state.b_model_refraction
-            ? active_scene->scene_state.model_shader_name = "cubemaplit"
-            : active_scene->scene_state.model_shader_name = active_scene->scene_state.model_shader_name;
+        bool _use_ssao = active_scene->scene_state.use_ssao;
+        if (_use_ssao)
+        {
+            active_scene->scene_state.model_shader_name = "ssao-geometry-pass";
+        }
+        else
+        {
+            active_scene->scene_state.b_model_refraction
+                ? active_scene->scene_state.model_shader_name = "cubemaplit"
+                : active_scene->scene_state.model_shader_name = active_scene->scene_state.model_shader_name;
+        }
 
         this->active_shader = shaders.at(active_scene->scene_state.model_shader_name);
         // activate shader
@@ -1932,6 +2134,21 @@ void Application::drawSceneNodes_models(Uniforms& uni)
         active_scene->scene_nodes.size() > 0 ? world *= mat_utils::scale(active_scene->scene_nodes[i].transform.scale)
                                              : world *= mat_utils::scale(1.0f, 1.0f, 1.0f);
 
+        if (active_scene->scene_nodes.size())
+        {
+            float radian_angle = math_utils::toRadian(active_scene->scene_nodes[i].transform.rotation.x);
+            active_scene->scene_nodes.size() > 0 ? world *= mat_utils::rotateX(radian_angle)
+                                                 : world *= mat_utils::rotationX(0.0f);
+
+            radian_angle = math_utils::toRadian(active_scene->scene_nodes[i].transform.rotation.y);
+            active_scene->scene_nodes.size() > 0 ? world *= mat_utils::rotateY(radian_angle)
+                                                 : world *= mat_utils::rotationY(0.0f);
+
+            radian_angle = math_utils::toRadian(active_scene->scene_nodes[i].transform.rotation.z);
+            active_scene->scene_nodes.size() > 0 ? world *= mat_utils::rotateZ(radian_angle)
+                                                 : world *= mat_utils::rotationZ(0.0f);
+        }
+
         active_shader->setMat4("world_mat", world);
 
         float maxObjectScale = (std::max(world._11, std::max(world._22, world._33)));
@@ -1946,7 +2163,7 @@ void Application::drawSceneNodes_models(Uniforms& uni)
 
         // then draw model with normal visualizing geometry shader
 
-        if (active_scene->scene_state.b_display_normals)
+        if (active_scene->scene_state.display_normals)
         {
             this->active_shader = shaders.at("normal");
             (*active_shader).use();
@@ -2085,7 +2302,7 @@ void Application::drawScene_skybox(Uniforms& uni)
     UniformsPerObject& upo = uni.upo;
     UniformsPerView&   upv = uni.upv;
     UniformsPerFrame&  upf = uni.upf;
-    if (active_scene->scene_state.b_display_skybox)
+    if (active_scene->scene_state.display_skybox)
     {
         glDepthFunc(
             GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

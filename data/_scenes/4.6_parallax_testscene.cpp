@@ -21,7 +21,7 @@ void ParallaxTestScene::loadData()
 	//scene_state.display_skybox = true;  
 	// scene_state.model_shader_name = "explode";
 	// scene_state.display_normals = true;
-	scene_state.b_display_axes = true;
+	scene_state.display_axes = true;
 
 	// camera pos
 	// ----------------------------------------------------------------
