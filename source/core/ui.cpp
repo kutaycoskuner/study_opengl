@@ -157,7 +157,7 @@ void Application::updateUI()
             }
             if (ImGui::MenuItem("Screen Space Ambient Occlusion", ""))
             {
-                input_speaker.notifyUIEvent(UIEvent::SelectScene, {1});
+                input_speaker.notifyUIEvent(UIEvent::SelectScene, {21});
             }
 
             ImGui::EndMenu();

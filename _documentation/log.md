@@ -137,6 +137,11 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - add enum for shaders
 
+- [0.96.1] updated submodules for lfs problem
+    - 26-Mar-2025 
+        - disabled ssao on hdr scene temporarily
+        - update submodules lfs problem
+
 - [0.96.0] added ssao
     - 25-Mar-2025 
         - added display for ssao
