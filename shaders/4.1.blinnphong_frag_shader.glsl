@@ -1,7 +1,10 @@
 #version 330 core
 #if 1
-// abstract
-// ---------------------------------------------------------------------------------------
+// 
+/*
+        Shader: Phong lighting model
+
+*/
 struct DirectionalLight {
 
     vec3 direction;
@@ -156,6 +159,9 @@ void main() {
     surface.normal = normalize(v_normal);
     surface.diffuse = vec3(texture(material.diffuse_map1, v_tex_coords));
     surface.specular = vec3(texture(material.specular_map1, v_tex_coords));
+	if (length(surface.specular) < 0.01) { // Assuming missing texture is black or near-zero
+		surface.specular = vec3(0.5);
+	}
     surface.emission = vec3(texture(material.emission_map1, v_tex_coords));
 
     // calculate properties

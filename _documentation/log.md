@@ -115,12 +115,9 @@
 - [todo]
     - general unused code cleaning and descriptive commenting
     - overlay test
-    - fix outliner when removing primitive element its rendering differently
-    - fix outliner first element is not outlining
     - fix resizing screen
     - add python test on scenes
     - add light bilboards
-    - debug kodu
     - okuma nvidia api extension
     - okuma render pipeline
     - okuma lighting equation
@@ -130,12 +127,21 @@
     - asset_import retrieve material info
     - add exposure to ui
     - add shadow to sponza
-    - proper yaml parser
     - refactoring naming convention
-    - ui handlers
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - add enum for shaders
+
+
+- [0.96.2] fixed scenes; ui enhancements
+    - 27-Mar-2025
+        - add: ui light brightness and color
+        - add: ui select camera, select light
+        - fix: outliner scene not outlining frustum object
+    - 26-Mar-2025
+        - added ui options handle on menu
+        - fix: blinn-phong test scene
+        - fix: blending test scene
 
 - [0.96.1] updated submodules for lfs problem
     - 26-Mar-2025 

@@ -2072,7 +2072,6 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
             clearStencil();
-            glClear(GL_STENCIL_BUFFER_BIT);
         }
     }
 }
@@ -2203,7 +2202,6 @@ void Application::drawSceneNodes_models(Uniforms& uni)
             active_shader->setFloat("outline_scale", maxObjectScale);
             active_scene->models[i].draw(*active_shader);
             clearStencil();
-            glClear(GL_STENCIL_BUFFER_BIT);
         }
 
         if (active_scene->scene_state.draw_instanced)

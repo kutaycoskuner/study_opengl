@@ -65,7 +65,7 @@ void SSAOTestScene::loadData()
 	//point_lights.back().brightness = 1.0f;
 	//point_lights.back().position = Vec3(1.0, 2.0f, -1.0f);
 
-	int num_point_lights = 4;
+	int num_point_lights = 1;
 	for (int i = 0; i < num_point_lights; i++)
     {
 		point_lights.push_back(PredefSceneLights::p_light);
@@ -85,14 +85,14 @@ void SSAOTestScene::loadData()
 	float multiplier = 3.0f;
 
 	point_lights[0].position = Vec3(multiplier,  4.0f, multiplier);
-    point_lights[1].position = Vec3(-multiplier, 4.0f, multiplier);
-    point_lights[2].position = Vec3(multiplier,  4.0f, -multiplier);
-    point_lights[3].position = Vec3(-multiplier, 4.0f, -multiplier);
+    //point_lights[1].position = Vec3(-multiplier, 4.0f, multiplier);
+    //point_lights[2].position = Vec3(multiplier,  4.0f, -multiplier);
+    //point_lights[3].position = Vec3(-multiplier, 4.0f, -multiplier);
 
-	point_lights[0].diffuse = Vec3(1.0f, 0.0f, 0.0f);
-    point_lights[1].diffuse = Vec3(0.0f, 1.0f, 0.0f);
-    point_lights[2].diffuse = Vec3(0.0f, 0.0f, 1.0f);
-    point_lights[3].diffuse = Vec3(1.0f, 0.0f, 1.0f);
+	point_lights[0].diffuse = Vec3(1.0f, 0.0f, 1.0f);
+    //point_lights[1].diffuse = Vec3(0.0f, 1.0f, 0.0f);
+    //point_lights[2].diffuse = Vec3(0.0f, 0.0f, 1.0f);
+    //point_lights[3].diffuse = Vec3(1.0f, 0.0f, 1.0f);
 
 	//point_lights.push_back(PredefSceneLights::p_light);
 	//point_lights.back().diffuse = Vec3(0.0f, 0.0f, 1.0f);

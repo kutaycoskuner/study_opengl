@@ -180,13 +180,13 @@ void BlendingTestScene::update() {
 	3. Draw all the transparent objects in sorted order.
 	*/
 	// normalde blendingin calismasi icin objeleri arkadan one dogru sort edip cizmek egerekiyor ama su anda garip bir sekilde calisiyor.
-	//std::map<float, PrimitiveSceneNode> sorted;
-	//std::sort(predefined_scene_elements.begin(), predefined_scene_elements.end(),
-	//	[this](const PrimitiveSceneNode& a, const PrimitiveSceneNode& b) {
-	//		float distanceA = vec_utils::length(this->cameras[0].position - a.transform.position);
-	//		float distanceB = vec_utils::length(this->cameras[0].position - b.transform.position);
-	//		return distanceA > distanceB;
-	//	});
+	std::map<float, PrimitiveSceneNode> sorted;
+	std::sort(predefined_scene_elements.begin(), predefined_scene_elements.end(),
+		[this](const PrimitiveSceneNode& a, const PrimitiveSceneNode& b) {
+			float distanceA = vec_utils::length(this->cameras[0].position - a.transform.position);
+			float distanceB = vec_utils::length(this->cameras[0].position - b.transform.position);
+			return distanceA > distanceB;
+		});
 
 }
 

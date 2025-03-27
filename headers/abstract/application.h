@@ -44,6 +44,19 @@ public:
         RELATIVE,
         FULL
     };
+
+    enum class RenderViewMode
+    {
+        ILLUMINATION,
+        COLOR,
+        DEPTH,
+        POSITION,
+        NORMAL,
+        SPECULAR,
+        SSAO_RAW,
+        SSAO_BLUR
+    };
+
     PathMode path_mode              = Application::PathMode::RELATIVE;
 
     std::string data_dir_path       = "";
