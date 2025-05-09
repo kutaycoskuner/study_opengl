@@ -6,7 +6,7 @@
 // ---------------------------------------------------------------------------------------
 // ----- libraries
 // ---------------------------------------------------------------------------------------
-#include "application.h"				
+#include "renderer.h"				
 #include "scene.h"				
 #include "events.h"	
 #include "opengl.h"			
@@ -22,8 +22,8 @@ void Scene::onMultipleKeyPress(std::vector<int> keys) {
 	Camera& cam = cameras[0];
 	float cam_speed = 2.5f * scene_state.delta_time;
 	const Vec3& cam_dir = cam.getDirection();
-	const Vec3& cam_up = cam.getUp(Application::world_up);
-	const Vec3& cam_right = cam.getRight(Application::world_up);
+	const Vec3& cam_up = cam.getUp(Renderer::world_up);
+	const Vec3& cam_right = cam.getRight(Renderer::world_up);
 
 	for (const int& key : keys) {
 		auto it = keyboard.find(key);

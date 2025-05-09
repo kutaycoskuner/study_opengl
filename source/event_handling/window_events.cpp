@@ -1,7 +1,7 @@
 // ----- Libraries
 // ---------------------------------------------------------------------------------------
 #include "uniforms.h"			// shader objesi olusturmaya dair veritipi
-#include "application.h"			// shader objesi olusturmaya dair veritipi
+#include "renderer.h"			// shader objesi olusturmaya dair veritipi
 #include "scene_state.h"			// shader objesi olusturmaya dair veritipi
 #include "window_state.h"		
 #include <GLFW/glfw3.h>			// opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
@@ -9,7 +9,7 @@
 
 // ----- variables
 // ---------------------------------------------------------------------------------------
-extern Application* gp_app;
+extern Renderer* gp_app;
 
 
 // ----- Functions
@@ -92,7 +92,7 @@ void processInput(GLFWwindow* window, UniformsPerObject& uni)
 
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) key_state[GLFW_KEY_Z] = true;
 	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE && key_state[GLFW_KEY_Z]) {
-		Application::toggle_mouselock = !Application::toggle_mouselock;
+		Renderer::toggle_mouselock = !Renderer::toggle_mouselock;
 		key_state[GLFW_KEY_Z] = false;
 	}
 	if (active_keys.size() > 0)
@@ -111,7 +111,7 @@ void callbackScroll(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 
-void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
+void Renderer::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 {
 	if (toggle_mouselock)
 	{
@@ -142,7 +142,7 @@ void Application::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 	active_scene->cameras[0].rotate(-xoffset, yoffset);
 }
 
-void Application::handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset)
+void Renderer::handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset)
 {
 	float& fov = active_scene->cameras[0].fov;
 	fov -= (float)yoffset;

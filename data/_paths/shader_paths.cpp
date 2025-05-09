@@ -1,6 +1,635 @@
 // libraries
 // ---------------------------------------------------------------------------------------
 #include "data.h"
+#include "shader_data.h"
+
+std::map<ShaderID, ShaderResourceDescriptor> shaderMap = {
+
+    { ShaderID::Shader3D,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "1.0.3d_vrtx_shader.glsl",
+                .frag = "1.0.3d_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::AxisX,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "1.1.axis-x_vrtx_shader.glsl",
+                .frag = "1.1.axis-x_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::AxisZ,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "1.1.axis-z_vrtx_shader.glsl",
+                .frag = "1.1.axis-z_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Diffuse,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "1.2.diffuse_vrtx_shader.glsl",
+                .frag = "1.2.diffuse_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Green,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "1.3.green_vrtx_shader.glsl",
+                .frag = "1.3.green_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Pink,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "1.4.pink_vrtx_shader.glsl",
+                .frag = "1.4.pink_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Phong,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "2.0.phong_lit_vrtx_shader.glsl",
+                .frag = "2.0.phong_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Lightmap,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "2.1.lightmap_lit_vrtx_shader.glsl",
+                .frag = "2.1.lightmap_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::LightcasterDirectional,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "2.2.lightcaster-directional_lit_vrtx_shader.glsl",
+                .frag = "2.2.lightcaster-directional_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::LightcasterPoint,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "2.2.lightcaster-point_lit_vrtx_shader.glsl",
+                .frag = "2.2.lightcaster-point_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::LightcasterSpot,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "2.2.lightcaster-spot_lit_vrtx_shader.glsl",
+                .frag = "2.2.lightcaster-spot_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::MultipleLights,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "2.3.multiplelights_lit_vrtx_shader.glsl",
+                .frag = "2.3.multiplelights_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::DepthTesting,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.0.depthtesting_lit_vrtx_shader.glsl",
+                .frag = "3.0.depthtesting_lit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::StencilTesting,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.1.stenciltesting_vrtx_shader.glsl",
+                .frag = "3.1.stenciltesting_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::StencilTesting02,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.1.stenciltesting02_vrtx_shader.glsl",
+                .frag = "3.1.stenciltesting02_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Blending,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.2.blending_vrtx_shader.glsl",
+                .frag = "3.2.blending_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Framebuffer,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.4.framebuffer_vrtx_shader.glsl",
+                .frag = "3.4.framebuffer_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Cubemap,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.5.cubemap_vrtx_shader.glsl",
+                .frag = "3.5.cubemap_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::CubemapLit,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.6.cubemaplit_vrtx_shader.glsl",
+                .frag = "3.6.cubemaplit_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::AdvGLSLRed,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.8.advglsl-red_vrtx_shader.glsl",
+                .frag = "3.8.advglsl-red_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::AdvGLSLGreen,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.8.advglsl-green_vrtx_shader.glsl",
+                .frag = "3.8.advglsl-green_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::AdvGLSLBlue,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.8.advglsl-blue_vrtx_shader.glsl",
+                .frag = "3.8.advglsl-blue_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::AdvGLSLYellow,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.8.advglsl-yellow_vrtx_shader.glsl",
+                .frag = "3.8.advglsl-yellow_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Axes,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.9.axes_vrtx_shader.glsl",
+                .frag = "3.9.axes_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Explode,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.9.explode_vrtx_shader.glsl",
+                .frag = "3.9.explode_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Geo,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.9.geo_vrtx_shader.glsl",
+                .frag = "3.9.geo_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Normal,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.9.normal_vrtx_shader.glsl",
+                .frag = "3.9.normal_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Instance,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.10.instance_vrtx_shader.glsl",
+                .frag = "3.10.instance_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Instance02,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "3.10.instance02_vrtx_shader.glsl",
+                .frag = "3.10.instance02_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::BlinnPhong,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.1.blinnphong_vrtx_shader.glsl",
+                .frag = "4.1.blinnphong_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::BlinnPhong2,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.1.blinnphong2_vrtx_shader.glsl",
+                .frag = "4.1.blinnphong2_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Gamma,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.2.gamma_vrtx_shader.glsl",
+                .frag = "4.2.gamma_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::ShadowMap,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.3.shadowmap_vrtx_shader.glsl",
+                .frag = "4.3.shadowmap_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::LightShadow,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.3.light-shadow_vrtx_shader.glsl",
+                .frag = "4.3.light-shadow_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::PLightShadow,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.4.plight-shadow_vrtx_shader.glsl",
+                .frag = "4.4.plight-shadow_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::ShadowMapPL,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.4.shadowmap-pl_vrtx_shader.glsl",
+                .frag = "4.4.shadowmap-pl_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Normal01,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.5.normal01_vrtx_shader.glsl",
+                .frag = "4.5.normal01_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Normal02,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.6.normal02_vrtx_shader.glsl",
+                .frag = "4.6.normal02_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Parallax,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.7.parallax_vrtx_shader.glsl",
+                .frag = "4.7.parallax_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::HDR,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.8.hdr_vrtx_shader.glsl",
+                .frag = "4.8.hdr_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::Bloom,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.9.bloom_vrtx_shader.glsl",
+                .frag = "4.9.bloom_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::GaussianBlur,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "post_process/gaussian-blur_vrtx_shader.glsl",
+                .frag = "post_process/gaussian-blur_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::DeferredGeometryPass,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.10.1.deferred-geometry_vrtx_shader.glsl",
+                .frag = "4.10.1.deferred-geometry_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::DeferredLightingPass,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.10.2.deferred-lighting_vrtx_shader.glsl",
+                .frag = "4.10.2.deferred-lighting_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::SSAOGeometryPass,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.11.1.ssao-geometry_vrtx_shader.glsl",
+                .frag = "4.11.1.ssao-geometry_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::SSAODrawPass,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "4.11.2.ssao-draw_vrtx_shader.glsl",
+                .frag = "4.11.2.ssao-draw_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::SSAOBlurPass,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "post_process/gaussian-blur_vrtx_shader.glsl",
+                .frag = "4.11.3.ssao-blur_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+    { ShaderID::SSAOLightingPass,
+        ShaderResourceDescriptor {
+            .paths = ShaderPaths{
+                .vrtx = "post_process/gaussian-blur_vrtx_shader.glsl",
+                .frag = "4.11.4.ssao-lighting_frag_shader.glsl",
+                .geom = ""
+            },
+            .renderview_modes = {
+                RenderViewMode::ILLUMINATION
+            }
+        }
+    },
+
+};
 
 const std::unordered_map<std::string, ShaderPaths> PathAfterDirectory::shader_paths = {
     {"3d",

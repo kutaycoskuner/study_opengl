@@ -88,7 +88,7 @@ set(blackboardCode
 )
 
 set(coreCode
-    "${sourceDir}/core/application.cpp"
+    "${sourceDir}/core/renderer.cpp"
     "${sourceDir}/core/ui.cpp"
 )
 
@@ -301,7 +301,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 #               Header Files
 # ----------------------------------------------------------------------------------------
 set(abstractHeaders
-    "${CMAKE_SOURCE_DIR}/headers/abstract/application.h"
+    "${CMAKE_SOURCE_DIR}/headers/abstract/renderer.h"
     "${CMAKE_SOURCE_DIR}/headers/abstract/Camera.h"
     "${CMAKE_SOURCE_DIR}/headers/abstract/light.h"
     "${CMAKE_SOURCE_DIR}/headers/abstract/material.h"
@@ -319,16 +319,17 @@ set(abstractHeaders
     "${CMAKE_SOURCE_DIR}/headers/abstract/vector3.h"
     "${CMAKE_SOURCE_DIR}/headers/abstract/vector4.h"
     "${CMAKE_SOURCE_DIR}/headers/abstract/window_state.h"
-)
-
-set(coreHeaders
+    )
+    
+    set(coreHeaders
     "${CMAKE_SOURCE_DIR}/headers/core/opengl.h"
     "${CMAKE_SOURCE_DIR}/headers/core/ui.h"
-)
-
-set(dataHeaders
+    )
+    
+    set(dataHeaders
     "${CMAKE_SOURCE_DIR}/headers/data/data.h"
     "${CMAKE_SOURCE_DIR}/headers/data/scenes.h"
+    "${CMAKE_SOURCE_DIR}/headers/data/shader_data.h"
 )
 
 set(eventsHeaders

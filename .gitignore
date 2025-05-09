@@ -10,6 +10,9 @@ artifacts/
 bin/
 build/
 _documentation/prompts/
+_temp/
+scripts/_input/
+scripts/_output/
 
 # ----------------------------------------------------------------------------------------
 #               base

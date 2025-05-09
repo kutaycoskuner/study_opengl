@@ -12,7 +12,7 @@
 #include "../../libs/imgui/backends/imgui_impl_glfw.h"
 #include "../../libs/imgui/backends/imgui_impl_opengl3.h"
 #include "../../libs/imgui/imgui.h"
-#include "application.h"
+#include "renderer.h"
 // test
 
 // ---------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 // ---------------------------------------------------------------------------------------
 void drawKeybindingsTab();
 void drawGraphicsTab();
-void drawParametersTab(const Application& app);
+void drawParametersTab(const Renderer& app);
 
 // ---------------------------------------------------------------------------------------
 //				Variables
@@ -37,7 +37,7 @@ UITabs selected_tab = UITabs::SceneDataControl;  // Default tab
 //				Functions
 // ---------------------------------------------------------------------------------------
 
-void Application::initUISystem(const char*& glsl_version)
+void Renderer::initUISystem(const char*& glsl_version)
 {
     //  :: IMGUI Init
     IMGUI_CHECKVERSION();
@@ -55,13 +55,13 @@ void Application::initUISystem(const char*& glsl_version)
     ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
-void Application::drawUI()
+void Renderer::drawUI()
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Application::updateUI()
+void Renderer::updateUI()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGuiIO& io = ImGui::GetIO();
@@ -197,6 +197,27 @@ void Application::updateUI()
             // Parameters Tab
             if (ImGui::BeginTabItem("Scene Data"))
             {
+                // Render View Mode Dropdown
+                ImGui::Text("Render View Mode");
+
+                static RenderViewMode selected_mode = RenderViewMode::ILLUMINATION;
+                const char*           mode_names[]  = {"Illumination", "SSAO"};
+
+                if (ImGui::BeginCombo("Render Mode", mode_names[static_cast<int>(selected_mode)]))
+                {
+                    for (int i = 0; i < IM_ARRAYSIZE(mode_names); ++i)
+                    {
+                        bool is_selected = (static_cast<int>(selected_mode) == i);
+                        if (ImGui::Selectable(mode_names[i], is_selected))
+                        {
+                            selected_mode = static_cast<RenderViewMode>(i); 
+                            input_speaker.notifyUIEvent(UIEvent::SetRenderView, {i});
+                        }
+                        if (is_selected) ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
                 ImGui::Text("Camera Controls");
                 static int               selected_camera = 0;
                 std::vector<std::string> camera_names;
@@ -270,33 +291,6 @@ void Application::updateUI()
                     ImGui::ColorEdit3("Light Color", &this->active_scene->point_lights[selected_light].diffuse.x);
                 }
 
-                // Render Output Target Selection
-                //if (this->active_scene)
-                //{
-                //    ImGui::Text("Render Output Target");
-
-                //    static int  selected_target  = 0;
-                //    const char* render_targets[] = {"Color", "Depth", "Position", "Normal", "Specular"};
-                //    const char* current_target   = render_targets[selected_target];
-
-                //    if (ImGui::BeginCombo("##RenderTarget", current_target))
-                //    {
-                //        for (int i = 0; i < IM_ARRAYSIZE(render_targets); ++i)
-                //        {
-                //            bool is_selected = (selected_target == i);
-                //            if (ImGui::Selectable(render_targets[i], is_selected))
-                //            {
-                //                selected_target = i;
-                //            }
-                //            if (is_selected) ImGui::SetItemDefaultFocus();
-                //        }
-                //        ImGui::EndCombo();
-                //    }
-
-                //    // Update the rendering output based on selection
-                //    this->active_scene->SetRenderTarget(selected_target);
-                //}
-
                 ImGui::Checkbox("Toggle Screen Space Ambient Occlusion", &this->active_scene->scene_state.toggle_ssao);
 
                 ImGui::EndTabItem();
@@ -316,7 +310,7 @@ void Application::updateUI()
     // --------------------------------------------------------------------------------------
 }
 
-void drawParametersTab(const Application& app) {}
+void drawParametersTab(const Renderer& app) {}
 
 void drawGraphicsTab()
 {
@@ -384,6 +378,6 @@ void drawKeybindingsTab()
     }
 }
 
-void Application::toggleScreenshotMode() { screenshot_mode = !screenshot_mode; }
+void Renderer::toggleScreenshotMode() { screenshot_mode = !screenshot_mode; }
 
-void Application::toggleAO() { active_scene->scene_state.toggle_ssao = !active_scene->scene_state.toggle_ssao; }
+void Renderer::toggleAO() { active_scene->scene_state.toggle_ssao = !active_scene->scene_state.toggle_ssao; }

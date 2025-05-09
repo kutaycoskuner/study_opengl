@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------------------
 //				Libraries
 // ---------------------------------------------------------------------------------------
-#include "application.h"
+#include "renderer.h"
 
 #include <GLFW/glfw3.h>  // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <glad/glad.h>   // opengl hardware adaptor before glfw
@@ -48,28 +48,28 @@ using namespace img_utils;
 //				global, constant variables
 // ---------------------------------------------------------------------------------------
 constexpr unsigned int kg_error_buffer_size = 512;
-Application*           gp_app;
-const Vec3             Application::world_up         = Vec3(0.0f, 1.0f, 0.0f);
-const Vec3             Application::world_origin     = Vec3(0.0f, 0.0f, 0.0f);
-bool                   Application::toggle_mouselock = true;
+Renderer*           gp_app;
+const Vec3             Renderer::world_up         = Vec3(0.0f, 1.0f, 0.0f);
+const Vec3             Renderer::world_origin     = Vec3(0.0f, 0.0f, 0.0f);
+bool                   Renderer::toggle_mouselock = true;
 
 // ---------------------------------------------------------------------------------------
 //				functions definitions
 // ---------------------------------------------------------------------------------------
-void Application::disableStencil()
+void Renderer::disableStencil()
 {
     glStencilFunc(GL_ALWAYS, 1, 0xFF);
     glStencilMask(0xFF);
 }
 
-void Application::enableStencil()
+void Renderer::enableStencil()
 {
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilMask(0x00);
     // glDisable(GL_DEPTH_TEST);
 }
 
-void Application::clearStencil()
+void Renderer::clearStencil()
 {
     // return to default state
     glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -79,7 +79,7 @@ void Application::clearStencil()
     // glEnable(GL_DEPTH_TEST);
 }
 
-bool Application::initialize(const ConfigData& config)
+bool Renderer::initialize(const ConfigData& config)
 {
     gp_app = this;
 
@@ -344,7 +344,7 @@ bool Application::initialize(const ConfigData& config)
     return 0;
 }
 
-bool Application::load(const ConfigData& config)
+bool Renderer::load(const ConfigData& config)
 {
     loadConfig(config);
 
@@ -399,13 +399,13 @@ bool Application::load(const ConfigData& config)
     return 1;
 }
 
-void Application::loadConfig(const ConfigData& config)
+void Renderer::loadConfig(const ConfigData& config)
 {
     // load config states
     this->b_wireframe_mode = config.at("settings").at("is_wireframeMode") == "true";
 }
 
-void Application::loadSceneData(const ConfigData& config)
+void Renderer::loadSceneData(const ConfigData& config)
 {
     int scene_number = std::stoi(config.at("scene").at("active_scene"));
     if (active_test_scene > 12)
@@ -508,7 +508,7 @@ void Application::loadSceneData(const ConfigData& config)
         ui_vector = active_scene->predefined_scene_elements.back().transform.position;
 }
 
-void Application::loadTextures()
+void Renderer::loadTextures()
 {
     // texture
     setVerticalFlipMode(true);
@@ -549,7 +549,7 @@ void Application::loadTextures()
     }
 }
 
-void Application::loadShaders()
+void Renderer::loadShaders()
 {
     // Iterate over the shader paths map
     for (const auto& [shader_name, path_struct] : PathAfterDirectory::shader_paths)
@@ -580,7 +580,7 @@ void Application::loadShaders()
     }
 }
 
-std::vector<const char*> Application::loadModelPaths()
+std::vector<const char*> Renderer::loadModelPaths()
 {
     std::vector<const char*> model_paths;
     for (const std::string& path : active_scene->model_paths)
@@ -590,7 +590,7 @@ std::vector<const char*> Application::loadModelPaths()
     return model_paths;
 }
 
-void Application::loadMeshData()
+void Renderer::loadMeshData()
 {
     // create vertex array object and vertex buffer object
     glGenVertexArrays(buffer_count, vertex_arrays);
@@ -754,7 +754,7 @@ void Application::loadMeshData()
     glBindVertexArray(0);
 }
 
-void Application::generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx,
+void Renderer::generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx,
                                  bool tex)
 {
     // light
@@ -773,9 +773,9 @@ void Application::generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float ob
     if (tex) glEnableVertexAttribArray(2);
 }
 
-void Application::generateShadowFBO() {}
+void Renderer::generateShadowFBO() {}
 
-void Application::mainLoop(ConfigData& config)
+void Renderer::mainLoop(ConfigData& config)
 {
     // uniform variables according to update frequency
     Uniforms           uni;
@@ -827,6 +827,12 @@ void Application::mainLoop(ConfigData& config)
 
                     ui_events.remove();
                 }
+                else if (pair.first == UIEvent::SetRenderView)
+                {
+                    std::cout << pair.second[0] << std::endl;
+                    renderview_mode = static_cast<RenderViewMode>(pair.second[0]);
+                    ui_events.remove();
+                }
                 break;
             }
         }
@@ -840,7 +846,7 @@ void Application::mainLoop(ConfigData& config)
     }
 }
 
-int Application::initWindowSystem(const unsigned int& width, const unsigned int& height, const char*& window_name)
+int Renderer::initWindowSystem(const unsigned int& width, const unsigned int& height, const char*& window_name)
 {
     // :: GLFW
     glfwInit();
@@ -875,7 +881,7 @@ int Application::initWindowSystem(const unsigned int& width, const unsigned int&
     return 0;
 }
 
-void Application::unload()
+void Renderer::unload()
 {
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
@@ -896,7 +902,7 @@ void Application::unload()
     }
 }
 
-int Application::exit()
+int Renderer::exit()
 {
     // glfw: purge allocated memory
     // ------------------------------------------------------------------------
@@ -904,7 +910,7 @@ int Application::exit()
     return 0;
 }
 
-void Application::compute_QuadVrtxTangents()
+void Renderer::compute_QuadVrtxTangents()
 {
     if (computed_vertex_array_obj == 0)
     {
@@ -1021,7 +1027,7 @@ void assignBuffer(const float* objToDraw, const int sizeofObjToDraw, const unsig
     glBindVertexArray(0);
 }
 
-void Application::setPointLightParameters(const Uniforms& uni)
+void Renderer::setPointLightParameters(const Uniforms& uni)
 {
     // point light
     const std::vector<PointLight>& point_lights = active_scene->point_lights;
@@ -1044,7 +1050,7 @@ void Application::setPointLightParameters(const Uniforms& uni)
     }
 }
 
-void Application::setDirectionalLightParameters(const Uniforms& uni)
+void Renderer::setDirectionalLightParameters(const Uniforms& uni)
 {
     const std::vector<DirectionalLight>& directional_lights = active_scene->directional_lights;
     if (directional_lights.empty())
@@ -1058,7 +1064,7 @@ void Application::setDirectionalLightParameters(const Uniforms& uni)
     active_shader->setFloat("directional_light.brightness", directional_lights[0].brightness);
 }
 
-void Application::setSpotLightParameters(const Uniforms& uni)
+void Renderer::setSpotLightParameters(const Uniforms& uni)
 {
     const std::vector<SpotLight>& spot_lights = active_scene->spot_lights;
     if (spot_lights.empty())
@@ -1078,7 +1084,7 @@ void Application::setSpotLightParameters(const Uniforms& uni)
     active_shader->setFloat("spot_light.brightness", spot_lights[0].brightness);
 }
 
-void Application::drawScene(Uniforms& uni)
+void Renderer::drawScene(Uniforms& uni)
 {
     active_scene->scene_state.stats_vrts = 0;
     active_scene->scene_state.stats_tris = 0;
@@ -1237,7 +1243,7 @@ void Application::drawScene(Uniforms& uni)
     }
 }
 
-void Application::createSSAOSampleKernel() {
+void Renderer::createSSAOSampleKernel() {
     // generates random floats between 0.0 and 1.0
     std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);  
     
@@ -1265,7 +1271,7 @@ void Application::createSSAOSampleKernel() {
     }
 }
 
-void Application::createSSAONoiseTexture() {
+void Renderer::createSSAONoiseTexture() {
     // generates random floats between 0.0 and 1.0
     std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
     std::default_random_engine              generator;
@@ -1288,7 +1294,7 @@ void Application::createSSAONoiseTexture() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-void Application::drawHelper_lightPlaceholders(Uniforms& uni)
+void Renderer::drawHelper_lightPlaceholders(Uniforms& uni)
 {
     // draw light placeholders
     // --------------------------------------------------------------------------
@@ -1338,7 +1344,7 @@ void Application::drawHelper_lightPlaceholders(Uniforms& uni)
     }
 }
 
-void Application::drawHelper_axes(Uniforms& uni)
+void Renderer::drawHelper_axes(Uniforms& uni)
 {
     // ----- draw 0: draw axes
     // -------------------------------------------------------------------------------------
@@ -1354,7 +1360,7 @@ void Application::drawHelper_axes(Uniforms& uni)
     }
 }
 
-void Application::drawShadowCubemap()
+void Renderer::drawShadowCubemap()
 {
     float near = 0.1f, far = 20.1f;
 
@@ -1413,7 +1419,7 @@ void Application::drawShadowCubemap()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Application::drawShadowMap()
+void Renderer::drawShadowMap()
 {
     float near_plane = 0.1f, far_plane = 100.0f;
     float dim              = dimension;
@@ -1479,7 +1485,7 @@ void Application::drawShadowMap()
 }
 
 
-void Application::drawDeferredLightingPass()
+void Renderer::drawDeferredLightingPass()
 {
     // set shader
     setActiveShader("deferred-lighting-pass");
@@ -1524,7 +1530,7 @@ void Application::drawDeferredLightingPass()
     // RenderQuad();
 }
 
-void Application::drawSSAOLightingPass(const Uniforms& uni)
+void Renderer::drawSSAOLightingPass(const Uniforms& uni)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -1560,7 +1566,7 @@ void Application::drawSSAOLightingPass(const Uniforms& uni)
     drawQuad();
 }
 
-void Application::drawSSAOPass(const Uniforms& uni)
+void Renderer::drawSSAOPass(const Uniforms& uni)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -1589,7 +1595,7 @@ void Application::drawSSAOPass(const Uniforms& uni)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Application::ppSSAOBlur() 
+void Renderer::ppSSAOBlur() 
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao_blur);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -1606,7 +1612,7 @@ void Application::ppSSAOBlur()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Application::drawQuad()
+void Renderer::drawQuad()
 {
     glBindVertexArray(named_arrays.at("quad"));
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -1614,13 +1620,39 @@ void Application::drawQuad()
 }
 
 
-void Application::setActiveShader(const std::string& name)
+void Renderer::setActiveShader(const std::string& name)
 {
     this->active_shader = shaders.at(name);
     (*active_shader).use();
 }
 
-void Application::drawBackbuffer(int display_w, int display_h)
+void Renderer::setRenderViewFBO(const RenderViewMode& flag) 
+{
+    switch (flag)
+    {
+        case RenderViewMode::ILLUMINATION:
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_msaa);
+            break;
+        case RenderViewMode::COLOR:
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, g_color_specular);
+            break;
+        case RenderViewMode::NORMAL:
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, g_normal);
+            break;
+        case RenderViewMode::SSAO_RAW:
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_ssao);
+            break;
+        case RenderViewMode::SSAO_BLUR:
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_ssao_blur);
+            break;
+        default:
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_msaa);
+            break;
+    }
+}
+
+
+void Renderer::drawBackbuffer(int display_w, int display_h)
 {
     // 3.4. framebuffer
     // --------------------------------------------------------------------------------------
@@ -1629,7 +1661,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
     // ---------------------- extract bloom bright color end
 
     // intermediate buffer to attach bloom
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_msaa);
+    setRenderViewFBO(renderview_mode);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_illumination_hdr);
 
     // Resolve the multisampled color buffer into tex_hdr_color[0] (first render target of HDR)
@@ -1757,7 +1789,7 @@ void Application::drawBackbuffer(int display_w, int display_h)
     }
 }
 
-void Application::drawSceneNode_primitive_shadows_dl(const Mat4& model_mat)
+void Renderer::drawSceneNode_primitive_shadows_dl(const Mat4& model_mat)
 {
     const int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
     (*active_shader).use();
@@ -1794,7 +1826,7 @@ void Application::drawSceneNode_primitive_shadows_dl(const Mat4& model_mat)
     }
 }
 
-void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
+void Renderer::drawSceneNode_primitive_shadows_pl(const float far_plane)
 {
     const int element_count = static_cast<int>(active_scene->predefined_scene_elements.size());
     (*active_shader).use();
@@ -1839,7 +1871,7 @@ void Application::drawSceneNode_primitive_shadows_pl(const float far_plane)
     }
 }
 
-void Application::setUniforms(const Uniforms& uni)
+void Renderer::setUniforms(const Uniforms& uni)
 {
     // draw scene objects
     // --------------------------------------------------------------------------
@@ -1879,7 +1911,7 @@ void Application::setUniforms(const Uniforms& uni)
     active_shader->setFloat("material.shininess", active_scene->scene_state.shininess);
 }
 
-void Application::drawSceneNodes_primitive(Uniforms& uni)
+void Renderer::drawSceneNodes_primitive(Uniforms& uni)
 {
     // draw scene objects
     // --------------------------------------------------------------------------
@@ -2076,7 +2108,7 @@ void Application::drawSceneNodes_primitive(Uniforms& uni)
     }
 }
 
-void Application::drawSceneNodes_models(Uniforms& uni)
+void Renderer::drawSceneNodes_models(Uniforms& uni)
 {
     // ---- draw 2: models
     // -------------------------------------------------------------------------------------
@@ -2292,7 +2324,7 @@ void Application::drawSceneNodes_models(Uniforms& uni)
     }
 }
 
-void Application::drawScene_skybox(Uniforms& uni)
+void Renderer::drawScene_skybox(Uniforms& uni)
 {
     // 3.5 skybox
     // --------------------------------------------------------------------------------------
@@ -2325,7 +2357,7 @@ void Application::drawScene_skybox(Uniforms& uni)
     }
 }
 
-void Application::setPresetMaterial(const Material& material)
+void Renderer::setPresetMaterial(const Material& material)
 {
     active_shader->setVec3("material.specular", material.specular);
     active_shader->setVec3("material.diffuse", material.diffuse);
@@ -2336,14 +2368,14 @@ void Application::setPresetMaterial(const Material& material)
     // active_shader->setFloat("material.shininess", 32.0f);
 }
 
-void Application::setMaterial(const Material& material)
+void Renderer::setMaterial(const Material& material)
 {
     active_shader->setVec3("material.specular", material.specular);
     active_shader->setInt("material.diffuse_map", 0);
     active_shader->setFloat("material.shininess", material.shininess);
 }
 
-void Application::updateScene()
+void Renderer::updateScene()
 {
     SceneState& scene_state     = active_scene->scene_state;
     scene_state.time            = (float)glfwGetTime();
@@ -2355,7 +2387,7 @@ void Application::updateScene()
     active_scene->update();
 }
 
-void Application::resetCamera()
+void Renderer::resetCamera()
 {
     Camera& camera = active_scene->cameras[0];
     // camera.position = Vec3(0.0f, 0.0f, 5.0f);
@@ -2364,10 +2396,10 @@ void Application::resetCamera()
     camera.lookAtTarget(k_camera_target_point);
 }
 
-void Application::setPathType(std::string in_path_mode)
+void Renderer::setPathType(std::string in_path_mode)
 {
-    if (in_path_mode == "full") path_mode = Application::PathMode::FULL;
-    if (path_mode == Application::PathMode::FULL)
+    if (in_path_mode == "full") path_mode = Renderer::PathMode::FULL;
+    if (path_mode == Renderer::PathMode::FULL)
     {
         data_dir_path   = DATA_DIR_FULL;
         config_dir_path = CONFIG_DIR_FULL;

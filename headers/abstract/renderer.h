@@ -11,6 +11,7 @@
 #include "../abstract/queue.h"
 #include "../events/input_observer.h"
 #include "../data/data.h"
+#include "../data/shader_data.h"
 #include <unordered_map>
 #include <string>
 #include <memory>
@@ -31,7 +32,7 @@ using uint = unsigned int;
 
 //              abstract
 // ------------------------------------------------------------------------------------------------
-class Application : public InputListener
+class Renderer : public InputListener
 {
 public:
     using ConfigData = std::unordered_map<std::string, std::unordered_map<std::string, std::string>>;
@@ -50,14 +51,17 @@ public:
         ILLUMINATION,
         COLOR,
         DEPTH,
-        POSITION,
         NORMAL,
+        POSITION,
         SPECULAR,
         SSAO_RAW,
         SSAO_BLUR
     };
 
-    PathMode path_mode              = Application::PathMode::RELATIVE;
+    PathMode path_mode              = Renderer::PathMode::RELATIVE;
+    RenderViewMode renderview_mode  = Renderer::RenderViewMode::ILLUMINATION;
+    void           setRenderViewFBO(const RenderViewMode& flag);
+    //void           setRenderView(std::string& flag);
 
     std::string data_dir_path       = "";
     std::string config_dir_path     = "";
@@ -83,7 +87,7 @@ public:
     // handlers
     InputSpeaker input_speaker;
 
-    Application() : window(nullptr), active_shader(nullptr), active_scene(nullptr) 
+    Renderer() : window(nullptr), active_shader(nullptr), active_scene(nullptr) 
         ,vertex_arrays{ 0 }, element_buffers{ 0 }
     {}
     // - ask memory from operating system

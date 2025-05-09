@@ -132,6 +132,11 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - add enum for shaders
 
+- [0.96.3] wip shader resource descriptor
+    - 09-May-2025 
+        - renamed application to renderer
+        - added refactoring tools script
+    - 03-Apr-2025 add: primitive render view mode on ui
 
 - [0.96.2] fixed scenes; ui enhancements
     - 27-Mar-2025
