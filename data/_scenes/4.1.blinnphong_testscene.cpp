@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 #include "../../headers/utils/utilities.h"
 
 // ----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ void BlinnPhongTestScene::loadData()
 
 	// ----- define predefined elements
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
-	predefined_scene_elements[0].shader_name		= "blinnphong";
+	predefined_scene_elements[0].shader_id		= ShaderID::BlinnPhong;
 	//predefined_scene_elements[0].shader_name		= "blinnphong2";
 
 	//predefined_scene_elements[0].texture_name		= "out_planks023b";
@@ -75,8 +75,8 @@ void BlinnPhongTestScene::update() {
 	// change shaderes
 	// --------------------------------------------------------------------------------------
 	static_cast<int>(fmod(time, 2.0f)) == 0 ?
-		predefined_scene_elements[0].shader_name = "blinnphong" :
-		predefined_scene_elements[0].shader_name = "blinnphong2";
+		predefined_scene_elements[0].shader_id = ShaderID::BlinnPhong :
+		predefined_scene_elements[0].shader_id = ShaderID::BlinnPhong2;
 
 }
 

@@ -1,10 +1,10 @@
 // ------------------------------------------------------------------------------------------------
 //				Libraries
 // ------------------------------------------------------------------------------------------------
-#include "../headers/abstract/renderer.h"
-#include "../headers/core/openGL.h"
-#include "../headers/test/basic.h"
-#include "../headers/utils/utilities.h"
+#include "renderer.h"
+#include "openGL.h"
+#include "basic.h"
+#include "utilities.h"
 #include <iostream>
 #include <unordered_map>
 

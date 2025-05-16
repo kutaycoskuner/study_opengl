@@ -2,16 +2,19 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include <iostream>
 
-#include "../../headers/abstract/renderer.h"
-#include "../../headers/data/data.h"
 #include "../../headers/utils/utilities.h"
+#include "path_data.h"
 
+#include <iostream>
+#include <unordered_set>
+
+// ----------------------------------------------------------------------------
 //				forward declarations
 // ----------------------------------------------------------------------------
 struct ShaderData;
 
+// ----------------------------------------------------------------------------
 //				abstract
 // ----------------------------------------------------------------------------
 
@@ -67,7 +70,6 @@ enum class ShaderID
     SSAOBlurPass,
     SSAOLightingPass
     ,
-
     NumOfShaderIDs
 };
 

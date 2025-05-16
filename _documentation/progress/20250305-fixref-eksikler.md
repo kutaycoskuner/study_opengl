@@ -38,7 +38,8 @@
                 - [x] shaderpath regex editing
                 - \n\s{1,}\. -> new line one or more space characters. and . at the end
                 - added refactoring
-            - [wip] implement new shader shader struct to logic -> select by enum -> send options to ui
+            - [x] implement new shader shader struct to logic -> select by enum -> send options to ui
+                - [x] split data to prevent circular dependency
 
 
         - created bools for effects plshadows, dlshadows, slshadows, ssao 

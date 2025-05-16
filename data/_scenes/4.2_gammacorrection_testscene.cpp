@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 #include "../../headers/utils/utilities.h"
 
 // ----------------------------------------------------------------------------
@@ -42,8 +42,8 @@ void GammaCorrectionTestScene::loadData()
 
 	// ----- define predefined elements
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::ground_platform);
-	predefined_scene_elements[0].shader_name = "blinnphong";
-	predefined_scene_elements[0].shader_name = "gamma";
+        predefined_scene_elements[0].shader_id   = ShaderID::BlinnPhong;
+        predefined_scene_elements[0].shader_id = ShaderID::Gamma;
 
 	predefined_scene_elements[0].texture_name		= "out_pavingstones080_2k";
 	//predefined_scene_elements[0].transform.scale	= Vec3(40.0f, 0.2f, 40.0f);

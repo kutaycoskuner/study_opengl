@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 
 // ----------------------------------------------------------------------------
 //				forward declarations
@@ -99,7 +99,7 @@ void HDRTestScene::loadData()
 
 	// models
 	// ----------------------------------------------------------------
-	scene_state.model_shader_name = "hdr";
+        scene_state.model_shader_id = ShaderID::HDR;
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
 		"yurt/scenes/sponza_crytek/gltf/Sponza.gltf"

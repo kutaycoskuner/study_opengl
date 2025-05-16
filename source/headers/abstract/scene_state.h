@@ -5,7 +5,8 @@
 #include "../abstract/light.h"
 #include "../abstract/model.h"
 #include "../abstract/transform.h"
-#include "../data/data.h"
+#include "predefined_objects.h"
+
 #include <vector>
 
 
@@ -40,7 +41,7 @@ struct SceneState
     std::vector<Transform> transforms;
     // techniques
     std::vector<ElementBools> model_element_bools;
-    std::string model_shader_name = "multiplelights";
+    ShaderID    model_shader_id   = ShaderID::MultipleLights;
 
     // bools
     bool toggle_ui = false;

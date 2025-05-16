@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 
 // ----------------------------------------------------------------------------
 //				forward declarations
@@ -58,7 +58,7 @@ void ShadowsTestScene::loadData()
 			Vec3(50.0f, 0.2f, 50.0f)
 	};
 
-	predefined_scene_elements[0].shader_name = "light-shadow";
+	predefined_scene_elements[0].shader_id = ShaderID::LightShadow;
 
 	predefined_scene_elements[0].tiling_factor = 4.0f;
 
@@ -68,7 +68,7 @@ void ShadowsTestScene::loadData()
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
 	};
-	predefined_scene_elements[1].shader_name = "light-shadow";
+        predefined_scene_elements[1].shader_id = ShaderID::LightShadow;
 
 	predefined_scene_elements[2].transform = {
 		Vec3(3.0f, 2.0f, 3.0f),
@@ -77,7 +77,7 @@ void ShadowsTestScene::loadData()
 		//Vec3(0.0f, 0.0f, 0.0f),
 		Vec3(1.5f, 1.5f, 1.5f)
 	};
-	predefined_scene_elements[2].shader_name = "light-shadow";
+        predefined_scene_elements[1].shader_id = ShaderID::LightShadow;
 
 
 	predefined_scene_elements[3].transform = {
@@ -85,7 +85,7 @@ void ShadowsTestScene::loadData()
 	Vec3(0.0f, -28.0f, 0.0f),
 	Vec3(1.5f, 1.5f, 1.5f)
 	};
-	predefined_scene_elements[3].shader_name = "light-shadow";
+        predefined_scene_elements[1].shader_id = ShaderID::LightShadow;
 
 	model_paths = {
 		//"models/testobject0_frustum/testobject.obj",

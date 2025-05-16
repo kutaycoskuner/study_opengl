@@ -130,7 +130,14 @@
     - refactoring naming convention
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
-    - add enum for shaders
+    - geometry scene broken
+
+- [0.96.4] wip refactor shader description structure
+    - 16-May-2025
+        - moved headers under source
+        - refactor for new shader description system
+        - split data headers
+        - glob cmake on data headers
 
 - [0.96.3] wip shader resource descriptor
     - 09-May-2025 

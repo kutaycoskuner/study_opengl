@@ -2,8 +2,8 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
-#include "../../headers/utils/utilities.h"
+#include "../../source/headers/data/scene_data.h"
+#include "../../source/headers/utils/utilities.h"
 
 // ----------------------------------------------------------------------------
 // ----- forward declarations

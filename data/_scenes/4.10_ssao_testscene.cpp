@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 
 // ----------------------------------------------------------------------------
 //				forward declarations
@@ -128,7 +128,7 @@ void SSAOTestScene::loadData()
 
 	// models
 	// ----------------------------------------------------------------
-	scene_state.model_shader_name = "hdr";
+        scene_state.model_shader_id = ShaderID::HDR;
 	model_paths = {
 		// "models/out_sponza/glTF/Sponza.gltf"
 		//std::string("/yurt/scenes/sponza_crytek/gltf/sponza.gltf"),
@@ -170,7 +170,7 @@ void SSAOTestScene::loadData()
 
 	//if (scene_nodes.size() > 0)
 	//	scene_nodes[0].transform.scale = Vec3(0.01f, 0.01f, 0.01f);
-        scene_state.model_shader_name = "hdr";
+        scene_state.model_shader_id = ShaderID::HDR;
 
 }
 

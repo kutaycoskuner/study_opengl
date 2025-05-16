@@ -1,7 +1,9 @@
 // libraries
 // ---------------------------------------------------------------------------------------
-#include "data.h"     
-// 
+#include "predefined_objects.h"     
+#include "vertex_data.h"     
+
+
 
 //std::vector<Predef3DNode> PredefNameMaps::predef3d_namemap = {
 //	//{"frame",	VertexData::quad_vrts__pos_tex,		2, std::vector<unsigned int>(2, 2)}

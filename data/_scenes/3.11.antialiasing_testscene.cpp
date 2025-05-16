@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 #include "../../headers/utils/utilities.h"
 #include <cmath>
 #include <ctime>
@@ -21,7 +21,7 @@ void AntiAliasingTestScene::loadData()
 	scene_state.emission_factor = 10.0f;
 	scene_state.shininess = 32.0f;
 	scene_state.vertex_divider = 9.0f;
-	scene_state.model_shader_name = "diffuse";
+	scene_state.model_shader_id = ShaderID::Diffuse;
 	scene_state.display_skybox = false;
 	scene_state.display_normals = false;
 	scene_state.display_axes = false;
@@ -67,7 +67,7 @@ void AntiAliasingTestScene::loadData()
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane);
 	predefined_scene_elements[1].transform.position = Vec3(0.8f, 0.0f, 0.0f);
 	predefined_scene_elements[1].transform.rotation = Vec3(0.0f, -25.0f, 0.0f);
-	predefined_scene_elements[1].shader_name = "pink";
+	predefined_scene_elements[1].shader_id = ShaderID::Pink;
 
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube1);
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube2);

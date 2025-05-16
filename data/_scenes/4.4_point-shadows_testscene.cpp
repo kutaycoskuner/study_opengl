@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 
 // ----------------------------------------------------------------------------
 //				forward declarations
@@ -69,7 +69,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(90.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, 0.0f, -5.0f);
 	predefined_scene_elements.back().texture_name		= "out_planks023a";
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id              = ShaderID::PLightShadow;
 	//predefined_scene_elements.back().shader_name = "multiplelights";
 
 	// bottom
@@ -78,7 +78,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, -5.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+    predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 
 	// top
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
@@ -86,7 +86,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(180.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().transform.position = Vec3(0.0f, 5.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 
 	// left
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
@@ -94,7 +94,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, -90.0f);
 	predefined_scene_elements.back().transform.position = Vec3(-9.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 
 	// right
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::plane01);
@@ -102,7 +102,7 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 0.0f, 90.0f);
 	predefined_scene_elements.back().transform.position = Vec3(9.0f, 0.0f, 0.0f);
 	predefined_scene_elements.back().texture_name = "out_planks023a";
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 
 
 	// ----------------------------------------------------------------
@@ -111,21 +111,21 @@ void PointShadowsTestScene::loadData()
 	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
 	predefined_scene_elements.back().transform.rotation = Vec3(15.0f, 21.0f, 13.0f);
 	predefined_scene_elements.back().transform.position = Vec3(-3.0f, 1.0f, -1.5f);
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 
 	// cube right
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 36.0f, 45.0f);
 	predefined_scene_elements.back().transform.position = Vec3(2.4f, 2.0f, -1.2f);
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 
 	// cube bottom
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements.back().transform.scale = Vec3(1.5f, 1.5f, 1.5f);
 	predefined_scene_elements.back().transform.rotation = Vec3(0.0f, 25.0f, 42.0f);
 	predefined_scene_elements.back().transform.position = Vec3(2.0f, -3.0f, 2.0f);
-	predefined_scene_elements.back().shader_name = "plight-shadow";
+        predefined_scene_elements.back().shader_id          = ShaderID::PLightShadow;
 	// ----------------------------------------------------------------
 
 

@@ -22,10 +22,11 @@
 #include <string>
 #include <unordered_map>
 
-#include "../../headers/data/scenes.h"
-#include "basic.h"  // project start basic test
+#include "../../headers/data/shader_data.h"
+
+#include "../../data/_paths/shader_paths.cpp"
+
 #include "camera.h"
-#include "data.h"    // data headers ex. model vertices
 #include "events.h"  // window, mouse-, keyboard input events
 #include "material.h"
 #include "model.h"
@@ -355,22 +356,23 @@ bool Renderer::load(const ConfigData& config)
     // 3.8 generate uniform buffer object matrices
     // ----------------------------------------------------------------------------------------------
     // first. We get the relevant block indices
-    std::vector<std::string> uniform_buffer_array;
-    uniform_buffer_array.push_back("advglsl-red");
-    uniform_buffer_array.push_back("advglsl-green");
-    uniform_buffer_array.push_back("advglsl-blue");
-    uniform_buffer_array.push_back("advglsl-yellow");
+    std::array<ShaderID, 4> shader_id_array = {
+        ShaderID::AdvGLSLRed,
+        ShaderID::AdvGLSLGreen, 
+        ShaderID::AdvGLSLBlue,
+        ShaderID::AdvGLSLYellow
+    };
 
-    for (int ii = 0; ii < uniform_buffer_array.size(); ii++)
+    for (int ii = 0; ii < shader_id_array.size(); ii++)
     {
-        std::string shaderName = uniform_buffer_array[ii];  // Replace this with the actual shader name
+        ShaderID shader_identifier = shader_id_array[ii];  // Replace this with the actual shader name
 
-        auto shaderIter = shaders.find(shaderName);
-        if (shaderIter != shaders.end())
+        auto shader_iter = shaders.find(shader_identifier);
+        if (shader_iter != shaders.end())
         {
             // The shader with the given name exists in the map
             // Access the id of the shader through the shared pointer
-            GLuint       shaderId             = shaderIter->second->ID;
+            GLuint       shaderId             = shader_iter->second->ID;
             unsigned int uniform_block_index1 = glGetUniformBlockIndex(shaderId, "Matrices");
             glUniformBlockBinding(shaderId, uniform_block_index1, 0);
 
@@ -418,7 +420,8 @@ void Renderer::loadSceneData(const ConfigData& config)
         scene_number = active_test_scene;
         save_frame   = true;
     }
-    // select scene test scene
+    //              select scene test scene
+    // -----------------------------------------------------------------------------------
     if (scene_number == 0)
         active_scene = new TestScene;
     else if (scene_number == 1)
@@ -464,11 +467,11 @@ void Renderer::loadSceneData(const ConfigData& config)
     else if (scene_number == 21)
         active_scene = new SSAOTestScene;
 
-    // ----- set cubemap
+    //              set cubemap
     // --------------------------------------------------------------------------------------
     cubemap_texture = img_utils::loadCubemap(data_dir_path, PathAfterDirectory::cubemap_texture_paths["nebula-blue"]);
 
-    // ----- camera
+    //              camera
     // --------------------------------------------------------------------------------------
     active_scene->cameras.push_back(Camera());
     Camera& cam = active_scene->cameras.back();
@@ -492,7 +495,7 @@ void Renderer::loadSceneData(const ConfigData& config)
     Transform transform;
     scene_state.transforms.push_back(transform);
 
-    // ----- models
+    //                  models
     // --------------------------------------------------------------------------------------
     std::vector<const char*> model_paths = loadModelPaths();
 
@@ -502,7 +505,7 @@ void Renderer::loadSceneData(const ConfigData& config)
         active_scene->models.push_back(Model(ourModel));
     }
 
-    //		ui bindings
+    //		            ui bindings
     // --------------------------------------------------------------------------------------
     if (active_scene->predefined_scene_elements.size() > 0)
         ui_vector = active_scene->predefined_scene_elements.back().transform.position;
@@ -552,27 +555,27 @@ void Renderer::loadTextures()
 void Renderer::loadShaders()
 {
     // Iterate over the shader paths map
-    for (const auto& [shader_name, path_struct] : PathAfterDirectory::shader_paths)
+    for (const auto& [shader_id, shader_resource_desc] : shader_map)
     {
-        const std::string rel_vrtx = std::string(path_struct.vrtx);
-        const std::string rel_frag = std::string(path_struct.frag);
-        const std::string rel_geom = std::string(path_struct.geom);
+        const std::string rel_vrtx = std::string(shader_resource_desc.paths.vrtx);
+        const std::string rel_frag = std::string(shader_resource_desc.paths.frag);
+        const std::string rel_geom = std::string(shader_resource_desc.paths.geom);
 
         // Convert std::string_view to std::string within the function calls
         const std::string vrtx = std::string(file_utils::getFileNameWithoutExtension(rel_vrtx));
         const std::string frag = std::string(file_utils::getFileNameWithoutExtension(rel_frag));
         const std::string geom =
-            path_struct.geom.empty() ? "" : std::string(file_utils::getFileNameWithoutExtension(rel_geom));
+            shader_resource_desc.paths.geom.empty() ? "" : std::string(file_utils::getFileNameWithoutExtension(rel_geom));
 
         // Create the ShaderCompileDesc object
         ShaderCompileDesc shader_compile_description;
-        shader_compile_description.name      = shader_name;
-        shader_compile_description.vrtx_path = shader_dir_path + rel_vrtx;
-        shader_compile_description.frag_path = shader_dir_path + rel_frag;
-        shader_compile_description.geom_path = geom.empty() ? "" : shader_dir_path + rel_geom;
+        shader_compile_description.shader_id        = shader_id;
+        shader_compile_description.vrtx_path        = shader_dir_path + rel_vrtx;
+        shader_compile_description.frag_path        = shader_dir_path + rel_frag;
+        shader_compile_description.geom_path        = geom.empty() ? "" : shader_dir_path + rel_geom;
 
         // Store shader in the map using shader_name as the key
-        shaders[shader_name] = std::make_shared<Shader>(shader_compile_description);
+        shaders[shader_id] = std::make_shared<Shader>(shader_compile_description);
 
         // Optional: Set uniform block for matrices
         // unsigned int uniform_block_index = glGetUniformBlockIndex(shaders.at(shader_name)->ID, "Matrices");
@@ -1211,7 +1214,7 @@ void Renderer::drawScene(Uniforms& uni)
 
         bool _use_ssao = active_scene->scene_state.use_ssao;
 
-        _use_ssao ? setActiveShader("ssao-geometry-pass") : setActiveShader("deferred-geometry-pass");
+        _use_ssao ? setActiveShader(ShaderID::SSAOGeometryPass) : setActiveShader(ShaderID::DeferredGeometryPass);
 
         drawSceneNodes_primitive(uni);
         drawSceneNodes_models(uni);
@@ -1301,7 +1304,7 @@ void Renderer::drawHelper_lightPlaceholders(Uniforms& uni)
     std::vector<PointLight>& point_lights = active_scene->point_lights;
     for (int ii = 0; ii < point_lights.size(); ii++)
     {
-        this->active_shader = shaders.at("3d");
+        this->active_shader = shaders.at(ShaderID::Shader3D);
         (*active_shader).use();
 
         // assign uniforms
@@ -1324,7 +1327,7 @@ void Renderer::drawHelper_lightPlaceholders(Uniforms& uni)
     std::vector<SpotLight>& spot_lights = active_scene->spot_lights;
     for (int ii = 0; ii < spot_lights.size(); ii++)
     {
-        this->active_shader = shaders.at("3d");
+        this->active_shader = shaders.at(ShaderID::Shader3D);
         (*active_shader).use();
 
         // assign uniforms
@@ -1350,7 +1353,7 @@ void Renderer::drawHelper_axes(Uniforms& uni)
     // -------------------------------------------------------------------------------------
     if (active_scene->scene_state.display_axes)
     {
-        this->active_shader = shaders.at("axes");
+        this->active_shader = shaders.at(ShaderID::Axes);
         (*active_shader).use();
         active_shader->setMat4("world_mat", mat_utils::identity4());
         active_shader->setMat4("view_mat", uni.upv.view_matrix);
@@ -1394,7 +1397,7 @@ void Renderer::drawShadowCubemap()
     mat_light_space_cubemaps[5] =
         shadow_proj * mat_utils::lookAtDirection(light_pos, Vec3(0.0, 0.0, +1.0), Vec3(0.0f, -1.0f, 0.0f));  // Up is -Y
 
-    this->active_shader = shaders.at("shadowmap-pl");
+    this->active_shader = shaders.at(ShaderID::ShadowMapPL);
 
     // Bind the framebuffer and set up for depth rendering
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_shadow_cube[0]);
@@ -1452,7 +1455,7 @@ void Renderer::drawShadowMap()
         this->mat_light_space[0] = light_space_matrix;
     }
 
-    this->active_shader = shaders.at("shadowmap");
+    this->active_shader = shaders.at(ShaderID::ShadowMap);
 
     // Bind the framebuffer and set up for depth rendering
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_shadow[0]);
@@ -1488,7 +1491,7 @@ void Renderer::drawShadowMap()
 void Renderer::drawDeferredLightingPass()
 {
     // set shader
-    setActiveShader("deferred-lighting-pass");
+    setActiveShader(ShaderID::DeferredLightingPass);
 
     // set buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1534,7 +1537,7 @@ void Renderer::drawSSAOLightingPass(const Uniforms& uni)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    setActiveShader("ssao-lighting-pass");
+    setActiveShader(ShaderID::SSAOLightingPass);
 
     // set buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1580,7 +1583,7 @@ void Renderer::drawSSAOPass(const Uniforms& uni)
     glBindTexture(GL_TEXTURE_2D, ssao_noise_texture);
     
     // set shader 
-    setActiveShader("ssao-draw-pass");
+    setActiveShader(ShaderID::SSAODrawPass);
 
 
     active_shader->setInt("g_position", 0);
@@ -1600,7 +1603,7 @@ void Renderer::ppSSAOBlur()
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao_blur);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    setActiveShader("ssao-blur-pass");
+    setActiveShader(ShaderID::SSAOBlurPass);
 
     
     glActiveTexture(GL_TEXTURE0);
@@ -1620,7 +1623,7 @@ void Renderer::drawQuad()
 }
 
 
-void Renderer::setActiveShader(const std::string& name)
+void Renderer::setActiveShader(const ShaderID& name)
 {
     this->active_shader = shaders.at(name);
     (*active_shader).use();
@@ -1677,7 +1680,7 @@ void Renderer::drawBackbuffer(int display_w, int display_h)
     glViewport(0, 0, display_width, display_height);
 
     // select shader
-    this->active_shader = shaders.at("bloom");
+    this->active_shader = shaders.at(ShaderID::Bloom);
     (*active_shader).use();
     // setActiveShader("bloom");
 
@@ -1707,7 +1710,7 @@ void Renderer::drawBackbuffer(int display_w, int display_h)
     // --------------------------------------------------
     if (active_scene->scene_state.use_bloom)
     {
-        this->active_shader = shaders.at("gaussian-blur");
+        this->active_shader = shaders.at(ShaderID::GaussianBlur);
         (*active_shader).use();
 
         for (unsigned int i = 0; i < amount; i++)
@@ -1754,7 +1757,7 @@ void Renderer::drawBackbuffer(int display_w, int display_h)
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    this->active_shader = shaders.at("framebuffer");
+    this->active_shader = shaders.at(ShaderID::Framebuffer);
     (*active_shader).use();
 
     glBindVertexArray(named_arrays.at("frame"));
@@ -1933,7 +1936,7 @@ void Renderer::drawSceneNodes_primitive(Uniforms& uni)
         {
             glDisable(GL_CULL_FACE);
         }
-        this->active_shader = shaders.at(active_scene->predefined_scene_elements[i].shader_name);
+        this->active_shader = shaders.at(active_scene->predefined_scene_elements[i].shader_id);
         // activate shader
         (*active_shader).use();
 
@@ -1974,7 +1977,7 @@ void Renderer::drawSceneNodes_primitive(Uniforms& uni)
         textures[texture_name].color != 0 ? glBindTexture(GL_TEXTURE_2D, textures[texture_name].color)
                                           : glBindTexture(GL_TEXTURE_2D, 0);
 
-        if (active_scene->predefined_scene_elements[i].shader_name == "cubemaplit")
+        if (active_scene->predefined_scene_elements[i].shader_id == ShaderID::CubemapLit)
         {
             active_shader->setInt("skybox", 0);
             glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
@@ -2055,7 +2058,7 @@ void Renderer::drawSceneNodes_primitive(Uniforms& uni)
         if (active_scene->predefined_scene_elements[i].element_bools.stencil_testing)
         {
             enableStencil();
-            this->active_shader = shaders.at("stenciltesting");
+            this->active_shader = shaders.at(ShaderID::StencilTesting);
             (*active_shader).use();
             // light uniforms
             const SceneState&  ss  = active_scene->scene_state;
@@ -2130,16 +2133,16 @@ void Renderer::drawSceneNodes_models(Uniforms& uni)
         bool _use_ssao = active_scene->scene_state.use_ssao;
         if (_use_ssao)
         {
-            active_scene->scene_state.model_shader_name = "ssao-geometry-pass";
+            active_scene->scene_state.model_shader_id = ShaderID::SSAOGeometryPass;
         }
         else
         {
             active_scene->scene_state.b_model_refraction
-                ? active_scene->scene_state.model_shader_name = "cubemaplit"
-                : active_scene->scene_state.model_shader_name = active_scene->scene_state.model_shader_name;
+                ? active_scene->scene_state.model_shader_id   = ShaderID::CubemapLit                
+                : active_scene->scene_state.model_shader_id = active_scene->scene_state.model_shader_id;
         }
 
-        this->active_shader = shaders.at(active_scene->scene_state.model_shader_name);
+        this->active_shader = shaders.at(active_scene->scene_state.model_shader_id);
         // activate shader
         (*active_shader).use();
         // light uniforms
@@ -2196,7 +2199,7 @@ void Renderer::drawSceneNodes_models(Uniforms& uni)
 
         if (active_scene->scene_state.display_normals)
         {
-            this->active_shader = shaders.at("normal");
+            this->active_shader = shaders.at(ShaderID::Normal);
             (*active_shader).use();
             active_shader->setMat4("projection_mat", upv.projection_matrix);
             active_shader->setMat4("view_mat", upv.view_matrix);
@@ -2207,7 +2210,7 @@ void Renderer::drawSceneNodes_models(Uniforms& uni)
         if (bools[i].stencil_testing)
         {
             enableStencil();
-            this->active_shader = shaders.at("stenciltesting02");
+            this->active_shader = shaders.at(ShaderID::StencilTesting02);
             (*active_shader).use();
             // light uniforms
             const SceneState&  ss  = active_scene->scene_state;
@@ -2238,8 +2241,7 @@ void Renderer::drawSceneNodes_models(Uniforms& uni)
 
         if (active_scene->scene_state.draw_instanced)
         {
-            std::string shader  = "instance02";
-            this->active_shader = shaders.at(shader);
+            this->active_shader = shaders.at(ShaderID::Instance02);
             (*active_shader).use();
             active_shader->setMat4("view_mat", upv.view_matrix);
             active_shader->setMat4("projection_mat", upv.projection_matrix);
@@ -2336,7 +2338,7 @@ void Renderer::drawScene_skybox(Uniforms& uni)
     {
         glDepthFunc(
             GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-        this->active_shader = shaders.at("cubemap");
+        this->active_shader = shaders.at(ShaderID::Cubemap);
         (*active_shader).use();
         glBindVertexArray(named_arrays.at("skybox"));
         upv.view_matrix       = cam.calcViewMatrix(world_up);

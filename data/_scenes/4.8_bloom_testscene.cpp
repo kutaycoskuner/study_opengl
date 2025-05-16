@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 
 // ----------------------------------------------------------------------------
 //				forward declarations
@@ -97,7 +97,7 @@ void BloomTestScene::loadData()
 
 	// models
 	// ----------------------------------------------------------------
-	scene_state.model_shader_name = "hdr";
+        scene_state.model_shader_id = ShaderID::HDR;
 	model_paths = {
 		// "models/out_sponza/glTF/Sponza.gltf"
 		//std::string("/yurt/scenes/outliner-testscene/gltf/outliner-testscene.gltf"),

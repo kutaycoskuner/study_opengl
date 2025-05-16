@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 #include "../../headers/utils/utilities.h"
 
 // ----------------------------------------------------------------------------
@@ -45,10 +45,10 @@ void AdvancedGLSLTestScene::loadData()
 	predefined_scene_elements.push_back(PrimitiveSceneNodes::single_cube);
 	predefined_scene_elements[3].transform.position = Vec3(-1.0f, -1.0f, 0.0f);
 
-	predefined_scene_elements[0].shader_name = "advglsl-red";
-	predefined_scene_elements[1].shader_name = "advglsl-green";
-	predefined_scene_elements[2].shader_name = "advglsl-blue";
-	predefined_scene_elements[3].shader_name = "advglsl-yellow";
+	predefined_scene_elements[0].shader_id = ShaderID::AdvGLSLRed;
+	predefined_scene_elements[1].shader_id = ShaderID::AdvGLSLGreen ;
+	predefined_scene_elements[2].shader_id = ShaderID::AdvGLSLBlue ;
+	predefined_scene_elements[3].shader_id = ShaderID::AdvGLSLYellow;
 	//predefined_scene_elements[0].shader_name = "cubemaplit";
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube1);
 	//predefined_scene_elements.push_back(PrimitiveSceneNodes::paircube2);

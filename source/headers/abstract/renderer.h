@@ -10,8 +10,10 @@
 #include "../abstract/camera.h"
 #include "../abstract/queue.h"
 #include "../events/input_observer.h"
-#include "../data/data.h"
 #include "../data/shader_data.h"
+#include "../data/scene_data.h"
+#include "../data/vertex_data.h"
+
 #include <unordered_map>
 #include <string>
 #include <memory>
@@ -155,7 +157,7 @@ private:
 
 
     // draw  sub / short / convention functions
-    void setActiveShader(const std::string& name);
+    void setActiveShader(const ShaderID& name);
 
     // draw scene
     void drawScene(Uniforms& uni);
@@ -289,7 +291,7 @@ private:
 
 
     std::shared_ptr<Shader> active_shader;
-    std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+    std::unordered_map<ShaderID, std::shared_ptr<Shader>> shaders;
     std::unordered_map<std::string, TextureSet> textures;
     
     // Scene scene;

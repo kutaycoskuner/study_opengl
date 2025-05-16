@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 #include "../../headers/utils/utilities.h"
 #include <cmath>
 #include <ctime>
@@ -23,7 +23,7 @@ void GeoShaderTestScene::loadData()
 	scene_state.vertex_divider = 9.0f;
 	//scene_state.b_model_refraction = true;
 	scene_state.display_skybox = true;
-	scene_state.model_shader_name = "explode";
+	scene_state.model_shader_id = ShaderID::Explode;
 	scene_state.display_normals = true;
 	scene_state.display_axes = true;
 

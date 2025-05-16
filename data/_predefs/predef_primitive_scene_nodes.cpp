@@ -1,6 +1,6 @@
 // ----- Libraries
 // ----------------------------------------------------------------------------
-#include "data.h"     
+#include "node_data.h"     
 
 // ----- Data
 // ----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::origin = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.0f, 1.0f, 1.0f)
 		}
-	,.shader_name = "axes"
+	,.shader_id = ShaderID::Axes
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false		// wireframe_mode
@@ -33,7 +33,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::points = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.0f, 1.0f, 1.0f)
 		}
-	,.shader_name = "geo"
+	,.shader_id = ShaderID::Geo
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -55,7 +55,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::big_cube = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(10.0f, 10.0f, 10.0f)
 		}
-	,.shader_name = "multiplelights"
+	,.shader_id = ShaderID::MultipleLights
 	,.texture_name = "test_2k",
 	.element_bools = ElementBools{
 		.wireframe_mode		= false,
@@ -79,8 +79,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::single_cube = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id     = ShaderID::MultipleLights
 	,.texture_name = "out_container"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -100,8 +100,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::cube_10_0 = {
 			Vec3(8.0f, 2.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id         = ShaderID::MultipleLights
 	,.texture_name = "test_2k"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -121,8 +121,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::cube_0_10 = {
 			Vec3(0.0f, 2.0f, 8.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id         = ShaderID::MultipleLights
 	,.texture_name = "test_2k"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -141,8 +141,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::paircube1 = {
 			Vec3(0.5f, 1.0f, 1.5f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.0f, 1.0f, 1.0f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id         = ShaderID::MultipleLights
 	,.texture_name = "grid_2k_white"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -161,8 +161,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::paircube2 = {
 			Vec3(0.5f, 1.0f, -1.5f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.0f, 1.0f, 1.0f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id         = ShaderID::MultipleLights
 	,.texture_name = "grid_2k_white"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -181,8 +181,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::box_10_0 = {
 			Vec3(8.0f, 2.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id         = ShaderID::MultipleLights
 	,.texture_name = "out_container"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -202,8 +202,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::box_0_10 = {
 			Vec3(0.0f, 2.0f, 8.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.5f, 1.5f, 1.5f)
-		}
-	,.shader_name = "multiplelights"
+		},
+    .shader_id         = ShaderID::MultipleLights
 	,.texture_name = "out_container"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -223,7 +223,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::plane01 = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.0f, 1.0f, 1.0f)
 		}
-	,.shader_name = "plight-shadow"
+	,.shader_id = ShaderID::PLightShadow
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false		// wireframe_mode
@@ -244,7 +244,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::plane = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(10.0f, 10.0f, 10.0f)
 		}
-	,.shader_name = "green"
+	,.shader_id = ShaderID::Green
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false		// wireframe_mode
@@ -265,7 +265,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::small_plane = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(1.0f, 1.0f, 1.0f)
 		}
-	,.shader_name = "instance"
+	,.shader_id = ShaderID::Instance
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -285,7 +285,7 @@ PrimitiveSceneNode PrimitiveSceneNodes::ground_platform = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(15.0f, 0.2f, 15.0f)
 		}
-	,.shader_name = "multiplelights"
+	,.shader_id = ShaderID::MultipleLights
 	,.texture_name = "linegrid_darkgray_2k"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -304,8 +304,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::axis_x = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(10.0f, 0.02f, 0.02f)
-		}
-	,.shader_name = "axis-x"
+		},
+    .shader_id         = ShaderID::AxisX
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -324,8 +324,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::axis_z = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.02f, 0.02f, 10.0f)
-		}
-	,.shader_name = "axis-z"
+		},
+    .shader_id         = ShaderID::AxisZ
 	,.texture_name = ""
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -344,8 +344,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::light_placeholder = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.05f, 0.05f, 0.05f)
-		}
-	,.shader_name = "3d"
+		},
+    .shader_id         = ShaderID::Shader3D
 	,.texture_name = "test_2k"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -364,8 +364,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::nobg_grass = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.5f, 0.5f, 0.5f)
-		}
-	,.shader_name = "blending"
+		},
+    .shader_id         = ShaderID::Blending
 	,.texture_name = "out_grass"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode
@@ -384,8 +384,8 @@ PrimitiveSceneNode PrimitiveSceneNodes::transparent_window = {
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.5f, 0.5f, 0.5f)
-		}
-	,.shader_name = "blending"
+		},
+    .shader_id         = ShaderID::Blending
 	,.texture_name = "out_blending_window_blue"
 	,.element_bools = ElementBools(
 					false,		// wireframe_mode

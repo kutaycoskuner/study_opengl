@@ -1,11 +1,12 @@
 #pragma once
-#ifndef S_SHADER
-#define S_SHADER
 // ------------------------------------------------------------------------------------------------
 //                  libraries
 // ------------------------------------------------------------------------------------------------
 #include "../abstract/matrix4.h"
 #include "../abstract/vector2.h"
+
+#include "../data/shader_data.h"
+
 
 #include <glad/glad.h>
 
@@ -15,6 +16,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <optional>
 
 // ------------------------------------------------------------------------------------------------
 //                  function declerations
@@ -28,7 +30,7 @@ struct ShaderCompileDesc
 {
     // Variables
     // -----------------------------------
-    std::string name;
+    std::optional<ShaderID> shader_id;
     std::string vrtx_path;
     std::string frag_path;
     std::string geom_path;
@@ -36,20 +38,25 @@ struct ShaderCompileDesc
     // Constructors
     // -----------------------------------    
     // Default constructor
-    ShaderCompileDesc()
-        : name(""), vrtx_path(""), frag_path(""), geom_path("") {}
+    ShaderCompileDesc() : shader_id(std::nullopt), vrtx_path(""), frag_path(""), geom_path("") {}
 
     // Parameterized constructor
-    ShaderCompileDesc(const std::string& name, const std::string& vrtx_path, const std::string& frag_path, const std::string& geom_path)
-        : name(name), vrtx_path(vrtx_path), frag_path(frag_path), geom_path(geom_path) {}
+    ShaderCompileDesc(const ShaderID& name, const std::string& vrtx_path, const std::string& frag_path, const std::string& geom_path)
+        : shader_id(name), vrtx_path(vrtx_path), frag_path(frag_path), geom_path(geom_path)
+    {
+    }
 
     // Copy constructor
     ShaderCompileDesc(const ShaderCompileDesc& other)
-        : name(other.name), vrtx_path(other.vrtx_path), frag_path(other.frag_path), geom_path(other.geom_path) {}
+        : shader_id(other.shader_id), vrtx_path(other.vrtx_path), frag_path(other.frag_path), geom_path(other.geom_path)
+    {
+    }
 
     // Move constructor
     ShaderCompileDesc(ShaderCompileDesc&& other) noexcept
-        : name(std::move(other.name)), vrtx_path(std::move(other.vrtx_path)), frag_path(std::move(other.frag_path)),
+        : shader_id(std::move(other.shader_id)),
+          vrtx_path(std::move(other.vrtx_path)),
+          frag_path(std::move(other.frag_path)),
         geom_path(std::move(other.geom_path)) {}
 
     // Destructor (default is sufficient)
@@ -249,5 +256,3 @@ private:
         }
     }
 };
-
-#endif

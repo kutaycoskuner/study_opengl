@@ -1,4 +1,6 @@
-#include "data.h" // data headers ex. model vertices
+#include "geometry.h" // data headers ex. model vertices
+
+#include <string>
 #include <iostream>
 
 std::string formatFloat(float value) {

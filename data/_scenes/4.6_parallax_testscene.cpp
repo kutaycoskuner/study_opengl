@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 //				libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
+#include "../../source/headers/data/scene_data.h"
 
 // ----------------------------------------------------------------------------
 //				forward declarations
@@ -68,7 +68,7 @@ void ParallaxTestScene::loadData()
 	element.transform.position  = Vec3(0.0f, 0.0f, -5.0f);
 	element.texture_name		= "out_wood";
 	element.texture_name		= "parallax-test";
-	element.shader_name			= "parallax";
+	element.shader_id			= ShaderID::Parallax;
 	element.element_bools.is_using_tan_space = true;
 
 
@@ -85,7 +85,7 @@ void ParallaxTestScene::loadData()
 
 	// models
 	// ----------------------------------------------------------------
-	scene_state.model_shader_name = "normal02";
+        scene_state.model_shader_id = ShaderID::Normal02;
 	model_paths = {
 		//"models/out_kokorecci_by_berkgedik/out_kokorecci_by_berk gedik.obj"
 	};

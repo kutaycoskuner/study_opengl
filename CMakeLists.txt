@@ -301,59 +301,61 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 #               Header Files
 # ----------------------------------------------------------------------------------------
 set(abstractHeaders
-    "${CMAKE_SOURCE_DIR}/headers/abstract/renderer.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/Camera.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/light.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/material.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/matrix4.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/mesh.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/model.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/queue.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/scene.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/scene_state.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/shader.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/transform.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/ui.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/uniforms.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/vector2.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/vector3.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/vector4.h"
-    "${CMAKE_SOURCE_DIR}/headers/abstract/window_state.h"
-    )
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/renderer.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/Camera.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/light.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/material.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/matrix4.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/mesh.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/model.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/queue.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/scene.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/scene_state.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/shader.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/transform.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/ui.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/uniforms.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/vector2.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/vector3.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/vector4.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract/window_state.h"
+)
     
-    set(coreHeaders
-    "${CMAKE_SOURCE_DIR}/headers/core/opengl.h"
-    "${CMAKE_SOURCE_DIR}/headers/core/ui.h"
-    )
+set(coreHeaders
+    "${CMAKE_SOURCE_DIR}/source/headers/core/opengl.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/core/ui.h"
+)
     
     set(dataHeaders
-    "${CMAKE_SOURCE_DIR}/headers/data/data.h"
-    "${CMAKE_SOURCE_DIR}/headers/data/scenes.h"
-    "${CMAKE_SOURCE_DIR}/headers/data/shader_data.h"
-)
+    "${CMAKE_SOURCE_DIR}/source/headers/data/data.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/data/scenes.h"
+    )
+    # pattern wise adding all files
+    file(GLOB dataHeaders "${CMAKE_SOURCE_DIR}/source/headers/data/*.h")
+
 
 set(eventsHeaders
-    "${CMAKE_SOURCE_DIR}/headers/events/events.h"
-    "${CMAKE_SOURCE_DIR}/headers/events/input_observer.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/events/events.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/events/input_observer.h"
 )
 
 set(mapsHeaders
-    "${CMAKE_SOURCE_DIR}/headers/maps/shaders.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/maps/shaders.h"
 )
 
 set(templatesHeaders
-    "${CMAKE_SOURCE_DIR}/headers/templates/header_template_1.0.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/templates/header_template_1.0.h"
 )
 
 set(testHeaders
-    "${CMAKE_SOURCE_DIR}/headers/test/basic.h"
-    "${CMAKE_SOURCE_DIR}/headers/test/integration_tests.h"
-    "${CMAKE_SOURCE_DIR}/headers/test/unit_tests.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/test/basic.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/test/integration_tests.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/test/unit_tests.h"
 )
 
 set(utilsHeaders
-    "${CMAKE_SOURCE_DIR}/headers/utils/utilities.h"
-    "${CMAKE_SOURCE_DIR}/headers/utils/light_yaml_parser.hpp"
+    "${CMAKE_SOURCE_DIR}/source/headers/utils/utilities.h"
+    "${CMAKE_SOURCE_DIR}/source/headers/utils/light_yaml_parser.hpp"
 )
 
 # ----------------------------------------------------------------------------------------
@@ -395,14 +397,14 @@ source_group(TREE ${shader_dir_full} PREFIX "shaders" FILES ${shaderFiles})
 # ----------------------------------------------------------------------------------------
 #               Organize Header Files into Folders
 # ----------------------------------------------------------------------------------------
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/abstract PREFIX "headers/abstract" FILES ${abstractHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/core PREFIX "headers/core" FILES ${coreHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/data PREFIX "headers/data" FILES ${dataHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/events PREFIX "headers/events" FILES ${eventsHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/maps PREFIX "headers/maps" FILES ${mapsHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/templates PREFIX "headers/templates" FILES ${templatesHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/test PREFIX "headers/test" FILES ${testHeaders})
-source_group(TREE ${CMAKE_SOURCE_DIR}/headers/utils PREFIX "headers/utils" FILES ${utilsHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/abstract PREFIX "source/headers/abstract" FILES ${abstractHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/core PREFIX "source/headers/core" FILES ${coreHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/data PREFIX "source/headers/data" FILES ${dataHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/events PREFIX "source/headers/events" FILES ${eventsHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/maps PREFIX "source/headers/maps" FILES ${mapsHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/templates PREFIX "source/headers/templates" FILES ${templatesHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/test PREFIX "source/headers/test" FILES ${testHeaders})
+source_group(TREE ${CMAKE_SOURCE_DIR}/source/headers/utils PREFIX "source/headers/utils" FILES ${utilsHeaders})
 
 
 # ----------------------------------------------------------------------------------------
@@ -445,14 +447,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 # Add the headers directory so the compiler can find header files
 include_directories(
     # "${CMAKE_SOURCE_DIR}/headers"
-    "${CMAKE_SOURCE_DIR}/headers/abstract"
-    "${CMAKE_SOURCE_DIR}/headers/core"
-    "${CMAKE_SOURCE_DIR}/headers/data"
-    "${CMAKE_SOURCE_DIR}/headers/events"
-    "${CMAKE_SOURCE_DIR}/headers/maps"
-    "${CMAKE_SOURCE_DIR}/headers/templates"
-    "${CMAKE_SOURCE_DIR}/headers/test"
-    "${CMAKE_SOURCE_DIR}/headers/utils"
+    "${CMAKE_SOURCE_DIR}/source/headers/abstract"
+    "${CMAKE_SOURCE_DIR}/source/headers/core"
+    "${CMAKE_SOURCE_DIR}/source/headers/data"
+    "${CMAKE_SOURCE_DIR}/source/headers/events"
+    "${CMAKE_SOURCE_DIR}/source/headers/maps"
+    "${CMAKE_SOURCE_DIR}/source/headers/templates"
+    "${CMAKE_SOURCE_DIR}/source/headers/test"
+    "${CMAKE_SOURCE_DIR}/source/headers/utils"
 )
 
 # ----------------------- glad

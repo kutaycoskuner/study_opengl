@@ -2,8 +2,8 @@
 // ----------------------------------------------------------------------------
 // ----- libraries
 // ----------------------------------------------------------------------------
-#include "../../headers/data/scenes.h"
-#include "../../headers/utils/utilities.h"
+#include "../../source/headers/data/scene_data.h"
+#include "../../source/headers/utils/utilities.h"
 #include <cmath>
 #include <ctime>
 
@@ -22,7 +22,7 @@ void InstancingTestScene::loadData()
 	scene_state.shininess				= 32.0f;
 	scene_state.vertex_divider			= 9.0f;
 	scene_state.display_skybox			= true;
-	scene_state.model_shader_name		= "diffuse";
+        scene_state.model_shader_id                             = ShaderID::Diffuse;
 	scene_state.display_normals			= false;
 	scene_state.display_axes			= false;
 	scene_state.use_computed_data		= true;

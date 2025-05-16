@@ -1,15 +1,19 @@
 #pragma once
 #ifndef MESH_H
 #define MESH_H
-// ----- libraries
+//              libraries
 // ---------------------------------------------------------------------------------------
+#include "../abstract/vector4.h"
 #include "../abstract/vector3.h"
 #include "../abstract/vector2.h"
-#include "../abstract/shader.h"
 #include <string>
 #include <vector>
 
-// ----- abstract
+//              forward declarations
+// ---------------------------------------------------------------------------------------
+class Shader;
+
+//              abstract
 // ---------------------------------------------------------------------------------------
 struct Vertex
 {
