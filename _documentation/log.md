@@ -132,6 +132,9 @@
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
     - geometry scene broken
 
+- [0.96.5] bulk renaming scripts
+    - 24-May-2025 bulk renaming scripts
+
 - [0.96.4] wip refactor shader description structure
     - 16-May-2025
         - moved headers under source

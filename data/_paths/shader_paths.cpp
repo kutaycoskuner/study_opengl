@@ -312,7 +312,7 @@
             .paths = ShaderPaths{
                 .vrtx = "3.9.axes_vrtx_shader.glsl",
                 .frag = "3.9.axes_frag_shader.glsl",
-                .geom = ""
+                .geom = "3.9.axes_frag_shader.glsl"
             },
             .renderview_modes = {
                 RenderViewMode::ILLUMINATION
@@ -627,7 +627,7 @@
                 .geom = ""
             },
             .renderview_modes = {
-                RenderViewMode::ILLUMINATION
+                RenderViewMode::ILLUMINATION,
             }
         }
     },

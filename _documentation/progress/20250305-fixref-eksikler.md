@@ -1,6 +1,9 @@
 # eksikler
 
-- scenes
+- WHEREIWAS
+    - geometry scene
+
+- [x] scenes
     - [x] blending sahnesi blend objeleri gorunmuyor
         - fixed by reactivating sort algorythm
     - [x] blin phong sahnesi gecmiyor
@@ -19,10 +22,11 @@
     - perspective bug (warp drive)
     - blinn phong (dark aura of light)
     - resizing bug
-
+    - geometry node
+    - packaging
 
 - degisiklikler
-    - shadername yerine enum kullanarak switchleme
+    - [x] shadername yerine enum kullanarak switchleme
 
 - eklemeler
     - [x] keybinding tab on ui
