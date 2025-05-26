@@ -30,6 +30,8 @@
 import sys
 import re
 from pathlib import Path
+import os
+
 
 # ----------------------------------------------------------------------------------------
 #               functions
@@ -97,6 +99,7 @@ def process_file(md_path: Path):
     """
     Read input markdown file, rename filenames line by line, and write results.
     Preserves full paths, only renaming the filename portion.
+    Also replaces all backslashes with forward slashes in the output file.
 
     Args:
         md_path (Path): Path to input markdown file with list of filenames.
@@ -117,13 +120,21 @@ def process_file(md_path: Path):
         path = Path(line)
 
         # Rename only the stem of the file, keep parent directory
-        renamed_name = smart_split(path.stem) + path.suffix
-        renamed_path = str(path.parent / renamed_name)
+        renamed_name = smart_split(path.stem) + path.suffix.lower()
+        renamed_path = path.parent / renamed_name
 
-        result_lines.append(f"{original} → {renamed_path}")
+        # Convert path to string with forward slashes
+        renamed_path_str = str(renamed_path).replace("\\", "/")
+
+        result_lines.append(f"{original} → {renamed_path_str}")
+
+    output_content = "\n".join(result_lines)
+
+    # Final step: Replace any backslashes in the whole output content with forward slashes
+    output_content = output_content.replace("\\", "/")
 
     output_path = md_path.with_name(md_path.stem + "_renamed.md")
-    output_path.write_text("\n".join(result_lines), encoding="utf-8")
+    output_path.write_text(output_content, encoding="utf-8")
 
     print(f"✅ Renamed list written to: {output_path}")
 

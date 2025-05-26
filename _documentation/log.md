@@ -130,7 +130,12 @@
     - refactoring naming convention
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
-    - geometry scene broken
+
+- [0.96.7] add batch refactoring script
+    - 27-May-2025
+        - fix geometry scene
+        - add script renaming shader files
+        - add script renaming string encounters recursively
 
 - [0.96.5] bulk renaming scripts
     - 24-May-2025 bulk renaming scripts

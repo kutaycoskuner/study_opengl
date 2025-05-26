@@ -1,7 +1,6 @@
 # eksikler
 
 - WHEREIWAS
-    - geometry scene
 
 - [x] scenes
     - [x] blending sahnesi blend objeleri gorunmuyor
@@ -14,7 +13,7 @@
         - fixed primitive scene objects icin stencil testing bool u falsemis
 
 - duzeltmeler
-    - dosya ismi duzeltmeleri
+    - [x] dosya ismi duzeltmeleri (shaders)
     - degisken ve fonksiyon ismi duzeltmeleri
     - setting up consistent and stable naming convention
 
@@ -22,7 +21,7 @@
     - perspective bug (warp drive)
     - blinn phong (dark aura of light)
     - resizing bug
-    - geometry node
+    - [x] geometry scene bug
     - packaging
 
 - degisiklikler
