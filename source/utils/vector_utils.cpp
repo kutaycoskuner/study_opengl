@@ -14,9 +14,15 @@ namespace vec_utils
 {
 	float length(const Vec3& vec)
 	{
-		float result = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+		float result = sqrt(lengthSquared(vec));
 		return result;
 	}
+
+	float lengthSquared(const Vec3& vec)
+    {
+        float result = vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
+        return result;
+    }
 
 	float distance(const Vec3& vec1, const Vec3& vec2)
 	{

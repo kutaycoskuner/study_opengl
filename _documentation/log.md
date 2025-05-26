@@ -131,6 +131,11 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
 
+- [0.96.8] camera warp drive bug
+    - 27-May-2025 
+        - fix camera warp drive bug
+        - added lengthsqrt function to vec3 and vector math utils
+
 - [0.96.7] add batch refactoring script
     - 27-May-2025
         - fix geometry scene

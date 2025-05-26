@@ -120,9 +120,15 @@ struct Vec3
 	// length
 	float length() const
 	{
-		float result = sqrtf(x * x + y * y + z * z);
+		float result = sqrtf(lengthSquared());
 		return result;
 	}
+
+	float lengthSquared() const
+    {
+        float result = x * x + y * y + z * z;
+        return result;
+    }
 
 	void normalize() 
 	{

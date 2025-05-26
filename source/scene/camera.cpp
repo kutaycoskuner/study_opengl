@@ -150,12 +150,10 @@ void Camera::rotate(float x_offset, float y_offset)
 	yaw_rad		-= x_offset;
 	pitch_rad	-= y_offset;
 
-	// limiter
-	//float limit_deg = 60.0f;
-	//if (math_utils::toDegree(pitch_rad) > limit_deg)
-	//	pitch_rad  = math_utils::toRadian(limit_deg);
-	//if (math_utils::toDegree(pitch_rad) < -limit_deg)
-	//	pitch_rad = math_utils::toRadian(-limit_deg);
+	// Clamp pitch to avoid gimbal lock
+    const float limit_rad = math_utils::toRadian(89.0f);  // just under 90°
+    if (pitch_rad > limit_rad) pitch_rad = limit_rad;
+    if (pitch_rad < -limit_rad) pitch_rad = -limit_rad;
 }
 
 
@@ -166,12 +164,20 @@ Vec3 Camera::getDirection() const
 
 Vec3 Camera::getRight(const Vec3& world_up) const
 {
-	return math_utils::cross3d(getDirection(), world_up);
+		Vec3 forward = getDirection();
+	Vec3 right = math_utils::cross3d(forward, world_up);
+
+	// If forward and world_up are nearly parallel, use fallback axis (e.g., (0, 0, 1))
+	if (right.lengthSquared() < 1e-6f) { // 0.000001f -> approximation to 0 limit due to float precision
+		right = math_utils::cross3d(forward, Vec3(0, 0, 1));
+	}
+	return right.normalized();
 }
 
 Vec3 Camera::getUp(const Vec3& world_up) const
 {
-	return math_utils::cross3d(getRight(world_up), getDirection());
+    Vec3 right = getRight(world_up);
+    return math_utils::cross3d(right, getDirection()).normalized();
 }
 
 Mat4 Camera::getVectors(const Vec3& world_up) const

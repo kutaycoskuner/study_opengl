@@ -18,7 +18,8 @@
     - setting up consistent and stable naming convention
 
 - bugs
-    - perspective bug (warp drive)
+    - [x] perspective bug (warp drive)
+        - camera rotation fix next time
     - blinn phong (dark aura of light)
     - resizing bug
     - [x] geometry scene bug
@@ -26,6 +27,7 @@
 
 - degisiklikler
     - [x] shadername yerine enum kullanarak switchleme
+    - ui camera rotation show deg instead of rad
 
 - eklemeler
     - [x] keybinding tab on ui

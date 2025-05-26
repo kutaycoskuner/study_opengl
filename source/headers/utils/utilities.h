@@ -92,6 +92,7 @@ namespace mat_utils
 namespace vec_utils
 {
 	float length(const Vec3& vec);
+	float lengthSquared(const Vec3& vec);
 	float distance(const Vec3& vec1, const Vec3& vec2);
 	Vec3  normalize(const Vec3& vec);
 }
