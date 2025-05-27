@@ -128,6 +128,9 @@ public:
     void mainLoop(ConfigData& config);
 
     // handle
+    void handleWindowReize();
+    //void loadWindowSizeDependentResources();
+    //void unloadWindowSizeDependentResources();
     void handleMouseEvent(GLFWwindow* window, double xpos, double ypos);
     void handleScrollEvent(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -143,6 +146,13 @@ private:
     void loadShaders();
     std::vector<const char*> loadModelPaths();
     void loadMeshData();
+
+    // fbos
+    void createWindowSizeDependentFrameBuffers();
+    void deleteWindowSizeDependentFrameBuffers();
+    void createNonWindowSizeDependentFrameBuffers();
+    void deleteNonWindowSizeDependentFrameBuffers();
+
 
     void generateShadowFBO();
     void generateBuffer(uint vrtx_arr, uint vrtx_buffer, const float obj_vrts[], const uint& stride, bool vrtx, bool tex);
@@ -259,9 +269,9 @@ private:
 
     // deferred shading
     unsigned int g_buffer;
-    unsigned int g_position;
-    unsigned int g_normal;
-    unsigned int g_color_specular;
+    unsigned int tex_g_position;
+    unsigned int tex_g_normal;
+    unsigned int tex_g_color_specular;
         
     // high dynamic range
     GLuint  fbo_illumination_hdr;
@@ -311,7 +321,6 @@ private:
     int             shadowmap_resolution_y  = 1024;
     float           shadowmap_aspect_ratio;
   
-    float           camera_aspect_ratio;
     float           shadow_far_plane;
     Vec3            ui_vector;
 

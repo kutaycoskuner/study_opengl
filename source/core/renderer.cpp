@@ -118,6 +118,22 @@ bool Renderer::initialize(const ConfigData& config)
     this->clear_color = Vec4(scaleByteToZeroOne(float(bg_rgb[0])), scaleByteToZeroOne(float(bg_rgb[1])),
                              scaleByteToZeroOne(float(bg_rgb[2])), 1.00f);
 
+    createWindowSizeDependentFrameBuffers();
+    createNonWindowSizeDependentFrameBuffers();
+
+
+    input_speaker.addListener(this);
+
+    // gamma background linear -> srgb
+    clear_color.x = pow(clear_color.x, 2.2);
+    clear_color.y = pow(clear_color.y, 2.2);
+    clear_color.z = pow(clear_color.z, 2.2);
+
+    return 0;
+}
+
+void Renderer::createWindowSizeDependentFrameBuffers()
+{
     // 3.11 configure MSAA framebuffer / hdr
     // --------------------------
     glGenFramebuffers(1, &fbo_illumination_msaa);
@@ -205,6 +221,93 @@ bool Renderer::initialize(const ConfigData& config)
     //	std::cout << "Framebuffer not complete!" << std::endl;
     // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    // texture for framebuffer
+    // ---------------------------------------------------------
+    glGenTextures(1, &fbo_backbuffer_color);
+    glBindTexture(GL_TEXTURE_2D, fbo_backbuffer_color);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_backbuffer_color, 0);
+
+    // 4.9 ssao buffers
+    // -----------------------------------------------------
+    glGenFramebuffers(1, &fbo_ssao);
+    glGenFramebuffers(1, &fbo_ssao_blur);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao);
+    // SSAO color buffer
+    glGenTextures(1, &tex_ssao);
+    glBindTexture(GL_TEXTURE_2D, tex_ssao);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, display_width, display_height, 0, GL_RED, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_ssao, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "SSAO Framebuffer not complete!" << std::endl;
+    // and blur stage
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao_blur);
+    glGenTextures(1, &tex_ssao_blur);
+    glBindTexture(GL_TEXTURE_2D, tex_ssao_blur);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, display_width, display_height, 0, GL_RED, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_ssao_blur, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "SSAO Blur Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // deferred shading buffer
+    // ----------------------------------------------------------
+    glGenFramebuffers(1, &g_buffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
+
+    // - position color buffer
+    glGenTextures(1, &tex_g_position);
+    glBindTexture(GL_TEXTURE_2D, tex_g_position);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_g_position, 0);
+
+    // normal color buffer
+    glGenTextures(1, &tex_g_normal);
+    glBindTexture(GL_TEXTURE_2D, tex_g_normal);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, tex_g_normal, 0);
+
+    // - color + specular color buffer
+    glGenTextures(1, &tex_g_color_specular);
+    glBindTexture(GL_TEXTURE_2D, tex_g_color_specular);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, display_width, display_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, tex_g_color_specular, 0);
+
+    // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
+    unsigned int attachments[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+    glDrawBuffers(3, attachments);
+
+    // rbo
+    // ----------------------------------------------------------
+    glGenRenderbuffers(1, &rbo_backbuffer_depth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo_backbuffer_depth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, display_width, display_height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_backbuffer_depth);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Framebuffer error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+    // unbind frame buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::createNonWindowSizeDependentFrameBuffers() 
+{
     // 4.3 shadow fbo
     // ---------------------------------------------------------
     unsigned int depthMapFBO;
@@ -250,99 +353,6 @@ bool Renderer::initialize(const ConfigData& config)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     tex_shadow_cubemaps.push_back(shadow_depth_cubemap);
-
-    // texture for framebuffer
-    // ---------------------------------------------------------
-    glGenTextures(1, &fbo_backbuffer_color);
-    glBindTexture(GL_TEXTURE_2D, fbo_backbuffer_color);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, k_scr_width, k_scr_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_backbuffer_color, 0);
-
-    // 4.9 ssao buffers
-    // -----------------------------------------------------
-    glGenFramebuffers(1, &fbo_ssao);
-    glGenFramebuffers(1, &fbo_ssao_blur);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao);
-    // SSAO color buffer
-    glGenTextures(1, &tex_ssao);
-    glBindTexture(GL_TEXTURE_2D, tex_ssao);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, display_width, display_height, 0, GL_RED, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_ssao, 0);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "SSAO Framebuffer not complete!" << std::endl;
-    // and blur stage
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo_ssao_blur);
-    glGenTextures(1, &tex_ssao_blur);
-    glBindTexture(GL_TEXTURE_2D, tex_ssao_blur);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, display_width, display_height, 0, GL_RED, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_ssao_blur, 0);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "SSAO Blur Framebuffer not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // deferred shading buffer
-    // ----------------------------------------------------------
-    glGenFramebuffers(1, &g_buffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
-
-    // - position color buffer
-    glGenTextures(1, &g_position);
-    glBindTexture(GL_TEXTURE_2D, g_position);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, g_position, 0);
-
-    // normal color buffer
-    glGenTextures(1, &g_normal);
-    glBindTexture(GL_TEXTURE_2D, g_normal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, display_width, display_height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, g_normal, 0);
-
-    // - color + specular color buffer
-    glGenTextures(1, &g_color_specular);
-    glBindTexture(GL_TEXTURE_2D, g_color_specular);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, display_width, display_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, g_color_specular, 0);
-
-    // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-    unsigned int attachments[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
-    glDrawBuffers(3, attachments);
-
-    // rbo
-    // ----------------------------------------------------------
-    glGenRenderbuffers(1, &rbo_backbuffer_depth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo_backbuffer_depth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, k_scr_width, k_scr_height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_backbuffer_depth);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "Framebuffer error: " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
-    // unbind frame buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    input_speaker.addListener(this);
-
-    // gamma background linear -> srgb
-    clear_color.x = pow(clear_color.x, 2.2);
-    clear_color.y = pow(clear_color.y, 2.2);
-    clear_color.z = pow(clear_color.z, 2.2);
-
-    return 0;
 }
 
 bool Renderer::load(const ConfigData& config)
@@ -797,11 +807,8 @@ void Renderer::mainLoop(ConfigData& config)
     while (!glfwWindowShouldClose(window) && reload == false)
     {
         processInput(window, uni_obj);
-        int w, h;
-        glfwGetWindowSize(window, &w, &h);
-        Camera& cam         = active_scene->cameras[0];
-        camera_aspect_ratio = float(w) / float(h);
-        cam.aspect_ratio    = camera_aspect_ratio;
+        glfwGetFramebufferSize(window, &display_width, &display_height);
+
 
         // Start the Dear ImGui frame
         updateUI();
@@ -877,11 +884,29 @@ int Renderer::initWindowSystem(const unsigned int& width, const unsigned int& he
         return -1;
     }
     glfwMakeContextCurrent(window);
-    // resize handle
+    // handle resize
     glfwSetFramebufferSizeCallback(window, callbackFrameBufferSize);
     glfwSetCursorPosCallback(window, callbackMouse);
     glfwSetScrollCallback(window, callbackScroll);
     return 0;
+}
+
+void Renderer::deleteWindowSizeDependentFrameBuffers() 
+{
+    glDeleteFramebuffers(1, &fbo_illumination_msaa);
+    glDeleteFramebuffers(1, &rbo_illumination_msaa);
+    glDeleteFramebuffers(1, &fbo_illumination_hdr);
+    glDeleteFramebuffers(2, fbo_bloom);
+    glDeleteFramebuffers(1, &fbo_backbuffer);
+    glDeleteFramebuffers(1, &fbo_backbuffer_color);
+    glDeleteFramebuffers(1, &rbo_backbuffer_depth);
+    glDeleteFramebuffers(1, &fbo_ssao);
+    glDeleteFramebuffers(1, &fbo_ssao_blur);
+    glDeleteFramebuffers(1, &g_buffer);
+}
+
+void Renderer::deleteNonWindowSizeDependentFrameBuffers() 
+{
 }
 
 void Renderer::unload()
@@ -894,12 +919,9 @@ void Renderer::unload()
     // glDeleteBuffers(1, &lit_vbo);
     if (!reload)
     {
-        glDeleteFramebuffers(1, &fbo_illumination_msaa);
-        glDeleteFramebuffers(1, &fbo_illumination_hdr);
-        glDeleteFramebuffers(2, fbo_bloom);
-        glDeleteFramebuffers(1, &fbo_backbuffer);
-        glDeleteFramebuffers(1, &g_buffer);
-        glDeleteRenderbuffers(1, &rbo_backbuffer_depth);
+        deleteWindowSizeDependentFrameBuffers();
+        deleteNonWindowSizeDependentFrameBuffers();
+
         glDeleteVertexArrays(buffer_count, vertex_arrays);
         glDeleteBuffers(buffer_count, vertex_buffers);
     }
@@ -1106,8 +1128,8 @@ void Renderer::drawScene(Uniforms& uni)
     // calculate matrices
     upv.projection_matrix = mat_utils::projectPerspective(toRadian(cam.fov), cam.aspect_ratio, cam.near, cam.far);
 
-    int display_w, display_h;
-    glfwGetFramebufferSize(window, &display_w, &display_h);
+    //glfwGetFramebufferSize(window, &display_width, &display_height);
+
 
     if (active_scene->scene_state.display_shadows)
     {
@@ -1118,7 +1140,6 @@ void Renderer::drawScene(Uniforms& uni)
     glDrawBuffer(GL_BACK);   // Enable drawing to the back buffer
     glReadBuffer(GL_FRONT);  // Enable reading from the front buffer
 
-    display_width = display_w;
     // upv.projection_matrix
     //	= mat_utils::projectOrthographic(display_width / 50.0f, cam.aspect_ratio, cam.near, cam.far);
     // upv.projection_matrix
@@ -1173,7 +1194,7 @@ void Renderer::drawScene(Uniforms& uni)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // get width and height
-        glViewport(0, 0, display_w, display_h);
+        glViewport(0, 0, display_width, display_height);
 
         // draw scene
         disableStencil();
@@ -1192,7 +1213,7 @@ void Renderer::drawScene(Uniforms& uni)
 
         drawScene_skybox(uni);
 
-        drawBackbuffer(display_w, display_h);
+        drawBackbuffer(display_width, display_height);
     }
     else
     {
@@ -1203,7 +1224,7 @@ void Renderer::drawScene(Uniforms& uni)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // get width and height
-        glViewport(0, 0, display_w, display_h);
+        glViewport(0, 0, display_width, display_height);
         // draw scene
         disableStencil();
         upv.view_matrix       = cam.calcViewMatrix(world_up);
@@ -1242,7 +1263,7 @@ void Renderer::drawScene(Uniforms& uni)
         glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_msaa);
         drawHelper_lightPlaceholders(uni);
         //
-        drawBackbuffer(display_w, display_h);
+        drawBackbuffer(display_width, display_height);
     }
 }
 
@@ -1499,11 +1520,11 @@ void Renderer::drawDeferredLightingPass()
 
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, g_position);
+    glBindTexture(GL_TEXTURE_2D, tex_g_position);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glBindTexture(GL_TEXTURE_2D, tex_g_normal);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, g_color_specular);
+    glBindTexture(GL_TEXTURE_2D, tex_g_color_specular);
 
     // assign uniforms
     Scene* scene = active_scene;
@@ -1545,11 +1566,11 @@ void Renderer::drawSSAOLightingPass(const Uniforms& uni)
 
     // set textures
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, g_position);
+    glBindTexture(GL_TEXTURE_2D, tex_g_position);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glBindTexture(GL_TEXTURE_2D, tex_g_normal);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, g_color_specular);
+    glBindTexture(GL_TEXTURE_2D, tex_g_color_specular);
     glActiveTexture(GL_TEXTURE3);  // add extra SSAO texture to lighting pass
     glBindTexture(GL_TEXTURE_2D, tex_ssao_blur);
 
@@ -1576,9 +1597,9 @@ void Renderer::drawSSAOPass(const Uniforms& uni)
 
     // bind textures
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, g_position);
+    glBindTexture(GL_TEXTURE_2D, tex_g_position);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, g_normal);
+    glBindTexture(GL_TEXTURE_2D, tex_g_normal);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, ssao_noise_texture);
     
@@ -1637,10 +1658,10 @@ void Renderer::setRenderViewFBO(const RenderViewMode& flag)
             glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_msaa);
             break;
         case RenderViewMode::COLOR:
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, g_color_specular);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, tex_g_color_specular);
             break;
         case RenderViewMode::NORMAL:
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, g_normal);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, tex_g_normal);
             break;
         case RenderViewMode::SSAO_RAW:
             glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_ssao);
@@ -1655,7 +1676,7 @@ void Renderer::setRenderViewFBO(const RenderViewMode& flag)
 }
 
 
-void Renderer::drawBackbuffer(int display_w, int display_h)
+void Renderer::drawBackbuffer(int display_width, int display_height)
 {
     // 3.4. framebuffer
     // --------------------------------------------------------------------------------------
@@ -1671,7 +1692,7 @@ void Renderer::drawBackbuffer(int display_w, int display_h)
     glReadBuffer(GL_COLOR_ATTACHMENT0);  // From MSAA framebuffer's single color target
     glDrawBuffer(GL_COLOR_ATTACHMENT0);  // To HDR framebuffer's first render target
 
-    glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_width, display_height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     // bind frame buffer
     glBindFramebuffer(GL_FRAMEBUFFER, fbo_illumination_hdr);
@@ -1738,7 +1759,7 @@ void Renderer::drawBackbuffer(int display_w, int display_h)
     // 3.11 anti aliasing
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_illumination_hdr);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_backbuffer);
-    glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_w, display_h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, display_width, display_height, 0, 0, display_width, display_height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #define CHECK_BACKBUFFER_ENCODING 0
@@ -1787,7 +1808,7 @@ void Renderer::drawBackbuffer(int display_w, int display_h)
     {
         std::string result =
             std::format("{}{}{}", config_dir_path, "test_scene_frames/scene", active_test_scene, "_test.png");
-        img_utils::saveFrameBufferAsPNG(display_w, display_h, result.c_str());
+        img_utils::saveFrameBufferAsPNG(display_width, display_height, result.c_str());
         save_frame = false;
     }
 }

@@ -17,6 +17,7 @@ extern Renderer* gp_app;
 
 void callbackFrameBufferSize(GLFWwindow* window, int width, int height)
 {
+    gp_app->handleWindowReize();
 	glViewport(0, 0, width, height);
 }
 
@@ -110,6 +111,12 @@ void callbackScroll(GLFWwindow* window, double xoffset, double yoffset)
 	gp_app->handleScrollEvent(window, xoffset, yoffset);
 }
 
+void Renderer::handleWindowReize() {
+    Camera& cam					= active_scene->cameras[0];
+    cam.aspect_ratio            = float(display_width) / float(display_height);
+    deleteWindowSizeDependentFrameBuffers();
+    createWindowSizeDependentFrameBuffers();
+}
 
 void Renderer::handleMouseEvent(GLFWwindow* window, double xpos, double ypos)
 {

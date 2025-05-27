@@ -20,9 +20,9 @@
 - bugs
     - [x] perspective bug (warp drive)
         - camera rotation fix next time
-    - blinn phong (dark aura of light)
-    - resizing bug
+    - [x] resizing bug
     - [x] geometry scene bug
+    - blinn phong (dark aura of light)
     - packaging
 
 - degisiklikler

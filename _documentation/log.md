@@ -131,6 +131,12 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
 
+- [0.96.9] fix resizing bug
+    - 27-May-2025
+        - fix resizing bug
+        - splitting window depenent load/unload functions
+        - renaming g_bfufer textures
+
 - [0.96.8] camera warp drive bug
     - 27-May-2025 
         - fix camera warp drive bug

@@ -227,9 +227,11 @@
     - heap
     - string fonksiyonu referans olarak gonderilmediginde c_str() lokal degiskenin adresini tuttugu icin yenisini yazdginida patliyor. veya scope bittiginde
 
+
 - arch
     - polling
     - event based
+    - load unload -> window size dependent resources load / unload
 
 - effects
     - dithering
@@ -939,6 +941,11 @@ https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for
 
 - <shader problems>
 - Block "VS_OUT" mismatch between shader stages
+
+- <vocab>
+    - polling 
+        - periyodik araliklarla check etmek
+        - callback
 
 - <errors>
     - error C7560: 'displacement': designators must appear in member declaration order of class 'TexturePaths'
