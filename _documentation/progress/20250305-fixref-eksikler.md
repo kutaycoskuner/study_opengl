@@ -1,6 +1,7 @@
 # eksikler
 
-- WHEREIWAS
+- WHERE I WAS
+    - switch between render mode on ui
 
 - [x] scenes
     - [x] blending sahnesi blend objeleri gorunmuyor
@@ -14,7 +15,25 @@
 
 - duzeltmeler
     - [x] dosya ismi duzeltmeleri (shaders)
-    - degisken ve fonksiyon ismi duzeltmeleri
+    - [wip] degisken ve fonksiyon ismi duzeltmeleri
+        check_naming_conventions.py
+        it will take two paramters 
+        scope folder
+        output file as full path
+        it will iterate over folders and children files to find files with certain extensions such as .cpp and .h
+        it will ignore files in libs/ lib/
+        then it will extract names of functions and variables.
+        it will write a line for each on output file
+        valid or not (x or v)
+        type fun or var
+        name of the function or variable
+        path of where to be found
+        rules:
+        all variables should be snake case except constants constants are uppercase
+        private variables should have _ front
+        all functions should also follow snake case
+
+        - get unfiting variable and function names on cpp files by script
     - setting up consistent and stable naming convention
 
 - bugs
@@ -22,7 +41,10 @@
         - camera rotation fix next time
     - [x] resizing bug
     - [x] geometry scene bug
-    - blinn phong (dark aura of light)
+    - [x] blinn phong (dark aura of light)
+        - light direction and diff fix
+    - camera squish
+    - on scene change ssao scene is not appearing
     - packaging
 
 - degisiklikler

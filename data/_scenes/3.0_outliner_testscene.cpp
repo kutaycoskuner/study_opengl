@@ -83,13 +83,13 @@ void OutlinerTestScene::update()
     // move lights radial
     // --------------------------------------------------------------------------------------
     float       distance_multiplier = 3.0f;
-    const float pi                  = 3.141592f;
+    const float PI                  = 3.141592f;
     for (int ii = 0; ii < point_lights.size(); ii++)
     {
         // change light position
         point_lights[ii].position =
-            Vec3(distance_multiplier * cos(scene_state.time + 2 * pi / point_lights.size() * ii), 3.0f,
-                 distance_multiplier * sin(scene_state.time + 2 * pi / point_lights.size() * ii));
+            Vec3(distance_multiplier * cos(scene_state.time + 2 * PI / point_lights.size() * ii), 3.0f,
+                 distance_multiplier * sin(scene_state.time + 2 * PI / point_lights.size() * ii));
 
         // change light color
         float change_key = scene_state.time + ii;

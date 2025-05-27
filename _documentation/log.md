@@ -131,6 +131,11 @@
     - add glew 
     - validation layer -> yanlis yaptiginda geri bildirim veriyor
 
+- [0.96.10] fix blinn phong
+    - 27-May-2025
+        - wip systematic naming check
+        - fix blinn phong scene lighting problem 
+
 - [0.96.9] fix resizing bug
     - 27-May-2025
         - fix resizing bug
@@ -140,7 +145,7 @@
 - [0.96.8] camera warp drive bug
     - 27-May-2025 
         - fix camera warp drive bug
-        - added lengthsqrt function to vec3 and vector math utils
+        - added lengthsqrt function to Vector3 and vector math utils
 
 - [0.96.7] add batch refactoring script
     - 27-May-2025
@@ -190,7 +195,7 @@
         - fixed ssao output problem
     - 19-Mar-2025
         - creating sample kernel function
-        - added vec3 to *= operator
+        - added Vector3 to *= operator
     - 12-Mar-2025
         - wip naming conventions
         - added ssao scene
@@ -853,7 +858,7 @@
 
 - [0.35] wip: Camera static rotation / planar movement
     - 04-Jun-2023   add: display: Camera static rotation
-    - 04-Jun-2023   add: Vec3 += -= * override functions
+    - 04-Jun-2023   add: Vector3 += -= * override functions
     - 04-Jun-2023   add: Camera key movement
     - 03-Jun-2023   wip: Camera lookAt with 3 parameters: position, target, up
     - 03-Jun-2023   wip: Camera variables, lookAt no parameters
@@ -897,7 +902,7 @@
     - 04-May-2023   add: OpenGL realtime uniform change / render scale, rotation
     - 04-May-2023   add: Shader class Mat4 uniform insertion class
     - 04-May-2023   add: Mat4 Vec4 product
-    - 04-May-2023   add: Vec4 Vec3 constructor
+    - 04-May-2023   add: Vec4 Vector3 constructor
     - 04-May-2023   add: Matrix utilities, integration test 1
 
 - [0.28] add: Vec4, Mat4, unitTests

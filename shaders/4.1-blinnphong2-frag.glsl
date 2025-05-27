@@ -90,7 +90,7 @@ vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir
     // 
     vec3 light_dir = normalize(light.direction);
     // diffuse shading
-    float diff = max(dot(surface.normal, -light_dir), 0.0);
+    float diff = max(dot(surface.normal, light_dir), 0.0);
     // specular shading
     vec3 reflect_dir = reflect(light_dir, surface.normal);
     float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
@@ -103,7 +103,7 @@ vec3 calcDirectionalLight(DirectionalLight light, Surface surface, vec3 view_dir
 }
 
 vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_dir) {
-    vec3 light_dir   = normalize(frag_pos - light.position);
+    vec3 light_dir   = normalize(light.position - frag_pos);;
     vec3 halfway_dir = normalize(light_dir + view_dir); 
 
     // diffuse shading
@@ -126,7 +126,7 @@ vec3 calcPointLight(PointLight light, Surface surface, vec3 frag_pos, vec3 view_
 }
 
 vec3 calcSpotLight(SpotLight light, Surface surface, vec3 frag_pos, vec3 view_dir) {
-    vec3 light_dir = normalize(frag_pos - light.position);
+    vec3 light_dir = normalize(light.position - frag_pos);
     // diffuse shading
     float diff = max(dot(surface.normal, -light_dir), 0.0);
     // specular shading

@@ -111,10 +111,10 @@ void InstancingTestScene::loadData()
 		float z = cos(angle) * radius + displacement;
 
 		float scale = (rand() % 20) / 1000.0f + 0.05;
-		float rotAngle = (rand() % 360);
+		float rotation_angle = (rand() % 360);
 
 		model = mat_utils::translate(Vec3(x, y, z))
-			* mat_utils::rotateXYZ(rotAngle, Vec3(0.4f, 0.6f, 0.8f).normalized())
+			* mat_utils::rotateXYZ(rotation_angle, Vec3(0.4f, 0.6f, 0.8f).normalized())
 			* mat_utils::scale(scale);
 
 		model = model.transposed();
@@ -152,14 +152,14 @@ void InstancingTestScene::update() {
 	// move lights radial
 	// --------------------------------------------------------------------------------------
 	float distance_multiplier = 3.0f;
-	const float pi = 3.141592f;
+	const float PI = 3.141592f;
 	for (int ii = 0; ii < point_lights.size(); ii++)
 	{
 		// change light position
 		point_lights[ii].position = Vec3(
-			distance_multiplier * cos(scene_state.time + 2 * pi / point_lights.size() * ii),
+			distance_multiplier * cos(scene_state.time + 2 * PI / point_lights.size() * ii),
 			3.0f,
-			distance_multiplier * sin(scene_state.time + 2 * pi / point_lights.size() * ii))
+			distance_multiplier * sin(scene_state.time + 2 * PI / point_lights.size() * ii))
 			;
 
 		// change light color

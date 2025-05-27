@@ -174,9 +174,9 @@ void GammaCorrectionTestScene::update() {
 	std::map<float, PrimitiveSceneNode> sorted;
 	std::sort(predefined_scene_elements.begin(), predefined_scene_elements.end(),
 		[this](const PrimitiveSceneNode& a, const PrimitiveSceneNode& b) {
-			float distanceA = vec_utils::length(this->cameras[0].position - a.transform.position);
-			float distanceB = vec_utils::length(this->cameras[0].position - b.transform.position);
-			return distanceA > distanceB;
+			float distance_a = vec_utils::length(this->cameras[0].position - a.transform.position);
+			float distance_b = vec_utils::length(this->cameras[0].position - b.transform.position);
+			return distance_a > distance_b;
 		});
 
 }
