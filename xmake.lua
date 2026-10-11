@@ -71,3 +71,82 @@ target("opengl_renderer")
                 'DATA_DIR_FULL="'   .. root .. '/data/"',
                 'SHADER_DIR_FULL="' .. root .. '/shaders/"')
 
+    -- xmake install -o <dir>: a flat, standalone copy (replaces the copy part of --PackProgram.bat)
+    -- the exe sits next to config/, data/, shaders/, so main.cpp switches to its relative path mode
+    on_install(function (target)
+        import("lib.detect.find_file")
+        local outdir = target:installdir()
+        os.mkdir(outdir)
+        os.cp(target:targetfile(), outdir)
+        for _, dir in ipairs({"config", "data", "shaders"}) do
+            os.cp(path.join(os.projectdir(), dir), outdir)
+        end
+
+        -- msys2 clang64 runtime dlls the exe imports; without them it only starts from a clang64 shell
+        for _, dll in ipairs({"libc++.dll", "zlib1.dll"}) do
+            local src = find_file(dll, {"$(env PATH)"})
+            if src then
+                os.cp(src, outdir)
+            else
+                cprint("${yellow}warning: %s not found on PATH, the packed exe will not start outside a clang64 shell", dll)
+            end
+        end
+        cprint("${green}installed into %s", outdir)
+    end)
+target_end()
+
+
+-- ----------------------------------------------------------------------------------------
+--               Tasks (replace the old --*.bat scripts, now in scripts/legacy/)
+-- ----------------------------------------------------------------------------------------
+-- each step runs as its own xmake process (like typing the command): a build started inside
+-- this process would still use the mode loaded at startup, not the one just configured
+-- xmake binaries: build debug and release (replaces --GenerateBinaries.bat)
+task("binaries")
+    set_menu({usage = "xmake binaries", description = "Build debug and release, then return to the current mode.", options = {}})
+    on_run(function ()
+        import("core.project.config")
+        config.load()
+        local current = {plat = config.get("plat"), arch = config.get("arch"),
+                         toolchain = config.get("toolchain"), mode = config.get("mode")}
+        local xmake = os.programfile()
+        local function configure(mode)
+            local args = {"f", "-p", current.plat, "-a", current.arch, "-m", mode}
+            if current.toolchain then table.insert(args, "--toolchain=" .. current.toolchain) end
+            os.execv(xmake, args)
+        end
+
+        for _, mode in ipairs({"debug", "release"}) do
+            cprint("${bright}building %s ...", mode)
+            configure(mode)
+            os.execv(xmake, {"-y"})
+        end
+        configure(current.mode)
+        cprint("${green}binaries ready in build/%s/%s/{debug,release}, back in %s mode", current.plat, current.arch, current.mode)
+    end)
+task_end()
+
+-- xmake pack: release build copied into a clean artifacts/ (replaces --PackProgram.bat)
+task("pack")
+    set_menu({usage = "xmake pack", description = "Build release and copy a standalone, runnable program into artifacts/.", options = {}})
+    on_run(function ()
+        import("core.project.config")
+        config.load()
+        local current = {plat = config.get("plat"), arch = config.get("arch"),
+                         toolchain = config.get("toolchain"), mode = config.get("mode")}
+        local xmake = os.programfile()
+        local function configure(mode)
+            local args = {"f", "-p", current.plat, "-a", current.arch, "-m", mode}
+            if current.toolchain then table.insert(args, "--toolchain=" .. current.toolchain) end
+            os.execv(xmake, args)
+        end
+        local outdir = path.join(os.projectdir(), "artifacts")
+
+        configure("release")
+        os.execv(xmake, {"-y"})
+        os.tryrm(outdir)    -- clean pack, like the old script
+        os.execv(xmake, {"install", "-o", outdir})
+        configure(current.mode)
+        cprint("${green}packed into %s, back in %s mode", outdir, current.mode)
+    end)
+task_end()

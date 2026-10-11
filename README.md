@@ -32,14 +32,13 @@ study-opengl/
 ├── data/                       # Models, textures, cubemaps and scene definitions
 │   ├── _predefs/               # Predefined materials and objects
 │   └── _scenes/                # One test scene per chapter (e.g. 4.3_shadows_testscene.cpp)
-├── libs/                       # Third-party libraries (GLFW, GLAD, Assimp, ImGui, stb)
+├── libs/                       # Bundled third-party libraries (GLAD, ImGui, stb)
 ├── scripts/                    # Python helpers: naming convention checks, bulk renaming
+│   └── legacy/                 # Old CMake / Visual Studio .bat scripts, kept for reference; see legacy/README.md
 ├── shaders/                    # GLSL shaders, named <chapter>-<name>-<vrtx|frag|geom>.glsl
 ├── source/                     # Renderer source code (core, scene, events, utils, tests)
-├── CMakeLists.txt
-├── --GenerateBuildProject.bat  # Configures the solution and builds Debug + Release
-├── --GenerateBinaries.bat      # Rebuilds Debug + Release from an existing build/
-└── --PackProgram.bat           # Copies a standalone, runnable build into artifacts/
+├── xmake.lua                   # Build script (xmake), incl. the binaries and pack tasks
+└── CMakeLists.txt              # Legacy CMake / Visual Studio build, being phased out
 ```
 
 ------------------------------------------------------------------------------------------
@@ -49,39 +48,108 @@ study-opengl/
 ### Prerequisites
 - **Windows 10/11** with an OpenGL 3.3 capable graphics driver
 - **Git**: [Install Git](https://git-scm.com/downloads)
-- **CMake 3.24+**: [Install CMake](https://cmake.org/download/)
-- **Visual Studio 2022** with the "Desktop development with C++" workload: [Install Visual Studio](https://visualstudio.microsoft.com/vs/)
-- **Windows 10 SDK 10.0.19041.0+**: [Install Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)
+- **MSYS2**: [Install MSYS2](https://www.msys2.org/)
+- No Visual Studio or Windows SDK needed: Clang, the Windows headers (mingw-w64) and the C++ runtime all come from MSYS2.
+
+Install the tools in the **MSYS2 CLANG64** shell:
+
+```bash
+# Clang with the lld linker and lldb debugger, and xmake
+pacman -S --needed mingw-w64-clang-x86_64-clang mingw-w64-clang-x86_64-lld mingw-w64-clang-x86_64-lldb mingw-w64-clang-x86_64-xmake
+
+# Optional: Qt Creator, to build, run and debug from an IDE
+pacman -S --needed mingw-w64-clang-x86_64-qt-creator
+```
 
 ### Installation
+
+Run these in the **MSYS2 CLANG64** shell.
 
 ```bash
 # 1. Clone the repository with its submodules
 git clone --recursive https://github.com/kutaycoskuner/study-opengl.git
 cd study-opengl
 
-# 2. Generate the Visual Studio solution and build Debug + Release
-#   Automated (also initializes missing submodules):
-./--GenerateBuildProject.bat
-#   Manual:
-mkdir build
-cd build
-cmake -G "Visual Studio 17 2022" -A x64 ..
-cmake --build . --config Release
-cd ..
+# 2. Configure once: MinGW platform, Clang compiler, debug mode
+xmake f -p mingw --toolchain=clang -m debug
 
-# 3. Run the program
-./bin/Windows/x64/Release/opengl_renderer.exe
-
-# Optional: open the solution in Visual Studio
-./build/opengl_renderer.sln
-
-# Optional: create a standalone copy in artifacts/ that can be moved anywhere
-./--PackProgram.bat
+# 3. Build (the first build downloads and compiles GLFW and Assimp, which takes a few minutes)
+xmake -y
 ```
 
-> If CMake fails with `CMAKE_C_COMPILER not set`, another CMake/MinGW installation (e.g. Strawberry Perl) is
-> first in your `PATH`. Keep the `-G "Visual Studio 17 2022"` generator so CMake uses MSVC.
+### Building
+
+| Mode    | Use it for                                              | Output                                           |
+| :------ | :------------------------------------------------------ | :----------------------------------------------- |
+| debug   | Development and debugging (debug info, no optimization) | `build/mingw/x86_64/debug/opengl_renderer.exe`   |
+| release | Running fast (optimized, no debug info)                 | `build/mingw/x86_64/release/opengl_renderer.exe` |
+
+```bash
+xmake f -m debug    # switch to debug mode (xmake f -m release for release)
+xmake               # build the current mode
+xmake binaries      # build both debug and release, then return to the current mode
+xmake pack          # build release and copy a standalone program into artifacts/
+xmake c             # clean the current mode's build output
+```
+
+### Running
+
+```bash
+# Current mode, in the CLANG64 shell
+xmake run
+
+# A specific build, in the CLANG64 shell
+./build/mingw/x86_64/debug/opengl_renderer.exe
+./build/mingw/x86_64/release/opengl_renderer.exe
+
+# Standalone copy: double-click artifacts/opengl_renderer.exe in Explorer after
+xmake pack
+# the artifacts/ folder can be moved or copied to another PC
+```
+
+> The exes in `build/` need `libc++.dll` and `zlib1.dll` from MSYS2, so they only start from the CLANG64 shell
+> (or an IDE started there), not by double-click. `xmake pack` copies both DLLs next to the exe in `artifacts/`.
+
+> The program first looks for `config/config.yaml` next to the exe (packed copy, relative paths) and otherwise
+> uses the repository paths compiled in by `xmake.lua`. The `failed to open file: ...config.yaml` line when
+> starting a `build/` exe is that first lookup and is expected.
+
+### Opening in an IDE
+
+**Qt Creator** (build, run, debug). Qt Creator has no xmake support, so it opens the `compile_commands.json` that xmake writes on every build.
+
+```bash
+# 1. Build once so compile_commands.json exists, then start Qt Creator from the CLANG64 shell
+#    (it inherits the CLANG64 PATH, so it finds clang, xmake, lldb and the MSYS2 DLLs)
+xmake
+qtcreator &
+
+# 2. Help > About Plugins...: enable CompilationDatabaseProjectManager, restart Qt Creator
+
+# 3. File > Open File or Project...: compile_commands.json in the repository root
+#    kit: the MSYS2 CLANG64 clang kit, build directory: the repository root
+
+# 4. Projects > Build: replace the build steps with a Custom Process Step
+#    command:   C:\msys64\clang64\bin\xmake.cmd
+#    arguments: -y          (clean step: c)
+
+# 5. Projects > Run: add a Custom Executable per mode, working directory %{buildDir}
+#    debug:   %{buildDir}\build\mingw\x86_64\debug\opengl_renderer.exe
+#    release: %{buildDir}\build\mingw\x86_64\release\opengl_renderer.exe
+
+# 6. Pick the run configuration at the bottom left: Ctrl+B build, Ctrl+R run, F5 debug
+#    Ctrl+B builds the mode set with xmake f -m; debug with the debug build only
+```
+
+**VS Code** (editing). Use an MSYS2 CLANG64 shell as the integrated terminal and build and run there with the commands above.
+
+```bash
+# terminal profile command for the CLANG64 shell
+C:\msys64\msys2_shell.cmd -defterm -here -no-start -clang64
+
+# code completion: the clangd extension finds compile_commands.json in the repository root by itself;
+# the Microsoft C/C++ extension needs the setting C_Cpp.default.compileCommands pointed at it
+```
 
 ------------------------------------------------------------------------------------------
 
@@ -188,7 +256,7 @@ A selection of milestones. More are in the [`_display`](_display/) folder.
     - Supervision / support: Volkan Ilbeyli, [github.com/vilbeyli](https://github.com/vilbeyli)
 - **Dependencies**
     - Libraries: GLFW, GLAD, Assimp (Open Asset Import Library), Dear ImGui, stb_image, stb_image_write
-    - Tools: Visual Studio, Visual Studio Code, RenderDoc (frame debugging), CMake
+    - Tools: MSYS2 Clang, xmake, Qt Creator, Visual Studio Code, RenderDoc (frame debugging)
 - **Data**
     - Phong predefined materials: [OpenGL/VRML Materials](http://devernay.free.fr/cours/opengl/materials.html)
     - Backpack by Berk Gedik, [Sketchfab](https://sketchfab.com/3d-models/survival-guitar-backpack-799f8c4511f84fab8c3f12887f7e6b36)
