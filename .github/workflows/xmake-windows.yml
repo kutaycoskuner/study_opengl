@@ -1,0 +1,47 @@
+name: Build on Windows (xmake)
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}          # every step runs in the CLANG64 shell
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive     # imgui (and data) live in submodules
+
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: CLANG64
+        install: >-
+          mingw-w64-clang-x86_64-clang
+          mingw-w64-clang-x86_64-lld
+          mingw-w64-clang-x86_64-xmake
+
+    # glfw and assimp packages are compiled on the first run; cache them between runs
+    - uses: actions/cache@v4
+      with:
+        path: ~/AppData/Local/.xmake/packages
+        key: xmake-packages-${{ hashFiles('xmake.lua') }}
+
+    - name: Configure
+      run: xmake f -p mingw --toolchain=clang -m release -y
+
+    - name: Build
+      run: xmake -y
+
+    - name: Pack
+      run: xmake pack
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: opengl_renderer-windows
+        path: artifacts/

@@ -8,11 +8,11 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.98.1-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.99.1-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study-opengl" />
-    <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study-opengl/cmake-platform-windows.yml?branch=main&label=main" />
-    <img alt="dev" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study-opengl/cmake-platform-windows.yml?branch=dev&label=dev" />
+    <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study-opengl/xmake-windows.yml?branch=main&label=main" />
+    <img alt="dev" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study-opengl/xmake-windows.yml?branch=dev&label=dev" />
 </p>
 
 <p align="center">
