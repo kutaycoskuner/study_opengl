@@ -8,7 +8,7 @@
 
 <p align="center">
     <img alt="OpenGL" src="https://img.shields.io/badge/OpenGL-3.3-blue?logo=opengl&logoColor=white" />
-    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.99.2-blue" />
+    <img alt="Project Version" src="https://img.shields.io/badge/Project_Version-0.100.0-blue" />
     <img alt="Start Date" src="https://img.shields.io/badge/project_start-19_Aug_2022-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study-opengl" />
     <img alt="main" src="https://img.shields.io/github/actions/workflow/status/kutaycoskuner/study-opengl/xmake-windows.yml?branch=main&label=main" />
@@ -34,11 +34,10 @@ study-opengl/
 │   └── _scenes/                # One test scene per chapter (e.g. 4.3_shadows_testscene.cpp)
 ├── libs/                       # Bundled third-party libraries (GLAD, ImGui, stb)
 ├── scripts/                    # Python helpers: naming convention checks, bulk renaming
-│   └── legacy/                 # Old CMake / Visual Studio .bat scripts, kept for reference; see legacy/README.md
+│   └── legacy/                 # Old CMake / Visual Studio build (CMakeLists.txt, .bat scripts), kept for reference
 ├── shaders/                    # GLSL shaders, named <chapter>-<name>-<vrtx|frag|geom>.glsl
 ├── source/                     # Renderer source code (core, scene, events, utils, tests)
-├── xmake.lua                   # Build script (xmake), incl. the binaries and pack tasks
-└── CMakeLists.txt              # Legacy CMake / Visual Studio build, being phased out
+└── xmake.lua                   # Build script (xmake), incl. the binaries and pack tasks
 ```
 
 ------------------------------------------------------------------------------------------

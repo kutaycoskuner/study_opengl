@@ -1,6 +1,8 @@
 -- ----------------------------------------------------------------------------------------
 --               Project (root scope: applies to every target)
 -- ----------------------------------------------------------------------------------------
+-- the "CMake:" comments point to the old build in scripts/legacy/CMakeLists.txt
+
 -- CMake: project(opengl_renderer)
 set_project("opengl_renderer")
 
@@ -13,7 +15,7 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = "."})
 
 
--- CMake: add_subdirectory(libs/glfw) -- now an xmake package, downloaded and cached
+-- CMake: add_subdirectory(libs/glfw), add_subdirectory(libs/assimp) -- submodules removed, now xmake packages, downloaded and cached
 add_requires("glfw", "assimp")
 
 
