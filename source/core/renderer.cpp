@@ -1150,11 +1150,14 @@ void Renderer::drawScene(Uniforms& uni)
     upv.view_proj_matrix = upv.projection_matrix * upv.view_matrix;
 
     // 3.8 uniform buffer object set
+    // transposed copies are kept in locals: taking the address of a temporary is not valid C++
+    const Mat4 projection_transposed = upv.projection_matrix.transposed();
+    const Mat4 view_transposed       = upv.view_matrix.transposed();
     glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mat4), &upv.projection_matrix.transposed().m[0][0]);  // const void *
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mat4), &projection_transposed.m[0][0]);  // const void *
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     glBindBuffer(GL_UNIFORM_BUFFER, ubo_matrices);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Mat4), sizeof(Mat4), &upv.view_matrix.transposed().m[0][0]);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Mat4), sizeof(Mat4), &view_transposed.m[0][0]);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     // draw wireframe or not
