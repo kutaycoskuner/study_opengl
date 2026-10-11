@@ -9,6 +9,9 @@ set_languages("c++20")
 
 -- CMake: CMAKE_BUILD_TYPE Debug/Release; pick one with: xmake f -m debug|release
 add_rules("mode.debug", "mode.release")
+-- writes compile_commands.json for qt creator / clangd on every build
+add_rules("plugin.compile_commands.autoupdate", {outputdir = "."})
+
 
 -- CMake: add_subdirectory(libs/glfw) -- now an xmake package, downloaded and cached
 add_requires("glfw", "assimp")
