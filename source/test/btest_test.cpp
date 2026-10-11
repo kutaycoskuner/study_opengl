@@ -4,7 +4,7 @@
 #include "vector4.h"
 #include "unit_tests.h"
 #include "integration_tests.h"
-#include "openGL.h"
+#include "opengl.h"
 #include "utilities.h"
 #include "shaders.h"
 #include <iostream>

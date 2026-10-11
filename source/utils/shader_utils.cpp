@@ -6,7 +6,7 @@
 // ----- Libraries
 // ------------------------------------------------------------------------------------------------
 #include "utilities.h"      // kendi test header dosyam
-#include "openGL.h"     
+#include "opengl.h"     
 #include "shader.h"     
 #include "shaders.h"     
 

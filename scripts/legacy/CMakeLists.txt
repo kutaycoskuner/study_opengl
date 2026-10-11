@@ -4,8 +4,10 @@ cmake_minimum_required(VERSION 3.24)
 # Set the project name
 project(opengl_renderer)
 
-# multiprocessor compile
-add_compile_options(/MP)
+# multiprocessor compile (MSVC only; Ninja parallelizes on its own)
+if(MSVC)
+    add_compile_options(/MP)
+endif()
 
 # ----------------------------------------------------------------------------------------
 #               Standards and Configurations
@@ -15,9 +17,9 @@ add_compile_options(/MP)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Set the architecture
+# Set the architecture (used in the output path). The generator platform is passed at
+# configure time (Visual Studio: -A x64) so generators without platform support (Ninja) work
 set(InstructionSetArchitecture x64)
-set(CMAKE_GENERATOR_PLATFORM ${InstructionSetArchitecture})
 
 # Set startup project to project other than CMake builds (for Visual Studio)
 set_property(
@@ -535,7 +537,9 @@ set_property(TARGET glad PROPERTY FOLDER "Libs/glad")
 
 set_property(TARGET assimp PROPERTY FOLDER "Libs/assimp")
 set_property(TARGET zlibstatic PROPERTY FOLDER "Libs/assimp")
-set_property(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTY FOLDER "Libs/assimp")
+if(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs)  # only created by assimp for MSVC
+    set_property(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTY FOLDER "Libs/assimp")
+endif()
 
 set_property(TARGET glfw PROPERTY FOLDER "Libs/glfw")
 set_property(TARGET uninstall PROPERTY FOLDER "Libs/glfw")

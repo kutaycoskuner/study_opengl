@@ -2,7 +2,7 @@
 //				Libraries
 // ------------------------------------------------------------------------------------------------
 #include "renderer.h"
-#include "openGL.h"
+#include "opengl.h"
 #include "basic.h"
 #include "utilities.h"
 #include <iostream>

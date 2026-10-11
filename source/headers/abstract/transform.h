@@ -59,7 +59,7 @@ public:
 
     // Placeholder for applying transformations using a 4x4 matrix
     Mat4 applyTransform() const {
-        //return Mat4(); // Placeholder matrix for now
+        return Mat4(); // Placeholder matrix for now
     }
 
 };

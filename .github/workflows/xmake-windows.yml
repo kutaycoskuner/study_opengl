@@ -1,0 +1,149 @@
+# ----------------------------------------------------------------------------------------
+#               Build on Windows (xmake) -- continuous integration
+# ----------------------------------------------------------------------------------------
+# What it does
+#   On every push and pull request to main or dev, GitHub starts a fresh Windows machine
+#   (a "runner"), installs the same toolchain used locally (MSYS2 CLANG64: Clang + xmake),
+#   builds the renderer in release mode, packs a standalone copy (xmake pack) and attaches
+#   it to the run as a downloadable zip.
+#
+# Why
+#   Every change gets built on a clean machine, so a broken build (missing file, missing
+#   dependency, code only one compiler accepts) shows up right away, not on the next PC.
+#   The uploaded zip is a ready-to-run build of every commit.
+#
+# What it does NOT do
+#   It does not run the renderer or its tests: GitHub's runners have no GPU and no window.
+#
+# Where to look
+#   GitHub > Actions tab (or the Checks tab of a pull request) > "Build on Windows (xmake)".
+#   The README's main/dev badges show the latest result of this workflow per branch.
+#
+# Replaces
+#   legacy/cmake-platform-windows.yml (CMake + Visual Studio). GitHub only runs workflow
+#   files placed directly in .github/workflows/, so the legacy/ folder never runs.
+# ----------------------------------------------------------------------------------------
+
+# name shown in the Actions tab and used by the README badges (via this file's name)
+name: Build on Windows (xmake)
+
+# ----------------------------------------------------------------------------------------
+#               Triggers: when the workflow runs
+# ----------------------------------------------------------------------------------------
+on:
+  # a commit pushed directly to main or dev (also a merged pull request)
+  push:
+    branches: [main, dev]
+  # a pull request targeting main or dev: runs on the PR's code, again on every new push
+  # to the PR's branch, so a PR shows whether it builds before it is merged
+  pull_request:
+    branches: [main, dev]
+
+# ----------------------------------------------------------------------------------------
+#               Jobs: what runs (one job, one machine)
+# ----------------------------------------------------------------------------------------
+jobs:
+  build:
+    # GitHub-hosted Windows machine, fresh for every run: nothing from earlier runs is left
+    # except what the cache step below restores
+    runs-on: windows-latest
+
+    # every "run:" step below executes in the MSYS2 CLANG64 shell set up by setup-msys2,
+    # the same shell used locally; {0} is the temporary script file GitHub writes the
+    # step's commands into
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    # ------------------------------------------------------------------------------------
+    # 1. Get the code
+    # ------------------------------------------------------------------------------------
+    # clones the repository at the commit that triggered the run; submodules are needed
+    # because imgui (libs/imgui) and part of data/ are git submodules; recursive also
+    # pulls the old glfw/assimp submodules, which xmake no longer uses (they come as
+    # packages), but they don't hurt
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    # ------------------------------------------------------------------------------------
+    # 2. Install the toolchain
+    # ------------------------------------------------------------------------------------
+    # installs MSYS2 on the runner and opens the CLANG64 environment (clang, libc++,
+    # mingw-w64 Windows headers); the packages are the same ones the README's
+    # Prerequisites install locally, plus the tools a local PC usually "just has"
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: CLANG64
+        # a fresh runner has none of these, so each one is listed explicitly:
+        #   git                           xmake clones its package list (xmake-repo) with git
+        #   unzip                          assimp's source arrives as a .zip archive
+        #   mingw-w64-clang-x86_64-clang   the C/C++ compiler (also pulls in libc++)
+        #   mingw-w64-clang-x86_64-lld     the linker clang uses on MinGW
+        #   mingw-w64-clang-x86_64-xmake   the build system (reads xmake.lua)
+        #   mingw-w64-clang-x86_64-cmake   glfw and assimp are CMake projects; xmake drives
+        #   mingw-w64-clang-x86_64-ninja   CMake + Ninja to build them as packages
+        install: >-
+          git
+          unzip
+          mingw-w64-clang-x86_64-clang
+          mingw-w64-clang-x86_64-lld
+          mingw-w64-clang-x86_64-xmake
+          mingw-w64-clang-x86_64-cmake
+          mingw-w64-clang-x86_64-ninja
+
+    # ------------------------------------------------------------------------------------
+    # 3. Restore the package cache
+    # ------------------------------------------------------------------------------------
+    # xmake downloads and compiles glfw and assimp into its package folder on the first
+    # run, which takes several minutes; this step saves that folder at the end of a
+    # successful run and restores it at the start of the next one
+    #   path: xmake's global package folder on Windows (%LOCALAPPDATA%\.xmake\packages)
+    #   key:  changes whenever xmake.lua changes (e.g. a new add_requires), so a changed
+    #         dependency list starts with a fresh cache instead of a stale one
+    - uses: actions/cache@v4
+      with:
+        path: ~/AppData/Local/.xmake/packages
+        key: xmake-packages-${{ hashFiles('xmake.lua') }}
+
+    # ------------------------------------------------------------------------------------
+    # 4. Configure
+    # ------------------------------------------------------------------------------------
+    # same command as the README's Installation step, in release mode:
+    #   -p mingw            platform: Windows via MinGW (MSYS2), not MSVC
+    #   --toolchain=clang   compiler: clang from CLANG64
+    #   -m release          optimized build, no debug info
+    #   -y                  answer "yes" to prompts (e.g. installing packages); there is
+    #                       nobody to type it on a runner
+    - name: Configure
+      run: xmake f -p mingw --toolchain=clang -m release -y
+
+    # ------------------------------------------------------------------------------------
+    # 5. Build
+    # ------------------------------------------------------------------------------------
+    # installs missing packages (or takes them from the cache), compiles glad, imgui and
+    # the renderer, links build/mingw/x86_64/release/opengl_renderer.exe; a compile or
+    # link error fails the step and marks the whole run red
+    - name: Build
+      run: xmake -y
+
+    # ------------------------------------------------------------------------------------
+    # 6. Pack
+    # ------------------------------------------------------------------------------------
+    # runs the "pack" task from xmake.lua: copies the release exe flat next to config/,
+    # data/ and shaders/, plus the MSYS2 runtime DLLs (libc++.dll, zlib1.dll), into a
+    # clean artifacts/ folder -- the same standalone copy `xmake pack` makes locally
+    - name: Pack
+      run: xmake pack
+
+    # ------------------------------------------------------------------------------------
+    # 7. Upload the result
+    # ------------------------------------------------------------------------------------
+    # attaches artifacts/ to the run as a zip named opengl_renderer-windows, downloadable
+    # from the bottom of the run's page (kept for 90 days by default); unzip it anywhere
+    # and double-click opengl_renderer.exe
+    - uses: actions/upload-artifact@v4
+      with:
+        name: opengl_renderer-windows
+        path: artifacts/

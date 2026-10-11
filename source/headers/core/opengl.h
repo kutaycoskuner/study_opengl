@@ -4,6 +4,7 @@
 
 #include "../abstract/vector3.h" // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 #include <string>
+#include <vector>
 #include<unordered_map>
 #include <GLFW/glfw3.h> // opengl i daha rahat kullanabilmek icin fonksion kutuphanesi
 

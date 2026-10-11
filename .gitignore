@@ -6,10 +6,13 @@ _workshop/
 _temp.md
 .ref/
 .workshop/
+
 artifacts/
 bin/
 build/
-_documentation/prompts/
+build-clang/
+.xmake/
+
 _temp/
 scripts/_input/
 scripts/_output/
@@ -17,8 +20,16 @@ scripts/_output/
 _documentation
 _documentation/
 
+input/
+
 .agents/
 .claude/
+
+.qtcreator/
+
+reports/
+
+compile_commands.json
 
 
 # ----------------------------------------------------------------------------------------
